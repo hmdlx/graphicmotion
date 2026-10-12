@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>Laguna M – Reel 9:16</title>
+<style>
+  @font-face { font-family: Poppins; font-weight: 400; src: url(../../assets/fonts/poppins/poppins-latin-400-normal.woff2) format("woff2"); }
+  @font-face { font-family: Poppins; font-weight: 500; src: url(../../assets/fonts/poppins/poppins-latin-500-normal.woff2) format("woff2"); }
+  @font-face { font-family: Poppins; font-weight: 600; src: url(../../assets/fonts/poppins/poppins-latin-600-normal.woff2) format("woff2"); }
+  @font-face { font-family: Poppins; font-weight: 700; src: url(../../assets/fonts/poppins/poppins-latin-700-normal.woff2) format("woff2"); }
+  @font-face { font-family: Poppins; font-weight: 800; src: url(../../assets/fonts/poppins/poppins-latin-800-normal.woff2) format("woff2"); }
+
+  /* Home Deluxe CI: Navy + Weiß + Grautöne, eckige Ecken, Poppins */
+  :root {
+    --navy: #0e2234;
+    --navy-2: #1c3a54;
+    --muted: #66727d;
+    --line: #e3e7ec;
+    --soft: #f4f6f8;
+    --light: #e9eef4;
+    --margin: 72px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; border-radius: 0; }
+  html, body { width: 1080px; height: 1920px; overflow: hidden; background: var(--navy); }
+  body { font-family: Poppins, sans-serif; color: #fff; -webkit-font-smoothing: antialiased; }
+
+  #stage { position: absolute; inset: 0; width: 1080px; height: 1920px; overflow: hidden; background: var(--navy); }
+  #footage { position: absolute; inset: 0; overflow: hidden; }
+  #plate { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; display: block; transform-origin: 560px 1170px; }
+
+  .layer { position: absolute; inset: 0; pointer-events: none; }
+  .stack { position: absolute; left: var(--margin); display: flex; flex-direction: column; align-items: flex-start; }
+  .blk { position: relative; background: var(--navy); color: #fff; box-shadow: 0 18px 50px rgba(14, 34, 52, .18); }
+  .blk.white { background: #fff; color: var(--navy); }
+  .ln { display: block; overflow: hidden; padding-bottom: .06em; margin-bottom: -.06em; }
+  .ln > span { display: inline-block; will-change: transform; }
+
+  .kicker { font-weight: 600; font-size: 26px; line-height: 1; letter-spacing: .18em; text-transform: uppercase; color: rgba(233, 238, 244, .78); display: flex; align-items: center; gap: 18px; }
+  .kicker i { display: block; width: 46px; height: 2px; background: rgba(233, 238, 244, .55); }
+
+  /* Logo plate (persistent) */
+  #logo { position: absolute; left: var(--margin); top: 120px; padding: 22px 26px; background: var(--navy); }
+  #logo img { display: block; width: 300px; height: auto; }
+
+  /* Hook */
+  #hook { top: 1060px; }
+  #hook .big { font-weight: 700; font-size: 104px; line-height: 1.04; letter-spacing: -.015em; padding: 14px 34px 10px; }
+  #hook .tag { margin-top: 14px; font-weight: 600; font-size: 36px; line-height: 1; padding: 20px 34px 18px; letter-spacing: .01em; }
+  #hook .tag b { font-weight: 800; }
+
+  /* Feature cards */
+  .card { padding: 34px 40px 32px; }
+  .card .kicker { margin-bottom: 20px; }
+  .card .hl { font-weight: 700; font-size: 84px; line-height: 1.04; letter-spacing: -.015em; }
+  .sub { margin-top: 10px; font-weight: 500; font-size: 36px; line-height: 1; padding: 20px 40px 18px; }
+
+  #jets { top: 300px; }
+  #jets .num { font-weight: 800; font-size: 230px; line-height: .86; letter-spacing: -.03em; margin: 4px 0 6px -8px; font-variant-numeric: tabular-nums; }
+  #jets .label { font-weight: 600; font-size: 58px; line-height: 1.05; }
+  #jets .row { margin-top: 10px; font-weight: 500; font-size: 34px; line-height: 1; padding: 18px 40px 16px 26px; display: flex; align-items: baseline; }
+  #jets .row b { font-weight: 800; display: inline-block; width: 62px; text-align: right; margin-right: 18px; }
+
+  #shower { top: 1150px; }
+  #porthole { top: 300px; }
+  #headrest { top: 300px; }
+
+  /* Tracked markers */
+  .dot { position: absolute; left: 0; top: 0; width: 0; height: 0; }
+  .dot .core, .dot .ring, .dot .pulse { position: absolute; left: 0; top: 0; border-radius: 50%; transform: translate(-50%, -50%); }
+  .dot .core { width: 16px; height: 16px; background: #fff; box-shadow: 0 0 0 4px var(--navy); }
+  .dot .ring { width: 46px; height: 46px; border: 3px solid #fff; box-shadow: 0 0 0 2px rgba(14, 34, 52, .35); }
+  .dot .pulse { width: 46px; height: 46px; border: 2px solid #fff; }
+
+  /* Hero + end card */
+  #hero { top: 230px; }
+  #hero .blk { padding: 30px 38px 26px; box-shadow: none; }
+  #hero .title { font-weight: 800; font-size: 150px; line-height: .95; letter-spacing: -.02em; margin-top: 14px; }
+  #frame { position: absolute; left: 0; top: 0; }
+  #chips { position: absolute; left: var(--margin); top: 1324px; display: flex; gap: 14px; }
+  .chip { font-weight: 500; font-size: 28px; line-height: 1; padding: 16px 22px 14px; border: 2px solid rgba(233, 238, 244, .4); color: #fff; white-space: nowrap; }
+  #cta { position: absolute; left: var(--margin); top: 1414px; display: flex; align-items: center; gap: 34px; }
+  #cta .btn { background: #fff; color: var(--navy); font-weight: 600; font-size: 40px; line-height: 1; padding: 26px 40px 24px; display: flex; align-items: center; gap: 22px; }
+  #cta .btn svg { display: block; }
+  #cta .url { font-weight: 600; font-size: 38px; line-height: 1; position: relative; padding-bottom: 10px; }
+  #cta .url i { position: absolute; left: 0; bottom: 0; height: 3px; width: 100%; background: #fff; transform-origin: left; }
+  #slogan { position: absolute; left: var(--margin); top: 1548px; font-weight: 500; font-size: 30px; line-height: 1; color: rgba(233, 238, 244, .7); letter-spacing: .02em; }
+</style>
+</head>
+<body>
+<div id="stage">
+  <div id="footage"><img id="plate" alt=""></div>
+
+  <svg class="layer" id="vector" width="1080" height="1920" viewBox="0 0 1080 1920">
+    <line id="ptr-line" x1="0" y1="0" x2="0" y2="0" stroke="#fff" stroke-width="3" />
+    <rect id="frame-rect" x="58" y="506" width="964" height="788" fill="none" stroke="rgba(233,238,244,.45)" stroke-width="2" />
+  </svg>
+
+  <div class="layer" id="dots"></div>
+
+  <!-- 00 Hook -->
+  <div class="stack" id="hook">
+    <div class="blk big"><span class="ln"><span>Spa-Feeling</span></span></div>
+    <div class="blk big"><span class="ln"><span>für dein</span></span></div>
+    <div class="blk big"><span class="ln"><span>Zuhause.</span></span></div>
+    <div class="blk white tag"><span class="ln"><span>Whirlpool <b>LAGUNA M</b></span></span></div>
+  </div>
+
+  <!-- 01 Massage -->
+  <div class="stack" id="jets">
+    <div class="blk card">
+      <div class="kicker"><span class="ln"><span>01</span></span><i></i><span class="ln"><span>Massage</span></span></div>
+      <div class="num"><span class="ln"><span id="jets-count">0</span></span></div>
+      <div class="label"><span class="ln"><span>Massagedüsen</span></span></div>
+    </div>
+    <div class="blk white row"><b>4</b>Whirlpooldüsen</div>
+    <div class="blk white row"><b>6</b>Bodyjets</div>
+    <div class="blk white row"><b>16</b>Airjets</div>
+  </div>
+
+  <!-- 02 Komfort -->
+  <div class="stack" id="shower">
+    <div class="blk card">
+      <div class="kicker"><span class="ln"><span>02</span></span><i></i><span class="ln"><span>Komfort</span></span></div>
+      <div class="hl"><span class="ln"><span>Mit Handbrause</span></span></div>
+    </div>
+    <div class="blk white sub"><span class="ln"><span>Für die schnelle Erfrischung</span></span></div>
+  </div>
+
+  <!-- 03 Design -->
+  <div class="stack" id="porthole">
+    <div class="blk card">
+      <div class="kicker"><span class="ln"><span>03</span></span><i></i><span class="ln"><span>Design</span></span></div>
+      <div class="hl"><span class="ln"><span>Elegantes</span></span><span class="ln"><span>Bullauge</span></span></div>
+    </div>
+    <div class="blk white sub"><span class="ln"><span>mit Lichttherapie</span></span></div>
+  </div>
+
+  <!-- 04 Ergonomie -->
+  <div class="stack" id="headrest">
+    <div class="blk card">
+      <div class="kicker"><span class="ln"><span>04</span></span><i></i><span class="ln"><span>Ergonomie</span></span></div>
+      <div class="hl"><span class="ln"><span>2 Kopfstützen</span></span></div>
+    </div>
+    <div class="blk white sub"><span class="ln"><span>Entspannt zu zweit</span></span></div>
+  </div>
+
+  <!-- Hero / Endcard -->
+  <div class="stack" id="hero">
+    <div class="blk">
+      <div class="kicker"><span class="ln"><span>Indoor-Whirlpool für 2 Personen</span></span></div>
+      <div class="title"><span class="ln"><span>LAGUNA M</span></span></div>
+    </div>
+  </div>
+  <div id="chips">
+    <div class="chip">180 × 90 × 55 cm</div>
+    <div class="chip">Heizung</div>
+    <div class="chip">Radio</div>
+    <div class="chip">Lichttherapie</div>
+  </div>
+  <div id="cta">
+    <div class="btn"><span>Jetzt entdecken</span>
+      <svg width="40" height="24" viewBox="0 0 40 24"><path d="M0 12h36M26 2l10 10-10 10" fill="none" stroke="#0e2234" stroke-width="3.2"/></svg>
+    </div>
+    <div class="url">homedeluxe.de<i></i></div>
+  </div>
+  <div id="slogan"><span class="ln"><span>Wir machen dein Zuhause.</span></span></div>
+
+  <div id="logo"><img src="../../assets/logo/homedeluxe-logo-white.svg" alt="Home Deluxe"></div>
+</div>
+
+<script src="tracks.js"></script>
+<script src="composition.js"></script>
+</body>
+</html>
