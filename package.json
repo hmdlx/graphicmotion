@@ -6,7 +6,11 @@
     "laguna-m:plates": "scripts/prepare_plates.sh projects/laguna-m/source/laguna-m_rohschnitt.mp4 build/laguna-m/plates",
     "laguna-m:track": "python3 -I scripts/track_points.py build/laguna-m/plates projects/laguna-m/tracking.json projects/laguna-m/tracks.js",
     "laguna-m:render": "node scripts/render.js projects/laguna-m/composition.html projects/laguna-m/output/HomeDeluxe_Laguna-M_Reel_9x16.mp4 --plates build/laguna-m/plates",
-    "laguna-m:stills": "node scripts/render.js projects/laguna-m/composition.html build/laguna-m/stills --plates build/laguna-m/plates --stills 1,2,4,5,7,10,11,13,14.5,16,17.6,18,19,21"
+    "laguna-m:stills": "node scripts/render.js projects/laguna-m/composition.html build/laguna-m/stills --plates build/laguna-m/plates --stills 1,2,4,5,7,10,11,13,14.5,16,17.6,18,19,21",
+    "whirlpool:plates": "G='hqdn3d=1:1:3:3,unsharp=5:5:0.35:3:3:0,colorbalance=rs=0.015:bs=-0.02:rm=0.01:bm=-0.015:rh=0.01:bh=-0.01,eq=contrast=1.03:saturation=1.04'; scripts/prepare_plates.sh projects/whirlpool-couple/source/whirlpool-couple_rohschnitt.mp4 build/whirlpool-couple/plates \"$G\" && python3 -I projects/whirlpool-couple/retime.py projects/whirlpool-couple/source/whirlpool-couple_rohschnitt.mp4 build/whirlpool-couple/plates \"$G\"",
+    "whirlpool:sound": "python3 -I projects/whirlpool-couple/sound.py projects/whirlpool-couple/source/whirlpool-couple_rohschnitt.mp4 build/whirlpool-couple/sound.wav",
+    "whirlpool:render": "node scripts/render.js projects/whirlpool-couple/composition.html projects/whirlpool-couple/output/HomeDeluxe_Whirlpool_Paar_Spot_9x16.mp4 --plates build/whirlpool-couple/plates --audio build/whirlpool-couple/sound.wav",
+    "whirlpool:stills": "node scripts/render.js projects/whirlpool-couple/composition.html build/whirlpool-couple/stills --plates build/whirlpool-couple/plates --stills 0.5,3.5,5.9,9,12.4,13.2,15.6,19,21.5"
   },
   "devDependencies": {
     "playwright": "1.56.1"

@@ -9,6 +9,7 @@ rendert. ffmpeg schreibt die Frames anschließend als MP4.
 | Projekt | Format | Ergebnis |
 |---|---|---|
 | `projects/laguna-m` | 9:16, 1080×1920, 30 fps, 18,5 s | `output/HomeDeluxe_Laguna-M_Reel_9x16.mp4` + Titelbild |
+| `projects/whirlpool-couple` | 9:16, 1080×1920, 24 fps, 22,0 s | `output/HomeDeluxe_Whirlpool_Paar_Spot_9x16.mp4` + Titelbild |
 
 ### Laguna M – Schnitt und Übergänge
 
@@ -29,6 +30,28 @@ läuft nur mit ihren sauberen Frames (Schnittliste `SHOTS` in `composition.js`),
 Die Produktdaten stammen aus den Shop- und Händlerangaben zur LAGUNA M (homedeluxe.de, Hornbach).
 Preise sind bewusst nicht eingebaut, weil sie sich häufig ändern.
 
+### Whirlpool Paar – Spot ohne Text
+
+Werbespot ohne Texteinblendungen und mit wenigen, dezenten Elementen: weiche, bewegte
+Übergänge statt harter Schnitte, ein durchgehender langsamer Kamera-Push in jeder Einstellung,
+warmes Licht, feines Korn und eine leichte Vignette. Grafik nur als Haarlinien im CI
+(Rahmen zum Auftakt und am Ende, Ring um die Wanne) und das Logo zum Schluss.
+
+| Zeit | Einstellung | Übergang danach |
+|---|---|---|
+| 0,0–3,8 s | Totale mit Blättern, Haarlinien-Rahmen zeichnet sich und geht wieder | sanfter Push auf die Steuerung, Nahaufnahme setzt sich aus der Bewegung, warmer Lichtschimmer |
+| 3,2–6,2 s | Hand öffnet die Steuerung | Kamera kippt vom Display ins Wasser (vertikale Bewegungsunschärfe) |
+| 5,5–9,4 s | Bedienfeld + Einlauf | Wasser blendet in Sonnenlicht auf, die Totale zieht sich auf |
+| 8,7–12,9 s | Totale, Wanne leer | beide Einstellungen auf die Wanne registriert: das Paar erscheint in der Wanne, feiner Ring zieht den Rand nach |
+| 12,0–16,0 s | Paar im Pool | sanfter Push auf die beiden |
+| 15,3–22,0 s | Paar näher → Endcard | Bild wird unter Navy weich, Rahmen zeichnet sich, Logo + kurze Linie |
+
+Die Abblende am Ende des Rohschnitts (ab Frame 543) ist herausgeschnitten. Der Rohschnitt hat
+nur 8,1 s Ton; `sound.py` legt den Original-Ton der ersten drei Einstellungen synchron auf den
+neuen Schnitt und baut den Rest: Garten-Atmo und Wasser als granulare Flächen, Sprudeln für
+die Paar-Szenen, weiche Luft-Swells an den Übergängen und ein ruhiges Musikbett (D-Dur, Pad +
+einzelne Glockentöne), auf -14 LUFS gebracht.
+
 ## Rendern
 
 Voraussetzungen: Node 18+, Python 3 mit numpy + Pillow, ffmpeg, Chromium für Playwright.
@@ -39,6 +62,11 @@ npm run laguna-m:plates     # Rohschnitt -> hochskalierte, leicht gegradete JPG-
 npm run laguna-m:track      # Punkt-Tracking -> projects/laguna-m/tracks.js (nur nötig, wenn tracking.json geändert wurde)
 npm run laguna-m:render     # -> projects/laguna-m/output/HomeDeluxe_Laguna-M_Reel_9x16.mp4
 npm run laguna-m:stills     # Kontrollbilder nach build/laguna-m/stills
+
+npm run whirlpool:plates    # Rohschnitt -> leicht warm gegradete JPG-Plates (build/)
+npm run whirlpool:sound     # Tonspur -> build/whirlpool-couple/sound.wav
+npm run whirlpool:render    # -> projects/whirlpool-couple/output/HomeDeluxe_Whirlpool_Paar_Spot_9x16.mp4
+npm run whirlpool:stills    # Kontrollbilder nach build/whirlpool-couple/stills
 ```
 
 Ein einzelnes Frame lässt sich auch im Browser prüfen:
@@ -51,8 +79,8 @@ assets/fonts/poppins/     Poppins 400–800 (latin, OFL)
 assets/logo/              Home-Deluxe-Logo (weiß, SVG)
 scripts/prepare_plates.sh Hochskalieren + Grading der Quelle
 scripts/track_points.py   Template-Tracking für Marker, die am Bild kleben
-scripts/render.js         Chromium -> PNG-Frames -> ffmpeg (H.264 + stumme AAC-Spur)
-projects/<name>/          source/, composition.html/.js, tracking.json, tracks.js, output/
+scripts/render.js         Chromium -> PNG-Frames -> ffmpeg (H.264 + AAC, mit --audio <wav> sonst stumm)
+projects/<name>/          source/, composition.html/.js, tracking.json, tracks.js, sound.py, output/
 ```
 
 Texte und Timings ändern: Texte stehen in `projects/laguna-m/composition.html`. In

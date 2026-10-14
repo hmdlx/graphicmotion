@@ -4,6 +4,7 @@
 //
 //   node scripts/render.js <composition.html> <out.mp4> --plates <dir>
 //   node scripts/render.js <composition.html> <out_dir> --plates <dir> --stills 1,4.5,18
+//   node scripts/render.js <composition.html> <out.mp4> --plates <dir> --audio <file.wav>
 //
 // The composition must expose window.COMP = { FPS, TOTAL, seek(n), ready }.
 const path = require('path');
@@ -16,7 +17,7 @@ function parseArgs(argv) {
   const opts = { comp, out };
   for (let i = 0; i < rest.length; i += 2) opts[rest[i].replace(/^--/, '')] = rest[i + 1];
   if (!comp || !out || !opts.plates) {
-    console.error('usage: render.js <composition.html> <out.mp4|out_dir> --plates <dir> [--stills t1,t2]');
+    console.error('usage: render.js <composition.html> <out.mp4|out_dir> --plates <dir> [--stills t1,t2] [--audio file]');
     process.exit(1);
   }
   return opts;
@@ -51,14 +52,19 @@ function writeFrame(stream, buf) {
   }
 
   fs.mkdirSync(path.dirname(opts.out), { recursive: true });
+  // Sound: the given track (padded with silence to the picture length), else a silent track.
+  const audioIn = opts.audio
+    ? ['-i', opts.audio]
+    : ['-f', 'lavfi', '-t', String(TOTAL / FPS), '-i', 'anullsrc=r=48000:cl=stereo'];
   const ff = spawn('ffmpeg', [
     '-v', 'error', '-y',
     '-f', 'image2pipe', '-framerate', String(FPS), '-c:v', 'png', '-i', '-',
-    '-f', 'lavfi', '-t', String(TOTAL / FPS), '-i', 'anullsrc=r=48000:cl=stereo',
+    ...audioIn,
     '-map', '0:v', '-map', '1:a',
+    ...(opts.audio ? ['-af', 'apad', '-ar', '48000'] : []),
     '-c:v', 'libx264', '-preset', 'slow', '-crf', '16', '-pix_fmt', 'yuv420p',
     '-profile:v', 'high', '-level', '4.2', '-r', String(FPS),
-    '-c:a', 'aac', '-b:a', '128k', '-shortest', '-movflags', '+faststart',
+    '-c:a', 'aac', '-b:a', opts.audio ? '192k' : '128k', '-shortest', '-movflags', '+faststart',
     opts.out,
   ], { stdio: ['pipe', 'inherit', 'inherit'] });
   const done = new Promise((res, rej) => ff.on('close', c => (c === 0 ? res() : rej(new Error('ffmpeg exit ' + c)))));

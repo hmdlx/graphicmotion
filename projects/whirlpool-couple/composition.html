@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>Whirlpool – Spot 9:16</title>
+<style>
+  /* Home Deluxe CI: Navy + Weiß, eckige Ecken. Spot ohne Text: nur Bild, Licht und feine Linien. */
+  :root { --navy: #0e2234; }
+  * { box-sizing: border-box; margin: 0; padding: 0; border-radius: 0; }
+  html, body { width: 1080px; height: 1920px; overflow: hidden; background: var(--navy); }
+
+  #stage { position: absolute; inset: 0; overflow: hidden; background: var(--navy); }
+  #footage { position: absolute; inset: 0; overflow: hidden; }
+  .shot { position: absolute; inset: 0; overflow: hidden; will-change: opacity, filter; }
+  .shot .cam { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; transform-origin: 0 0; }
+  .shot img { position: absolute; left: 0; width: 1080px; height: 1920px; display: block; }
+  /* Mirrored copies around the plate, so moves and blurs never show an empty edge. */
+  .shot img { top: 0; }
+  .shot img.up { top: -1920px; transform: scaleY(-1); }
+  .shot img.down { top: 1920px; transform: scaleY(-1); }
+  .shot img.left { left: -1080px; transform: scaleX(-1); }
+  .shot img.right { left: 1080px; transform: scaleX(-1); }
+
+  .fx { position: absolute; inset: 0; pointer-events: none; }
+  /* Warm sun glint that rides the transitions. */
+  #glow { mix-blend-mode: screen; }
+  #bloom { background: radial-gradient(120% 80% at 50% 45%, #fff6ea 0%, #ffe9cf 55%, #f6d7b4 100%); mix-blend-mode: screen; }
+  #vignette { background: radial-gradient(115% 75% at 50% 48%, rgba(0,0,0,0) 55%, rgba(8,18,28,.32) 100%); }
+  #grain { mix-blend-mode: overlay; opacity: .07; }
+  #veil { background: var(--navy); }
+  #lines { overflow: visible; }
+  #lines rect, #lines line, #lines ellipse { fill: none; stroke: #fff; vector-effect: non-scaling-stroke; }
+
+  #logo { position: absolute; left: 50%; top: 50%; width: 520px; margin-left: -260px; transform-origin: 50% 50%; }
+  #logo img { display: block; width: 100%; height: auto; }
+</style>
+</head>
+<body>
+<div id="stage">
+  <div id="footage">
+    <div class="shot"><div class="cam"><img class="up" alt=""><img class="left" alt=""><img class="main" alt=""><img class="right" alt=""><img class="down" alt=""></div></div>
+    <div class="shot"><div class="cam"><img class="up" alt=""><img class="left" alt=""><img class="main" alt=""><img class="right" alt=""><img class="down" alt=""></div></div>
+  </div>
+  <canvas id="glow" class="fx" width="540" height="960"></canvas>
+  <div id="bloom" class="fx"></div>
+  <div id="vignette" class="fx"></div>
+  <canvas id="grain" class="fx" width="540" height="960"></canvas>
+  <div id="veil" class="fx"></div>
+  <svg id="lines" class="fx" width="1080" height="1920" viewBox="0 0 1080 1920">
+    <rect id="frame" x="56" y="56" width="968" height="1808" stroke-width="2"/>
+    <ellipse id="ring" stroke-width="2"/>
+    <line id="rule" stroke-width="2"/>
+  </svg>
+  <div id="logo"><img src="../../assets/logo/homedeluxe-logo-white.svg" alt="Home Deluxe"></div>
+</div>
+<svg width="0" height="0" style="position:absolute">
+  <filter id="vblur0" x="-0.5" y="-0.5" width="2" height="2" color-interpolation-filters="sRGB"><feGaussianBlur stdDeviation="0 0" edgeMode="duplicate"/></filter>
+  <filter id="vblur1" x="-0.5" y="-0.5" width="2" height="2" color-interpolation-filters="sRGB"><feGaussianBlur stdDeviation="0 0" edgeMode="duplicate"/></filter>
+</svg>
+<script src="composition.js"></script>
+</body>
+</html>
