@@ -35,16 +35,16 @@ Preise sind bewusst nicht eingebaut, weil sie sich häufig ändern.
 Werbespot ohne Texteinblendungen und mit wenigen, dezenten Elementen: weiche, bewegte
 Übergänge statt harter Schnitte, ein durchgehender langsamer Kamera-Push in jeder Einstellung,
 warmes Licht, feines Korn und eine leichte Vignette. Grafik nur als Haarlinien im CI
-(Rahmen zum Auftakt und am Ende, Ring um die Wanne) und das Logo zum Schluss.
+(Ring um die Wanne, kurze Linie unter dem Logo) und das Logo zum Schluss.
 
 | Zeit | Einstellung | Übergang danach |
 |---|---|---|
-| 0,0–3,8 s | Totale mit Blättern, Haarlinien-Rahmen zeichnet sich und geht wieder | sanfter Push auf die Steuerung, Nahaufnahme setzt sich aus der Bewegung, warmer Lichtschimmer |
+| 0,0–3,8 s | Totale mit Blättern, blendet aus Navy auf | sanfter Push auf die Steuerung, Nahaufnahme setzt sich aus der Bewegung, warmer Lichtschimmer |
 | 3,2–6,2 s | Hand öffnet die Steuerung | Kamera kippt vom Display ins Wasser (vertikale Bewegungsunschärfe) |
 | 5,5–9,4 s | Bedienfeld + Einlauf | Wasser blendet in Sonnenlicht auf, die Totale zieht sich auf |
 | 8,7–12,9 s | Totale, Wanne leer | beide Einstellungen auf die Wanne registriert: das Paar erscheint in der Wanne, feiner Ring zieht den Rand nach |
 | 12,0–16,0 s | Paar im Pool | sanfter Push auf die beiden |
-| 15,3–22,0 s | Paar näher → Endcard | Bild wird unter Navy weich, Rahmen zeichnet sich, Logo + kurze Linie |
+| 15,3–22,0 s | Paar näher → Endcard | Bild wird unter Navy weich, Logo + kurze Linie |
 
 Die Abblende am Ende des Rohschnitts (ab Frame 543) ist herausgeschnitten. Der Rohschnitt hat
 nur 8,1 s Ton; `sound.py` legt den Original-Ton der ersten drei Einstellungen synchron auf den

@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <title>Whirlpool – Spot 9:16</title>
 <style>
-  /* Home Deluxe CI: Navy + Weiß, eckige Ecken. Spot ohne Text: nur Bild, Licht und feine Linien. */
+  /* Home Deluxe CI: Navy + Weiß, eckige Ecken. Spot ohne Text: nur Bild, Licht und wenige feine Linien. */
   :root { --navy: #0e2234; }
   * { box-sizing: border-box; margin: 0; padding: 0; border-radius: 0; }
   html, body { width: 1080px; height: 1920px; overflow: hidden; background: var(--navy); }
@@ -29,7 +29,7 @@
   #grain { mix-blend-mode: overlay; opacity: .07; }
   #veil { background: var(--navy); }
   #lines { overflow: visible; }
-  #lines rect, #lines line, #lines ellipse { fill: none; stroke: #fff; vector-effect: non-scaling-stroke; }
+  #lines line, #lines ellipse { fill: none; stroke: #fff; vector-effect: non-scaling-stroke; }
 
   #logo { position: absolute; left: 50%; top: 50%; width: 520px; margin-left: -260px; transform-origin: 50% 50%; }
   #logo img { display: block; width: 100%; height: auto; }
@@ -47,7 +47,6 @@
   <canvas id="grain" class="fx" width="540" height="960"></canvas>
   <div id="veil" class="fx"></div>
   <svg id="lines" class="fx" width="1080" height="1920" viewBox="0 0 1080 1920">
-    <rect id="frame" x="56" y="56" width="968" height="1808" stroke-width="2"/>
     <ellipse id="ring" stroke-width="2"/>
     <line id="rule" stroke-width="2"/>
   </svg>

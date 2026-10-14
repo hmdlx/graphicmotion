@@ -28,7 +28,7 @@
   const RIM = { cx: 558, cy: 1166, rx: 432, ry: 124 };
 
   // End card, output frames.
-  const END = { veil: 432, frame: 452, logo: 462, rule: 476 };
+  const END = { veil: 432, logo: 462, rule: 476 };
 
   const $ = (s, root = document) => root.querySelector(s);
   const $$ = (s, root = document) => [...root.querySelectorAll(s)];
@@ -157,12 +157,11 @@
   const el = {
     slots: $$('.shot'),
     glow: $('#glow'), bloom: $('#bloom'), grain: $('#grain'), veil: $('#veil'),
-    frame: $('#frame'), ring: $('#ring'), rule: $('#rule'), logo: $('#logo'),
+    ring: $('#ring'), rule: $('#rule'), logo: $('#logo'),
     vblur: [$('#vblur0 feGaussianBlur'), $('#vblur1 feGaussianBlur')],
   };
   const glowCtx = el.glow.getContext('2d');
   const grainCtx = el.grain.getContext('2d');
-  const FRAME_LEN = 2 * (968 + 1808);
 
   // Seeded grain, a fresh field each frame (deterministic per frame number).
   function grain(n) {
@@ -210,8 +209,7 @@
     el.bloom.style.opacity = fx.bloom.toFixed(4);
     grain(n);
 
-    // Opening: up from navy, a hairline frame draws itself and lets the picture go.
-    // Ending: the picture softens under navy, the frame returns around the logo.
+    // Opening: up from navy. Ending: the picture softens under navy.
     const open = 1 - E.outCubic(prog(n, 0, 12));
     const veil = 0.58 * E.inOutCubic(prog(n, END.veil, 38));
     el.veil.style.opacity = Math.max(open, veil).toFixed(4);
@@ -222,14 +220,6 @@
       top.style.filter = `${top.style.filter} blur(${endBlur.toFixed(2)}px)`;
     }
 
-    const drawIn = E.inOutCubic(prog(n, 6, 30));
-    const fadeOut = 1 - E.inOutCubic(prog(n, 44, 18));
-    const drawEnd = E.inOutCubic(prog(n, END.frame, 34));
-    let frameDraw = 0, frameAlpha = 0;
-    if (n < 70) { frameDraw = drawIn; frameAlpha = 0.6 * fadeOut; }
-    else if (n >= END.frame) { frameDraw = drawEnd; frameAlpha = 0.7; }
-    el.frame.style.strokeDasharray = `${FRAME_LEN * frameDraw} ${FRAME_LEN}`;
-    el.frame.style.opacity = frameDraw > 0 ? frameAlpha.toFixed(4) : 0;
 
     if (fx.ring) {
       const { tr, draw, grow } = fx.ring;
