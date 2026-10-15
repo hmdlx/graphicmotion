@@ -9,6 +9,7 @@ rendert. ffmpeg schreibt die Frames anschließend als MP4.
 | Projekt | Format | Ergebnis |
 |---|---|---|
 | `projects/laguna-m` | 9:16, 1080×1920, 30 fps, 18,5 s | `output/HomeDeluxe_Laguna-M_Reel_9x16.mp4` + Titelbild |
+| `projects/black-friday-vista` | Standbild 1:1, 4:5, 9:16 | `output/HomeDeluxe_BlackFriday_Vista_<format>.png` |
 
 ### Laguna M – Schnitt und Übergänge
 
@@ -29,6 +30,18 @@ läuft nur mit ihren sauberen Frames (Schnittliste `SHOTS` in `composition.js`),
 Die Produktdaten stammen aus den Shop- und Händlerangaben zur LAGUNA M (homedeluxe.de, Hornbach).
 Preise sind bewusst nicht eingebaut, weil sie sich häufig ändern.
 
+### Black Friday – Vista-Dialog
+
+Black-Friday-Creative im Look von Windows Vista: Aero-Glasfenster auf dunkler Aurora, ein Dialog
+„−30 % extra auf bereits reduzierte Artikel“, grüne Vista-Fortschrittsanzeige („Black Friday wird
+installiert …“) und die Schaltflächen „Jetzt sparen“ / „Abbrechen“. Schrift ist Open Sans als freier
+Ersatz für Segoe UI; die Vista-typischen runden Ecken weichen hier bewusst von der eckigen CI ab.
+Texte stehen direkt in `creative.html`, das Format kommt über `?f=1x1|4x5|9x16`.
+
+```bash
+npm run black-friday-vista:stills   # -> projects/black-friday-vista/output/*.png
+```
+
 ## Rendern
 
 Voraussetzungen: Node 18+, Python 3 mit numpy + Pillow, ffmpeg, Chromium für Playwright.
@@ -48,10 +61,12 @@ Ein einzelnes Frame lässt sich auch im Browser prüfen:
 
 ```
 assets/fonts/poppins/     Poppins 400–800 (latin, OFL)
+assets/fonts/open-sans/   Open Sans 400–800 (latin, OFL)
 assets/logo/              Home-Deluxe-Logo (weiß, SVG)
 scripts/prepare_plates.sh Hochskalieren + Grading der Quelle
 scripts/track_points.py   Template-Tracking für Marker, die am Bild kleben
 scripts/render.js         Chromium -> PNG-Frames -> ffmpeg (H.264 + stumme AAC-Spur)
+scripts/stills.js         Chromium -> ein PNG je Format (statische Creatives)
 projects/<name>/          source/, composition.html/.js, tracking.json, tracks.js, output/
 ```
 
