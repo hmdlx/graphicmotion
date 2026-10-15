@@ -6,7 +6,10 @@
     "laguna-m:plates": "scripts/prepare_plates.sh projects/laguna-m/source/laguna-m_rohschnitt.mp4 build/laguna-m/plates",
     "laguna-m:track": "python3 -I scripts/track_points.py build/laguna-m/plates projects/laguna-m/tracking.json projects/laguna-m/tracks.js",
     "laguna-m:render": "node scripts/render.js projects/laguna-m/composition.html projects/laguna-m/output/HomeDeluxe_Laguna-M_Reel_9x16.mp4 --plates build/laguna-m/plates",
-    "laguna-m:stills": "node scripts/render.js projects/laguna-m/composition.html build/laguna-m/stills --plates build/laguna-m/plates --stills 1,2,4,5,7,10,11,13,14.5,16,17.6,18,19,21"
+    "laguna-m:stills": "node scripts/render.js projects/laguna-m/composition.html build/laguna-m/stills --plates build/laguna-m/plates --stills 1,2,4,5,7,10,11,13,14.5,16,17.6,18,19,21",
+    "whirlpool:interpolate": "scripts/interpolate_shots.sh projects/whirlpool-lifestyle/source/whirlpool-lifestyle_12s_v2.mp4 build/whirlpool-lifestyle/hi A:0:72 B:93:186 C:199:288",
+    "whirlpool:render": "python3 -I projects/whirlpool-lifestyle/edit.py build/whirlpool-lifestyle/hi projects/whirlpool-lifestyle/output/HomeDeluxe_Whirlpool-Lifestyle_1x1_final.mp4",
+    "whirlpool:stills": "python3 -I projects/whirlpool-lifestyle/edit.py build/whirlpool-lifestyle/hi build/whirlpool-lifestyle/stills --stills 0.5,2.8,3.0,3.2,4.5,6.9,7.0,7.1,9,11,11.9"
   },
   "devDependencies": {
     "playwright": "1.56.1"

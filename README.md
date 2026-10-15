@@ -29,6 +29,35 @@ läuft nur mit ihren sauberen Frames (Schnittliste `SHOTS` in `composition.js`),
 Die Produktdaten stammen aus den Shop- und Händlerangaben zur LAGUNA M (homedeluxe.de, Hornbach).
 Preise sind bewusst nicht eingebaut, weil sie sich häufig ändern.
 
+| `projects/whirlpool-lifestyle` | 1:1, 1440×1440, 24 fps, 12,0 s | `output/HomeDeluxe_Whirlpool-Lifestyle_1x1_final.mp4` |
+
+### Whirlpool Lifestyle – Schnitt aus Cuttersicht
+
+Die beiden weichen Überblendungen der Quelle sind herausgeschnitten. Alle drei Einstellungen
+sind per Motion-Interpolation auf 96 fps hochgerechnet und laufen über Zeitkurven
+(`TIME` in `edit.py`). Dadurch wechseln Slow Motion und Zeitraffer fließend. Schnelle Passagen
+bekommen eine 180°-Bewegungsunschärfe.
+
+| Zeit | Einstellung | Tempo | Übergang danach |
+|---|---|---|---|
+| 0,0–3,0 s | Totale außen | 0,4× Slow Motion mit leichtem Push-in, beschleunigt auf ~4× | **Zoom-Through**: Kamera taucht mit Zoom-Unschärfe ins Wasser, warmer Lichtblitz, Riser + Sub-Hit |
+| 3,0–7,0 s | Frau im Whirlpool | landet schnell aus dem Zoom (~2×), bremst auf 0,36× Slow Motion, beschleunigt auf ~3,5× | **Whip-Pan** nach rechts: Bewegungsunschärfe + RGB-Versatz, Whoosh wandert von rechts nach links |
+| 7,0–10,6 s | Bedienfeld + Wasserdüse | landet schnell, dann 0,3× Slow Motion auf dem Wasserstrahl, langsamer Push-in | Bild wird unscharf und Navy |
+| 10,6–12,0 s | Endcard | Slow Motion läuft weiter | Logo + HOMEDELUXE.DE, Glocken-Akkord |
+
+Ton: Garten-Atmo der Quelle bis zum Zoom-Through, ab dem Blitz das Sprudeln, dazu
+synthetisches Sounddesign (Riser, Sub-Hit, Splash, Whoosh, Glocke). Lautheit auf
+-14 LUFS normalisiert (Social-Standard). Musik ist nicht enthalten.
+
+```bash
+npm run whirlpool:interpolate   # Quelle -> 96-fps-Bildfolgen der 3 Einstellungen (build/, ~10 min)
+npm run whirlpool:render        # -> projects/whirlpool-lifestyle/output/HomeDeluxe_Whirlpool-Lifestyle_1x1_final.mp4
+npm run whirlpool:stills        # Kontrollbilder nach build/whirlpool-lifestyle/stills
+```
+
+Logo und URL der Endcard liegen als PNG in `projects/whirlpool-lifestyle/gfx/`. Sie werden
+mit Chromium aus `gfx/endcard.html` gerendert.
+
 ## Rendern
 
 Voraussetzungen: Node 18+, Python 3 mit numpy + Pillow, ffmpeg, Chromium für Playwright.
