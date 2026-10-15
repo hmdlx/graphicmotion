@@ -4,186 +4,223 @@
 <meta charset="utf-8">
 <title>Black Friday Vista</title>
 <style>
-  @font-face { font-family: "OS"; src: url(../../assets/fonts/open-sans/open-sans-latin-400-normal.woff2) format("woff2"); font-weight: 400; }
-  @font-face { font-family: "OS"; src: url(../../assets/fonts/open-sans/open-sans-latin-600-normal.woff2) format("woff2"); font-weight: 600; }
-  @font-face { font-family: "OS"; src: url(../../assets/fonts/open-sans/open-sans-latin-700-normal.woff2) format("woff2"); font-weight: 700; }
-  @font-face { font-family: "OS"; src: url(../../assets/fonts/open-sans/open-sans-latin-800-normal.woff2) format("woff2"); font-weight: 800; }
+  /* Layout in "Vista-Pixeln": stills.js rendert mit deviceScaleFactor 2.5, damit Fenster, Taskleiste
+     und Schrift die echten Vista-Proportionen behalten (Segoe UI 9 pt = 12 px, Titelleiste 30 px,
+     Taskleiste 30 px, Schaltflächen 23 px hoch). */
+  @font-face { font-family: "OS"; src: url(../../assets/fonts/open-sans/open-sans-latin-variable.woff2) format("woff2");
+               font-weight: 300 800; font-stretch: 75% 100%; }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  html, body { width: 100%; height: 100%; overflow: hidden; background: #02050a; }
-  body { font-family: "OS", "Segoe UI", sans-serif; }
+  html, body { width: 100%; height: 100%; overflow: hidden; background: #000; }
+  body { font-family: "OS", "Segoe UI", sans-serif; font-size: 12px; font-stretch: 90%; color: #000;
+         -webkit-font-smoothing: antialiased; }
 
-  /* ---------- Desktop: Vista-Aurora, für Black Friday abgedunkelt ---------- */
-  .desk {
-    position: relative; width: 100%; height: 100%; overflow: hidden;
-    background:
-      radial-gradient(120% 70% at 50% 110%, #0e2234 0%, rgba(14,34,52,0) 60%),
-      radial-gradient(90% 60% at 15% 0%, #071a2c 0%, rgba(7,26,44,0) 70%),
-      #02050a;
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-  }
-  .ribbon {
-    position: absolute; border-radius: 50%;
-    border: 0 solid transparent;
-    filter: blur(1.5px);
-  }
-  .r1 { width: 2600px; height: 1200px; left: -1100px; top: calc(50% - 330px);
-        border-top: 6px solid rgba(150,220,255,.9);
-        box-shadow: 0 -22px 70px -8px rgba(60,170,255,.7), inset 0 40px 110px -30px rgba(60,170,255,.55);
-        transform: rotate(-24deg); }
-  .r2 { width: 2400px; height: 1000px; left: -900px; top: calc(50% - 180px);
-        border-top: 4px solid rgba(120,255,210,.75);
-        box-shadow: 0 -16px 60px -10px rgba(40,230,180,.6), inset 0 34px 90px -30px rgba(40,230,180,.45);
-        transform: rotate(-17deg); }
-  .r3 { width: 2800px; height: 1400px; left: -1300px; top: calc(50% - 520px);
-        border-top: 2px solid rgba(210,240,255,.55);
-        box-shadow: inset 0 60px 160px -50px rgba(80,140,255,.45);
-        transform: rotate(-30deg); }
-  .glow { position: absolute; width: 900px; height: 500px; border-radius: 50%;
-          left: 50%; top: 50%; transform: translate(-50%, -50%);
-          background: radial-gradient(closest-side, rgba(70,170,255,.4), rgba(70,170,255,0));
-          filter: blur(30px); }
+  .desk { position: absolute; inset: 0; background: #02060c url(wallpaper.jpg) 30% 22% / auto 150% no-repeat; }
+
+  /* ---------- Desktop-Symbol ---------- */
+  .icon { position: absolute; left: 6px; top: 8px; width: 74px; text-align: center; color: #fff;
+          text-shadow: 0 1px 2px #000, 0 0 3px #000; }
+  .icon svg { width: 48px; height: 48px; display: block; margin: 0 auto 2px; filter: drop-shadow(0 2px 2px rgba(0,0,0,.6)); }
 
   /* ---------- Aero-Fenster ---------- */
   .win {
-    position: relative; z-index: 2; width: 940px;
-    padding: 0 16px 16px;
-    border-radius: 18px 18px 14px 14px;
+    position: absolute; left: 50%; top: 46%; transform: translate(-50%, -50%);
+    width: 404px; padding: 0 7px 7px; border-radius: 7px 7px 6px 6px;
+    border: 1px solid rgba(0,0,0,.78);
     background:
-      linear-gradient(180deg, rgba(255,255,255,.28) 0%, rgba(255,255,255,.08) 7%, rgba(255,255,255,.02) 40%, rgba(255,255,255,.06) 100%),
-      repeating-linear-gradient(115deg, rgba(255,255,255,0) 0 120px, rgba(255,255,255,.07) 120px 160px, rgba(255,255,255,0) 160px 260px),
-      rgba(16,30,48,.62);
-    backdrop-filter: blur(10px) saturate(140%);
-    border: 2px solid rgba(0,0,0,.85);
-    box-shadow:
-      inset 0 0 0 2px rgba(255,255,255,.45),
-      0 30px 80px rgba(0,0,0,.75),
-      0 0 60px rgba(80,170,255,.18);
+      linear-gradient(180deg, rgba(255,255,255,.42) 0, rgba(255,255,255,.16) 14px, rgba(255,255,255,.06) 30px, rgba(255,255,255,0) 60%, rgba(255,255,255,.08) 100%),
+      linear-gradient(118deg, rgba(255,255,255,0) 18%, rgba(255,255,255,.16) 19%, rgba(255,255,255,.10) 27%, rgba(255,255,255,0) 28%,
+                              rgba(255,255,255,0) 60%, rgba(255,255,255,.12) 61%, rgba(255,255,255,.06) 66%, rgba(255,255,255,0) 67%),
+      rgba(58,92,124,.42);
+    backdrop-filter: blur(4px) saturate(120%);
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,.55), 0 0 1px rgba(0,0,0,.9), 0 6px 22px rgba(0,0,0,.65);
   }
-  .bar { height: 74px; display: flex; align-items: center; justify-content: space-between; }
-  .title { display: flex; align-items: center; gap: 14px; padding-left: 8px;
-           color: #fff; font-size: 30px; font-weight: 400;
-           text-shadow: 0 0 14px rgba(255,255,255,.9), 0 0 2px rgba(255,255,255,.9), 0 1px 2px rgba(0,0,0,.6);
-           /* Vista legt einen hellen Hof hinter den Fenstertitel */ }
-  .title .ico { width: 34px; height: 34px; border-radius: 50%;
-                background: radial-gradient(circle at 50% 30%, #6a7d92 0%, #1b2532 55%, #000 100%);
-                box-shadow: 0 0 0 2px rgba(255,255,255,.7), 0 0 10px rgba(100,190,255,.8);
-                color: #fff; font-size: 20px; font-weight: 800; line-height: 34px; text-align: center;
-                text-shadow: none; }
-  .caps { display: flex; align-self: flex-start; margin-right: 6px;
-          border: 2px solid rgba(0,0,0,.75); border-top: 0; border-radius: 0 0 10px 10px; overflow: hidden;
-          box-shadow: 0 0 0 1px rgba(255,255,255,.45), 0 4px 10px rgba(0,0,0,.4); }
-  .cap { width: 64px; height: 42px; position: relative;
-         background: linear-gradient(180deg, rgba(255,255,255,.45) 0%, rgba(255,255,255,.18) 48%, rgba(0,0,0,.25) 52%, rgba(255,255,255,.12) 100%);
-         border-right: 1px solid rgba(0,0,0,.6); }
-  .cap.min::after { content: ""; position: absolute; left: 22px; right: 22px; bottom: 13px; height: 5px;
-                    background: #fff; border: 1px solid rgba(0,0,0,.6); }
-  .cap.max::after { content: ""; position: absolute; left: 22px; right: 22px; top: 11px; bottom: 11px;
-                    border: 2px solid #fff; border-top-width: 5px; box-shadow: 0 0 0 1px rgba(0,0,0,.55); }
-  .cap.close { width: 104px; border-right: 0;
-               background: linear-gradient(180deg, #f1b1a1 0%, #dd7a63 46%, #c3401f 52%, #d4613d 85%, #f19a73 100%); }
-  .cap.close::before, .cap.close::after {
-    content: ""; position: absolute; left: 50%; top: 50%; width: 30px; height: 6px; background: #fff;
-    border-radius: 1px; box-shadow: 0 0 0 1px rgba(80,20,10,.55);
-  }
-  .cap.close::before { transform: translate(-50%,-50%) rotate(45deg); }
-  .cap.close::after  { transform: translate(-50%,-50%) rotate(-45deg); }
+  .bar { height: 30px; position: relative; display: flex; align-items: center; padding-left: 1px; }
+  .bar .ttl { position: relative; margin-left: 6px; font-size: 12px; letter-spacing: .1px; }
+  .bar .ttl::before { /* der weiche helle Hof, den Vista hinter Fenstertitel auf Glas legt */
+    content: ""; position: absolute; left: -7px; right: -7px; top: -2px; bottom: -2px; z-index: -1;
+    border-radius: 10px; background: rgba(255,255,255,.6); filter: blur(5px); }
+  .bar .ttl { z-index: 0; }
+  .caps { position: absolute; right: -1px; top: -1px; display: flex; height: 18px;
+          border: 1px solid rgba(0,0,0,.72); border-top: 0; border-radius: 0 0 5px 5px; overflow: hidden;
+          box-shadow: 0 0 0 1px rgba(255,255,255,.4), 0 1px 2px rgba(0,0,0,.3); }
+  .cap { width: 26px; height: 100%; display: flex; align-items: center; justify-content: center;
+         border-right: 1px solid rgba(0,0,0,.55);
+         background: linear-gradient(180deg, rgba(255,255,255,.52) 0%, rgba(255,255,255,.22) 50%, rgba(0,0,0,.12) 52%, rgba(255,255,255,.28) 100%);
+         box-shadow: inset 0 0 0 1px rgba(255,255,255,.35); }
+  .cap.close { width: 43px; border-right: 0;
+               background: linear-gradient(180deg, #eeb2a2 0%, #dc8a73 46%, #c64226 52%, #c95232 78%, #e59775 100%);
+               box-shadow: inset 0 0 0 1px rgba(255,210,190,.55); }
+  .cap svg { display: block; }
 
-  /* ---------- Client-Bereich ---------- */
-  .client { background: #fff; border: 2px solid rgba(0,0,0,.55); border-radius: 2px;
-            box-shadow: 0 0 0 2px rgba(255,255,255,.35); overflow: hidden; }
-  .main { padding: 46px 52px 38px; display: grid; grid-template-columns: 170px 1fr; column-gap: 36px; }
-  .orb { width: 170px; height: 170px; border-radius: 50%; position: relative; margin-top: 10px;
-         background: radial-gradient(circle at 50% 75%, #3aa8ff 0%, #0d4f9a 30%, #06182e 62%, #000 100%);
-         box-shadow: 0 0 0 4px #1d2733, 0 0 0 7px rgba(170,215,255,.9), 0 8px 24px rgba(0,60,140,.55), 0 0 40px rgba(60,160,255,.45);
-         display: flex; align-items: center; justify-content: center;
-         color: #fff; font-size: 104px; font-weight: 800; letter-spacing: -2px;
-         text-shadow: 0 0 18px rgba(120,200,255,.95), 0 3px 4px rgba(0,0,0,.6); }
-  .orb::before { /* Glanzkappe */
-         content: ""; position: absolute; left: 12%; right: 12%; top: 5%; height: 46%; border-radius: 50%;
-         background: linear-gradient(180deg, rgba(255,255,255,.75), rgba(255,255,255,.05)); }
-  .orb span { position: relative; top: -4px; }
+  .client { background: #fff; border: 1px solid rgba(0,0,0,.6); box-shadow: 0 0 0 1px rgba(255,255,255,.3); }
+  .main { display: grid; grid-template-columns: 40px 1fr; column-gap: 12px; padding: 16px 18px 10px; }
+  .main svg { width: 40px; height: 40px; margin-top: 3px; }
+  .instr { font-size: 15px; color: #003399; line-height: 1.25; }
+  .big { font-size: 58px; line-height: 1; color: #003399; font-weight: 400; font-stretch: 85%; letter-spacing: -1px;
+         margin: 4px 0 2px -2px; white-space: nowrap; }
+  .txt { font-size: 15px; line-height: 1.3; color: #000; }
 
-  .eyebrow { font-size: 30px; font-weight: 700; color: #555; letter-spacing: .14em; text-transform: uppercase; }
-  .big { font-size: 170px; line-height: .96; font-weight: 800; color: #003399; letter-spacing: -5px; margin: 6px 0 8px -6px;
-         white-space: nowrap; }
-  .big small { font-size: .9em; }
-  .sub { font-size: 44px; line-height: 1.2; font-weight: 600; color: #1e1e1e; }
+  .prog { padding: 4px 18px 16px 70px; }
+  .prog .lbl { margin-bottom: 5px; }
+  .track { height: 15px; border: 1px solid #bcbcbc; border-radius: 3px; padding: 1px; position: relative;
+           background: linear-gradient(180deg, #f6f6f6, #e3e3e3 50%, #dadada 51%, #ececec);
+           box-shadow: inset 0 0 0 1px rgba(255,255,255,.7); }
+  .fill { height: 100%; width: 72%; border-radius: 1px; position: relative; overflow: hidden;
+          background: linear-gradient(180deg, #d5f6cd 0%, #88e27a 42%, #13b52a 50%, #25c23d 78%, #63d96b 100%);
+          box-shadow: inset 0 0 0 1px rgba(0,100,0,.18); }
+  .fill::after { content: ""; position: absolute; top: 0; bottom: 0; left: 46%; width: 80px;
+                 background: linear-gradient(90deg, rgba(255,255,255,0), rgba(255,255,255,.7), rgba(255,255,255,0)); }
+  .prog .meta { color: #444; margin-top: 5px; }
 
-  .prog { padding: 0 52px 42px; }
-  .prog .lbl { font-size: 28px; color: #333; margin-bottom: 12px; }
-  .track { height: 40px; border: 2px solid #8f8f8f; border-radius: 4px; padding: 3px;
-           background: linear-gradient(180deg, #e9e9e9, #f8f8f8); box-shadow: inset 0 1px 3px rgba(0,0,0,.15); }
-  .fill { height: 100%; width: 78%; border-radius: 2px; position: relative; overflow: hidden;
-          background: linear-gradient(180deg, #dcffdc 0%, #8ef08e 18%, #2fd22f 50%, #03b503 52%, #22d022 85%, #6be86b 100%);
-          box-shadow: inset 0 0 0 1px rgba(0,110,0,.35); }
-  .fill::after { /* der wandernde Lichtschein der Vista-Fortschrittsanzeige */
-          content: ""; position: absolute; top: 0; bottom: 0; width: 240px; left: 48%;
-          background: linear-gradient(90deg, rgba(255,255,255,0), rgba(255,255,255,.75), rgba(255,255,255,0)); }
-  .prog .meta { font-size: 24px; color: #6d6d6d; margin-top: 10px; }
-
-  .foot { background: #f0f0f0; border-top: 2px solid #dfdfdf; padding: 26px 52px;
+  .foot { background: #f0f0f0; border-top: 1px solid #dfdfdf; padding: 10px 12px 10px 18px;
           display: flex; align-items: center; justify-content: space-between; }
-  .link { font-size: 30px; color: #0066cc; text-decoration: underline; }
-  .btns { display: flex; gap: 18px; }
-  .btn { min-width: 228px; height: 70px; padding: 0 28px; border-radius: 7px; font-size: 30px; color: #000;
-         display: flex; align-items: center; justify-content: center; font-family: inherit;
-         border: 2px solid #707070;
-         background: linear-gradient(180deg, #f6f6f6 0%, #ebebeb 49%, #dddddd 51%, #cfcfcf 100%);
-         box-shadow: inset 0 0 0 2px rgba(255,255,255,.85); }
-  .btn.def { border-color: #3c7fb1; font-weight: 600;
-             background: linear-gradient(180deg, #eaf6fd 0%, #d9f0fc 49%, #bee6fd 51%, #a7d9f5 100%);
-             box-shadow: inset 0 0 0 2px rgba(255,255,255,.9), 0 0 14px rgba(60,160,230,.55); }
-  .btn.off { color: #8a8a8a; border-color: #adb2b5; background: #f4f4f4; box-shadow: none; }
+  .link { color: #0066cc; }
+  .btns { display: flex; gap: 7px; }
+  .btn { min-width: 86px; height: 23px; padding: 0 10px; border-radius: 3px; border: 1px solid #707070;
+         display: flex; align-items: center; justify-content: center;
+         background: linear-gradient(180deg, #f2f2f2 0%, #ebebeb 49%, #dddddd 50%, #cfcfcf 100%);
+         box-shadow: inset 0 0 0 1px rgba(255,255,255,.85); }
+  .btn.hot { border-color: #3c7fb1;
+             background: linear-gradient(180deg, #eaf6fd 0%, #d9f0fc 49%, #bee6fd 50%, #a7d9f5 100%);
+             box-shadow: inset 0 0 0 1px rgba(255,255,255,.9), 0 0 3px rgba(60,160,230,.35); }
 
-  .logo { position: relative; z-index: 2; width: 360px; margin-top: 64px; opacity: .95; }
+  /* ---------- Taskleiste ---------- */
+  .task { position: absolute; left: 0; right: 0; bottom: 0; height: 30px; display: flex; align-items: center;
+          background:
+            linear-gradient(180deg, rgba(255,255,255,.22) 0, rgba(255,255,255,.07) 50%, rgba(0,0,0,.35) 51%, rgba(0,0,0,.45) 100%),
+            rgba(8,10,14,.78);
+          backdrop-filter: blur(4px);
+          border-top: 1px solid rgba(0,0,0,.9); box-shadow: inset 0 1px 0 rgba(255,255,255,.28); }
+  .orb { position: absolute; left: 5px; bottom: 1px; width: 38px; height: 38px; border-radius: 50%;
+         background: radial-gradient(circle at 50% 78%, #6fc6ff 0%, #1c6fb8 28%, #0b2d52 55%, #050d18 78%, #02060c 100%);
+         box-shadow: 0 0 0 1px rgba(0,0,0,.9), inset 0 0 0 1px rgba(160,210,255,.55), 0 0 6px rgba(100,190,255,.55);
+         display: flex; align-items: center; justify-content: center; }
+  .orb::before { content: ""; position: absolute; left: 6px; right: 6px; top: 2px; height: 17px; border-radius: 50%;
+                 background: linear-gradient(180deg, rgba(255,255,255,.7), rgba(255,255,255,.04)); }
+  .orb img { width: 20px; position: relative; top: 1px; filter: drop-shadow(0 0 3px rgba(140,210,255,.95)); }
+  .tbtn { position: absolute; left: 52px; height: 24px; width: 156px; border-radius: 3px; padding: 0 8px;
+          display: flex; align-items: center; gap: 6px; color: #fff; text-shadow: 0 1px 1px #000;
+          border: 1px solid rgba(0,0,0,.85);
+          background: linear-gradient(180deg, rgba(255,255,255,.32) 0, rgba(255,255,255,.12) 50%, rgba(255,255,255,.04) 51%, rgba(120,180,255,.18) 100%);
+          box-shadow: inset 0 0 0 1px rgba(255,255,255,.3); }
+  .tbtn svg { width: 16px; height: 16px; flex: none; }
+  .tray { position: absolute; right: 0; top: 0; bottom: 0; display: flex; align-items: center; gap: 9px; padding: 0 10px 0 12px;
+          color: #fff; border-left: 1px solid rgba(0,0,0,.7); box-shadow: inset 1px 0 0 rgba(255,255,255,.12);
+          background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(0,0,0,.25)); }
+  .tray svg { width: 16px; height: 16px; display: block; }
 
-  /* ---------- Formate ---------- */
-  body[data-f="1x1"] .win  { transform: scale(.86); transform-origin: 50% 50%; margin: -64px 0 -56px; }
-  body[data-f="1x1"] .logo { margin-top: 18px; width: 300px; }
-  body[data-f="9x16"] .win { margin-top: 40px; }
-  body[data-f="9x16"] .logo { margin-top: 90px; width: 400px; }
+  body[data-f="1x1"] .icon { display: none; }
+  body[data-f="1x1"] .win { top: 47%; }
+  body[data-f="9x16"] .desk { background-size: auto 110%; background-position: 34% 40%; }
+  .cursor { position: absolute; width: 14px; height: 21px; filter: drop-shadow(1px 2px 1.5px rgba(0,0,0,.45)); }
 </style>
 </head>
 <body>
 <div class="desk">
-  <div class="glow"></div>
-  <div class="ribbon r3"></div>
-  <div class="ribbon r1"></div>
-  <div class="ribbon r2"></div>
+
+  <div class="icon">
+    <!-- Papierkorb -->
+    <svg viewBox="0 0 48 48">
+      <defs>
+        <linearGradient id="bin" x1="0" x2="1"><stop offset="0" stop-color="#9fb6c7" stop-opacity=".55"/><stop offset=".35" stop-color="#eaf4fb" stop-opacity=".8"/><stop offset=".7" stop-color="#b8cbd8" stop-opacity=".5"/><stop offset="1" stop-color="#7f97a9" stop-opacity=".7"/></linearGradient>
+        <linearGradient id="rim" x1="0" x2="1"><stop offset="0" stop-color="#6d7e8b"/><stop offset=".4" stop-color="#f3f7fa"/><stop offset="1" stop-color="#5d6e7b"/></linearGradient>
+      </defs>
+      <path d="M10 10 L38 10 L34.5 44 Q24 46.5 13.5 44 Z" fill="url(#bin)" stroke="#5e7383" stroke-width=".8"/>
+      <g stroke="#ffffff" stroke-opacity=".55" stroke-width=".7" fill="none">
+        <path d="M16 13 L17.5 42"/><path d="M21 13 L21.6 43"/><path d="M27 13 L26.4 43"/><path d="M32 13 L30.5 42"/>
+        <path d="M11.2 20 Q24 22 36.8 20"/><path d="M12 29 Q24 31 36 29"/><path d="M12.8 37 Q24 39 35.2 37"/>
+      </g>
+      <ellipse cx="24" cy="10" rx="14.5" ry="3.2" fill="url(#rim)" stroke="#4f5f6b" stroke-width=".7"/>
+      <ellipse cx="24" cy="10" rx="12.2" ry="2.1" fill="#3b4a55" opacity=".55"/>
+      <path d="M14 15 Q15 30 16 42" stroke="#fff" stroke-opacity=".8" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+    </svg>
+    Papierkorb
+  </div>
 
   <div class="win">
     <div class="bar">
-      <div class="title"><div class="ico">%</div>Black Friday</div>
-      <div class="caps"><div class="cap min"></div><div class="cap max"></div><div class="cap close"></div></div>
+      <svg width="16" height="16" viewBox="0 0 16 16"><use href="#pct-icon"/></svg>
+      <span class="ttl">Black Friday Sale</span>
+      <div class="caps">
+        <div class="cap"><svg width="11" height="11" viewBox="0 0 11 11"><rect x="1.5" y="6.5" width="8" height="3" fill="#fff" stroke="#2b3b4a" stroke-width="1"/></svg></div>
+        <div class="cap"><svg width="11" height="11" viewBox="0 0 11 11"><rect x="1.5" y="1.5" width="8" height="8" fill="none" stroke="#2b3b4a" stroke-width="3"/><rect x="1.5" y="1.5" width="8" height="8" fill="none" stroke="#fff" stroke-width="1"/><rect x="2" y="2" width="7" height="2" fill="#fff"/></svg></div>
+        <div class="cap close"><svg width="13" height="11" viewBox="0 0 13 11"><path d="M2 1.5 L11 9.5 M11 1.5 L2 9.5" stroke="#5a1a0c" stroke-width="4" stroke-linecap="round"/><path d="M2 1.5 L11 9.5 M11 1.5 L2 9.5" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg></div>
+      </div>
     </div>
     <div class="client">
       <div class="main">
-        <div class="orb"><span>%</span></div>
+        <svg viewBox="0 0 40 40"><use href="#pct-icon"/></svg>
         <div>
-          <div class="eyebrow">Black Friday Deal</div>
-          <div class="big">−30<small>&#8239;%</small></div>
-          <div class="sub">extra auf bereits<br>reduzierte Artikel</div>
+          <div class="instr">Black Friday bei Home Deluxe</div>
+          <div class="big">−30&#8239;%</div>
+          <div class="txt">extra auf bereits reduzierte Artikel</div>
         </div>
       </div>
       <div class="prog">
-        <div class="lbl">Black Friday wird installiert …</div>
+        <div class="lbl">Rabatt wird angewendet …</div>
         <div class="track"><div class="fill"></div></div>
         <div class="meta">Verbleibende Zeit: nicht mehr lange</div>
       </div>
       <div class="foot">
         <span class="link">homedeluxe.de/sale</span>
-        <div class="btns"><div class="btn def">Jetzt sparen</div><div class="btn off">Abbrechen</div></div>
+        <div class="btns"><div class="btn hot" id="go">Jetzt sparen</div><div class="btn">Abbrechen</div></div>
       </div>
     </div>
   </div>
 
-  <img class="logo" src="../../assets/logo/homedeluxe-logo-white.svg" alt="Home Deluxe">
+  <div class="task">
+    <div class="orb"><img src="../../assets/logo/homedeluxe-mark-white.svg" alt=""></div>
+    <div class="tbtn"><svg viewBox="0 0 16 16"><use href="#pct-icon"/></svg>Black Friday Sale</div>
+    <div class="tray">
+      <svg viewBox="0 0 16 16"><!-- Netzwerk -->
+        <rect x="1.5" y="2.5" width="8" height="6" rx=".8" fill="#9fd0ff" stroke="#dfefff" stroke-width=".8"/>
+        <rect x="6.5" y="7.5" width="8" height="6" rx=".8" fill="#7cbcf5" stroke="#dfefff" stroke-width=".8"/>
+        <circle cx="12" cy="4" r="2.4" fill="#4caf50" stroke="#fff" stroke-width=".6"/>
+      </svg>
+      <svg viewBox="0 0 16 16"><!-- Lautstärke -->
+        <path d="M2 6 H5 L9 2.5 V13.5 L5 10 H2 Z" fill="#e8f2fb" stroke="#90a8bc" stroke-width=".6"/>
+        <path d="M11 5.5 Q13 8 11 10.5 M12.6 3.8 Q16 8 12.6 12.2" stroke="#e8f2fb" stroke-width="1.1" fill="none" stroke-linecap="round"/>
+      </svg>
+      <span>10:00</span>
+    </div>
+  </div>
+
+  <!-- Aero-Mauszeiger -->
+  <svg class="cursor" id="cursor" viewBox="0 0 14 21">
+    <path d="M1 1 L1 17 L4.8 13.4 L7.6 19.8 L10.2 18.7 L7.5 12.4 L12.6 12.4 Z" fill="#fff" stroke="#000" stroke-width="1" stroke-linejoin="round"/>
+  </svg>
+
+  <svg width="0" height="0" style="position:absolute">
+    <!-- Vista-artiges Programmsymbol: blaue Glaskugel mit Prozentzeichen -->
+    <defs>
+      <radialGradient id="pg" cx=".5" cy=".72" r=".75"><stop offset="0" stop-color="#7cd0ff"/><stop offset=".45" stop-color="#1f74c9"/><stop offset="1" stop-color="#0a3778"/></radialGradient>
+      <linearGradient id="ps" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".85"/><stop offset="1" stop-color="#fff" stop-opacity=".05"/></linearGradient>
+      <symbol id="pct-icon" viewBox="0 0 40 40">
+        <circle cx="20" cy="20" r="18.5" fill="url(#pg)" stroke="#0a2c5c" stroke-width="1.2"/>
+        <circle cx="20" cy="20" r="17.3" fill="none" stroke="#bfe6ff" stroke-opacity=".6" stroke-width="1"/>
+        <g fill="#fff">
+          <circle cx="13.6" cy="13.6" r="3.9"/><circle cx="26.4" cy="26.4" r="3.9"/>
+          <path d="M26.9 9.6 L30.4 13.1 L13.1 30.4 L9.6 26.9 Z"/>
+        </g>
+        <circle cx="13.6" cy="13.6" r="1.6" fill="#1f74c9"/><circle cx="26.4" cy="26.4" r="1.6" fill="#1f74c9"/>
+        <ellipse cx="20" cy="11" rx="13.5" ry="8.5" fill="url(#ps)"/>
+      </symbol>
+    </defs>
+  </svg>
 </div>
 <script>
-  document.body.dataset.f = new URLSearchParams(location.search).get('f') || '4x5';
+  const f = new URLSearchParams(location.search).get('f') || '4x5';
+  document.body.dataset.f = f;
+  function placeCursor() { // Mauszeiger auf "Jetzt sparen", damit der Hover-Zustand stimmig ist
+    const b = document.getElementById('go').getBoundingClientRect(), c = document.getElementById('cursor');
+    c.style.left = (b.left + b.width * .9) + 'px';
+    c.style.top = (b.top + b.height * .55) + 'px';
+  }
   window.READY = document.fonts.ready.then(() => Promise.all(
-    [...document.images].map(i => i.complete ? 0 : new Promise(r => { i.onload = i.onerror = r; }))));
+    [...document.images].map(i => i.complete ? 0 : new Promise(r => { i.onload = i.onerror = r; }))))
+    .then(() => new Promise(r => { const im = new Image(); im.onload = im.onerror = r; im.src = 'wallpaper.jpg'; }))
+    .then(placeCursor);
 </script>
 </body>
 </html>

@@ -32,14 +32,20 @@ Preise sind bewusst nicht eingebaut, weil sie sich häufig ändern.
 
 ### Black Friday – Vista-Dialog
 
-Black-Friday-Creative im Look von Windows Vista: Aero-Glasfenster auf dunkler Aurora, ein Dialog
-„−30 % extra auf bereits reduzierte Artikel“, grüne Vista-Fortschrittsanzeige („Black Friday wird
-installiert …“) und die Schaltflächen „Jetzt sparen“ / „Abbrechen“. Schrift ist Open Sans als freier
-Ersatz für Segoe UI; die Vista-typischen runden Ecken weichen hier bewusst von der eckigen CI ab.
-Texte stehen direkt in `creative.html`, das Format kommt über `?f=1x1|4x5|9x16`.
+Black-Friday-Creative als „Screenshot“ eines Windows-Vista-Desktops: Aurora-Wallpaper (prozedural,
+`wallpaper.py`), Aero-Glasfenster mit durchscheinendem Hintergrund und dunklem Fenstertitel mit
+hellem Hof, Dialog „−30 % extra auf bereits reduzierte Artikel“ mit grüner Vista-Fortschrittsanzeige,
+Schaltflächen „Jetzt sparen“ (Hover, Mauszeiger darauf) / „Abbrechen“, Papierkorb und Taskleiste
+mit Start-Orb (Home-Deluxe-Haus statt Windows-Flagge) und Uhr.
+
+Die Seite ist in echten Vista-Maßen gebaut (Schrift 12 px, Titelleiste und Taskleiste 30 px,
+Schaltflächen 23 px) und wird mit Skalierung 2,5 gerendert. Schrift: Open Sans (variabel, auf 90 %
+Breite) als freier Ersatz für Segoe UI. Texte stehen direkt in `creative.html`, das Format kommt über
+`?f=1x1|4x5|9x16`.
 
 ```bash
-npm run black-friday-vista:stills   # -> projects/black-friday-vista/output/*.png
+npm run black-friday-vista:wallpaper   # nur nötig, wenn wallpaper.py geändert wurde
+npm run black-friday-vista:stills      # -> projects/black-friday-vista/output/*.png
 ```
 
 ## Rendern
@@ -61,12 +67,12 @@ Ein einzelnes Frame lässt sich auch im Browser prüfen:
 
 ```
 assets/fonts/poppins/     Poppins 400–800 (latin, OFL)
-assets/fonts/open-sans/   Open Sans 400–800 (latin, OFL)
-assets/logo/              Home-Deluxe-Logo (weiß, SVG)
+assets/fonts/open-sans/   Open Sans variabel (Gewicht + Breite, latin, OFL)
+assets/logo/              Home-Deluxe-Logo und Haus-Bildmarke (weiß, SVG)
 scripts/prepare_plates.sh Hochskalieren + Grading der Quelle
 scripts/track_points.py   Template-Tracking für Marker, die am Bild kleben
 scripts/render.js         Chromium -> PNG-Frames -> ffmpeg (H.264 + stumme AAC-Spur)
-scripts/stills.js         Chromium -> ein PNG je Format (statische Creatives)
+scripts/stills.js         Chromium -> ein PNG je Format (statische Creatives, optional skaliert)
 projects/<name>/          source/, composition.html/.js, tracking.json, tracks.js, output/
 ```
 
