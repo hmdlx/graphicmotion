@@ -248,7 +248,7 @@ def whip_p(t):
     return ease_in_out((t - (CUT2 - WHIP / 2)) / WHIP)
 
 
-LOGO = LOGO_URL = None
+LOGO = None
 
 
 def endcard(img, t):
@@ -258,7 +258,7 @@ def endcard(img, t):
     pil = Image.fromarray(np.clip(img * 255 + 0.5, 0, 255).astype(np.uint8))
     x = np.asarray(pil.filter(ImageFilter.GaussianBlur(18 * u)), np.float32) / 255
     x = x * (1 - 0.58 * u) + NAVY * 0.58 * u
-    for png, t0, y_mid, rise in ((LOGO, END + 0.30, 0.47, 26), (LOGO_URL, END + 0.55, 0.575, 18)):
+    for png, t0, y_mid, rise in ((LOGO, END + 0.30, 0.50, 26),):
         a = ease_out_cubic((t - t0) / 0.6)
         if a <= 0:
             continue
@@ -411,13 +411,11 @@ def loudness(path):
 def main():
     hi, out = sys.argv[1], sys.argv[2]
     stills = sys.argv[4].split(',') if len(sys.argv) > 4 and sys.argv[3] == '--stills' else None
-    global LOGO, LOGO_URL
+    global LOGO
     for k in 'ABC':
         SHOTS[k] = Shot(os.path.join(hi, k))
     logo = Image.open(os.path.join(HERE, 'gfx', 'logo.png')).convert('RGBA')
     LOGO = logo.resize((920, round(logo.height * 920 / logo.width)), Image.LANCZOS)
-    url = Image.open(os.path.join(HERE, "gfx", "url.png")).convert("RGBA")
-    LOGO_URL = url.resize((round(url.width * 1.3), round(url.height * 1.3)), Image.LANCZOS)
 
     if stills:
         os.makedirs(out, exist_ok=True)

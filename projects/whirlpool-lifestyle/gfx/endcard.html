@@ -1,14 +1,9 @@
 <!doctype html>
-<!-- Endcard-Elemente (Logo + URL) als transparente PNGs.
-     Neu rendern:  chrome --headless --screenshot ... (siehe edit.py, render_gfx) -->
+<!-- Endcard-Logo als transparentes PNG (logo.png).
+     Neu rendern: chrome --headless=new --default-background-color=00000000 --screenshot ... -->
 <html><head><meta charset="utf-8"><style>
-@font-face{font-family:Poppins;font-weight:500;src:url(../../../assets/fonts/poppins/poppins-latin-500-normal.woff2) format('woff2')}
 html,body{margin:0;background:transparent}
 #logo{width:760px;display:block;padding:20px}
-#url{display:inline-block;padding:20px;font:500 34px/1 Poppins,sans-serif;letter-spacing:.32em;color:#fff}
-body.url #logo{display:none} body.logo #url{display:none}
 </style></head><body>
 <img id="logo" src="../../../assets/logo/homedeluxe-logo-white.svg">
-<span id="url">HOMEDELUXE.DE</span>
-<script>document.body.className=location.hash.slice(1)</script>
 </body></html>
