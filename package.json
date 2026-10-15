@@ -8,7 +8,8 @@
     "laguna-m:render": "node scripts/render.js projects/laguna-m/composition.html projects/laguna-m/output/HomeDeluxe_Laguna-M_Reel_9x16.mp4 --plates build/laguna-m/plates",
     "laguna-m:stills": "node scripts/render.js projects/laguna-m/composition.html build/laguna-m/stills --plates build/laguna-m/plates --stills 1,2,4,5,7,10,11,13,14.5,16,17.6,18,19,21",
     "black-friday-vista:stills": "node scripts/stills.js projects/black-friday-vista/creative.html projects/black-friday-vista/output HomeDeluxe_BlackFriday_Vista 1x1=1080x1080@2.5 4x5=1080x1350@2.5 9x16=1080x1920@2.5",
-    "black-friday-vista:wallpaper": "python3 -I projects/black-friday-vista/wallpaper.py projects/black-friday-vista/wallpaper.jpg 2000"
+    "black-friday-vista:wallpaper": "python3 -I projects/black-friday-vista/wallpaper.py projects/black-friday-vista/wallpaper.jpg 2000",
+    "black-friday-paint": "python3 -I projects/black-friday-paint/paint.py"
   },
   "devDependencies": {
     "playwright": "1.56.1"

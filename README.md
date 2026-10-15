@@ -10,6 +10,7 @@ rendert. ffmpeg schreibt die Frames anschließend als MP4.
 |---|---|---|
 | `projects/laguna-m` | 9:16, 1080×1920, 30 fps, 18,5 s | `output/HomeDeluxe_Laguna-M_Reel_9x16.mp4` + Titelbild |
 | `projects/black-friday-vista` | Standbild 1:1, 4:5, 9:16 | `output/HomeDeluxe_BlackFriday_Vista_<format>.png` |
+| `projects/black-friday-paint` | Standbild 1:1, 4:5, 9:16 | `output/HomeDeluxe_BlackFriday_Paint_<format>.png` |
 
 ### Laguna M – Schnitt und Übergänge
 
@@ -48,6 +49,18 @@ npm run black-friday-vista:wallpaper   # nur nötig, wenn wallpaper.py geändert
 npm run black-friday-vista:stills      # -> projects/black-friday-vista/output/*.png
 ```
 
+### Black Friday – Paint-Version
+
+Dasselbe Motiv, absichtlich so, als wäre es in MS Paint mit der Maus gemalt: zittrige, harte Linien
+ohne Kantenglättung, Flächen mit dem Farbeimer in der Paint-Standardpalette, „Aurora“ mit der
+Sprühdose, Text in Arimo (Arial-Ersatz) ohne Glättung, roter Kringel plus Pfeil um „Jetzt sparen“
+und das reinkopierte Logo. `paint.py` malt mit Pillow auf einer 540 px breiten Leinwand und
+verdoppelt pixelgenau auf 1080 px; Texte und Positionen stehen direkt im Skript.
+
+```bash
+npm run black-friday-paint   # -> projects/black-friday-paint/output/*.png
+```
+
 ## Rendern
 
 Voraussetzungen: Node 18+, Python 3 mit numpy + Pillow, ffmpeg, Chromium für Playwright.
@@ -68,7 +81,8 @@ Ein einzelnes Frame lässt sich auch im Browser prüfen:
 ```
 assets/fonts/poppins/     Poppins 400–800 (latin, OFL)
 assets/fonts/open-sans/   Open Sans variabel (Gewicht + Breite, latin, OFL)
-assets/logo/              Home-Deluxe-Logo und Haus-Bildmarke (weiß, SVG)
+assets/fonts/arimo/       Arimo Regular + Bold (Arial-metrisch, OFL)
+assets/logo/              Home-Deluxe-Logo (weiß, SVG + PNG) und Haus-Bildmarke (SVG)
 scripts/prepare_plates.sh Hochskalieren + Grading der Quelle
 scripts/track_points.py   Template-Tracking für Marker, die am Bild kleben
 scripts/render.js         Chromium -> PNG-Frames -> ffmpeg (H.264 + stumme AAC-Spur)
