@@ -11,7 +11,7 @@ rendert. ffmpeg schreibt die Frames anschließend als MP4.
 | `projects/laguna-m` | 9:16, 1080×1920, 30 fps, 18,5 s | `output/HomeDeluxe_Laguna-M_Reel_9x16.mp4` + Titelbild |
 | `projects/black-week` | 9:16, 1080×1920, 24 fps, 25,1 s | `output/HomeDeluxe_BlackWeek_Staffelrabatt_9x16.mp4` + Titelbild |
 | `projects/black-friday` | 9:16, 1080×1920, 24 fps, 12,2 s, mit Ton | `output/HomeDeluxe_BlackFriday_25_9x16.mp4` + Titelbild |
-| `projects/sunshine` | 9:16, 1080×1920, 24 fps, 18,3 s, mit Ton | `output/HomeDeluxe_Sunshine_9x16.mp4` + Titelbild |
+| `projects/sunshine` | 9:16, 1080×1920, 24 fps, 17,7 s, mit Ton, ohne Text | `output/HomeDeluxe_Sunshine_9x16.mp4` + Titelbild |
 
 ### Laguna M – Schnitt und Übergänge
 
@@ -61,14 +61,14 @@ schnell fallenden −25 % Doppelkanten erzeugt.
 
 ### Whirlpool SUNSHINE
 
-Ruhiger, hochwertiger Produktfilm mit wenigen Elementen: der Whirlpool steht allein im Bild,
-Text gibt es nur am Anfang („SUNSHINE“) und auf der Endcard. Jedes Frame ist entrauscht, gegradet
+Ruhiger, hochwertiger Produktfilm ohne Text: der Whirlpool steht allein im Bild, die Wirkung kommt
+aus Tempo, Übergängen und Licht. Jedes Frame ist entrauscht, gegradet
 (filmische Kurve, warme Lichter, leicht kühle Schatten, weiche Vignette) und nachgeschärft
 (`sunshine:plates`).
 
 | Zeit | Einstellung | Tempo | Grafik |
 |---|---|---|---|
-| 0,0–4,0 s | Totale | 0,6× | „SUNSHINE“, Hintergrund leicht unscharf |
+| 0,0–4,0 s | Totale | 0,6× | Hintergrund leicht unscharf |
 | 3,5–4,0 s | Totale → Wasser | Speed-up 2,2× | Zoom ins Wasser mit Unschärfe und hellem Blitz |
 | 4,2–7,1 s | Wasser von oben | 0,3× | – |
 | 7,4–7,6 s | Kamerafahrt | 2× | Bewegungsunschärfe |
@@ -77,7 +77,7 @@ Text gibt es nur am Anfang („SUNSHINE“) und auf der Endcard. Jedes Frame ist
 | 9,9–12,0 s | Massagedüsen | 0,55× | – |
 | 12,0–12,6 s | Düsen → Totale | Speed-up 2× | warmer Lichtschweif |
 | 12,6–17,0 s | Totale im Gegenlicht | 0,45× | Tiefenunschärfe |
-| 14,6–18,3 s | Endcard | Standbild mit Push-in | Logo, SUNSHINE, homedeluxe.de |
+| 17,0–17,7 s | Schluss | Standbild mit Push-in | Abblende ins Schwarz |
 
 Der Originalton (Wasser) wird mit `scripts/stretch_audio.py` tonhöhenneutral auf die Speed-Ramp
 gestreckt, die Speed-ups bekommen leise Whooshes.

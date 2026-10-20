@@ -4,18 +4,8 @@
 <meta charset="utf-8">
 <title>Whirlpool SUNSHINE 9:16</title>
 <style>
-  @font-face { font-family: Poppins; font-weight: 400; src: url(../../assets/fonts/poppins/poppins-latin-400-normal.woff2) format("woff2"); }
-  @font-face { font-family: Poppins; font-weight: 500; src: url(../../assets/fonts/poppins/poppins-latin-500-normal.woff2) format("woff2"); }
-  @font-face { font-family: Poppins; font-weight: 600; src: url(../../assets/fonts/poppins/poppins-latin-600-normal.woff2) format("woff2"); }
-
-  /* Home Deluxe CI: Navy + Weiß, eckige Ecken, Poppins – hier bewusst leise eingesetzt */
-  :root {
-    --navy: #0e2234;
-    --margin: 72px;
-  }
   * { box-sizing: border-box; margin: 0; padding: 0; border-radius: 0; }
   html, body { width: 1080px; height: 1920px; overflow: hidden; background: #000; }
-  body { font-family: Poppins, sans-serif; color: #fff; -webkit-font-smoothing: antialiased; }
 
   #stage { position: absolute; inset: 0; width: 1080px; height: 1920px; overflow: hidden; background: #000; }
   #cam { position: absolute; inset: 0; transform-origin: 0 0; }
@@ -24,24 +14,8 @@
   #dof { filter: blur(7px); }
   #flare { position: absolute; inset: 0; mix-blend-mode: screen; }
   #flash { position: absolute; inset: 0; background: #fff6e8; }
+  #fade { position: absolute; inset: 0; background: #000; }
   #grain { position: absolute; inset: 0; mix-blend-mode: overlay; opacity: .07; }
-  .scrim { position: absolute; left: 0; width: 1080px; }
-  #scrim-top { top: 0; height: 820px; background: linear-gradient(rgba(6, 14, 22, .55), rgba(6, 14, 22, 0)); }
-  #scrim-bot { bottom: 0; height: 760px; background: linear-gradient(rgba(14, 34, 52, 0), rgba(14, 34, 52, .82) 70%); }
-
-  .ln { display: block; overflow: hidden; padding-bottom: .08em; margin-bottom: -.08em; }
-  .ln > span { display: inline-block; will-change: transform; }
-
-  /* Title over the opening wide shot */
-  #title { position: absolute; left: var(--margin); top: 268px; text-shadow: 0 2px 24px rgba(0, 0, 0, .25); }
-  #title .name { font-weight: 600; font-size: 116px; line-height: 1; letter-spacing: .12em; }
-
-  /* End card */
-  #end { position: absolute; left: var(--margin); top: 1440px; }
-  #end .name { font-weight: 600; font-size: 92px; line-height: 1; letter-spacing: .12em; }
-  #end .url { display: inline-block; margin-top: 26px; font-weight: 500; font-size: 32px; line-height: 1; position: relative; padding-bottom: 8px; }
-  #end .url i { position: absolute; left: 0; bottom: 0; height: 2px; width: 100%; background: #fff; transform-origin: left; }
-  #end-logo { position: absolute; left: var(--margin); top: 1340px; width: 230px; height: auto; }
 </style>
 </head>
 <body>
@@ -52,23 +26,10 @@
     <img class="plate" id="dof" alt="">
   </div>
 
-  <div class="scrim" id="scrim-top"></div>
-  <div class="scrim" id="scrim-bot"></div>
-
-  <div id="title">
-    <div class="name"><span class="ln"><span>SUNSHINE</span></span></div>
-  </div>
-
-  <img id="end-logo" src="../../assets/logo/homedeluxe-logo-white.svg" alt="Home Deluxe">
-  <div id="end">
-    <div class="name"><span class="ln"><span>SUNSHINE</span></span></div>
-    <div class="url">homedeluxe.de<i></i></div>
-  </div>
-
   <div id="flare"></div>
   <div id="flash"></div>
+  <div id="fade"></div>
   <svg id="grain" width="1080" height="1920"><filter id="noise"><feTurbulence id="noise-t" type="fractalNoise" baseFrequency=".9" numOctaves="2" seed="0"/><feColorMatrix type="saturate" values="0"/></filter><rect width="1080" height="1920" filter="url(#noise)"/></svg>
-
 </div>
 
 <script src="timeline.js"></script>

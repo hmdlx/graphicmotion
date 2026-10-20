@@ -20,7 +20,7 @@
     [176, 0.55], [184, 2.0], [185.9, 2.0],              //    jets, speed-up into the cut
     [186, 1.6], [192, 0.45], [SRC_LAST, 0.45],          // C: settles into slow motion
   ];
-  const HOLD = 30;               // last frame held (with a slow push) under the end card
+  const HOLD = 14;               // last frame held (slow push) while the picture fades out
 
   function speedAt(p) {
     for (let i = 1; i < SPEED.length; i++) {

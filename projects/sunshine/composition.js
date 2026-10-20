@@ -21,10 +21,10 @@
 
   // Graphics timeline, output frames.
   const G = {
-    title: [10, out(52)],
     zoom: [out(56), out(TL.CUTS.B)],
     flare: out(TL.CUTS.C),
-    end: out(214),
+    push: out(214),                       // slow push-in to the end
+    fade: [TL.TOTAL - 22, TL.TOTAL - 2],  // fade to black
   };
 
   const $ = (s, root = document) => root.querySelector(s);
@@ -38,14 +38,8 @@
     outCubic: k => 1 - Math.pow(1 - k, 3),
     inCubic: k => k * k * k,
     inOutCubic: k => (k < 0.5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2),
-    outBack: k => { const c1 = 1.7, c3 = c1 + 1; return 1 + c3 * Math.pow(k - 1, 3) + c1 * Math.pow(k - 1, 2); },
   };
   const show = (node, on) => { node.style.visibility = on ? 'visible' : 'hidden'; };
-  // Fade-in/out envelope for a [in, out] window, in frames.
-  const env = (n, [a, b], din = 10, dout = 8) => E.outCubic(prog(n, a, din)) * (1 - E.inCubic(prog(n, b, dout)));
-  function rise(span, n, nin, dur = 14) {
-    span.style.transform = `translateY(${(1 - E.outExpo(prog(n, nin, dur))) * 108}%)`;
-  }
 
   // ---------------------------------------------------------------- footage
   const srcOf = n => TL.srcAt[clamp(n, 0, TL.TOTAL - 1)];
@@ -83,10 +77,7 @@
   const el = {
     cam: $('#cam'), main: $('#main'), ghost: $('#ghost'), dof: $('#dof'),
     flare: $('#flare'), flash: $('#flash'), noise: $('#noise-t'),
-    scrimTop: $('#scrim-top'), scrimBot: $('#scrim-bot'),
-    title: $('#title'), titleName: $('#title .name > .ln > span'),
-    end: $('#end'), endName: $('#end .name > .ln > span'), endLogo: $('#end-logo'),
-    url: $('#end .url'), urlLine: $('#end .url i'),
+    fade: $('#fade'),
   };
 
   // Camera: dive into the water at the end of A, settle after each cut, slow push
@@ -100,7 +91,7 @@
     if (n >= atB && n < atB + 12) s = 1 + 0.18 * (1 - E.outCubic(prog(n, atB, 12)));
     if (n >= atC) {
       s = 1 + 0.1 * (1 - E.outCubic(prog(n, atC, 14)));
-      s *= 1 + 0.035 * E.inOutCubic(prog(n, G.end, TL.TOTAL - G.end));
+      s *= 1 + 0.035 * E.inOutCubic(prog(n, G.push, TL.TOTAL - G.push));
       const b = boxAt(Math.min(src, TL.SRC_LAST));
       if (b) f = [(b[0] + b[2]) / 2, (b[1] + b[3]) / 2];
     }
@@ -145,25 +136,10 @@
       el.flare.style.background = `radial-gradient(circle 760px at ${x.toFixed(0)}px 520px, rgba(255, 214, 160, ${(0.95 * a).toFixed(3)}), rgba(255, 170, 90, ${(0.4 * a).toFixed(3)}) 38%, rgba(255, 150, 70, 0) 72%)`;
     }
 
-    // Opening: the name, nothing else.
-    const tEnv = env(n, G.title, 12, 10);
-    show(el.title, tEnv > 0.001);
-    el.title.style.opacity = tEnv.toFixed(3);
-    el.title.style.filter = tEnv < 0.999 && n > G.title[1] ? `blur(${((1 - tEnv) * 8).toFixed(1)}px)` : 'none';
-    rise(el.titleName, n, G.title[0], 16);
-    el.titleName.style.letterSpacing = `${lerp(0.32, 0.12, E.outCubic(prog(n, G.title[0], 30))).toFixed(3)}em`;
-    el.scrimTop.style.opacity = tEnv.toFixed(3);
-
-    // End card over the held last frame: logo, name, address.
-    const eIn = n >= G.end;
-    el.scrimBot.style.opacity = E.outCubic(prog(n, G.end, 20)).toFixed(3);
-    show(el.end, eIn); show(el.endLogo, eIn);
-    el.endLogo.style.opacity = E.outCubic(prog(n, G.end + 4, 14)).toFixed(3);
-    rise(el.endName, n, G.end + 8, 16);
-    el.endName.style.letterSpacing = `${lerp(0.26, 0.12, E.outCubic(prog(n, G.end + 8, 30))).toFixed(3)}em`;
-    const ku = E.outExpo(prog(n, G.end + 20, 14));
-    el.url.style.opacity = ku.toFixed(3);
-    el.urlLine.style.transform = `scaleX(${E.outExpo(prog(n, G.end + 26, 16))})`;
+    // Fade to black at the very end.
+    const fd = E.inOutCubic(prog(n, G.fade[0], G.fade[1] - G.fade[0]));
+    el.fade.style.opacity = fd.toFixed(3);
+    show(el.fade, fd > 0.002);
   }
 
   async function load(img, url) {
@@ -184,9 +160,6 @@
   }
 
   async function init() {
-    await Promise.all([400, 500, 600].map(w => document.fonts.load(`${w} 40px Poppins`)));
-    await document.fonts.ready;
-    await Promise.all($$('img[src]').map(i => i.decode()));
     const t0 = params.get('t');
     await seek(t0 ? Math.round(parseFloat(t0) * FPS) : 0);
   }
