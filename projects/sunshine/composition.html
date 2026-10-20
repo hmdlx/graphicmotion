@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>Whirlpool SUNSHINE 9:16</title>
+<style>
+  @font-face { font-family: Poppins; font-weight: 400; src: url(../../assets/fonts/poppins/poppins-latin-400-normal.woff2) format("woff2"); }
+  @font-face { font-family: Poppins; font-weight: 500; src: url(../../assets/fonts/poppins/poppins-latin-500-normal.woff2) format("woff2"); }
+  @font-face { font-family: Poppins; font-weight: 600; src: url(../../assets/fonts/poppins/poppins-latin-600-normal.woff2) format("woff2"); }
+
+  /* Home Deluxe CI: Navy + Weiß, eckige Ecken, Poppins – hier bewusst leise eingesetzt */
+  :root {
+    --navy: #0e2234;
+    --margin: 72px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; border-radius: 0; }
+  html, body { width: 1080px; height: 1920px; overflow: hidden; background: #000; }
+  body { font-family: Poppins, sans-serif; color: #fff; -webkit-font-smoothing: antialiased; }
+
+  #stage { position: absolute; inset: 0; width: 1080px; height: 1920px; overflow: hidden; background: #000; }
+  #cam { position: absolute; inset: 0; transform-origin: 0 0; }
+  .plate { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; display: block; }
+  /* Depth of field: a blurred copy outside an ellipse around the whirlpool */
+  #dof { filter: blur(7px); }
+  #flare { position: absolute; inset: 0; mix-blend-mode: screen; }
+  #flash { position: absolute; inset: 0; background: #fff6e8; }
+  #grain { position: absolute; inset: 0; mix-blend-mode: overlay; opacity: .07; }
+  .scrim { position: absolute; left: 0; width: 1080px; }
+  #scrim-top { top: 0; height: 820px; background: linear-gradient(rgba(6, 14, 22, .55), rgba(6, 14, 22, 0)); }
+  #scrim-bot { bottom: 0; height: 760px; background: linear-gradient(rgba(14, 34, 52, 0), rgba(14, 34, 52, .82) 70%); }
+
+  .ln { display: block; overflow: hidden; padding-bottom: .08em; margin-bottom: -.08em; }
+  .ln > span { display: inline-block; will-change: transform; }
+  .kick { font-weight: 600; font-size: 22px; line-height: 1; letter-spacing: .32em; text-transform: uppercase; }
+
+  #logo { position: absolute; left: var(--margin); top: 128px; width: 230px; height: auto; }
+
+  /* Title over the opening wide shot */
+  #title { position: absolute; left: var(--margin); top: 268px; text-shadow: 0 2px 24px rgba(0, 0, 0, .25); }
+  #title .kick { color: rgba(255, 255, 255, .85); }
+  #title .name { margin-top: 18px; font-weight: 600; font-size: 116px; line-height: 1; letter-spacing: .12em; }
+  #title .rule { margin: 26px 0 22px; width: 64px; height: 2px; background: #fff; transform-origin: left; }
+  #title .sub { font-weight: 400; font-size: 32px; line-height: 1.25; color: rgba(255, 255, 255, .92); }
+
+  /* Focus brackets around the whirlpool */
+  #brackets { position: absolute; left: 0; top: 0; overflow: visible; }
+
+  /* Feature captions: small frosted chips, navy text */
+  .chip { position: absolute; padding: 22px 30px 20px; background: rgba(255, 255, 255, .74); backdrop-filter: blur(16px) saturate(1.15); color: var(--navy); box-shadow: 0 10px 40px rgba(14, 34, 52, .14); }
+  .chip .kick { font-size: 19px; letter-spacing: .28em; color: rgba(14, 34, 52, .62); }
+  .chip .label { margin-top: 10px; font-weight: 600; font-size: 40px; line-height: 1.05; letter-spacing: .01em; white-space: nowrap; }
+  #chip-water { left: var(--margin); top: 1520px; }
+  #chip-panel { left: 560px; top: 1090px; }
+  #chip-jets { left: 600px; top: 1290px; }
+  #pointers { position: absolute; left: 0; top: 0; overflow: visible; }
+
+  /* Closing line + end card */
+  #claim { position: absolute; left: var(--margin); top: 300px; text-shadow: 0 2px 24px rgba(0, 0, 0, .3); }
+  #claim .kick { color: rgba(255, 255, 255, .85); }
+  #claim .line { margin-top: 18px; font-weight: 500; font-size: 58px; line-height: 1.1; }
+  #end { position: absolute; left: var(--margin); top: 1404px; }
+  #end .kick { color: rgba(255, 255, 255, .8); }
+  #end .name { margin-top: 14px; font-weight: 600; font-size: 92px; line-height: 1; letter-spacing: .12em; }
+  #cta { margin-top: 34px; display: flex; align-items: center; gap: 30px; }
+  #cta .btn { background: #fff; color: var(--navy); font-weight: 600; font-size: 34px; line-height: 1; padding: 24px 34px 22px; display: flex; align-items: center; gap: 18px; }
+  #cta .btn svg { display: block; }
+  #cta .url { font-weight: 500; font-size: 32px; line-height: 1; position: relative; padding-bottom: 8px; }
+  #cta .url i { position: absolute; left: 0; bottom: 0; height: 2px; width: 100%; background: #fff; transform-origin: left; }
+  #end-logo { position: absolute; left: var(--margin); top: 1300px; width: 230px; height: auto; }
+</style>
+</head>
+<body>
+<div id="stage">
+  <div id="cam">
+    <img class="plate" id="main" alt="">
+    <img class="plate" id="ghost" alt="">
+    <img class="plate" id="dof" alt="">
+  </div>
+
+  <div class="scrim" id="scrim-top"></div>
+  <div class="scrim" id="scrim-bot"></div>
+
+  <svg id="brackets" width="1080" height="1920" viewBox="0 0 1080 1920">
+    <g fill="none" stroke="#fff" stroke-width="3" stroke-linecap="square" opacity=".9">
+      <path id="br-0"/><path id="br-1"/><path id="br-2"/><path id="br-3"/>
+    </g>
+  </svg>
+
+  <div id="title">
+    <div class="kick"><span class="ln"><span>Outdoor-Whirlpool</span></span></div>
+    <div class="name"><span class="ln"><span>SUNSHINE</span></span></div>
+    <div class="rule"></div>
+    <div class="sub"><span class="ln"><span>Dein Spa unter freiem Himmel.</span></span></div>
+  </div>
+
+  <svg id="pointers" width="1080" height="1920" viewBox="0 0 1080 1920">
+    <g id="ptr-panel"><line stroke="#fff" stroke-width="2.5"/><circle r="12" fill="none" stroke="#fff" stroke-width="3"/><circle class="core" r="5" fill="#fff"/></g>
+    <g id="ptr-jets"><line stroke="#fff" stroke-width="2.5"/><circle r="12" fill="none" stroke="#fff" stroke-width="3"/><circle class="core" r="5" fill="#fff"/></g>
+  </svg>
+
+  <div class="chip" id="chip-water"><div class="kick"><span class="ln"><span>Erleben</span></span></div><div class="label"><span class="ln"><span>Sprudelnde Entspannung</span></span></div></div>
+  <div class="chip" id="chip-panel"><div class="kick"><span class="ln"><span>Bedienung</span></span></div><div class="label"><span class="ln"><span>Digitales Bedienfeld</span></span></div></div>
+  <div class="chip" id="chip-jets"><div class="kick"><span class="ln"><span>Massage</span></span></div><div class="label"><span class="ln"><span>Gezielte Düsen</span></span></div></div>
+
+  <div id="claim">
+    <div class="kick"><span class="ln"><span>Golden Hour</span></span></div>
+    <div class="line"><span class="ln"><span>Dein Spa im Garten.</span></span></div>
+  </div>
+
+  <img id="end-logo" src="../../assets/logo/homedeluxe-logo-white.svg" alt="Home Deluxe">
+  <div id="end">
+    <div class="kick"><span class="ln"><span>Outdoor-Whirlpool</span></span></div>
+    <div class="name"><span class="ln"><span>SUNSHINE</span></span></div>
+    <div id="cta">
+      <div class="btn"><span>Jetzt entdecken</span>
+        <svg width="34" height="20" viewBox="0 0 34 20"><path d="M0 10h30M21 2l8 8-8 8" fill="none" stroke="#0e2234" stroke-width="2.8"/></svg>
+      </div>
+      <div class="url">homedeluxe.de<i></i></div>
+    </div>
+  </div>
+
+  <div id="flare"></div>
+  <div id="flash"></div>
+  <svg id="grain" width="1080" height="1920"><filter id="noise"><feTurbulence id="noise-t" type="fractalNoise" baseFrequency=".9" numOctaves="2" seed="0"/><feColorMatrix type="saturate" values="0"/></filter><rect width="1080" height="1920" filter="url(#noise)"/></svg>
+
+  <img id="logo" src="../../assets/logo/homedeluxe-logo-white.svg" alt="Home Deluxe">
+</div>
+
+<script src="tracks.js"></script>
+<script src="timeline.js"></script>
+<script src="composition.js"></script>
+</body>
+</html>

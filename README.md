@@ -11,6 +11,7 @@ rendert. ffmpeg schreibt die Frames anschließend als MP4.
 | `projects/laguna-m` | 9:16, 1080×1920, 30 fps, 18,5 s | `output/HomeDeluxe_Laguna-M_Reel_9x16.mp4` + Titelbild |
 | `projects/black-week` | 9:16, 1080×1920, 24 fps, 25,1 s | `output/HomeDeluxe_BlackWeek_Staffelrabatt_9x16.mp4` + Titelbild |
 | `projects/black-friday` | 9:16, 1080×1920, 24 fps, 12,2 s, mit Ton | `output/HomeDeluxe_BlackFriday_25_9x16.mp4` + Titelbild |
+| `projects/sunshine` | 9:16, 1080×1920, 24 fps, 18,3 s, mit Ton | `output/HomeDeluxe_Sunshine_9x16.mp4` + Titelbild |
 
 ### Laguna M – Schnitt und Übergänge
 
@@ -58,6 +59,29 @@ tiefer) und ergänzt Countdown-Ticks, Riser, Sub-Boom, Whoosh, Endcard-Hits und 
 Nahe Echtzeit werden echte Quellframes statt interpolierter benutzt, weil `minterpolate` beim
 schnell fallenden −25 % Doppelkanten erzeugt.
 
+### Whirlpool SUNSHINE
+
+Ruhiger, hochwertiger Produktfilm, Fokus auf dem Whirlpool. Jedes Frame ist entrauscht, gegradet
+(filmische Kurve, warme Lichter, leicht kühle Schatten, weiche Vignette) und nachgeschärft
+(`sunshine:plates`). Texte sind klein und hell, Feature-Hinweise sitzen auf mattierten Chips.
+
+| Zeit | Einstellung | Tempo | Grafik |
+|---|---|---|---|
+| 0,0–4,0 s | Totale | 0,6× | Logo, „Outdoor-Whirlpool / SUNSHINE / Dein Spa unter freiem Himmel.“, Eckmarken rahmen den Whirlpool, Hintergrund leicht unscharf |
+| 3,5–4,0 s | Totale → Wasser | Speed-up 2,2× | Zoom ins Wasser mit Unschärfe und hellem Blitz |
+| 4,2–7,1 s | Wasser von oben | 0,3× | „Erleben – Sprudelnde Entspannung“ |
+| 7,4–7,6 s | Kamerafahrt | 2× | Bewegungsunschärfe |
+| 7,8–9,4 s | Bedienfeld | 0,5× | „Bedienung – Digitales Bedienfeld“, Zeiger am getrackten Display |
+| 9,5–9,8 s | Kamerafahrt | 2× | Bewegungsunschärfe |
+| 9,9–12,0 s | Massagedüsen | 0,55× | „Massage – Gezielte Düsen“, Zeiger an den getrackten Düsen |
+| 12,0–12,6 s | Düsen → Totale | Speed-up 2× | warmer Lichtschweif |
+| 12,6–17,0 s | Totale im Gegenlicht | 0,45× | „Golden Hour – Dein Spa im Garten.“, Tiefenunschärfe |
+| 14,6–18,3 s | Endcard | Standbild mit Push-in | Logo, SUNSHINE, „Jetzt entdecken“, homedeluxe.de |
+
+Der Originalton (Wasser) wird mit `scripts/stretch_audio.py` tonhöhenneutral auf die Speed-Ramp
+gestreckt, die Speed-ups bekommen leise Whooshes. Technische Daten (Personen, Düsen, Maße) sind
+bewusst nicht eingeblendet, solange sie nicht bestätigt sind.
+
 ## Rendern
 
 Voraussetzungen: Node 18+, Python 3 mit numpy + Pillow, ffmpeg, Chromium für Playwright.
@@ -71,6 +95,8 @@ npm run laguna-m:stills     # Kontrollbilder nach build/laguna-m/stills
 npm run black-week:plates   # Plates + Zeitlupen-Plates (minterpolate, dauert einige Minuten)
 npm run black-friday:plates # Black Friday: Plates + Zeitlupen-Plates
 npm run black-friday:render # Ton bauen + rendern -> projects/black-friday/output/
+npm run sunshine:plates     # SUNSHINE: Grading + Zeitlupen-Plates
+npm run sunshine:render     # Ton strecken + rendern -> projects/sunshine/output/
 npm run black-week:render   # -> projects/black-week/output/HomeDeluxe_BlackWeek_Staffelrabatt_9x16.mp4
 ```
 
@@ -87,6 +113,7 @@ scripts/track_points.py   Template-Tracking für Marker, die am Bild kleben
 scripts/render.js         Chromium -> PNG-Frames -> ffmpeg (H.264 + AAC, stumm oder --audio <wav>)
 scripts/slowmo_plates.sh  Bewegungsinterpolierte Zeitlupen-Plates je Einstellung
 scripts/build_audio.py    Ton entlang der Speed-Ramp + synthetisierte Effekte
+scripts/stretch_audio.py  Originalton tonhöhenneutral auf die Speed-Ramp strecken
 projects/<name>/          source/, composition.html/.js, tracking.json, tracks.js, output/
 ```
 
