@@ -72,13 +72,6 @@
   #offer-W { top: 262px; }  #deal-W { top: 262px; }
   #offer-I { top: 1030px; } #deal-I { top: 1220px; }
 
-  /* Rotating FOMO badge */
-  #badge { position: absolute; left: 782px; top: 112px; width: 240px; height: 240px; }
-  #badge svg { display: block; }
-  #badge-center { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
-  #badge-center span { font-weight: 700; font-size: 20px; line-height: 1; letter-spacing: .16em; text-transform: uppercase; color: rgba(255, 255, 255, .75); }
-  #badge-center b { margin-top: 6px; font-weight: 800; font-size: 50px; line-height: 1; letter-spacing: -.01em; }
-
   /* Stepped black wipe between products */
   #stairs-wipe { position: absolute; inset: 0; }
   #stairs-wipe div { position: absolute; top: 0; width: 270px; height: 1920px; background: var(--black); }
@@ -191,18 +184,6 @@
     </div>
     <div id="ticker"><div id="ticker-track"></div></div>
     <div id="legal">Staffelrabatt auf den Einkaufswert: 15 € ab 100 €, 75 € ab 500 €, 150 € ab 1.000 €. Aktionszeitraum 20.–26.11.</div>
-  </div>
-
-  <div id="badge">
-    <svg width="240" height="240" viewBox="0 0 240 240">
-      <circle cx="120" cy="120" r="118" fill="#0a0a0a"/>
-      <circle cx="120" cy="120" r="74" fill="none" stroke="rgba(255,255,255,.35)" stroke-width="2"/>
-      <defs><path id="badge-ring" d="M120 120m-94 0a94 94 0 1 1 188 0a94 94 0 1 1-188 0"/></defs>
-      <g id="badge-rot" style="transform-origin:120px 120px">
-        <text fill="#fff" font-family="Poppins" font-weight="700" font-size="21" letter-spacing="3.4"><textPath href="#badge-ring">BLACK WEEK • NUR 7 TAGE • BLACK WEEK • NUR 7 TAGE •</textPath></text>
-      </g>
-    </svg>
-    <div id="badge-center"><span>Nur bis</span><b>26.11.</b></div>
   </div>
 
   <!-- Intro -->

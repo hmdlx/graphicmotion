@@ -26,7 +26,7 @@ Pro Moment kommt nur eine neue Information ins Bild.
 |---|---|---|
 | 0,0–1,9 s | Schwarz | „BLACK WEEK“, „Bis zu 150 € geschenkt“ (zählt hoch), „Nur 7 Tage · 20.–26.11.“; Schnittlinie, Türen öffnen |
 | 1,6–5,4 s | Barhocker, Front | nacheinander: SAMIR → 15 € geschenkt → ab 100 € Einkaufswert |
-| 5,4–8,4 s | Barhocker, Seite | nur der Preis: 119 € wird gestrichen → 104 €; FOMO-Badge „Nur bis 26.11.“ kommt dazu |
+| 5,4–8,4 s | Barhocker, Seite | nur der Preis: 119 € wird gestrichen → 104 € |
 | 8,4–12,3 s | Whirlpool | DROP → 75 € geschenkt → ab 500 € |
 | 12,3–15,1 s | Whirlpool, 2. Winkel | 529 € → 454 € |
 | 15,1–18,9 s | Infrarotkabine | REDSUN DELUXE S → 150 € geschenkt → ab 1.000 € |

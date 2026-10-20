@@ -66,7 +66,6 @@
   const T = {
     logo: (INTRO + 4) / FPS,       // the intro carries its own logo on the top door
     intro: 0.04,
-    badge: (shot('B2').at + 40) / FPS,
     end: X.end / FPS,
     endB: X.endB / FPS,
   };
@@ -126,7 +125,6 @@
     introAmount: $('#intro-amount'), introAmountLn: $('#intro-amount .ln > span'), introNum: $('#intro-amount .num'),
     introGift: $('#intro-gift .ln > span'), introDate: $('#intro-date'), introDateLn: $('#intro-date .ln > span'),
     stairs: $$('#stairs-wipe div'), stairsBox: $('#stairs-wipe'),
-    badge: $('#badge'), badgeRot: $('#badge-rot'),
     endA: $('#endA'), endAKicker: $('#endA-kicker'), endAKickerLn: $('#endA-kicker .ln > span'),
     endAHl: $$('#endA-hl .ln > span'),
     tiles: [0, 1, 2].map(i => $(`#tile-${i}`)),
@@ -285,12 +283,6 @@
       });
     }
     showBox(el.stairsBox, wipeOn);
-
-    // Rotating FOMO badge: joins once the first price has landed, leaves with the footage.
-    const bk = E.outBack(prog(t, T.badge, 0.5)) * (1 - E.inCubic(prog(t, T.end - 0.1, 0.3)));
-    show(el.badge, bk > 0.001);
-    el.badge.style.transform = `scale(${Math.max(0, bk)}) rotate(${(1 - Math.min(1, prog(t, T.badge, 0.5))) * -40}deg)`;
-    el.badgeRot.style.transform = `rotate(${(t - T.badge) * 36}deg)`;
 
     // ------------------------------------------------------------ end A
     const inA = n >= X.end && n < X.endB;
