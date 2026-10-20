@@ -9,6 +9,7 @@ rendert. ffmpeg schreibt die Frames anschließend als MP4.
 | Projekt | Format | Ergebnis |
 |---|---|---|
 | `projects/laguna-m` | 9:16, 1080×1920, 30 fps, 18,5 s | `output/HomeDeluxe_Laguna-M_Reel_9x16.mp4` + Titelbild |
+| `projects/black-week` | 9:16, 1080×1920, 24 fps, 18,4 s | `output/HomeDeluxe_BlackWeek_Staffelrabatt_9x16.mp4` + Titelbild |
 
 ### Laguna M – Schnitt und Übergänge
 
@@ -29,6 +30,22 @@ läuft nur mit ihren sauberen Frames (Schnittliste `SHOTS` in `composition.js`),
 Die Produktdaten stammen aus den Shop- und Händlerangaben zur LAGUNA M (homedeluxe.de, Hornbach).
 Preise sind bewusst nicht eingebaut, weil sie sich häufig ändern.
 
+### Black Week – Staffelrabatt (20.–26.11.)
+
+Eigene Farbwelt für die Aktion: Schwarz + Weiß, Rot nur für Geschenkbeträge und reduzierte Preise.
+Aktion: 15 € ab 100 €, 75 € ab 500 €, 150 € ab 1.000 € Einkaufswert.
+
+| Zeit | Einstellung | Grafik |
+|---|---|---|
+| 0,0–1,4 s | Schwarz | „BLACK WEEK“, „Bis zu 150 € geschenkt“, „Nur 7 Tage · 20.–26.11.“, Türen öffnen aufs Video |
+| 1,1–5,1 s | Barhocker (Front, Seite) | Karte Barhocker SAMIR: 0 → 15 € geschenkt, ab 100 €, ~~119 €~~ 104 € |
+| 5,1–8,8 s | Whirlpool (2 Winkel) | Karte Whirlpool DROP: 0 → 75 € geschenkt, ab 500 €, ~~529 €~~ 454 € |
+| 8,8–12,3 s | Infrarotkabine (2 Winkel) | Karte REDSUN DELUXE S: 0 → 150 € geschenkt, ab 1.000 €, ~~1.099 €~~ 949 € |
+| 12,3–18,4 s | Endcard | Video schrumpft in eine Rabatt-Treppe aus drei Video-Balken, Erklärung der Staffel, Rechenbeispiel, CTA |
+
+Produktwechsel laufen über einen schwarzen Treppen-Wipe, unten läuft durchgehend ein FOMO-Laufband.
+Beträge und Preise stehen in `PRODUCTS` in `composition.js` (Preis `null` blendet die Preiszeile aus).
+
 ## Rendern
 
 Voraussetzungen: Node 18+, Python 3 mit numpy + Pillow, ffmpeg, Chromium für Playwright.
@@ -39,6 +56,8 @@ npm run laguna-m:plates     # Rohschnitt -> hochskalierte, leicht gegradete JPG-
 npm run laguna-m:track      # Punkt-Tracking -> projects/laguna-m/tracks.js (nur nötig, wenn tracking.json geändert wurde)
 npm run laguna-m:render     # -> projects/laguna-m/output/HomeDeluxe_Laguna-M_Reel_9x16.mp4
 npm run laguna-m:stills     # Kontrollbilder nach build/laguna-m/stills
+npm run black-week:plates   # analog für das Black-Week-Reel
+npm run black-week:render   # -> projects/black-week/output/HomeDeluxe_BlackWeek_Staffelrabatt_9x16.mp4
 ```
 
 Ein einzelnes Frame lässt sich auch im Browser prüfen:
