@@ -9,15 +9,15 @@
   // Speed ramp: [source frame, playback speed]. Speed is interpolated linearly in
   // source time; 1 = real time.
   const SPEED = [
-    [0, 1], [36, 1],             // calm room + countdown
-    [44, 1], [53, 0.4],          // ceiling breaks, ramps into slow motion
-    [72, 0.4], [75, 1],          // -25% hangs in the air, snaps back for the hit
-    [100, 1], [108, 0.5],        // impact + dust in real time, then slow drift
+    [0, 1], [62, 1],             // calm room + countdown
+    [66, 1], [70, 0.4],          // ceiling breaks, ramps into slow motion
+    [76, 0.4], [79, 1],          // -25% breaks through and hangs, snaps back for the fall + hit
+    [104, 1], [112, 0.5],        // impact + dust in real time, then slow drift
     [SRC_LAST, 0.5],
   ];
-  const IMPACT_SRC = 81;         // sofa compresses, audio peak
-  const CRACK_SRC = 38;          // ceiling starts to break
-  const ZOOM_SRC = [118, 132];   // zoom through the black "-25%" into the end card
+  const IMPACT_SRC = 86;         // lands on the sofa, audio peak
+  const CRACK_SRC = 64;          // ceiling starts to break
+  const ZOOM_SRC = [124, 138];   // zoom through the black "-25%" into the end card
   const END_DUR = 112;           // end card, output frames
 
   function speedAt(p) {
@@ -45,7 +45,7 @@
   T.end = T.zoom[1];             // first end-card frame
   T.TOTAL = T.end + END_DUR;
   // Countdown beats, output frames; the ceiling breaks right after "1".
-  T.beats = [T.crack - 30, T.crack - 20, T.crack - 10];
+  T.beats = [T.crack - 42, T.crack - 28, T.crack - 14];
 
   if (typeof module !== 'undefined' && module.exports) module.exports = T;
   else root.TIMELINE = T;

@@ -10,7 +10,7 @@ rendert. ffmpeg schreibt die Frames anschließend als MP4.
 |---|---|---|
 | `projects/laguna-m` | 9:16, 1080×1920, 30 fps, 18,5 s | `output/HomeDeluxe_Laguna-M_Reel_9x16.mp4` + Titelbild |
 | `projects/black-week` | 9:16, 1080×1920, 24 fps, 25,1 s | `output/HomeDeluxe_BlackWeek_Staffelrabatt_9x16.mp4` + Titelbild |
-| `projects/black-friday` | 9:16, 1080×1920, 24 fps, 12,8 s, mit Ton | `output/HomeDeluxe_BlackFriday_25_9x16.mp4` + Titelbild |
+| `projects/black-friday` | 9:16, 1080×1920, 24 fps, 12,2 s, mit Ton | `output/HomeDeluxe_BlackFriday_25_9x16.mp4` + Titelbild |
 
 ### Laguna M – Schnitt und Übergänge
 
@@ -44,13 +44,13 @@ Eine Einstellung (Decke bricht auf, ein schwarzes 3D-„−25 %“ kracht aufs S
 
 | Zeit | Grafik / Effekt |
 |---|---|
-| 0,0–1,6 s | Cinematic-Balken (Logo im oberen Balken), Push-in, Countdown „Black Friday startet in 3 · 2 · 1“ in der Decke |
-| 1,6 s | Decke reißt: die „1“ zerplatzt, Kamerawackeln, Blitz |
-| 1,6–4,8 s | Speed-Ramp in Zeitlupe (0,4×): das −25 % schwebt herab, Vignette zieht zu |
-| 4,8 s | Einschlag in Echtzeit: Weißblitz, RGB-Split, Zoom-Punch, Schockwelle, starkes Wackeln |
-| 5,0–6,9 s | „BLACK“ / „FRIDAY“ knallen rein, Datum 27.–29.11. |
-| 6,9–8,1 s | Zoom durch das schwarze −25 % ins Schwarz |
-| 8,1–12,8 s | Endcard: BLACK FRIDAY, rotes −25 % (RGB-Split, pulsiert), „Nur 3 Tage“, 27.–29.11., CTA, Laufband |
+| 0,0–2,7 s | Cinematic-Balken (Logo im oberen Balken), Push-in, Countdown „Black Friday startet in 3 · 2 · 1“ in der Decke |
+| 2,7 s | Decke reißt: die „1“ zerplatzt, Kamerawackeln, Blitz |
+| 2,7–3,9 s | Speed-Ramp in Zeitlupe (0,4×): das −25 % bricht durch die Decke, Vignette zieht zu; der schnelle Fall läuft wieder in Echtzeit |
+| 4,1 s | Einschlag: Weißblitz, RGB-Split, Zoom-Punch, Schockwelle, starkes Wackeln |
+| 4,3–6,3 s | „BLACK“ / „FRIDAY“ knallen rein, Datum 27.–29.11. |
+| 6,3–7,5 s | Zoom durch das schwarze −25 % ins Schwarz |
+| 7,5–12,2 s | Endcard: BLACK FRIDAY, rotes −25 % (RGB-Split, pulsiert), „Nur 3 Tage“, 27.–29.11., CTA, Laufband |
 
 Die Zeitachse steht in `projects/black-friday/timeline.js` und wird von Bild und Ton gemeinsam
 genutzt. `scripts/build_audio.py` zieht den Originalton durch dieselbe Speed-Ramp (Zeitlupe klingt

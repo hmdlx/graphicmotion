@@ -13,7 +13,7 @@
     "black-friday:plates": "scripts/prepare_plates.sh projects/black-friday/source/black-friday_rohschnitt.mp4 build/black-friday/plates && scripts/slowmo_plates.sh build/black-friday/plates build/black-friday/slow 4 0-36 36-72 72-108 108-144",
     "black-friday:audio": "python3 -I scripts/build_audio.py projects/black-friday/source/black-friday_rohschnitt.mp4 \"$PWD/projects/black-friday/timeline.js\" build/black-friday/audio.wav",
     "black-friday:render": "npm run -s black-friday:audio && node scripts/render.js projects/black-friday/composition.html projects/black-friday/output/HomeDeluxe_BlackFriday_25_9x16.mp4 --plates build/black-friday/slow --audio build/black-friday/audio.wav",
-    "black-friday:stills": "node scripts/render.js projects/black-friday/composition.html build/black-friday/stills --plates build/black-friday/slow --stills 0.42,0.8,1.25,3.0,5.1,5.6,7.6,8.4,9.0,12.5"
+    "black-friday:stills": "node scripts/render.js projects/black-friday/composition.html build/black-friday/stills --plates build/black-friday/slow --stills 0.95,1.55,2.15,2.75,3.3,3.9,4.25,4.4,4.9,5.8,7.0,7.5,7.75,8.2,9.0,12.0"
   },
   "devDependencies": {
     "playwright": "1.56.1"
