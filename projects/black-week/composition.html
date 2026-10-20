@@ -13,10 +13,8 @@
   /* Black Week: Schwarz + Weiß, Rot nur für Geschenkbeträge und reduzierte Preise */
   :root {
     --black: #0a0a0a;
-    --black-2: #1a1a1a;
     --red: #f2182b;
     --grey: #8a8a8a;
-    --line: rgba(255, 255, 255, .28);
     --margin: 72px;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; border-radius: 0; }
@@ -28,14 +26,11 @@
   .shot { position: absolute; inset: 0; overflow: hidden; }
   .shot img { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; display: block; }
 
-  .layer { position: absolute; inset: 0; pointer-events: none; }
   .stack { position: absolute; left: var(--margin); display: flex; flex-direction: column; align-items: flex-start; }
-  .blk { position: relative; background: var(--black); color: #fff; box-shadow: 0 18px 50px rgba(0, 0, 0, .22); }
+  .blk { position: relative; background: var(--black); color: #fff; }
   .blk.white { background: #fff; color: var(--black); }
   .ln { display: block; overflow: hidden; padding-bottom: .06em; margin-bottom: -.06em; }
   .ln > span { display: inline-block; will-change: transform; }
-  .red { color: var(--red); }
-
   .kicker { font-weight: 600; font-size: 28px; line-height: 1; letter-spacing: .16em; text-transform: uppercase; display: flex; align-items: center; gap: 18px; }
 
   /* Logo plate (persistent) */
@@ -51,32 +46,31 @@
   #intro-offer { position: absolute; left: var(--margin); top: 52px; display: flex; flex-direction: column; align-items: flex-start; }
   #intro-upto { font-weight: 700; font-size: 46px; line-height: 1; letter-spacing: .16em; text-transform: uppercase; }
   #intro-amount { margin: 8px 0 0 -10px; font-weight: 800; font-size: 270px; line-height: .9; letter-spacing: -.04em; color: var(--red); white-space: nowrap; }
-  #intro-amount .num { display: inline-block; text-align: right; font-variant-numeric: tabular-nums; }
+  .num { display: inline-block; text-align: right; font-variant-numeric: tabular-nums; }
   #intro-gift { margin-top: 10px; font-weight: 800; font-size: 66px; line-height: 1; letter-spacing: .14em; }
-  #intro-date { margin-top: 40px; font-weight: 700; font-size: 36px; line-height: 1; padding: 22px 30px 20px; letter-spacing: .12em; text-transform: uppercase; box-shadow: none; }
+  #intro-date { margin-top: 40px; font-weight: 700; font-size: 36px; line-height: 1; padding: 22px 30px 20px; letter-spacing: .12em; text-transform: uppercase; }
   #seam { position: absolute; left: 0; top: 958px; width: 1080px; height: 4px; background: #fff; transform-origin: left; }
 
-  /* Product offer cards */
-  .card .blk { box-shadow: none; }
-  .card .head { padding: 24px 34px 22px; display: flex; align-items: center; gap: 22px; }
-  .card .cat { font-weight: 600; font-size: 24px; line-height: 1; letter-spacing: .18em; text-transform: uppercase; color: rgba(255, 255, 255, .7); }
-  .card .name { margin-top: 8px; font-weight: 800; font-size: 46px; line-height: 1; letter-spacing: .01em; text-transform: uppercase; }
+  /* Phase 1 per product: name → amount → condition */
+  .offer .head { padding: 24px 34px 22px; display: flex; align-items: center; gap: 22px; }
   .stairs { display: block; }
-  .stairs rect { fill: rgba(255, 255, 255, .28); }
-  .stairs rect.on { fill: #fff; }
-  .card .gift { padding: 18px 40px 30px 34px; }
-  .card .amount { font-weight: 800; font-size: 200px; line-height: .9; letter-spacing: -.035em; color: var(--red); white-space: nowrap; }
-  .card .amount .num { display: inline-block; text-align: right; font-variant-numeric: tabular-nums; }
-  .card .word { margin-top: 6px; font-weight: 800; font-size: 54px; line-height: 1; letter-spacing: .12em; }
-  .card .cond { font-weight: 600; font-size: 36px; line-height: 1; padding: 22px 34px 20px; }
-  .card .price { font-weight: 600; font-size: 42px; line-height: 1; padding: 16px 34px 14px; display: none; align-items: baseline; gap: 24px; }
-  .card .price .old { position: relative; color: var(--grey); }
-  .card .price .old i { position: absolute; left: -4px; right: -4px; top: 50%; height: 4px; background: var(--grey); transform-origin: left; }
-  .card .price b { display: inline-block; color: var(--red); font-weight: 800; font-size: 84px; letter-spacing: -.02em; transform-origin: left 75%; }
+  .offer .cat { font-weight: 600; font-size: 24px; line-height: 1; letter-spacing: .18em; text-transform: uppercase; color: rgba(255, 255, 255, .7); }
+  .offer .name { margin-top: 8px; font-weight: 800; font-size: 46px; line-height: 1; letter-spacing: .01em; text-transform: uppercase; }
+  .offer .gift { padding: 18px 40px 30px 34px; }
+  .offer .amount { font-weight: 800; font-size: 200px; line-height: .9; letter-spacing: -.035em; color: var(--red); white-space: nowrap; transform-origin: left center; }
+  .offer .word { margin-top: 6px; font-weight: 800; font-size: 54px; line-height: 1; letter-spacing: .12em; }
+  .offer .cond { font-weight: 600; font-size: 36px; line-height: 1; padding: 22px 34px 20px; }
 
-  #card-B { top: 1030px; }
-  #card-W { top: 262px; }
-  #card-I { top: 1030px; }
+  /* Phase 2 per product: the reduced price, alone */
+  .deal .lbl { padding: 22px 34px 20px; }
+  .deal .price { padding: 22px 40px 14px 34px; display: flex; align-items: baseline; gap: 30px; }
+  .deal .old { position: relative; font-weight: 600; font-size: 60px; line-height: 1; color: var(--grey); }
+  .deal .old i { position: absolute; left: -5px; right: -5px; top: 50%; height: 6px; background: var(--grey); transform-origin: left; }
+  .deal .new { display: inline-block; font-weight: 800; font-size: 170px; line-height: .9; letter-spacing: -.035em; color: var(--red); transform-origin: left 75%; white-space: nowrap; }
+
+  #offer-B { top: 1030px; } #deal-B { top: 1220px; }
+  #offer-W { top: 262px; }  #deal-W { top: 262px; }
+  #offer-I { top: 1030px; } #deal-I { top: 1220px; }
 
   /* Rotating FOMO badge */
   #badge { position: absolute; left: 782px; top: 112px; width: 240px; height: 240px; }
@@ -89,40 +83,42 @@
   #stairs-wipe { position: absolute; inset: 0; }
   #stairs-wipe div { position: absolute; top: 0; width: 270px; height: 1920px; background: var(--black); }
 
-  /* FOMO ticker */
-  #ticker { position: absolute; left: 0; top: 1752px; width: 1080px; height: 72px; background: var(--black); overflow: hidden; }
-  #ticker-track { position: absolute; left: 0; top: 0; height: 72px; display: flex; white-space: nowrap; }
-  #ticker-track span { font-weight: 700; font-size: 28px; line-height: 72px; letter-spacing: .14em; text-transform: uppercase; }
-  #ticker-track i { display: inline-block; width: 12px; height: 12px; background: #fff; margin: 0 28px 4px 28px; vertical-align: middle; transform: rotate(45deg); }
-  #ticker-track span b { color: var(--red); font-weight: 800; }
-
-  /* End card: explanation with three video bars as a discount staircase */
-  #end { position: absolute; inset: 0; }
-  #end-kicker { position: absolute; left: var(--margin); top: 292px; color: #fff; }
-  #end-kicker i { display: block; width: 14px; height: 14px; background: #fff; transform: rotate(45deg); }
-  #end-hl { position: absolute; left: var(--margin); top: 344px; font-weight: 700; font-size: 64px; line-height: 1.08; letter-spacing: -.015em; }
+  /* End A: the staircase explained */
+  #endA { position: absolute; inset: 0; }
+  #endA-kicker { position: absolute; left: var(--margin); top: 300px; }
+  #endA-kicker i { display: block; width: 14px; height: 14px; background: #fff; transform: rotate(45deg); }
+  #endA-hl { position: absolute; left: var(--margin); top: 356px; font-weight: 700; font-size: 72px; line-height: 1.08; letter-spacing: -.015em; }
   .tile { position: absolute; overflow: hidden; background: #f2f2f2; }
   .tile img { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; display: block; transform-origin: 0 0; }
   .tile .shine { position: absolute; left: 0; top: -40%; width: 110px; height: 180%; background: linear-gradient(90deg, rgba(255,255,255,0), rgba(255,255,255,.6) 50%, rgba(255,255,255,0)); }
-  .amt { position: absolute; font-weight: 800; font-size: 108px; line-height: 1; letter-spacing: -.03em; color: var(--red); white-space: nowrap; }
+  .amt { position: absolute; font-weight: 800; font-size: 112px; line-height: 1; letter-spacing: -.03em; color: var(--red); white-space: nowrap; }
   .amt small { display: block; font-weight: 700; font-size: 24px; letter-spacing: .16em; color: #fff; margin: 0 0 8px 4px; text-transform: uppercase; }
-  .tier { position: absolute; top: 1312px; }
-  .tier b { display: block; font-weight: 700; font-size: 42px; line-height: 1; }
+  .tier { position: absolute; top: 1462px; }
+  .tier b { display: block; font-weight: 700; font-size: 44px; line-height: 1; }
   .tier span { display: block; margin-top: 10px; font-weight: 500; font-size: 24px; line-height: 1; color: var(--grey); }
-  #baseline { position: absolute; left: var(--margin); top: 1290px; width: 936px; height: 3px; background: #fff; transform-origin: left; }
-  #example { position: absolute; left: var(--margin); top: 1440px; }
-  #example .lbl { font-weight: 500; font-size: 28px; line-height: 1; color: rgba(255, 255, 255, .75); }
-  #example .row { margin-top: 14px; display: flex; align-items: baseline; gap: 26px; }
-  #example .old { position: relative; font-weight: 600; font-size: 58px; line-height: 1; color: var(--grey); }
-  #example .old i { position: absolute; left: -4px; right: -4px; top: 52%; height: 5px; background: var(--grey); transform-origin: left; }
-  #example .arrow { display: block; }
-  #example .new { transform-origin: left 70%; font-weight: 800; font-size: 96px; line-height: .9; letter-spacing: -.03em; color: var(--red); }
-  #cta { position: absolute; left: var(--margin); top: 1612px; display: flex; align-items: center; gap: 34px; }
-  #cta .btn { background: #fff; color: var(--black); font-weight: 700; font-size: 40px; line-height: 1; padding: 26px 40px 24px; display: flex; align-items: center; gap: 22px; }
+  #baseline { position: absolute; left: var(--margin); top: 1440px; width: 936px; height: 3px; background: #fff; transform-origin: left; }
+
+  /* End B: urgency + call to action */
+  #endB { position: absolute; inset: 0; }
+  #endB-kicker { position: absolute; left: var(--margin); top: 560px; }
+  #endB-kicker i { display: block; width: 14px; height: 14px; background: #fff; transform: rotate(45deg); }
+  #endB-big { position: absolute; left: 60px; top: 620px; font-weight: 800; font-size: 230px; line-height: .9; letter-spacing: -.035em; }
+  #endB-date { position: absolute; left: var(--margin); top: 1070px; font-weight: 700; font-size: 52px; line-height: 1; padding: 24px 34px 22px; letter-spacing: .06em; }
+  #endB-upto { position: absolute; left: var(--margin); top: 1200px; font-weight: 700; font-size: 44px; line-height: 1; }
+  #endB-upto b { color: var(--red); font-weight: 800; }
+  #cta { position: absolute; left: var(--margin); top: 1340px; display: flex; align-items: center; gap: 34px; }
+  #cta .btn { background: #fff; color: var(--black); font-weight: 700; font-size: 44px; line-height: 1; padding: 30px 44px 28px; display: flex; align-items: center; gap: 22px; }
   #cta .btn svg { display: block; }
-  #cta .url { font-weight: 600; font-size: 38px; line-height: 1; position: relative; padding-bottom: 10px; }
+  #cta .url { font-weight: 600; font-size: 40px; line-height: 1; position: relative; padding-bottom: 10px; }
   #cta .url i { position: absolute; left: 0; bottom: 0; height: 3px; width: 100%; background: #fff; transform-origin: left; }
   #legal { position: absolute; left: var(--margin); top: 1846px; font-weight: 400; font-size: 20px; line-height: 1.3; color: rgba(255, 255, 255, .55); }
+
+  /* FOMO ticker (end B only) */
+  #ticker { position: absolute; left: 0; top: 1752px; width: 1080px; height: 72px; background: #fff; overflow: hidden; }
+  #ticker-track { position: absolute; left: 0; top: 0; height: 72px; display: flex; white-space: nowrap; }
+  #ticker-track span { font-weight: 700; font-size: 28px; line-height: 72px; letter-spacing: .14em; text-transform: uppercase; color: var(--black); }
+  #ticker-track i { display: inline-block; width: 12px; height: 12px; background: var(--black); margin: 0 28px 4px 28px; vertical-align: middle; transform: rotate(45deg); }
+  #ticker-track span b { color: var(--red); font-weight: 800; }
 </style>
 </head>
 <body>
@@ -131,32 +127,44 @@
     <div class="shot"><img alt=""></div>
   </div>
 
-  <!-- Produktkarten. Die Beträge (rot) und Preise füllt composition.js aus PRODUCTS. -->
-  <div class="stack card" id="card-B">
+  <!-- Pro Produkt zwei Karten: offer (Einstellung 1) und deal (Einstellung 2).
+       Beträge und Preise füllt composition.js aus PRODUCTS. -->
+  <div class="stack offer" id="offer-B">
     <div class="blk head"><svg class="stairs" width="54" height="40" viewBox="0 0 54 40"><rect x="0" y="26" width="15" height="14"/><rect x="19.5" y="13" width="15" height="27"/><rect x="39" y="0" width="15" height="40"/></svg><div><span class="ln"><span class="cat">Barhocker</span></span><span class="ln"><span class="name">Samir</span></span></div></div>
     <div class="blk gift"><div class="amount"><span class="ln"><span><span class="num">0</span> €</span></span></div><div class="word"><span class="ln"><span>GESCHENKT</span></span></div></div>
     <div class="blk white cond"><span class="ln"><span>ab 100 € Einkaufswert</span></span></div>
-    <div class="blk white price"><span class="old"><span></span><i></i></span><b></b></div>
   </div>
-  <div class="stack card" id="card-W">
+  <div class="stack deal" id="deal-B">
+    <div class="blk lbl kicker"><span class="ln"><span>Dein Black-Week-Preis</span></span></div>
+    <div class="blk white price"><span class="old"><span></span><i></i></span><span class="new"></span></div>
+  </div>
+
+  <div class="stack offer" id="offer-W">
     <div class="blk head"><svg class="stairs" width="54" height="40" viewBox="0 0 54 40"><rect x="0" y="26" width="15" height="14"/><rect x="19.5" y="13" width="15" height="27"/><rect x="39" y="0" width="15" height="40"/></svg><div><span class="ln"><span class="cat">Whirlpool</span></span><span class="ln"><span class="name">Drop</span></span></div></div>
     <div class="blk gift"><div class="amount"><span class="ln"><span><span class="num">0</span> €</span></span></div><div class="word"><span class="ln"><span>GESCHENKT</span></span></div></div>
     <div class="blk white cond"><span class="ln"><span>ab 500 € Einkaufswert</span></span></div>
-    <div class="blk white price"><span class="old"><span></span><i></i></span><b></b></div>
   </div>
-  <div class="stack card" id="card-I">
+  <div class="stack deal" id="deal-W">
+    <div class="blk lbl kicker"><span class="ln"><span>Dein Black-Week-Preis</span></span></div>
+    <div class="blk white price"><span class="old"><span></span><i></i></span><span class="new"></span></div>
+  </div>
+
+  <div class="stack offer" id="offer-I">
     <div class="blk head"><svg class="stairs" width="54" height="40" viewBox="0 0 54 40"><rect x="0" y="26" width="15" height="14"/><rect x="19.5" y="13" width="15" height="27"/><rect x="39" y="0" width="15" height="40"/></svg><div><span class="ln"><span class="cat">Infrarotkabine</span></span><span class="ln"><span class="name">Redsun Deluxe S</span></span></div></div>
     <div class="blk gift"><div class="amount"><span class="ln"><span><span class="num">0</span> €</span></span></div><div class="word"><span class="ln"><span>GESCHENKT</span></span></div></div>
     <div class="blk white cond"><span class="ln"><span>ab 1.000 € Einkaufswert</span></span></div>
-    <div class="blk white price"><span class="old"><span></span><i></i></span><b></b></div>
+  </div>
+  <div class="stack deal" id="deal-I">
+    <div class="blk lbl kicker"><span class="ln"><span>Dein Black-Week-Preis</span></span></div>
+    <div class="blk white price"><span class="old"><span></span><i></i></span><span class="new"></span></div>
   </div>
 
   <div id="stairs-wipe"><div style="left:0"></div><div style="left:270px"></div><div style="left:540px"></div><div style="left:810px"></div></div>
 
-  <!-- Endcard -->
-  <div id="end">
-    <div class="kicker" id="end-kicker"><i></i><span class="ln"><span>Black Week · Staffelrabatt</span></span></div>
-    <div id="end-hl"><span class="ln"><span>Je mehr du kaufst,</span></span><span class="ln"><span>desto mehr schenken wir dir.</span></span></div>
+  <!-- Endcard A: Staffel erklärt -->
+  <div id="endA">
+    <div class="kicker" id="endA-kicker"><i></i><span class="ln"><span>So funktioniert's</span></span></div>
+    <div id="endA-hl"><span class="ln"><span>Je mehr du kaufst,</span></span><span class="ln"><span>desto mehr schenken</span></span><span class="ln"><span>wir dir.</span></span></div>
     <div class="tile" id="tile-0"><img alt=""><div class="shine"></div></div>
     <div class="tile" id="tile-1"><img alt=""><div class="shine"></div></div>
     <div class="amt" id="amt-0"><small>geschenkt</small><span class="num">0</span> €</div>
@@ -166,23 +174,24 @@
     <div class="tier" id="tier-0"><b>ab 100 €</b><span>Einkaufswert</span></div>
     <div class="tier" id="tier-1"><b>ab 500 €</b><span>Einkaufswert</span></div>
     <div class="tier" id="tier-2"><b>ab 1.000 €</b><span>Einkaufswert</span></div>
-    <div id="example">
-      <div class="lbl"><span class="ln"><span>Beispiel: Whirlpool Drop für 529 € – du zahlst nur</span></span></div>
-      <div class="row">
-        <div class="old">529 €<i></i></div>
-        <svg class="arrow" width="54" height="30" viewBox="0 0 54 30"><path d="M0 15h48M36 3l12 12-12 12" fill="none" stroke="#fff" stroke-width="4"/></svg>
-        <div class="new">454 €</div>
-      </div>
-    </div>
+  </div>
+  <div class="tile" id="tile-2"><img alt=""><div class="shine"></div></div>
+
+  <!-- Endcard B: Dringlichkeit + CTA -->
+  <div id="endB">
+    <div class="kicker" id="endB-kicker"><i></i><span class="ln"><span>Black Week · Staffelrabatt</span></span></div>
+    <div id="endB-big"><span class="ln"><span>NUR</span></span><span class="ln"><span>7 TAGE</span></span></div>
+    <div class="blk white" id="endB-date"><span class="ln"><span>20.–26.11.</span></span></div>
+    <div id="endB-upto"><span class="ln"><span>Bis zu <b>150 €</b> geschenkt</span></span></div>
     <div id="cta">
       <div class="btn"><span>Jetzt sichern</span>
         <svg width="40" height="24" viewBox="0 0 40 24"><path d="M0 12h36M26 2l10 10-10 10" fill="none" stroke="#0a0a0a" stroke-width="3.2"/></svg>
       </div>
       <div class="url">homedeluxe.de<i></i></div>
     </div>
+    <div id="ticker"><div id="ticker-track"></div></div>
     <div id="legal">Staffelrabatt auf den Einkaufswert: 15 € ab 100 €, 75 € ab 500 €, 150 € ab 1.000 €. Aktionszeitraum 20.–26.11.</div>
   </div>
-  <div class="tile" id="tile-2"><img alt=""><div class="shine"></div></div>
 
   <div id="badge">
     <svg width="240" height="240" viewBox="0 0 240 240">
@@ -195,8 +204,6 @@
     </svg>
     <div id="badge-center"><span>Nur bis</span><b>26.11.</b></div>
   </div>
-
-  <div id="ticker"><div id="ticker-track"></div></div>
 
   <!-- Intro -->
   <div class="door" id="door-top">

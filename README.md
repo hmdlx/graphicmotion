@@ -9,7 +9,7 @@ rendert. ffmpeg schreibt die Frames anschließend als MP4.
 | Projekt | Format | Ergebnis |
 |---|---|---|
 | `projects/laguna-m` | 9:16, 1080×1920, 30 fps, 18,5 s | `output/HomeDeluxe_Laguna-M_Reel_9x16.mp4` + Titelbild |
-| `projects/black-week` | 9:16, 1080×1920, 24 fps, 18,9 s | `output/HomeDeluxe_BlackWeek_Staffelrabatt_9x16.mp4` + Titelbild |
+| `projects/black-week` | 9:16, 1080×1920, 24 fps, 31,8 s | `output/HomeDeluxe_BlackWeek_Staffelrabatt_9x16.mp4` + Titelbild |
 
 ### Laguna M – Schnitt und Übergänge
 
@@ -17,35 +17,24 @@ Die weichen Überblendungen und die Abblende des Rohschnitts sind entfernt. Jede
 läuft nur mit ihren sauberen Frames (Schnittliste `SHOTS` in `composition.js`), und jeder
 Übergang ist als Motion-Grafik gestaltet (`X` in `composition.js`).
 
-| Zeit | Einstellung | Grafik | Übergang danach |
-|---|---|---|---|
-| 0,0–2,6 s | Düsen close-up | Hook „Spa-Feeling für dein Zuhause.“ + „Whirlpool LAGUNA M“ | Navy-Balken decken den Schnitt ab |
-| 2,6–5,1 s | Wanne innen | 01 Massage: Zähler 0 → 26 Massagedüsen (4 / 6 / 16), getrackte Marker auf den Düsen | Reißschwenk (Push mit Bewegungsunschärfe, Grafik fährt mit) |
-| 5,1–7,5 s | Handbrause | 02 Komfort: „Mit Handbrause“ | Lamellen-Wipe passend zur Lamellenwand |
-| 7,5–9,9 s | Bullauge | 03 Design: „Elegantes Bullauge – mit Lichttherapie“, getrackter Pointer | Marker öffnet sich zu einem eckigen Fenster |
-| 9,9–12,9 s | Kopfstütze (2 Winkel) | 04 Ergonomie: „2 Kopfstützen – Entspannt zu zweit“ | harter Schnitt mit Punch-in zwischen den Winkeln, dann Zoom in einen Lichtblitz |
-| 12,9–14,8 s | Totale | Totale landet aus dem Blitz, Titel „LAGUNA M – Indoor-Whirlpool für 2 Personen“ | Bild schrumpft in den Endcard-Rahmen |
-| 14,8–18,5 s | Endcard | 180 × 90 × 55 cm · Heizung · Radio · Lichttherapie, CTA „Jetzt entdecken“ + homedeluxe.de, Slogan | – |
-
-Die Produktdaten stammen aus den Shop- und Händlerangaben zur LAGUNA M (homedeluxe.de, Hornbach).
-Preise sind bewusst nicht eingebaut, weil sie sich häufig ändern.
-
-### Black Week – Staffelrabatt (20.–26.11.)
-
-Eigene Farbwelt für die Aktion: Schwarz + Weiß, Rot nur für Geschenkbeträge und reduzierte Preise.
-Aktion: 15 € ab 100 €, 75 € ab 500 €, 150 € ab 1.000 € Einkaufswert.
+Jede Einstellung startet mit ihrer Kamerabewegung in Echtzeit und bremst dann in Zeitlupe
+(ca. 0,4–0,6×) ab. Die Zwischenbilder sind bewegungsinterpoliert (`scripts/slowmo_plates.sh`,
+ffmpeg `minterpolate`, je Einstellung getrennt, damit nichts über Schnitte hinweg verschmiert).
+Pro Moment kommt nur eine neue Information ins Bild.
 
 | Zeit | Einstellung | Grafik |
 |---|---|---|
-| 0,0–1,9 s | Schwarz | „BLACK WEEK“, „Bis zu 150 € geschenkt“ (Betrag zählt hoch), „Nur 7 Tage · 20.–26.11.“; weiße Schnittlinie, dann öffnen sich zwei Türen aufs Video |
-| 1,6–5,6 s | Barhocker (Front, Seite) | Karte Barhocker SAMIR: 0 → 15 € geschenkt, ab 100 €, 119 € wird gestrichen → 104 € |
-| 5,6–9,3 s | Whirlpool (2 Winkel) | Karte Whirlpool DROP: 0 → 75 € geschenkt, ab 500 €, 529 € → 454 € |
-| 9,3–13,1 s | Infrarotkabine (2 Winkel) | Karte REDSUN DELUXE S: 0 → 150 € geschenkt, ab 1.000 €, 1.099 € → 949 € |
-| 13,1–18,9 s | Endcard | Video schrumpft in eine Rabatt-Treppe aus drei Video-Balken (mit Lichtreflex), Erklärung der Staffel, Rechenbeispiel, CTA |
+| 0,0–1,9 s | Schwarz | „BLACK WEEK“, „Bis zu 150 € geschenkt“ (zählt hoch), „Nur 7 Tage · 20.–26.11.“; Schnittlinie, Türen öffnen |
+| 1,6–5,4 s | Barhocker, Front | nacheinander: SAMIR → 15 € geschenkt → ab 100 € Einkaufswert |
+| 5,4–8,4 s | Barhocker, Seite | nur der Preis: 119 € wird gestrichen → 104 €; FOMO-Badge „Nur bis 26.11.“ kommt dazu |
+| 8,4–12,3 s | Whirlpool | DROP → 75 € geschenkt → ab 500 € |
+| 12,3–15,1 s | Whirlpool, 2. Winkel | 529 € → 454 € |
+| 15,1–18,9 s | Infrarotkabine | REDSUN DELUXE S → 150 € geschenkt → ab 1.000 € |
+| 18,9–22,2 s | Infrarotkabine, 2. Winkel | 1.099 € → 949 € |
+| 22,2–27,4 s | Endcard A | Video schrumpft in die Rabatt-Treppe aus drei Video-Balken: „Je mehr du kaufst, desto mehr schenken wir dir.“, Beträge steigen Stufe für Stufe |
+| 27,4–31,8 s | Endcard B | „NUR 7 TAGE“, 20.–26.11., „Bis zu 150 € geschenkt“, CTA, Laufband |
 
-Produktwechsel laufen über einen schwarzen Treppen-Wipe, unter dem das Bild nach oben wegzieht. Das Treppen-Icon
-in jeder Karte steigt bis zur Stufe des Produkts. Ab dem ersten Produkt dreht oben rechts ein Badge
-„Black Week · Nur 7 Tage – Nur bis 26.11.“, unten läuft durchgehend ein FOMO-Laufband.
+Produktwechsel laufen über einen schwarzen Treppen-Wipe, unter dem das Bild nach oben wegzieht.
 Beträge und Preise stehen in `PRODUCTS` in `composition.js` (Preis `null` blendet die Preiszeile aus).
 
 ## Rendern
@@ -58,7 +47,7 @@ npm run laguna-m:plates     # Rohschnitt -> hochskalierte, leicht gegradete JPG-
 npm run laguna-m:track      # Punkt-Tracking -> projects/laguna-m/tracks.js (nur nötig, wenn tracking.json geändert wurde)
 npm run laguna-m:render     # -> projects/laguna-m/output/HomeDeluxe_Laguna-M_Reel_9x16.mp4
 npm run laguna-m:stills     # Kontrollbilder nach build/laguna-m/stills
-npm run black-week:plates   # analog für das Black-Week-Reel
+npm run black-week:plates   # Plates + Zeitlupen-Plates (minterpolate, dauert einige Minuten)
 npm run black-week:render   # -> projects/black-week/output/HomeDeluxe_BlackWeek_Staffelrabatt_9x16.mp4
 ```
 
