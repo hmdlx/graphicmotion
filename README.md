@@ -9,7 +9,7 @@ rendert. ffmpeg schreibt die Frames anschließend als MP4.
 | Projekt | Format | Ergebnis |
 |---|---|---|
 | `projects/laguna-m` | 9:16, 1080×1920, 30 fps, 18,5 s | `output/HomeDeluxe_Laguna-M_Reel_9x16.mp4` + Titelbild |
-| `projects/black-week` | 9:16, 1080×1920, 24 fps, 31,8 s | `output/HomeDeluxe_BlackWeek_Staffelrabatt_9x16.mp4` + Titelbild |
+| `projects/black-week` | 9:16, 1080×1920, 24 fps, 25,1 s | `output/HomeDeluxe_BlackWeek_Staffelrabatt_9x16.mp4` + Titelbild |
 
 ### Laguna M – Schnitt und Übergänge
 
@@ -25,14 +25,14 @@ Pro Moment kommt nur eine neue Information ins Bild.
 | Zeit | Einstellung | Grafik |
 |---|---|---|
 | 0,0–1,9 s | Schwarz | „BLACK WEEK“, „Bis zu 150 € geschenkt“ (zählt hoch), „Nur 7 Tage · 20.–26.11.“; Schnittlinie, Türen öffnen |
-| 1,6–5,4 s | Barhocker, Front | nacheinander: SAMIR → 15 € geschenkt → ab 100 € Einkaufswert |
-| 5,4–8,4 s | Barhocker, Seite | nur der Preis: 119 € wird gestrichen → 104 € |
-| 8,4–12,3 s | Whirlpool | DROP → 75 € geschenkt → ab 500 € |
-| 12,3–15,1 s | Whirlpool, 2. Winkel | 529 € → 454 € |
-| 15,1–18,9 s | Infrarotkabine | REDSUN DELUXE S → 150 € geschenkt → ab 1.000 € |
-| 18,9–22,2 s | Infrarotkabine, 2. Winkel | 1.099 € → 949 € |
-| 22,2–27,4 s | Endcard A | Video schrumpft in die Rabatt-Treppe aus drei Video-Balken: „Je mehr du kaufst, desto mehr schenken wir dir.“, Beträge steigen Stufe für Stufe |
-| 27,4–31,8 s | Endcard B | „NUR 7 TAGE“, 20.–26.11., „Bis zu 150 € geschenkt“, CTA, Laufband |
+| 1,6–4,8 s | Barhocker, Front | nacheinander: SAMIR → 15 € geschenkt → ab 100 € Einkaufswert |
+| 4,8–6,9 s | Barhocker, Seite | nur der Preis: 119 € wird gestrichen → 104 € |
+| 6,9–10,1 s | Whirlpool | DROP → 75 € geschenkt → ab 500 € |
+| 10,1–12,3 s | Whirlpool, 2. Winkel | 529 € → 454 € |
+| 12,3–15,4 s | Infrarotkabine | REDSUN DELUXE S → 150 € geschenkt → ab 1.000 € |
+| 15,4–17,3 s | Infrarotkabine, 2. Winkel | 1.099 € → 949 € |
+| 17,3–21,6 s | Endcard A | Video schrumpft in die Rabatt-Treppe aus drei Video-Balken: „Je mehr du kaufst, desto mehr schenken wir dir.“, Beträge steigen Stufe für Stufe |
+| 21,6–25,1 s | Endcard B | „NUR 7 TAGE“, 20.–26.11., „Bis zu 150 € geschenkt“, CTA, Laufband |
 
 Produktwechsel laufen über einen schwarzen Treppen-Wipe, unter dem das Bild nach oben wegzieht.
 Beträge und Preise stehen in `PRODUCTS` in `composition.js` (Preis `null` blendet die Preiszeile aus).

@@ -19,20 +19,21 @@
 
   // Edit decision list: source frame ranges of the rough cut (six 2 s shots), regrouped
   // per product. Each shot plays its first `fast` source frames in real time (the camera
-  // move), then ramps into slow motion so that it fills `dur` output frames.
+  // move), then ramps into slow motion so that its first `use` source frames fill `dur`
+  // output frames.
   const INTRO = 38;
   const SHOTS = [
-    { name: 'B1', product: 'B', src: [0, 47], dur: 92, fast: 12 },     // Barhocker, Front
-    { name: 'B2', product: 'B', src: [144, 191], dur: 72, fast: 10 },  // Barhocker, Seite
-    { name: 'W1', product: 'W', src: [48, 95], dur: 92, fast: 12 },    // Whirlpool
-    { name: 'W2', product: 'W', src: [192, 231], dur: 68, fast: 10 },  // Whirlpool, zweiter Winkel
-    { name: 'I1', product: 'I', src: [96, 143], dur: 92, fast: 12 },   // Infrarotkabine
-    { name: 'I2', product: 'I', src: [240, 288], dur: 84, fast: 10 },  // Infrarotkabine, zweiter Winkel
+    { name: 'B1', product: 'B', src: [0, 47], use: 47, dur: 76, fast: 12 },     // Barhocker, Front
+    { name: 'B2', product: 'B', src: [144, 191], use: 30, dur: 52, fast: 10 },  // Barhocker, Seite
+    { name: 'W1', product: 'W', src: [48, 95], use: 47, dur: 76, fast: 12 },    // Whirlpool
+    { name: 'W2', product: 'W', src: [192, 231], use: 30, dur: 52, fast: 10 },  // Whirlpool, zweiter Winkel
+    { name: 'I1', product: 'I', src: [96, 143], use: 47, dur: 76, fast: 12 },   // Infrarotkabine
+    { name: 'I2', product: 'I', src: [240, 288], use: 32, dur: 52, fast: 10 },  // Infrarotkabine, zweiter Winkel
   ];
   const RAMP = 10;               // output frames to ease from real time into slow motion
   let at = INTRO;
   for (const s of SHOTS) {
-    const L = s.src[1] - s.src[0];
+    const L = s.use;
     const ease = u => { const k = Math.min(1, Math.max(0, (u - s.fast) / RAMP)); return k * k * (3 - 2 * k); };
     let real = 0, slow = 0;
     for (let u = 1; u < s.dur; u++) { real += 1 - ease(u); slow += ease(u); }
@@ -40,7 +41,7 @@
     s.pos = [0];
     for (let u = 1; u < s.dur; u++) s.pos[u] = s.pos[u - 1] + (1 - ease(u)) + s.rate * ease(u);
     s.dir = `${s.src[0]}-${s.src[1]}`;
-    s.maxK = L * SLOW - SLOW;    // minterpolate stops a few frames short of the last source frame
+    s.maxK = (s.src[1] - s.src[0]) * SLOW - SLOW;    // minterpolate stops a few frames short of the last source frame
     s.at = at;
     at += s.dur;
   }
@@ -58,9 +59,9 @@
     end: FOOTAGE_END - 6,                                // I2 shrinks into the third bar (end A)
     endDur: 20,
   };
-  X.endB = X.end + 126;                                  // explanation → urgency + CTA
+  X.endB = X.end + 102;                                  // explanation → urgency + CTA
   X.endBOut = 10;
-  const TOTAL = X.endB + 104;
+  const TOTAL = X.endB + 84;                     // ≈ 25 s
 
   // Graphics timeline, output seconds.
   const T = {
@@ -166,7 +167,7 @@
     if (i === 2) {
       const last = plateOf(s, shotEnd(s) - 1);
       if (n < shotEnd(s)) return { s, k: plateOf(s, n) };
-      return { s, k: last - pingpong(n - shotEnd(s), 0, 90) };
+      return { s, k: last - pingpong(n - shotEnd(s), 0, Math.min(90, last)) };
     }
     return { s, k: pingpong(n - X.end, b.loop[0], b.loop[1]) };
   }
@@ -228,12 +229,12 @@
     // Products, one idea at a time.
     for (const [p, c] of Object.entries(cards)) {
       // Shot 1: name → amount → condition, then the card clears for the price.
-      const s1 = c.s1.at / FPS, out1 = c.s2.at / FPS - 0.42;
+      const s1 = c.s1.at / FPS, out1 = c.s2.at / FPS - 0.4;
       const onOffer = n >= c.s1.at && n < c.s2.at;
       showBox(c.offer, onOffer);
       if (onOffer) {
         c.offer.style.translate = `0 ${drift}px`;
-        const tins = [s1 + 0.3, s1 + 0.95, s1 + 1.9];
+        const tins = [s1 + 0.25, s1 + 0.75, s1 + 1.45];
         c.offerBlks.forEach((blk, i) => {
           wipe(blk, t, tins[i], out1 + i * 0.05);
           $$('.ln > span', blk).forEach((s, j) => rise(s, t, tins[i] + 0.1 + j * 0.07));
@@ -242,8 +243,8 @@
           const lit = j <= c.level && t >= tins[0] + 0.35 + j * 0.12;
           r.style.fill = lit ? '#fff' : 'rgba(255, 255, 255, .28)';
         });
-        count(c.num, t, tins[1] + 0.1, PRODUCTS[p].gift, 0.75);
-        c.amount.style.transform = `scale(${pop(t, tins[1] + 0.85)})`;
+        count(c.num, t, tins[1] + 0.1, PRODUCTS[p].gift, 0.6);
+        c.amount.style.transform = `scale(${pop(t, tins[1] + 0.7)})`;
       }
 
       // Shot 2: the reduced price on its own.
@@ -255,14 +256,14 @@
         c.deal.style.translate = `0 ${drift}px`;
         const out2 = p === 'I' ? T.end - 0.42 : null;
         c.dealBlks.forEach((blk, i) => {
-          wipe(blk, t, s2 + 0.3 + i * 0.12, out2 == null ? null : out2 + i * 0.05);
-          $$('.ln > span', blk).forEach(s => rise(s, t, s2 + 0.4 + i * 0.12));
+          wipe(blk, t, s2 + 0.25 + i * 0.1, out2 == null ? null : out2 + i * 0.05);
+          $$('.ln > span', blk).forEach(s => rise(s, t, s2 + 0.35 + i * 0.1));
         });
-        const ko = E.outExpo(prog(t, s2 + 0.55, 0.4));
+        const ko = E.outExpo(prog(t, s2 + 0.42, 0.4));
         c.old.style.opacity = ko.toFixed(3);
         c.old.style.transform = `translateY(${(1 - ko) * 20}px)`;
-        c.strike.style.transform = `scaleX(${E.inOutCubic(prog(t, s2 + 1.0, 0.25))})`;
-        const kn = prog(t, s2 + 1.2, 0.45);
+        c.strike.style.transform = `scaleX(${E.inOutCubic(prog(t, s2 + 0.75, 0.22))})`;
+        const kn = prog(t, s2 + 0.92, 0.42);
         c.nw.style.opacity = Math.min(1, kn * 4).toFixed(3);
         c.nw.style.transform = `scale(${kn > 0 ? E.outBack(kn) : 0.5})`;
       }
@@ -304,23 +305,23 @@
     placeTile(el.tiles[2], r3, lerp(1, b3.s, ek), [lerp(540, b3.f[0], ek), lerp(960, b3.f[1], ek)]);
 
     // Kicker + headline.
-    wipe(el.endAKicker, te, 0.45, null);
-    rise(el.endAKickerLn, te, 0.52);
-    el.endAHl.forEach((s, i) => rise(s, te, 0.6 + i * 0.12, 0.6));
+    wipe(el.endAKicker, te, 0.4, null);
+    rise(el.endAKickerLn, te, 0.47);
+    el.endAHl.forEach((s, i) => rise(s, te, 0.5 + i * 0.1, 0.6));
 
     // Bars 1 + 2 grow from the baseline.
-    el.baseline.style.transform = `scaleX(${E.outExpo(prog(te, 1.0, 0.7))})`;
+    el.baseline.style.transform = `scaleX(${E.outExpo(prog(te, 0.85, 0.7))})`;
     [0, 1].forEach(i => {
       const b = BARS[i];
       placeTile(el.tiles[i], { x: b.x, y: BASE - b.h, w: b.w, h: b.h }, b.s, b.f);
-      const k = E.outExpo(prog(te, 1.15 + i * 0.25, 0.6));
+      const k = E.outExpo(prog(te, 1.0 + i * 0.2, 0.6));
       el.tiles[i].style.clipPath = `inset(${(1 - k) * b.h}px 0 0 0)`;
       show(el.tiles[i], k > 0);
     });
 
     // Amounts climb the stairs one after another, tiers below.
     BARS.forEach((b, i) => {
-      const a = el.amts[i], tin = 1.45 + i * 0.4;
+      const a = el.amts[i], tin = 1.2 + i * 0.32;
       a.style.left = `${b.x - 4}px`;
       a.style.top = `${BASE - b.h - a.offsetHeight - 12}px`;
       const k = E.outExpo(prog(te, tin, 0.55));
@@ -337,8 +338,8 @@
 
     // Light sweep running up the staircase, bar by bar, every 2 s.
     shines.forEach((sh, i) => {
-      const k = prog(((te - 3.0 - i * 0.18) % 2 + 2) % 2, 0, 0.55);
-      const live = te > 3.0 + i * 0.18 && k > 0 && k < 1;
+      const k = prog(((te - 2.5 - i * 0.18) % 2 + 2) % 2, 0, 0.55);
+      const live = te > 2.5 + i * 0.18 && k > 0 && k < 1;
       show(sh, live);
       if (live) sh.style.transform = `translateX(${lerp(-160, BARS[i].w + 60, E.inOutCubic(k))}px) rotate(18deg)`;
     });
@@ -357,13 +358,13 @@
     el.endBBig.forEach((s, i) => rise(s, tb, 0.25 + i * 0.12, 0.6));
     wipe(el.endBDate, tb, 0.75, null);
     rise(el.endBDateLn, tb, 0.85);
-    rise(el.endBUpto, tb, 1.15);
-    wipe(el.btn, tb, 1.6, null, 0.55);
-    const ku = E.outExpo(prog(tb, 1.8, 0.55));
+    rise(el.endBUpto, tb, 1.0);
+    wipe(el.btn, tb, 1.3, null, 0.55);
+    const ku = E.outExpo(prog(tb, 1.5, 0.55));
     el.url.style.opacity = ku.toFixed(3);
     el.url.style.transform = `translateX(${(1 - ku) * -24}px)`;
-    el.urlLine.style.transform = `scaleX(${E.outExpo(prog(tb, 2.0, 0.6))})`;
-    const nudge = tb > 2.3 ? Math.pow(Math.sin(Math.PI * (((tb - 2.3) % 1.1) / 1.1)), 2) : 0;
+    el.urlLine.style.transform = `scaleX(${E.outExpo(prog(tb, 1.7, 0.6))})`;
+    const nudge = tb > 2.0 ? Math.pow(Math.sin(Math.PI * (((tb - 2.0) % 1.1) / 1.1)), 2) : 0;
     el.arrow.style.transform = `translateX(${nudge * 9}px)`;
     // FOMO ticker.
     const tk = E.outExpo(prog(tb, 0.5, 0.6));
@@ -371,7 +372,7 @@
     el.ticker.style.clipPath = `inset(0 ${(1 - tk) * 100}% 0 0)`;
     const segW = el.track.firstElementChild.offsetWidth;
     el.track.style.transform = `translateX(${-(((tb + 2) * 120) % segW)}px)`;
-    el.legal.style.opacity = (0.999 * E.outCubic(prog(tb, 2.0, 0.6))).toFixed(3);
+    el.legal.style.opacity = (0.999 * E.outCubic(prog(tb, 1.7, 0.6))).toFixed(3);
   }
 
   async function loadImg(img, ref) {
