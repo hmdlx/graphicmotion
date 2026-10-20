@@ -45,16 +45,22 @@
   /* Intro: two black doors open onto the footage */
   .door { position: absolute; left: 0; width: 1080px; height: 960px; background: var(--black); overflow: hidden; }
   #door-top { top: 0; }
+  .door-logo { position: absolute; left: 98px; top: 142px; width: 300px; height: auto; }
   #door-bot { top: 960px; }
-  #intro-word { position: absolute; left: 60px; top: 470px; font-weight: 800; font-size: 250px; line-height: .9; letter-spacing: -.035em; }
-  #intro-offer { position: absolute; left: var(--margin); top: 44px; display: flex; flex-direction: column; align-items: flex-start; }
-  #intro-offer .blk { font-weight: 700; font-size: 54px; line-height: 1; padding: 24px 34px 20px; letter-spacing: .01em; box-shadow: none; }
-  #intro-offer .blk b { font-weight: 800; }
-  #intro-date { margin-top: 30px; font-weight: 600; font-size: 34px; line-height: 1; letter-spacing: .14em; text-transform: uppercase; }
+  #intro-word { position: absolute; left: 60px; top: 380px; font-weight: 800; font-size: 250px; line-height: .9; letter-spacing: -.035em; }
+  #intro-offer { position: absolute; left: var(--margin); top: 52px; display: flex; flex-direction: column; align-items: flex-start; }
+  #intro-upto { font-weight: 700; font-size: 46px; line-height: 1; letter-spacing: .16em; text-transform: uppercase; }
+  #intro-amount { margin: 8px 0 0 -10px; font-weight: 800; font-size: 270px; line-height: .9; letter-spacing: -.04em; color: var(--red); white-space: nowrap; }
+  #intro-amount .num { display: inline-block; text-align: right; font-variant-numeric: tabular-nums; }
+  #intro-gift { margin-top: 10px; font-weight: 800; font-size: 66px; line-height: 1; letter-spacing: .14em; }
+  #intro-date { margin-top: 40px; font-weight: 700; font-size: 36px; line-height: 1; padding: 22px 30px 20px; letter-spacing: .12em; text-transform: uppercase; box-shadow: none; }
+  #seam { position: absolute; left: 0; top: 958px; width: 1080px; height: 4px; background: #fff; transform-origin: left; }
 
   /* Product offer cards */
   .card .blk { box-shadow: none; }
-  .card .head { padding: 26px 34px 22px; }
+  .card .head { padding: 24px 34px 22px; display: flex; align-items: center; gap: 22px; }
+  .card .cat { font-weight: 600; font-size: 24px; line-height: 1; letter-spacing: .18em; text-transform: uppercase; color: rgba(255, 255, 255, .7); }
+  .card .name { margin-top: 8px; font-weight: 800; font-size: 46px; line-height: 1; letter-spacing: .01em; text-transform: uppercase; }
   .stairs { display: block; }
   .stairs rect { fill: rgba(255, 255, 255, .28); }
   .stairs rect.on { fill: #fff; }
@@ -64,12 +70,20 @@
   .card .word { margin-top: 6px; font-weight: 800; font-size: 54px; line-height: 1; letter-spacing: .12em; }
   .card .cond { font-weight: 600; font-size: 36px; line-height: 1; padding: 22px 34px 20px; }
   .card .price { font-weight: 600; font-size: 42px; line-height: 1; padding: 16px 34px 14px; display: none; align-items: baseline; gap: 24px; }
-  .card .price s { color: var(--grey); text-decoration-thickness: 4px; }
-  .card .price b { color: var(--red); font-weight: 800; font-size: 84px; letter-spacing: -.02em; }
+  .card .price .old { position: relative; color: var(--grey); }
+  .card .price .old i { position: absolute; left: -4px; right: -4px; top: 50%; height: 4px; background: var(--grey); transform-origin: left; }
+  .card .price b { display: inline-block; color: var(--red); font-weight: 800; font-size: 84px; letter-spacing: -.02em; transform-origin: left 75%; }
 
   #card-B { top: 1030px; }
   #card-W { top: 262px; }
   #card-I { top: 1030px; }
+
+  /* Rotating FOMO badge */
+  #badge { position: absolute; left: 782px; top: 112px; width: 240px; height: 240px; }
+  #badge svg { display: block; }
+  #badge-center { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+  #badge-center span { font-weight: 700; font-size: 20px; line-height: 1; letter-spacing: .16em; text-transform: uppercase; color: rgba(255, 255, 255, .75); }
+  #badge-center b { margin-top: 6px; font-weight: 800; font-size: 50px; line-height: 1; letter-spacing: -.01em; }
 
   /* Stepped black wipe between products */
   #stairs-wipe { position: absolute; inset: 0; }
@@ -89,6 +103,7 @@
   #end-hl { position: absolute; left: var(--margin); top: 344px; font-weight: 700; font-size: 64px; line-height: 1.08; letter-spacing: -.015em; }
   .tile { position: absolute; overflow: hidden; background: #f2f2f2; }
   .tile img { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; display: block; transform-origin: 0 0; }
+  .tile .shine { position: absolute; left: 0; top: -40%; width: 110px; height: 180%; background: linear-gradient(90deg, rgba(255,255,255,0), rgba(255,255,255,.6) 50%, rgba(255,255,255,0)); }
   .amt { position: absolute; font-weight: 800; font-size: 108px; line-height: 1; letter-spacing: -.03em; color: var(--red); white-space: nowrap; }
   .amt small { display: block; font-weight: 700; font-size: 24px; letter-spacing: .16em; color: #fff; margin: 0 0 8px 4px; text-transform: uppercase; }
   .tier { position: absolute; top: 1312px; }
@@ -101,7 +116,7 @@
   #example .old { position: relative; font-weight: 600; font-size: 58px; line-height: 1; color: var(--grey); }
   #example .old i { position: absolute; left: -4px; right: -4px; top: 52%; height: 5px; background: var(--grey); transform-origin: left; }
   #example .arrow { display: block; }
-  #example .new { font-weight: 800; font-size: 96px; line-height: .9; letter-spacing: -.03em; color: var(--red); }
+  #example .new { transform-origin: left 70%; font-weight: 800; font-size: 96px; line-height: .9; letter-spacing: -.03em; color: var(--red); }
   #cta { position: absolute; left: var(--margin); top: 1612px; display: flex; align-items: center; gap: 34px; }
   #cta .btn { background: #fff; color: var(--black); font-weight: 700; font-size: 40px; line-height: 1; padding: 26px 40px 24px; display: flex; align-items: center; gap: 22px; }
   #cta .btn svg { display: block; }
@@ -118,32 +133,32 @@
 
   <!-- Produktkarten. Die Beträge (rot) und Preise füllt composition.js aus PRODUCTS. -->
   <div class="stack card" id="card-B">
-    <div class="blk head"><div class="kicker"><svg class="stairs" width="50" height="34" viewBox="0 0 50 34"><rect x="0" y="22" width="14" height="12"/><rect x="18" y="11" width="14" height="23"/><rect x="36" y="0" width="14" height="34"/></svg><span class="ln"><span>Barhocker Samir</span></span></div></div>
+    <div class="blk head"><svg class="stairs" width="54" height="40" viewBox="0 0 54 40"><rect x="0" y="26" width="15" height="14"/><rect x="19.5" y="13" width="15" height="27"/><rect x="39" y="0" width="15" height="40"/></svg><div><span class="ln"><span class="cat">Barhocker</span></span><span class="ln"><span class="name">Samir</span></span></div></div>
     <div class="blk gift"><div class="amount"><span class="ln"><span><span class="num">0</span> €</span></span></div><div class="word"><span class="ln"><span>GESCHENKT</span></span></div></div>
     <div class="blk white cond"><span class="ln"><span>ab 100 € Einkaufswert</span></span></div>
-    <div class="blk white price"><s></s><b></b></div>
+    <div class="blk white price"><span class="old"><span></span><i></i></span><b></b></div>
   </div>
   <div class="stack card" id="card-W">
-    <div class="blk head"><div class="kicker"><svg class="stairs" width="50" height="34" viewBox="0 0 50 34"><rect x="0" y="22" width="14" height="12"/><rect x="18" y="11" width="14" height="23"/><rect x="36" y="0" width="14" height="34"/></svg><span class="ln"><span>Whirlpool Drop</span></span></div></div>
+    <div class="blk head"><svg class="stairs" width="54" height="40" viewBox="0 0 54 40"><rect x="0" y="26" width="15" height="14"/><rect x="19.5" y="13" width="15" height="27"/><rect x="39" y="0" width="15" height="40"/></svg><div><span class="ln"><span class="cat">Whirlpool</span></span><span class="ln"><span class="name">Drop</span></span></div></div>
     <div class="blk gift"><div class="amount"><span class="ln"><span><span class="num">0</span> €</span></span></div><div class="word"><span class="ln"><span>GESCHENKT</span></span></div></div>
     <div class="blk white cond"><span class="ln"><span>ab 500 € Einkaufswert</span></span></div>
-    <div class="blk white price"><s></s><b></b></div>
+    <div class="blk white price"><span class="old"><span></span><i></i></span><b></b></div>
   </div>
   <div class="stack card" id="card-I">
-    <div class="blk head"><div class="kicker"><svg class="stairs" width="50" height="34" viewBox="0 0 50 34"><rect x="0" y="22" width="14" height="12"/><rect x="18" y="11" width="14" height="23"/><rect x="36" y="0" width="14" height="34"/></svg><span class="ln"><span>Infrarotkabine Redsun Deluxe S</span></span></div></div>
+    <div class="blk head"><svg class="stairs" width="54" height="40" viewBox="0 0 54 40"><rect x="0" y="26" width="15" height="14"/><rect x="19.5" y="13" width="15" height="27"/><rect x="39" y="0" width="15" height="40"/></svg><div><span class="ln"><span class="cat">Infrarotkabine</span></span><span class="ln"><span class="name">Redsun Deluxe S</span></span></div></div>
     <div class="blk gift"><div class="amount"><span class="ln"><span><span class="num">0</span> €</span></span></div><div class="word"><span class="ln"><span>GESCHENKT</span></span></div></div>
     <div class="blk white cond"><span class="ln"><span>ab 1.000 € Einkaufswert</span></span></div>
-    <div class="blk white price"><s></s><b></b></div>
+    <div class="blk white price"><span class="old"><span></span><i></i></span><b></b></div>
   </div>
 
   <div id="stairs-wipe"><div style="left:0"></div><div style="left:270px"></div><div style="left:540px"></div><div style="left:810px"></div></div>
 
   <!-- Endcard -->
   <div id="end">
-    <div class="kicker" id="end-kicker"><i></i><span class="ln"><span>Black Week · Staffelrabatt · 20.–26.11.</span></span></div>
+    <div class="kicker" id="end-kicker"><i></i><span class="ln"><span>Black Week · Staffelrabatt</span></span></div>
     <div id="end-hl"><span class="ln"><span>Je mehr du kaufst,</span></span><span class="ln"><span>desto mehr schenken wir dir.</span></span></div>
-    <div class="tile" id="tile-0"><img alt=""></div>
-    <div class="tile" id="tile-1"><img alt=""></div>
+    <div class="tile" id="tile-0"><img alt=""><div class="shine"></div></div>
+    <div class="tile" id="tile-1"><img alt=""><div class="shine"></div></div>
     <div class="amt" id="amt-0"><small>geschenkt</small><span class="num">0</span> €</div>
     <div class="amt" id="amt-1"><small>geschenkt</small><span class="num">0</span> €</div>
     <div class="amt" id="amt-2"><small>geschenkt</small><span class="num">0</span> €</div>
@@ -167,20 +182,36 @@
     </div>
     <div id="legal">Staffelrabatt auf den Einkaufswert: 15 € ab 100 €, 75 € ab 500 €, 150 € ab 1.000 €. Aktionszeitraum 20.–26.11.</div>
   </div>
-  <div class="tile" id="tile-2"><img alt=""></div>
+  <div class="tile" id="tile-2"><img alt=""><div class="shine"></div></div>
+
+  <div id="badge">
+    <svg width="240" height="240" viewBox="0 0 240 240">
+      <circle cx="120" cy="120" r="118" fill="#0a0a0a"/>
+      <circle cx="120" cy="120" r="74" fill="none" stroke="rgba(255,255,255,.35)" stroke-width="2"/>
+      <defs><path id="badge-ring" d="M120 120m-94 0a94 94 0 1 1 188 0a94 94 0 1 1-188 0"/></defs>
+      <g id="badge-rot" style="transform-origin:120px 120px">
+        <text fill="#fff" font-family="Poppins" font-weight="700" font-size="21" letter-spacing="3.4"><textPath href="#badge-ring">BLACK WEEK • NUR 7 TAGE • BLACK WEEK • NUR 7 TAGE •</textPath></text>
+      </g>
+    </svg>
+    <div id="badge-center"><span>Nur bis</span><b>26.11.</b></div>
+  </div>
 
   <div id="ticker"><div id="ticker-track"></div></div>
 
   <!-- Intro -->
   <div class="door" id="door-top">
+    <img class="door-logo" src="../../assets/logo/homedeluxe-logo-white.svg" alt="">
     <div id="intro-word"><span class="ln"><span>BLACK</span></span><span class="ln"><span>WEEK</span></span></div>
   </div>
   <div class="door" id="door-bot">
     <div id="intro-offer">
-      <div class="blk white"><span class="ln"><span>Bis zu <b class="red">150 €</b> geschenkt</span></span></div>
-      <div id="intro-date"><span class="ln"><span>Nur 7 Tage · 20.–26.11.</span></span></div>
+      <div id="intro-upto"><span class="ln"><span>Bis zu</span></span></div>
+      <div id="intro-amount"><span class="ln"><span><span class="num">150</span> €</span></span></div>
+      <div id="intro-gift"><span class="ln"><span>GESCHENKT</span></span></div>
+      <div class="blk white" id="intro-date"><span class="ln"><span>Nur 7 Tage · 20.–26.11.</span></span></div>
     </div>
   </div>
+  <div id="seam"></div>
 
   <div id="logo"><img src="../../assets/logo/homedeluxe-logo-white.svg" alt="Home Deluxe"></div>
 </div>

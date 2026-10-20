@@ -9,7 +9,7 @@ rendert. ffmpeg schreibt die Frames anschließend als MP4.
 | Projekt | Format | Ergebnis |
 |---|---|---|
 | `projects/laguna-m` | 9:16, 1080×1920, 30 fps, 18,5 s | `output/HomeDeluxe_Laguna-M_Reel_9x16.mp4` + Titelbild |
-| `projects/black-week` | 9:16, 1080×1920, 24 fps, 18,4 s | `output/HomeDeluxe_BlackWeek_Staffelrabatt_9x16.mp4` + Titelbild |
+| `projects/black-week` | 9:16, 1080×1920, 24 fps, 18,9 s | `output/HomeDeluxe_BlackWeek_Staffelrabatt_9x16.mp4` + Titelbild |
 
 ### Laguna M – Schnitt und Übergänge
 
@@ -37,13 +37,15 @@ Aktion: 15 € ab 100 €, 75 € ab 500 €, 150 € ab 1.000 € Einkaufswert.
 
 | Zeit | Einstellung | Grafik |
 |---|---|---|
-| 0,0–1,4 s | Schwarz | „BLACK WEEK“, „Bis zu 150 € geschenkt“, „Nur 7 Tage · 20.–26.11.“, Türen öffnen aufs Video |
-| 1,1–5,1 s | Barhocker (Front, Seite) | Karte Barhocker SAMIR: 0 → 15 € geschenkt, ab 100 €, ~~119 €~~ 104 € |
-| 5,1–8,8 s | Whirlpool (2 Winkel) | Karte Whirlpool DROP: 0 → 75 € geschenkt, ab 500 €, ~~529 €~~ 454 € |
-| 8,8–12,3 s | Infrarotkabine (2 Winkel) | Karte REDSUN DELUXE S: 0 → 150 € geschenkt, ab 1.000 €, ~~1.099 €~~ 949 € |
-| 12,3–18,4 s | Endcard | Video schrumpft in eine Rabatt-Treppe aus drei Video-Balken, Erklärung der Staffel, Rechenbeispiel, CTA |
+| 0,0–1,9 s | Schwarz | „BLACK WEEK“, „Bis zu 150 € geschenkt“ (Betrag zählt hoch), „Nur 7 Tage · 20.–26.11.“; weiße Schnittlinie, dann öffnen sich zwei Türen aufs Video |
+| 1,6–5,6 s | Barhocker (Front, Seite) | Karte Barhocker SAMIR: 0 → 15 € geschenkt, ab 100 €, 119 € wird gestrichen → 104 € |
+| 5,6–9,3 s | Whirlpool (2 Winkel) | Karte Whirlpool DROP: 0 → 75 € geschenkt, ab 500 €, 529 € → 454 € |
+| 9,3–13,1 s | Infrarotkabine (2 Winkel) | Karte REDSUN DELUXE S: 0 → 150 € geschenkt, ab 1.000 €, 1.099 € → 949 € |
+| 13,1–18,9 s | Endcard | Video schrumpft in eine Rabatt-Treppe aus drei Video-Balken (mit Lichtreflex), Erklärung der Staffel, Rechenbeispiel, CTA |
 
-Produktwechsel laufen über einen schwarzen Treppen-Wipe, unten läuft durchgehend ein FOMO-Laufband.
+Produktwechsel laufen über einen schwarzen Treppen-Wipe, unter dem das Bild nach oben wegzieht. Das Treppen-Icon
+in jeder Karte steigt bis zur Stufe des Produkts. Ab dem ersten Produkt dreht oben rechts ein Badge
+„Black Week · Nur 7 Tage – Nur bis 26.11.“, unten läuft durchgehend ein FOMO-Laufband.
 Beträge und Preise stehen in `PRODUCTS` in `composition.js` (Preis `null` blendet die Preiszeile aus).
 
 ## Rendern

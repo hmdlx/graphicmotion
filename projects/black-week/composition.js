@@ -17,7 +17,7 @@
   // Edit decision list: source frame ranges of the rough cut (six 2 s shots:
   // Barhocker, Whirlpool, Infrarot, then each again), regrouped per product.
   // Shots play back to back after the black intro.
-  const INTRO = 26;
+  const INTRO = 38;
   const SHOTS = [
     { name: 'B1', product: 'B', src: [0, 47] },     // Barhocker, Front
     { name: 'B2', product: 'B', src: [144, 191] },  // Barhocker, Seite
@@ -33,9 +33,11 @@
 
   // Transitions, output frames.
   const X = {
-    doors: [INTRO - 6, INTRO + 8],                       // intro doors open onto B1
+    seam: [INTRO - 15, INTRO - 7],                       // white line cuts the black frame open …
+    doors: [INTRO - 6, INTRO + 8],                       // … and the doors open onto B1
     stairs: [shot('W1').at, shot('I1').at],              // stepped black wipe on each product change
     stairsDur: 7, stairsStagger: 1,
+    push: 150,                                           // footage drift (px) through the stairs wipe
     end: FOOTAGE_END - 6,                                // I2 shrinks into the third bar
     endDur: 20,
   };
@@ -43,10 +45,11 @@
 
   // Graphics timeline, output seconds.
   const T = {
-    logo: 0.04,
+    logo: (INTRO + 4) / FPS,       // the intro carries its own logo on the top door
     intro: 0.04,
     ticker: (INTRO + 4) / FPS,
-    cards: { B: (shot('B1').at + 16) / FPS, W: (shot('W1').at + 10) / FPS, I: (shot('I1').at + 10) / FPS },
+    cards: { B: (shot('B1').at + 14) / FPS, W: (shot('W1').at + 10) / FPS, I: (shot('I1').at + 10) / FPS },
+    badge: (shot('B1').at + 26) / FPS,
     cardIOut: (X.end - 10) / FPS,
     end: X.end / FPS,
   };
@@ -104,10 +107,12 @@
   // ---------------------------------------------------------------- elements
   const el = {
     slot: $('#footage .shot'), logo: $('#logo'),
-    doorTop: $('#door-top'), doorBot: $('#door-bot'),
-    introWords: $$('#intro-word .ln > span'), introBlk: $('#intro-offer .blk'),
-    introBlkLn: $('#intro-offer .blk .ln > span'), introDate: $('#intro-date .ln > span'),
+    doorTop: $('#door-top'), doorBot: $('#door-bot'), seam: $('#seam'),
+    introWords: $$('#intro-word .ln > span'), introUpto: $('#intro-upto .ln > span'),
+    introAmount: $('#intro-amount .ln > span'), introNum: $('#intro-amount .num'),
+    introGift: $('#intro-gift .ln > span'), introDate: $('#intro-date'), introDateLn: $('#intro-date .ln > span'),
     stairs: $$('#stairs-wipe div'),
+    badge: $('#badge'), badgeRot: $('#badge-rot'),
     ticker: $('#ticker'), track: $('#ticker-track'),
     end: $('#end'), endKicker: $('#end-kicker'), endKickerLn: $('#end-kicker .ln > span'),
     endHl: $$('#end-hl .ln > span'),
@@ -122,9 +127,12 @@
   };
   const cards = Object.fromEntries(['B', 'W', 'I'].map((p, i) => {
     const root = $(`#card-${p}`);
-    $$('.stairs rect', root).forEach((r, j) => r.classList.toggle('on', j <= i));
-    return [p, { root, blks: $$(':scope > .blk', root), num: $('.num', root), amount: $('.amount', root) }];
+    return [p, {
+      root, level: i, blks: $$(':scope > .blk', root), num: $('.num', root), amount: $('.amount', root),
+      steps: $$('.stairs rect', root), price: $('.price', root),
+    }];
   }));
+  const shines = el.tiles.map(tile => $('.shine', tile));
 
   // ---------------------------------------------------------------- footage
   function currentShot(n) {
@@ -165,22 +173,41 @@
     const t = n / FPS;
     const cur = currentShot(n);
 
+    // Footage drift through the stairs wipe: the outgoing shot accelerates upwards,
+    // the incoming one arrives from below and settles. Cards ride along.
+    let drift = 0;
+    for (const cut of X.stairs) {
+      const lead = X.stairsStagger * (el.stairs.length - 1) + X.stairsDur;
+      if (n >= cut - lead && n < cut) drift = -X.push * E.inCubic(prog(n, cut - lead, lead));
+      else if (n >= cut && n <= cut + lead + 6) drift = X.push * (1 - E.outCubic(prog(n, cut, lead + 6)));
+    }
+
     // Main footage (with a gentle settle punch on each cut after the doors).
     show(el.slot, n < X.end);
     const sinceCut = n - cur.at;
     const punch = cur.name === 'B1' ? 1 : 1 + 0.035 * (1 - E.outCubic(prog(sinceCut, 0, 10)));
     el.slot.firstElementChild.style.transformOrigin = '540px 960px';
-    el.slot.firstElementChild.style.transform = `scale(${punch})`;
+    el.slot.firstElementChild.style.transform = `translateY(${drift}px) scale(${punch})`;
 
-    // Intro doors.
+    // Intro: BLACK WEEK, then the hero amount counts up; a white seam cuts the frame
+    // open and the two halves part onto the first shot.
     const dk = E.inOutCubic(prog(n, X.doors[0], X.doors[1] - X.doors[0]));
     showBox(el.doorTop, dk < 1); showBox(el.doorBot, dk < 1);
     el.doorTop.style.transform = `translateY(${-dk * 960}px)`;
     el.doorBot.style.transform = `translateY(${dk * 960}px)`;
-    el.introWords.forEach((s, i) => rise(s, t, T.intro + i * 0.08, 0.5));
-    wipe(el.introBlk, t, T.intro + 0.22, null, 0.45);
-    rise(el.introBlkLn, t, T.intro + 0.3, 0.5);
-    rise(el.introDate, t, T.intro + 0.42, 0.5);
+    el.introWords.forEach((s, i) => rise(s, t, T.intro + i * 0.09, 0.5));
+    rise(el.introUpto, t, T.intro + 0.24, 0.45);
+    rise(el.introAmount, t, T.intro + 0.3, 0.5);
+    count(el.introNum, t, T.intro + 0.32, 150, 0.6);
+    const ip = t > T.intro + 0.92 ? 1 + 0.06 * Math.sin(Math.PI * prog(t, T.intro + 0.92, 0.2)) : 1;
+    el.introAmount.parentElement.parentElement.style.transformOrigin = 'left center';
+    el.introAmount.parentElement.parentElement.style.transform = `scale(${ip})`;
+    rise(el.introGift, t, T.intro + 0.46, 0.45);
+    wipe(el.introDate, t, T.intro + 0.62, null, 0.45);
+    rise(el.introDateLn, t, T.intro + 0.7, 0.45);
+    const sk = E.inOutCubic(prog(n, X.seam[0], X.seam[1] - X.seam[0]));
+    show(el.seam, sk > 0 && n < X.doors[0] + 2);
+    el.seam.style.transform = `scaleX(${sk})`;
 
     // Persistent logo plate.
     wipe(el.logo, t, T.logo, null, 0.5);
@@ -194,18 +221,41 @@
       const on = n >= first.at && n < Math.min(lastEnd, X.end + 2);
       showBox(c.root, on);
       if (!on) continue;
+      c.root.style.translate = `0 ${drift}px`;
       const tout = p === 'I' ? T.cardIOut : null;
       c.blks.forEach((blk, i) => {
         const bi = tin + i * 0.1;
         wipe(blk, t, bi, tout == null ? null : tout + i * 0.04);
         $$('.ln > span', blk).forEach((s, j) => rise(s, t, bi + 0.1 + j * 0.06));
       });
+      // Staircase icon climbs to this product's step.
+      c.steps.forEach((r, j) => {
+        const lit = j <= c.level && t >= tin + 0.3 + j * 0.1;
+        r.style.fill = lit ? '#fff' : 'rgba(255, 255, 255, .28)';
+      });
       const ct = tin + 0.22;
       count(c.num, t, ct, PRODUCTS[p].gift);
       const pop = t > ct + 0.6 ? 1 + 0.08 * Math.sin(Math.PI * prog(t, ct + 0.6, 0.22)) : 1;
       c.amount.style.transformOrigin = 'left center';
       c.amount.style.transform = `scale(${pop})`;
+      // Price row: old price lands, gets struck through, reduced price pops in red.
+      if (c.price.isConnected) {
+        const pt = tin + 0.3 + 0.18;
+        const old = $('.old', c.price), strike = $('.old i', c.price), nw = $('b', c.price);
+        const ko = E.outExpo(prog(t, pt + 0.1, 0.4));
+        old.style.opacity = ko.toFixed(3);
+        strike.style.transform = `scaleX(${E.inOutCubic(prog(t, ct + 0.55, 0.22))})`;
+        const kn = prog(t, ct + 0.7, 0.42);
+        nw.style.opacity = Math.min(1, kn * 4).toFixed(3);
+        nw.style.transform = `scale(${kn > 0 ? E.outBack(kn) : 0.5})`;
+      }
     }
+
+    // Rotating FOMO badge (product shots + end card).
+    const bk = E.outBack(prog(t, T.badge, 0.5));
+    show(el.badge, bk > 0.001 && n >= X.doors[1]);
+    el.badge.style.transform = `scale(${Math.max(0, bk)}) rotate(${(1 - Math.min(1, bk)) * -40}deg)`;
+    el.badgeRot.style.transform = `rotate(${(t - T.badge) * 42}deg)`;
 
     // Stepped black wipe: columns rise from the bottom (right column leads, like a
     // staircase going up), cover the cut, then clear upwards.
@@ -254,6 +304,14 @@
     });
     el.baseline.style.transform = `scaleX(${E.outExpo(prog(te, 0.6, 0.7))})`;
 
+    // Light sweep running up the staircase, bar by bar, every 2.2 s.
+    shines.forEach((sh, i) => {
+      const k = prog(((te - 1.9 - i * 0.18) % 2.2 + 2.2) % 2.2, 0, 0.55);
+      const live = te > 1.9 + i * 0.18 && k > 0 && k < 1;
+      show(sh, live);
+      if (live) sh.style.transform = `translateX(${lerp(-160, BARS[i].w + 60, E.inOutCubic(k))}px) rotate(18deg)`;
+    });
+
     // Amounts above the bars + tiers below.
     BARS.forEach((b, i) => {
       const a = el.amts[i];
@@ -287,8 +345,8 @@
     el.exArrow.style.transform = `translateX(${(1 - ka) * -20}px)`;
     const kn = prog(te, 2.5, 0.45);
     el.exNew.style.opacity = Math.min(1, kn * 3).toFixed(3);
-    el.exNew.style.transformOrigin = 'left 70%';
-    el.exNew.style.transform = `scale(${kn > 0 ? E.outBack(kn) : 0.6})`;
+    const beat = te > 3.0 ? 1 + 0.045 * Math.pow(Math.sin(Math.PI * (((te - 3.0) % 1.1) / 1.1)), 2) : 1;
+    el.exNew.style.transform = `scale(${(kn > 0 ? E.outBack(kn) : 0.6) * beat})`;
 
     // CTA.
     wipe(el.btn, te, 3.0, null, 0.55);
@@ -328,7 +386,7 @@
       const row = $('.price', c.root);
       if (price == null || price < min) { row.remove(); c.blks = c.blks.filter(b => b !== row); continue; }
       row.style.display = 'flex';
-      $('s', row).textContent = eur(price);
+      $('.old span', row).textContent = eur(price);
       $('b', row).textContent = eur(price - gift);
     }
     // Reserve the final width so the count-up does not jitter the block.
