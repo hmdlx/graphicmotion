@@ -52,7 +52,7 @@ Grafik weg und läuft in der Grafik über den Bildrand weiter.
 |---|---|---|---|
 | 10,5–14,3 s | Traditionelle Sauna SHADOW - XL | 2.399 € | 1.799 € |
 | 16,6–20,2 s | Outdoor Whirlpool SEA STAR – mit Treppe und Thermoabdeckung | 3.499 € | 2.624 € |
-| 21,4–24,5 s | Teddy Sofa COMO - Beige | 399 € | 299 € |
+| 21,4–24,5 s | Sofa CASARA Beige | 1.199 € | 899 € |
 | 26,3–29,7 s | Dampfdusche EXCLUSIVE - Weiß | 1.949 € | 1.462 € |
 
 Texte, Preise und Timings stehen in `PRODUCTS` in `overlay.js` (Zeiten in Quell-Frames).

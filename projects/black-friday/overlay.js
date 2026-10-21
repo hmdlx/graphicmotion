@@ -12,7 +12,7 @@
   const PRODUCTS = [
     { x: 1720, in: 60,  out: 140, eyebrow: 'TRADITIONELLE SAUNA', title: 'SHADOW XL', old: '2.399', price: '1.799' },
     { x: 1730, in: 206, out: 280, eyebrow: 'OUTDOOR WHIRLPOOL',   title: 'SEA STAR',  old: '3.499', price: '2.624', beam: true },
-    { x: 1850, in: 322, out: 386, eyebrow: 'TEDDY SOFA',          title: 'COMO',      old: '399',   price: '299' },
+    { x: 1850, in: 322, out: 386, eyebrow: 'SOFA',                title: 'CASARA',    old: '1.199', price: '899' },
     { x: 1700, in: 440, out: 510, eyebrow: 'DAMPFDUSCHE',         title: 'EXCLUSIVE', old: '1.949', price: '1.462' },
   ];
   const EXIT = 10;              // Frames, die die Wisch-Kante für den Abgang braucht
