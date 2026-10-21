@@ -9,6 +9,7 @@ rendert. ffmpeg schreibt die Frames anschließend als MP4.
 | Projekt | Format | Ergebnis |
 |---|---|---|
 | `projects/laguna-m` | 9:16, 1080×1920, 30 fps, 18,5 s | `output/HomeDeluxe_Laguna-M_Reel_9x16.mp4` + Titelbild |
+| `projects/black-friday` | 16:9, 2560×1440, 24 fps, 31,0 s | `output/BlackFriday_HomeDeluxe_16x9_1440p.mp4` |
 
 ### Laguna M – Schnitt und Übergänge
 
@@ -28,6 +29,29 @@ läuft nur mit ihren sauberen Frames (Schnittliste `SHOTS` in `composition.js`),
 
 Die Produktdaten stammen aus den Shop- und Händlerangaben zur LAGUNA M (homedeluxe.de, Hornbach).
 Preise sind bewusst nicht eingebaut, weil sie sich häufig ändern.
+
+### Black Friday 16:9 – neuer Schnitt
+
+Bearbeitung des fertigen Clips `source/BlackFriday_HomeDeluxe_16x9_1440p_original.mp4`:
+Die Einblendung „BLACK FRIDAY / -25% / AUF ALLES“ links ist aus allen Produktszenen entfernt,
+und die große Sequenz „BLACK FRIDAY“ → „-25% AUF ALLES“ läuft jetzt als Erstes.
+
+| Zeit | Inhalt | Quelle |
+|---|---|---|
+| 0,0–8,0 s | Einblendung aus Schwarz, „BLACK FRIDAY“, dann „-25% AUF ALLES“ | 22,8–31,3 s |
+| 8,0–8,5 s | Überblendung auf das leere Podest | – |
+| 8,5–31,0 s | Sauna, Whirlpool, Sofa, Dampfdusche – ohne Text links, Abblende am Ende | 0,0–23,0 s |
+
+Der Ton ist mit dem Bild umgeschnitten (Sound-Design bleibt synchron, 0,5 s Crossfade).
+`remove_text.py` rechnet die Text-Ebene aus dem Median aller Frames heraus und füllt nur die
+deckenden Buchstaben aus der Umgebung auf, sodass Lichtlinien und -strahlen, die durch den
+Textbereich laufen, erhalten bleiben.
+
+```bash
+npm run black-friday:frames   # Quelle -> JPG- und PNG-Frames (build/black-friday)
+npm run black-friday:clean    # Text links entfernen (Python 3 mit numpy + opencv-python-headless)
+npm run black-friday:render   # -> projects/black-friday/output/BlackFriday_HomeDeluxe_16x9_1440p.mp4
+```
 
 ## Rendern
 

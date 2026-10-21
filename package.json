@@ -6,7 +6,10 @@
     "laguna-m:plates": "scripts/prepare_plates.sh projects/laguna-m/source/laguna-m_rohschnitt.mp4 build/laguna-m/plates",
     "laguna-m:track": "python3 -I scripts/track_points.py build/laguna-m/plates projects/laguna-m/tracking.json projects/laguna-m/tracks.js",
     "laguna-m:render": "node scripts/render.js projects/laguna-m/composition.html projects/laguna-m/output/HomeDeluxe_Laguna-M_Reel_9x16.mp4 --plates build/laguna-m/plates",
-    "laguna-m:stills": "node scripts/render.js projects/laguna-m/composition.html build/laguna-m/stills --plates build/laguna-m/plates --stills 1,2,4,5,7,10,11,13,14.5,16,17.6,18,19,21"
+    "laguna-m:stills": "node scripts/render.js projects/laguna-m/composition.html build/laguna-m/stills --plates build/laguna-m/plates --stills 1,2,4,5,7,10,11,13,14.5,16,17.6,18,19,21",
+    "black-friday:frames": "mkdir -p build/black-friday/jpg build/black-friday/png && ffmpeg -v error -i projects/black-friday/source/BlackFriday_HomeDeluxe_16x9_1440p_original.mp4 -q:v 2 build/black-friday/jpg/f%04d.jpg && ffmpeg -v error -i projects/black-friday/source/BlackFriday_HomeDeluxe_16x9_1440p_original.mp4 -frames:v 752 build/black-friday/png/f%04d.png",
+    "black-friday:clean": "python3 -I projects/black-friday/remove_text.py build/black-friday",
+    "black-friday:render": "python3 -I projects/black-friday/build.py build/black-friday projects/black-friday/source/BlackFriday_HomeDeluxe_16x9_1440p_original.mp4 projects/black-friday/output/BlackFriday_HomeDeluxe_16x9_1440p.mp4"
   },
   "devDependencies": {
     "playwright": "1.56.1"
