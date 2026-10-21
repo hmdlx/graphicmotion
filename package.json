@@ -9,6 +9,8 @@
     "laguna-m:stills": "node scripts/render.js projects/laguna-m/composition.html build/laguna-m/stills --plates build/laguna-m/plates --stills 1,2,4,5,7,10,11,13,14.5,16,17.6,18,19,21",
     "black-friday:frames": "mkdir -p build/black-friday/jpg build/black-friday/png && ffmpeg -v error -i projects/black-friday/source/BlackFriday_HomeDeluxe_16x9_1440p_original.mp4 -q:v 2 build/black-friday/jpg/f%04d.jpg && ffmpeg -v error -i projects/black-friday/source/BlackFriday_HomeDeluxe_16x9_1440p_original.mp4 -frames:v 752 build/black-friday/png/f%04d.png",
     "black-friday:clean": "python3 -I projects/black-friday/remove_text.py build/black-friday",
+    "black-friday:overlay": "node projects/black-friday/render_overlay.js build/black-friday/overlay",
+    "black-friday:overlay-stills": "node projects/black-friday/render_overlay.js build/black-friday/overlay-stills 300,474,560,690",
     "black-friday:render": "python3 -I projects/black-friday/build.py build/black-friday projects/black-friday/source/BlackFriday_HomeDeluxe_16x9_1440p_original.mp4 projects/black-friday/output/BlackFriday_HomeDeluxe_16x9_1440p.mp4"
   },
   "devDependencies": {

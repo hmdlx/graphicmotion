@@ -4,9 +4,11 @@ Aufruf: python3 -I build.py <work-dir> <quelle.mp4> <ausgabe.mp4>
   <work-dir>/png/f%04d.png   verlustfreie Frames der Quelle
   <work-dir>/jpg/f%04d.jpg   Frames, aus denen remove_text.py gerechnet hat
   <work-dir>/clean/f%04d.png Ergebnis von remove_text.py
+  <work-dir>/overlay/o%04d.png Grafik-Ebene mit Alpha je Output-Frame (render_overlay.js), optional
 Die Retusche wird als Differenz (clean - jpg) auf die PNG-Frames gelegt, damit außerhalb
 des Textbereichs keine zweite Kompressionsstufe entsteht.
 """
+import os
 import subprocess
 import sys
 
@@ -30,6 +32,15 @@ def prod(i):
         f += cv2.imread(f'{WORK}/clean/f{i + 1:04d}.png').astype(np.float32) \
             - cv2.imread(f'{WORK}/jpg/f{i + 1:04d}.jpg').astype(np.float32)
     return f
+
+
+def overlay(f, n):
+    path = f'{WORK}/overlay/o{n:04d}.png'
+    if not os.path.exists(path):
+        return f
+    o = cv2.imread(path, cv2.IMREAD_UNCHANGED)
+    a = o[..., 3:].astype(np.float32) / 255
+    return f * (1 - a) + o[..., :3].astype(np.float32) * a
 
 
 ni, npd = INTRO[1] - INTRO[0], PROD[1] - PROD[0]
@@ -57,6 +68,7 @@ for n, s in enumerate(seq):
         f = prod(s[1])
     else:
         f = src(s[1]) * (1 - s[3]) + prod(s[2]) * s[3]
+    f = overlay(f, n)
     if n < FADE_IN:
         f *= (n + 1) / (FADE_IN + 1)
     if n >= N - FADE_OUT:

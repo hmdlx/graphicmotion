@@ -42,6 +42,21 @@ und die große Sequenz „BLACK FRIDAY“ → „-25% AUF ALLES“ läuft jetzt 
 | 8,0–8,5 s | Überblendung auf das leere Podest | – |
 | 8,5–31,0 s | Sauna, Whirlpool, Sofa, Dampfdusche – ohne Text links, Abblende am Ende | 0,0–23,0 s |
 
+Rechts neben jedem Produkt läuft eine Preis-Einblendung (`overlay.html` / `overlay.js`, transparente
+Ebene, die `build.py` über das Bild legt): Lichtlinie schießt nach rechts, Klammer wächst, Titel fährt
+aus der Maske hoch, `-25%`-Badge springt auf, der alte Preis wird durchgestrichen, eine Scan-Kante legt
+den neuen Preis frei. Abgang per Lichtkante; beim Whirlpool wischt der Lichtstrahl aus dem Film die
+Grafik weg und läuft in der Grafik über den Bildrand weiter.
+
+| Zeit | Produkt | Preis (Shop, 21.10.2026) | -25 % (gerundet) |
+|---|---|---|---|
+| 10,5–14,3 s | Traditionelle Sauna SHADOW - XL | 2.399 € | 1.799 € |
+| 16,6–20,2 s | Outdoor Whirlpool SEA STAR – mit Treppe und Thermoabdeckung | 3.499 € | 2.624 € |
+| 21,4–24,5 s | Teddy Sofa COMO - Beige | 399 € | 299 € |
+| 26,3–29,7 s | Dampfdusche EXCLUSIVE - Weiß | 1.949 € | 1.462 € |
+
+Texte, Preise und Timings stehen in `PRODUCTS` in `overlay.js` (Zeiten in Quell-Frames).
+
 Der Ton ist mit dem Bild umgeschnitten (Sound-Design bleibt synchron, 0,5 s Crossfade).
 `remove_text.py` rechnet die Text-Ebene aus dem Median aller Frames heraus und füllt nur die
 deckenden Buchstaben aus der Umgebung auf, sodass Lichtlinien und -strahlen, die durch den
@@ -50,6 +65,7 @@ Textbereich laufen, erhalten bleiben.
 ```bash
 npm run black-friday:frames   # Quelle -> JPG- und PNG-Frames (build/black-friday)
 npm run black-friday:clean    # Text links entfernen (Python 3 mit numpy + opencv-python-headless)
+npm run black-friday:overlay  # Preis-Einblendungen als PNG mit Alpha (build/black-friday/overlay)
 npm run black-friday:render   # -> projects/black-friday/output/BlackFriday_HomeDeluxe_16x9_1440p.mp4
 ```
 

@@ -84,13 +84,12 @@ def clean(i):
     rng = np.random.default_rng(i)
     im = load(i)
     c = im[Y0:Y1, X0:X1].astype(np.float32)
-    # Deckkraft des Texts in diesem Frame (1, fällt nur beim Ausblenden ab Frame 506)
-    k = float(np.median(c.max(2)[coreA])) / M_core
-    a = A * min(max((k - 0.03) / 0.97, 0), 1)
-    hole = cv2.dilate((a.max(2) > 0.35).astype(np.uint8), el(1))
-    bg = (c - 255 * a) / np.maximum(1 - a, 0.5)
+    # Helligkeit der Text-Ebene: 1, beim Abblenden ab Frame 506 wird das Bild samt Text dunkler
+    f = min(max(float(np.median(c.max(2)[coreA])) / M_core, 0), 1)
+    hole = cv2.dilate((A.max(2) > 0.35).astype(np.uint8), el(1))
+    bg = (c - 255 * f * A) / np.maximum(1 - A, 0.5)
     W = (1 - hole).astype(np.float32)
-    R = bg - P
+    R = bg - f * P
     Rb = cv2.blur(R * W[..., None], (3, 3)) / np.maximum(cv2.blur(W, (3, 3)), 1e-3)[..., None]
     H, okh, sh = dirfill(Rb, hole)
     V, okv, sv = dirfill(Rb.transpose(1, 0, 2), hole.T)
@@ -110,7 +109,7 @@ def clean(i):
     hf = (c - cv2.GaussianBlur(c, (0, 0), 1.5))[ring]
     sd = float(np.median(np.abs(hf - np.median(hf)))) * 1.48
     n = cv2.GaussianBlur(rng.normal(0, 1, c.shape[:2]).astype(np.float32), (0, 0), 0.7)
-    filled = P + Rf + (n / n.std() * sd)[..., None]
+    filled = f * P + Rf + (n / n.std() * sd)[..., None]
     ah = np.maximum(cv2.GaussianBlur(hole.astype(np.float32), (0, 0), 1.5), hole)[..., None]
     o = bg * (1 - ah) + filled * ah
     o = c * (1 - rm) + o * rm
