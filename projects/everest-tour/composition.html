@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>Kombisauna EVEREST – POV-Tour + Modell-Karussell 16:9</title>
+<style>
+  @font-face { font-family: Poppins; font-weight: 400; src: url(../../assets/fonts/poppins/poppins-latin-400-normal.woff2) format("woff2"); }
+  @font-face { font-family: Poppins; font-weight: 500; src: url(../../assets/fonts/poppins/poppins-latin-500-normal.woff2) format("woff2"); }
+  @font-face { font-family: Poppins; font-weight: 600; src: url(../../assets/fonts/poppins/poppins-latin-600-normal.woff2) format("woff2"); }
+  @font-face { font-family: Poppins; font-weight: 700; src: url(../../assets/fonts/poppins/poppins-latin-700-normal.woff2) format("woff2"); }
+  @font-face { font-family: Poppins; font-weight: 800; src: url(../../assets/fonts/poppins/poppins-latin-800-normal.woff2) format("woff2"); }
+
+  /* Home Deluxe CI: Navy + Weiß + Grautöne, eckige Ecken, Poppins */
+  :root { --navy: #0e2234; --grey: #bdc1c4; --text: #43474a; --margin: 96px; }
+  * { box-sizing: border-box; margin: 0; padding: 0; border-radius: 0; }
+  html, body { width: 1920px; height: 1080px; overflow: hidden; background: #e9e7e3; }
+  body { font-family: Poppins, sans-serif; color: var(--navy); -webkit-font-smoothing: antialiased; }
+  #stage { position: absolute; inset: 0; overflow: hidden; }
+
+  /* Footage: zwei Ebenen für Überblendungen, eine gemeinsame Kamera-Skalierung */
+  #footage { position: absolute; inset: 0; overflow: hidden; transform-origin: 50% 50%; }
+  #footage img { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; object-fit: cover; transform-origin: 50% 50%; }
+  #flash { position: absolute; inset: 0; background: #fff; opacity: 0; }
+
+  .layer { position: absolute; inset: 0; pointer-events: none; }
+  .stack { position: absolute; display: flex; flex-direction: column; align-items: flex-start; }
+  .blk { position: relative; background: var(--navy); color: #fff; }
+  .blk.white { background: #fff; color: var(--navy); }
+  .ln { display: block; overflow: hidden; padding-bottom: .06em; margin-bottom: -.06em; }
+  .ln > span { display: inline-block; will-change: transform; }
+  .kick { font-weight: 600; font-size: 24px; line-height: 1; letter-spacing: .16em; text-transform: uppercase; padding: 18px 26px 16px; }
+
+  /* Intro */
+  #intro { left: var(--margin); top: 96px; }
+  #intro .big { font-weight: 800; font-size: 100px; line-height: 1; letter-spacing: -.01em; padding: 16px 30px 8px; }
+  #intro .tag { font-weight: 600; font-size: 34px; line-height: 1; padding: 18px 30px 16px; }
+
+  /* USP-Stopps */
+  .usp { left: var(--margin); }
+  .usp .big { font-weight: 800; font-size: 132px; line-height: 1; letter-spacing: -.015em; padding: 18px 30px 8px; white-space: nowrap; }
+  .usp .row { font-weight: 600; font-size: 32px; line-height: 1; padding: 18px 30px 16px; white-space: nowrap; }
+  .usp .row + .row { margin-top: 8px; }
+  #usp-ofen { top: 560px; }
+  #usp-ir { top: 560px; }
+  #brackets { position: absolute; left: 0; top: 0; }
+
+  /* USP-Chips bei der Rausfahrt */
+  #chips { left: var(--margin); top: 780px; gap: 10px; }
+  .chip { display: flex; align-items: center; gap: 18px; font-weight: 500; font-size: 30px; line-height: 1; padding: 18px 28px 16px 22px; background: #fff; color: var(--navy); white-space: nowrap; }
+  .chip i { display: block; width: 12px; height: 12px; background: var(--navy); flex: none; }
+  .chip b { font-weight: 700; }
+
+  /* Modell-Label + Größenwahl */
+  #model { left: var(--margin); top: 96px; }
+  #model .name { font-weight: 800; font-size: 76px; line-height: 1; letter-spacing: -.005em; padding: 16px 28px 8px; white-space: nowrap; }
+  #model .row { font-weight: 500; font-size: 28px; line-height: 1; padding: 15px 28px 13px; white-space: nowrap; margin-top: 8px; }
+  #sizes { position: absolute; right: var(--margin); top: 156px; display: flex; gap: 8px; }
+  #sizes::before { content: ''; position: absolute; inset: 0; background: rgba(255, 255, 255, .75); }
+  #sizes div { width: 74px; height: 56px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 24px; color: var(--navy); position: relative; overflow: hidden; }
+  #sizes div span { position: relative; z-index: 1; }
+  #sizes .fill { position: absolute; left: 0; top: 0; width: 74px; height: 56px; background: var(--navy); }
+
+  #logo { position: absolute; right: var(--margin); top: 100px; width: 250px; height: auto; }
+
+  /* Endcard */
+  #end-title { left: var(--margin); top: 96px; }
+  #end-title .big { font-weight: 800; font-size: 96px; line-height: 1; letter-spacing: -.01em; padding: 16px 30px 8px; white-space: nowrap; }
+  #end-title .tag { font-weight: 600; font-size: 32px; line-height: 1; padding: 18px 30px 16px; white-space: nowrap; }
+  .size-tag { position: absolute; top: 930px; transform: translateX(-50%); font-weight: 700; font-size: 26px; line-height: 1; padding: 14px 20px 12px; background: var(--navy); color: #fff; }
+  #end-price { position: absolute; right: var(--margin); top: 170px; display: flex; flex-direction: column; align-items: flex-end; gap: 10px; }
+  #end-price .from { font-weight: 800; font-size: 64px; line-height: 1; padding: 18px 30px 12px; background: var(--navy); color: #fff; white-space: nowrap; }
+  #end-price .from small { font-weight: 600; font-size: 30px; margin-right: 12px; }
+  #end-price .cta { font-weight: 600; font-size: 30px; line-height: 1; padding: 18px 28px 16px; background: #fff; color: var(--navy); white-space: nowrap; }
+</style>
+</head>
+<body>
+<div id="stage">
+  <div id="footage"><img id="imgA" alt=""><img id="imgB" alt=""></div>
+  <div id="flash"></div>
+
+  <svg class="layer" id="brackets" width="1920" height="1080" viewBox="0 0 1920 1080">
+    <path id="br1" d="" fill="none" stroke="#0e2234" stroke-width="7" stroke-linecap="square" />
+    <path id="br2" d="" fill="none" stroke="#0e2234" stroke-width="7" stroke-linecap="square" />
+  </svg>
+
+  <!-- Intro -->
+  <div class="stack" id="intro">
+    <div class="blk kick"><span class="ln"><span>Neu · Kombisauna</span></span></div>
+    <div class="blk white big"><span class="ln"><span>EVEREST</span></span></div>
+    <div class="blk tag"><span class="ln"><span>Sauna + Infrarot in einem</span></span></div>
+  </div>
+
+  <!-- Stopp 1: Saunaofen -->
+  <div class="stack usp" id="usp-ofen">
+    <div class="blk kick"><span class="ln"><span>01 · Finnische Sauna</span></span></div>
+    <div class="blk white big"><span class="ln"><span>bis <span class="num" data-to="100">100</span> °C</span></span></div>
+    <div class="blk row"><span class="ln"><span>Saunaofen 3,6 – 8 kW je nach Modell</span></span></div>
+  </div>
+
+  <!-- Stopp 2: Infrarot -->
+  <div class="stack usp" id="usp-ir">
+    <div class="blk kick"><span class="ln"><span>02 · Infrarot-Tiefenwärme</span></span></div>
+    <div class="blk white big"><span class="ln"><span><span class="num" data-to="400">400</span> W</span></span></div>
+    <div class="blk row"><span class="ln"><span>je Vollspektrumstrahler</span></span></div>
+  </div>
+
+  <!-- Rausfahrt: weitere USPs -->
+  <div class="stack" id="chips">
+    <div class="chip"><i></i><span>Massives Fichtenholz · <b>4,4 cm</b> Wandstärke</span></div>
+    <div class="chip"><i></i><span>Vollverglaste Front · <b>8 mm</b> ESG-Sicherheitsglas</span></div>
+    <div class="chip"><i></i><span>Flacher Einstieg · nur <b>4 cm</b></span></div>
+  </div>
+
+  <!-- Modell-Karussell -->
+  <div class="stack" id="model">
+    <div class="blk white name"><span class="ln"><span id="m-name">EVEREST XL</span></span></div>
+    <div class="blk row"><span class="ln"><span id="m-row1">200 × 200 cm · 5–6 Personen</span></span></div>
+    <div class="blk row"><span class="ln"><span id="m-row2">5× Infrarot 400 W · Saunaofen 8 kW</span></span></div>
+  </div>
+  <div id="sizes"><i class="fill"></i><div><span>S</span></div><div><span>M</span></div><div><span>L</span></div><div><span>XL</span></div></div>
+
+  <!-- Endcard -->
+  <div class="stack" id="end-title">
+    <div class="blk kick"><span class="ln"><span>Kombisauna EVEREST</span></span></div>
+    <div class="blk white big"><span class="ln"><span>Sauna + Infrarot</span></span></div>
+    <div class="blk tag"><span class="ln"><span>in 4 Größen · für 1 bis 6 Personen</span></span></div>
+  </div>
+  <div id="end-price">
+    <div class="from"><span class="ln"><span><small>ab</small>1.799 €</span></span></div>
+    <div class="cta"><span class="ln"><span>Jetzt entdecken · homedeluxe.de</span></span></div>
+  </div>
+  <div class="size-tag" data-x="310">S</div>
+  <div class="size-tag" data-x="615">M</div>
+  <div class="size-tag" data-x="1011">L</div>
+  <div class="size-tag" data-x="1496">XL</div>
+
+  <img id="logo" src="../../assets/logo/homedeluxe-logo-navy.svg" alt="Home Deluxe">
+</div>
+<script src="composition.js"></script>
+</body>
+</html>

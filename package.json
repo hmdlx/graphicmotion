@@ -12,7 +12,11 @@
     "everest:stills": "node scripts/render.js projects/everest/composition.html build/everest/stills --plates projects/everest/source --stills 0,2.7,2.85,3.05,4.5,6.0,6.25,6.5,8,9.95,10.1,10.35",
     "everest-16x9:render": "node scripts/render.js projects/everest/composition-16x9.html projects/everest/output/HomeDeluxe_Everest_2in1_16x9.mp4 --plates projects/everest/source",
     "everest-16x9:webp": "ffmpeg -v error -y -i projects/everest/output/HomeDeluxe_Everest_2in1_16x9.mp4 -vf fps=25,scale=1280:720:flags=lanczos -c:v libwebp_anim -lossless 0 -q:v 70 -compression_level 6 -loop 0 -an projects/everest/output/HomeDeluxe_Everest_2in1_16x9_1280.webp",
-    "everest-16x9:stills": "node scripts/render.js projects/everest/composition-16x9.html build/everest-16x9/stills --plates projects/everest/source --stills 0,2.7,2.85,3.05,4.5,6.0,6.25,6.5,8,9.95,10.1,10.35"
+    "everest-16x9:stills": "node scripts/render.js projects/everest/composition-16x9.html build/everest-16x9/stills --plates projects/everest/source --stills 0,2.7,2.85,3.05,4.5,6.0,6.25,6.5,8,9.95,10.1,10.35",
+    "everest-tour:plates": "projects/everest-tour/prepare.sh build/everest-tour/plates",
+    "everest-tour:keyframes": "python3 -I scripts/studio_keyframes.py projects/everest-tour/source projects/everest-tour/keyframes",
+    "everest-tour:render": "node scripts/render.js projects/everest-tour/composition.html projects/everest-tour/output/HomeDeluxe_Everest_Tour_16x9.mp4 --plates build/everest-tour/plates",
+    "everest-tour:stills": "node scripts/render.js projects/everest-tour/composition.html build/everest-tour/stills --plates build/everest-tour/plates --stills 0.8,3,5.6,9,12.6,15,17.5,19.4,22,24.6,29,32,36,39,41,43.5"
   },
   "devDependencies": {
     "playwright": "1.56.1"

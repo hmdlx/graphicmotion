@@ -11,6 +11,7 @@ rendert. ffmpeg schreibt die Frames anschließend als MP4.
 | `projects/laguna-m` | 9:16, 1080×1920, 30 fps, 18,5 s | `output/HomeDeluxe_Laguna-M_Reel_9x16.mp4` + Titelbild |
 | `projects/everest` | 1:1, 1080×1080, 30 fps, 11,2 s Loop | `output/HomeDeluxe_Everest_2in1_1x1.mp4` + `output/HomeDeluxe_Everest_2in1_640.webp` |
 | `projects/everest` (16:9) | 16:9, 1920×1080, 30 fps, 11,2 s Loop | `output/HomeDeluxe_Everest_2in1_16x9.mp4` + `output/HomeDeluxe_Everest_2in1_16x9_1280.webp` |
+| `projects/everest-tour` | 16:9, 1920×1080, 30 fps, 44,4 s | `output/HomeDeluxe_Everest_Tour_16x9.mp4` |
 
 ### Laguna M – Schnitt und Übergänge
 
@@ -52,6 +53,35 @@ nahtlos im Loop. Die 16:9-Fassung (`composition-16x9.html`) nutzt dasselbe `comp
 (homedeluxe.de, Art.-Nr. 75499): max. 80–100 °C, Saunaofen 3,6 kW, 1× 400 W Infrarot-Vollspektrumstrahler.
 Das Produktfoto ist der Freisteller `75499-…-EVEREST-S-freisteller01.jpg`, auf die Kabine zugeschnitten.
 
+### Kombisauna EVEREST – POV-Tour + Modell-Karussell
+
+POV-Durchgang durch die EVEREST XL mit zwei USP-Stopps, Rausfahrt ins Studio und ein ruhiges
+Showroom-Karussell über alle vier Größen. Die Bewegtbilder sind KI-Clips (Higgsfield, Kling 3.0 Pro,
+je 5 s, Start- und Endbild vorgegeben), alles Statische sind echte Bilder:
+
+- **Studio-Keyframes** (`keyframes/`, `scripts/studio_keyframes.py`): die Freisteller aus dem Shop
+  (`source/*_front|left|right.png`, Hintergrund per Flood-Fill entfernt) auf einer Hohlkehle mit
+  Softbox-Licht und Kontaktschatten. Sie sind Start- und Endbild jedes Karussell-Clips – dadurch
+  kommt jedes Produkt exakt so an, wie es ist (kein Morphing). Links steht jeweils die Ansicht mit
+  der Seitenwand rechts (Front dreht nach links), rechts die mit der Seitenwand links.
+- **USP-Stopps** (`source/stop_ofen.jpg`, `source/stop_strahler.jpg`): die Detailfotos, per
+  Higgsfield-Outpaint auf 16:9 erweitert.
+
+| Zeit | Bild | Grafik |
+|---|---|---|
+| 0,0–4,2 s | POV: Studio → durch die Glastür → Saunaofen (Speed-Ramp) | Intro „EVEREST – Sauna + Infrarot in einem“ |
+| 4,2–7,2 s | Stopp Ofen (Standbild, Push-in, Blitz) | 01 Finnische Sauna · bis 100 °C (zählt hoch) · Saunaofen 3,6–8 kW, Klammern |
+| 7,2–10,8 s | POV: Ofen → Infrarot-Strahler | |
+| 10,8–13,8 s | Stopp Strahler | 02 Infrarot-Tiefenwärme · 400 W je Vollspektrumstrahler, Klammern |
+| 13,8–18,2 s | POV: Rausfahrt ins Studio | Chips: 4,4 cm Fichtenholz · 8 mm ESG-Glas · 4 cm Einstieg |
+| 18,2–39,6 s | Karussell XL → L → M → S (Halt 1,6 s, Drehung 5 s) | Modell-Label (Maße, Personen, Strahler, Ofen) + Größenwahl S/M/L/XL |
+| 39,6–44,4 s | Line-up aller vier Größen | „Sauna + Infrarot in 4 Größen“, ab 1.799 €, CTA homedeluxe.de |
+
+Gewählte Clip-Varianten stehen in `prepare.sh` (`source/clips/`). Modelldaten laut homedeluxe.de
+(Art.-Nr. 75499–75502): S 100 × 120 cm, 1× IR, 3,6 kW · M 120 × 120 cm, 2× IR, 3,6 kW ·
+L 180 × 120 cm, 3× IR, 6 kW · XL 200 × 200 cm, 5× IR, 8 kW; alle bis 100 °C, 400 W je Strahler,
+4,4 cm Wand, 8 mm ESG, 4 cm Einstieg. Preis „ab 1.799 €“ = EVEREST S.
+
 ## Rendern
 
 Voraussetzungen: Node 18+, Python 3 mit numpy + Pillow, ffmpeg, Chromium für Playwright.
@@ -66,6 +96,8 @@ npm run everest:render      # -> projects/everest/output/HomeDeluxe_Everest_2in1
 npm run everest:webp        # -> animierte WebP 640×640, 25 fps, für Shop/Ads (Loop)
 npm run everest-16x9:render # -> projects/everest/output/HomeDeluxe_Everest_2in1_16x9.mp4
 npm run everest-16x9:webp   # -> animierte WebP 1280×720, 25 fps (Loop)
+npm run everest-tour:plates # gewählte KI-Clips -> build/everest-tour/plates
+npm run everest-tour:render # -> projects/everest-tour/output/HomeDeluxe_Everest_Tour_16x9.mp4
 ```
 
 Ein einzelnes Frame lässt sich auch im Browser prüfen:
@@ -79,6 +111,7 @@ assets/logo/              Home-Deluxe-Logo (weiß und navy, SVG)
 scripts/prepare_plates.sh Hochskalieren + Grading der Quelle
 scripts/track_points.py   Template-Tracking für Marker, die am Bild kleben
 scripts/render.js         Chromium -> PNG-Frames -> ffmpeg (H.264 + stumme AAC-Spur)
+scripts/studio_keyframes.py  Freisteller -> Studio-Keyframes (Hohlkehle, Kontaktschatten)
 projects/<name>/          source/, composition.html/.js, tracking.json, tracks.js, output/
 ```
 
