@@ -5,7 +5,8 @@
 //   node scripts/render.js <composition.html> <out.mp4> --plates <dir>
 //   node scripts/render.js <composition.html> <out_dir> --plates <dir> --stills 1,4.5,18
 //
-// The composition must expose window.COMP = { FPS, TOTAL, seek(n), ready }.
+// The composition must expose window.COMP = { FPS, TOTAL, seek(n), ready } and may set
+// W / H for formats other than 1080x1920.
 const path = require('path');
 const fs = require('fs');
 const { spawn } = require('child_process');
@@ -35,7 +36,8 @@ function writeFrame(stream, buf) {
   page.on('pageerror', e => { console.error('page error:', e.message); process.exitCode = 1; });
   await page.goto(url);
   await page.evaluate(() => window.COMP.ready);
-  const { FPS, TOTAL } = await page.evaluate(() => ({ FPS: window.COMP.FPS, TOTAL: window.COMP.TOTAL }));
+  const { FPS, TOTAL, W, H } = await page.evaluate(() => ({ FPS: window.COMP.FPS, TOTAL: window.COMP.TOTAL, W: window.COMP.W, H: window.COMP.H }));
+  if (W && H) await page.setViewportSize({ width: W, height: H });
 
   if (opts.stills) {
     fs.mkdirSync(opts.out, { recursive: true });

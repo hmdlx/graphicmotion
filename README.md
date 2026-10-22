@@ -9,6 +9,7 @@ rendert. ffmpeg schreibt die Frames anschließend als MP4.
 | Projekt | Format | Ergebnis |
 |---|---|---|
 | `projects/laguna-m` | 9:16, 1080×1920, 30 fps, 18,5 s | `output/HomeDeluxe_Laguna-M_Reel_9x16.mp4` + Titelbild |
+| `projects/everest` | 1:1, 1080×1080, 30 fps, 10,4 s Loop | `output/HomeDeluxe_Everest_2in1_1x1.mp4` + `output/HomeDeluxe_Everest_2in1_640.webp` |
 
 ### Laguna M – Schnitt und Übergänge
 
@@ -29,6 +30,25 @@ läuft nur mit ihren sauberen Frames (Schnittliste `SHOTS` in `composition.js`),
 Die Produktdaten stammen aus den Shop- und Händlerangaben zur LAGUNA M (homedeluxe.de, Hornbach).
 Preise sind bewusst nicht eingebaut, weil sie sich häufig ändern.
 
+### Kombisauna EVEREST – 2 in 1 Karussell
+
+Animierte Fassung der Shop-Kachel „2 IN 1 – Sauna + Infrarot“ (Everest S, 1.799 €). Die Infokarten
+sind Flächen einer Trommel, die sich um die waagerechte Achse dreht. Überschrift und Eck-Klammern im
+Produktfoto folgen immer der Karte, die gerade vorne ist:
+
+| Zeit | Karte vorne | Überschrift | Klammern im Foto |
+|---|---|---|---|
+| 0,0–2,4 s | Sauna: 100 °C · Finnische Sauna · inkl. 3,6 kW Saunaofen | **SAUNA** navy, + INFRAROT grau | Saunaofen (Ofen glüht leicht) |
+| 2,4–3,3 s | Trommel dreht, Sauna nach oben weg, Infrarot kommt von unten | Farben tauschen | wandern vom Ofen zum Strahler |
+| 3,3–5,8 s | Infrarot: 400 W · Infrarot-Tiefenwärme · inkl. Vollspektrumstrahler | SAUNA grau, **+ INFRAROT** navy | Vollspektrumstrahler (glüht) |
+| 5,8–6,8 s | Infrarot rutscht in Slot 2, Sauna dreht oben wieder ein | beide navy | zweites Paar löst sich und geht zurück zum Ofen |
+| 6,8–9,8 s | **beide Karten** untereinander | **SAUNA + INFRAROT** navy | Ofen und Strahler |
+| 9,8–10,4 s | Infrarot rollt zurück unter die Sauna-Karte | + INFRAROT wird grau | Strahler-Klammern ziehen sich zusammen |
+
+Das letzte Bild entspricht dem ersten, die Datei läuft also nahtlos im Loop. Daten laut Produktseite
+(homedeluxe.de, Art.-Nr. 75499): max. 80–100 °C, Saunaofen 3,6 kW, 1× 400 W Infrarot-Vollspektrumstrahler.
+Das Produktfoto ist der Freisteller `75499-…-EVEREST-S-freisteller01.jpg`, auf die Kabine zugeschnitten.
+
 ## Rendern
 
 Voraussetzungen: Node 18+, Python 3 mit numpy + Pillow, ffmpeg, Chromium für Playwright.
@@ -39,6 +59,8 @@ npm run laguna-m:plates     # Rohschnitt -> hochskalierte, leicht gegradete JPG-
 npm run laguna-m:track      # Punkt-Tracking -> projects/laguna-m/tracks.js (nur nötig, wenn tracking.json geändert wurde)
 npm run laguna-m:render     # -> projects/laguna-m/output/HomeDeluxe_Laguna-M_Reel_9x16.mp4
 npm run laguna-m:stills     # Kontrollbilder nach build/laguna-m/stills
+npm run everest:render      # -> projects/everest/output/HomeDeluxe_Everest_2in1_1x1.mp4
+npm run everest:webp        # -> animierte WebP 640×640 für Shop/Ads (Loop)
 ```
 
 Ein einzelnes Frame lässt sich auch im Browser prüfen:
@@ -48,7 +70,7 @@ Ein einzelnes Frame lässt sich auch im Browser prüfen:
 
 ```
 assets/fonts/poppins/     Poppins 400–800 (latin, OFL)
-assets/logo/              Home-Deluxe-Logo (weiß, SVG)
+assets/logo/              Home-Deluxe-Logo (weiß und navy, SVG)
 scripts/prepare_plates.sh Hochskalieren + Grading der Quelle
 scripts/track_points.py   Template-Tracking für Marker, die am Bild kleben
 scripts/render.js         Chromium -> PNG-Frames -> ffmpeg (H.264 + stumme AAC-Spur)
