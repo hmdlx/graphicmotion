@@ -9,6 +9,7 @@ rendert. ffmpeg schreibt die Frames anschließend als MP4.
 | Projekt | Format | Ergebnis |
 |---|---|---|
 | `projects/laguna-m` | 9:16, 1080×1920, 30 fps, 18,5 s | `output/HomeDeluxe_Laguna-M_Reel_9x16.mp4` + Titelbild |
+| `projects/wohnzimmer-casara` | 9:16, 1080×1920, 30 fps, 18,5 s | `output/HomeDeluxe_Wohnzimmer-CASARA_Reel_9x16.mp4` + Titelbild |
 
 ### Laguna M – Schnitt und Übergänge
 
@@ -29,6 +30,30 @@ läuft nur mit ihren sauberen Frames (Schnittliste `SHOTS` in `composition.js`),
 Die Produktdaten stammen aus den Shop- und Händlerangaben zur LAGUNA M (homedeluxe.de, Hornbach).
 Preise sind bewusst nicht eingebaut, weil sie sich häufig ändern.
 
+### Wohnzimmer CASARA – Shop the Look
+
+Quelle ist ein einzelnes Ambientefoto (`source/wohnzimmer_casara.webp`). Eine virtuelle Kamera
+fährt die Produkte nacheinander an (Kamerakeys `C` und Fahrten `MOVES` in `composition.js`),
+Marker, Eckrahmen und Spotlight hängen in Fotokoordinaten am Bild (`P`: Bounding-Box und
+Markerpunkt je Produkt).
+
+| Zeit | Einstellung | Grafik |
+|---|---|---|
+| 0,0–2,2 s | Totale, langsamer Push | Hook „Weiche Formen, warmes Licht.“ + „4 Lieblingsstücke zum Nachshoppen“ |
+| 2,2–5,2 s | Sofa | Eckrahmen rastet ein, Spotlight, Marker + Linie, Karte 01 Sofa CASARA |
+| 5,2–8,0 s | Sessel | Karte 02 Sessel CASARA |
+| 8,0–10,8 s | Reißschwenk in den Essbereich | Karte 03 Esstisch CAMILLO |
+| 10,8–13,3 s | Stuhl | Karte 04 Esszimmerstuhl CELESTE |
+| 13,3–18,5 s | Foto schrumpft in den Endcard-Rahmen | „Shop the Look“, nummerierte Pins mit Namen, CTA „Jetzt nachshoppen“ + homedeluxe.de, Slogan |
+
+Produkte (homedeluxe.de, Stand 22.10.2026):
+[Sofa CASARA](https://www.homedeluxe.de/sofa-casara_25129_60495/),
+[Sessel CASARA](https://www.homedeluxe.de/sessel-casara_25130_60498/),
+[Esstisch Rund CAMILLO](https://www.homedeluxe.de/wohnen/esszimmer/esstische/esstisch-rund-camillo_28581_73687/),
+[Esszimmerstuhl CELESTE Bouclé Weiß](https://www.homedeluxe.de/esszimmerstuhl-celeste-boucle-weiss-mengenauswahl_22002_55956/).
+Die Marmor-Couchtische, das Regal, die Stehlampe, der Teppich und die Bilder im Foto haben
+keine Entsprechung im Shop und sind deshalb nicht markiert. Preise sind bewusst nicht eingebaut.
+
 ## Rendern
 
 Voraussetzungen: Node 18+, Python 3 mit numpy + Pillow, ffmpeg, Chromium für Playwright.
@@ -41,6 +66,12 @@ npm run laguna-m:render     # -> projects/laguna-m/output/HomeDeluxe_Laguna-M_Re
 npm run laguna-m:stills     # Kontrollbilder nach build/laguna-m/stills
 ```
 
+```bash
+npm run wohnzimmer-casara:plate    # Foto -> 2x hochskalierte Plate (build/)
+npm run wohnzimmer-casara:render   # -> projects/wohnzimmer-casara/output/HomeDeluxe_Wohnzimmer-CASARA_Reel_9x16.mp4
+npm run wohnzimmer-casara:stills   # Kontrollbilder nach build/wohnzimmer-casara/stills
+```
+
 Ein einzelnes Frame lässt sich auch im Browser prüfen:
 `projects/laguna-m/composition.html?t=4.6` (Zeit in Sekunden, Plates müssen unter `build/` liegen).
 
@@ -49,7 +80,8 @@ Ein einzelnes Frame lässt sich auch im Browser prüfen:
 ```
 assets/fonts/poppins/     Poppins 400–800 (latin, OFL)
 assets/logo/              Home-Deluxe-Logo (weiß, SVG)
-scripts/prepare_plates.sh Hochskalieren + Grading der Quelle
+scripts/prepare_plates.sh Hochskalieren + Grading der Quelle (Video)
+scripts/prepare_still.sh  Foto 2x hochskalieren für Kamerafahrten (Standbild)
 scripts/track_points.py   Template-Tracking für Marker, die am Bild kleben
 scripts/render.js         Chromium -> PNG-Frames -> ffmpeg (H.264 + stumme AAC-Spur)
 projects/<name>/          source/, composition.html/.js, tracking.json, tracks.js, output/

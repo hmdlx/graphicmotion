@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>Wohnzimmer CASARA – Shop the Look 9:16</title>
+<style>
+  @font-face { font-family: Poppins; font-weight: 400; src: url(../../assets/fonts/poppins/poppins-latin-400-normal.woff2) format("woff2"); }
+  @font-face { font-family: Poppins; font-weight: 500; src: url(../../assets/fonts/poppins/poppins-latin-500-normal.woff2) format("woff2"); }
+  @font-face { font-family: Poppins; font-weight: 600; src: url(../../assets/fonts/poppins/poppins-latin-600-normal.woff2) format("woff2"); }
+  @font-face { font-family: Poppins; font-weight: 700; src: url(../../assets/fonts/poppins/poppins-latin-700-normal.woff2) format("woff2"); }
+  @font-face { font-family: Poppins; font-weight: 800; src: url(../../assets/fonts/poppins/poppins-latin-800-normal.woff2) format("woff2"); }
+
+  /* Home Deluxe CI: Navy + Weiß + Grautöne, eckige Ecken, Poppins */
+  :root {
+    --navy: #0e2234;
+    --navy-2: #1c3a54;
+    --muted: #66727d;
+    --light: #e9eef4;
+    --margin: 72px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; border-radius: 0; }
+  html, body { width: 1080px; height: 1920px; overflow: hidden; background: var(--navy); }
+  body { font-family: Poppins, sans-serif; color: #fff; -webkit-font-smoothing: antialiased; }
+
+  #stage { position: absolute; inset: 0; width: 1080px; height: 1920px; overflow: hidden; background: var(--navy); }
+  #footage { position: absolute; inset: 0; overflow: hidden; }
+  #photo { position: absolute; left: 0; top: 0; width: 1493px; height: 2000px; display: block; transform-origin: 0 0; }
+
+  /* Spotlight: navy veil outside the focus rect */
+  #spot { position: absolute; left: 0; top: 0; box-shadow: 0 0 0 3000px var(--veil, rgba(14, 34, 52, 0)); }
+
+  .layer { position: absolute; inset: 0; pointer-events: none; }
+  .stack { position: absolute; left: var(--margin); display: flex; flex-direction: column; align-items: flex-start; }
+  .blk { position: relative; background: var(--navy); color: #fff; box-shadow: 0 18px 50px rgba(14, 34, 52, .22); }
+  .blk.white { background: #fff; color: var(--navy); }
+  .ln { display: block; overflow: hidden; padding-bottom: .06em; margin-bottom: -.06em; }
+  .ln > span { display: inline-block; will-change: transform; }
+
+  .kicker { font-weight: 600; font-size: 26px; line-height: 1; letter-spacing: .18em; text-transform: uppercase; color: rgba(233, 238, 244, .78); display: flex; align-items: center; gap: 18px; }
+  .kicker i { display: block; width: 46px; height: 2px; background: rgba(233, 238, 244, .55); }
+
+  /* Logo plate (persistent) */
+  #logo { position: absolute; left: var(--margin); top: 120px; padding: 22px 26px; background: var(--navy); }
+  #logo img { display: block; width: 300px; height: auto; }
+
+  /* Hook */
+  #hook { top: 1040px; }
+  #hook .kick { padding: 22px 34px 20px; margin-bottom: 10px; }
+  #hook .big { font-weight: 700; font-size: 104px; line-height: 1.04; letter-spacing: -.015em; padding: 14px 34px 10px; }
+  #hook .tag { margin-top: 14px; font-weight: 600; font-size: 36px; line-height: 1; padding: 20px 34px 18px; letter-spacing: .01em; }
+  #hook .tag b { font-weight: 800; }
+
+  /* Product cards */
+  .card { padding: 32px 40px 30px; }
+  .card .kicker { margin-bottom: 18px; }
+  .card .hl { font-weight: 800; font-size: 112px; line-height: .98; letter-spacing: -.02em; }
+  .row { margin-top: 10px; font-weight: 500; font-size: 34px; line-height: 1; padding: 18px 40px 16px 26px; display: flex; align-items: center; gap: 18px; }
+  .row i { display: block; width: 10px; height: 10px; background: var(--navy); flex: none; }
+  #c-sofa { top: 330px; }
+  #c-sessel { top: 560px; }
+  #c-tisch { top: 1300px; }
+  #c-stuhl { top: 330px; }
+
+  /* Tracked markers */
+  .dot { position: absolute; left: 0; top: 0; width: 0; height: 0; }
+  .dot .core, .dot .ring, .dot .pulse { position: absolute; left: 0; top: 0; border-radius: 50%; transform: translate(-50%, -50%); }
+  .dot .core { width: 16px; height: 16px; background: #fff; box-shadow: 0 0 0 4px var(--navy); }
+  .dot .ring { width: 46px; height: 46px; border: 3px solid #fff; box-shadow: 0 0 0 2px rgba(14, 34, 52, .35); }
+  .dot .pulse { width: 46px; height: 46px; border: 2px solid #fff; }
+  .dot .num { position: absolute; left: 0; top: 0; transform: translate(-50%, -50%); width: 46px; height: 46px; display: flex; align-items: center; justify-content: center;
+    background: #fff; color: var(--navy); font-weight: 700; font-size: 20px; letter-spacing: .02em; }
+
+  /* End card */
+  #frame { position: absolute; left: 0; top: 0; }
+  #end-title { position: absolute; left: var(--margin); top: 250px; }
+  #end-title .blk { font-weight: 700; font-size: 56px; line-height: 1; letter-spacing: -.01em; padding: 20px 30px 16px; box-shadow: none; }
+  .etag { position: absolute; left: 0; top: 0; white-space: nowrap; font-weight: 500; font-size: 26px; line-height: 1; padding: 13px 18px 11px; background: var(--navy); color: #fff; }
+  #cta { position: absolute; left: var(--margin); top: 1426px; display: flex; align-items: center; gap: 34px; }
+  #cta .btn { background: #fff; color: var(--navy); font-weight: 600; font-size: 40px; line-height: 1; padding: 26px 40px 24px; display: flex; align-items: center; gap: 22px; }
+  #cta .btn svg { display: block; }
+  #cta .url { font-weight: 600; font-size: 38px; line-height: 1; position: relative; padding-bottom: 10px; }
+  #cta .url i { position: absolute; left: 0; bottom: 0; height: 3px; width: 100%; background: #fff; transform-origin: left; }
+  #slogan { position: absolute; left: var(--margin); top: 1564px; font-weight: 500; font-size: 30px; line-height: 1; color: rgba(233, 238, 244, .7); letter-spacing: .02em; }
+</style>
+</head>
+<body>
+<div id="stage">
+  <div id="footage"><img id="photo" alt=""></div>
+
+  <svg width="0" height="0" style="position:absolute">
+    <filter id="mblur" x="-10%" y="-10%" width="120%" height="120%" color-interpolation-filters="sRGB">
+      <feGaussianBlur id="mblur-g" stdDeviation="0 0" />
+    </filter>
+  </svg>
+
+  <div class="layer"><div id="spot"></div></div>
+
+  <svg class="layer" id="vector" width="1080" height="1920" viewBox="0 0 1080 1920">
+    <path id="brackets" d="" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="square" />
+    <line id="leader" x1="0" y1="0" x2="0" y2="0" stroke="#fff" stroke-width="3" />
+    <rect id="frame-rect" x="0" y="0" width="0" height="0" fill="none" stroke="rgba(233,238,244,.45)" stroke-width="2" />
+  </svg>
+
+  <div class="layer" id="dots"></div>
+
+  <!-- 00 Hook -->
+  <div class="stack" id="hook">
+    <div class="blk kick"><div class="kicker"><span class="ln"><span>Shop the Look</span></span><i></i></div></div>
+    <div class="blk big"><span class="ln"><span>Weiche</span></span></div>
+    <div class="blk big"><span class="ln"><span>Formen,</span></span></div>
+    <div class="blk big"><span class="ln"><span>warmes Licht.</span></span></div>
+    <div class="blk white tag"><span class="ln"><span>4 Lieblingsstücke zum <b>Nachshoppen</b></span></span></div>
+  </div>
+
+  <!-- 01 Sofa -->
+  <div class="stack" id="c-sofa">
+    <div class="blk card">
+      <div class="kicker"><span class="ln"><span>01 / 04</span></span><i></i><span class="ln"><span>Sofa</span></span></div>
+      <div class="hl"><span class="ln"><span>CASARA</span></span></div>
+    </div>
+    <div class="blk white row"><i></i><span class="ln"><span>Geschwungene Form</span></span></div>
+    <div class="blk white row"><i></i><span class="ln"><span>258 × 128 cm · Webstoff Beige</span></span></div>
+  </div>
+
+  <!-- 02 Sessel -->
+  <div class="stack" id="c-sessel">
+    <div class="blk card">
+      <div class="kicker"><span class="ln"><span>02 / 04</span></span><i></i><span class="ln"><span>Sessel</span></span></div>
+      <div class="hl"><span class="ln"><span>CASARA</span></span></div>
+    </div>
+    <div class="blk white row"><i></i><span class="ln"><span>Passend zum Sofa</span></span></div>
+    <div class="blk white row"><i></i><span class="ln"><span>Schwebendes Design</span></span></div>
+  </div>
+
+  <!-- 03 Esstisch -->
+  <div class="stack" id="c-tisch">
+    <div class="blk card">
+      <div class="kicker"><span class="ln"><span>03 / 04</span></span><i></i><span class="ln"><span>Esstisch</span></span></div>
+      <div class="hl"><span class="ln"><span>CAMILLO</span></span></div>
+    </div>
+    <div class="blk white row"><i></i><span class="ln"><span>Rund · Ø 120 cm</span></span></div>
+  </div>
+
+  <!-- 04 Esszimmerstuhl -->
+  <div class="stack" id="c-stuhl">
+    <div class="blk card">
+      <div class="kicker"><span class="ln"><span>04 / 04</span></span><i></i><span class="ln"><span>Esszimmerstuhl</span></span></div>
+      <div class="hl"><span class="ln"><span>CELESTE</span></span></div>
+    </div>
+    <div class="blk white row"><i></i><span class="ln"><span>Bouclé mit Armlehne</span></span></div>
+  </div>
+
+  <!-- End card -->
+  <div class="layer" id="etags">
+    <div class="etag">Sofa CASARA</div>
+    <div class="etag">Sessel CASARA</div>
+    <div class="etag">Esstisch CAMILLO</div>
+    <div class="etag">Stuhl CELESTE</div>
+  </div>
+  <div class="stack" id="end-title"><div class="blk"><span class="ln"><span>Shop the Look</span></span></div></div>
+  <div id="cta">
+    <div class="btn"><span>Jetzt nachshoppen</span>
+      <svg width="40" height="24" viewBox="0 0 40 24"><path d="M0 12h36M26 2l10 10-10 10" fill="none" stroke="#0e2234" stroke-width="3.2"/></svg>
+    </div>
+    <div class="url">homedeluxe.de<i></i></div>
+  </div>
+  <div id="slogan"><span class="ln"><span>Wir machen dein Zuhause.</span></span></div>
+
+  <div id="logo"><img src="../../assets/logo/homedeluxe-logo-white.svg" alt="Home Deluxe"></div>
+</div>
+
+<script src="composition.js"></script>
+</body>
+</html>
