@@ -96,14 +96,14 @@ const L = P ? {
   winTop: (H - W) / 2,
   frame: { l: 36, t: 290, r: W - 36, b: H - 96 },
   capBottom: 150, titleBottom: 118,
-  chipTop: 430, legend: { x: W - 72 - 22 - 64, y: 520, h: 360 },
+  chip: { top: 1090, left: 72 }, legend: { x: W - 72 - 22 - 64, y: 520, h: 360 },
   prog: { right: 72, top: 140 },
   end: { logoTop: 140, coverY: 770, coverW: 880, shadowY: 1110, shadowW: 720, textTop: 1190 },
 } : {
   winTop: 0,
   frame: { l: 28, t: 28, r: W - 28, b: H - 28 },
   capBottom: 56, titleBottom: 56,
-  chipTop: 150, legend: { x: W - 56 - 22 - 60, y: 420, h: 260 },
+  chip: { top: 178, right: 56 }, legend: { x: W - 56 - 22 - 60, y: 420, h: 260 },
   prog: { right: 56, bottom: 60 },
   end: { logoTop: 56, coverY: 330, coverW: 620, shadowY: 545, shadowW: 520, textTop: 610 },
 };
@@ -117,7 +117,7 @@ $('#win').style.top = WIN.t + 'px';
 $('#mask').style.top = WIN.t + 'px';
 for (const id of ['#cap1', '#cap2', '#cap3', '#cap4']) $(id).style.bottom = L.capBottom + 'px';
 $('#title').style.bottom = L.titleBottom + 'px';
-for (const c of $$('.chip')) c.style.top = L.chipTop + 'px';
+for (const c of $$('.chip')) Object.assign(c.style, { top: L.chip.top + 'px' }, L.chip.right !== undefined ? { left: 'auto', right: L.chip.right + 'px' } : { left: L.chip.left + 'px' });
 Object.assign($('#legend').style, { left: L.legend.x + 'px', top: L.legend.y + 'px', height: L.legend.h + 'px' });
 Object.assign($('#prog').style, { right: L.prog.right + 'px' }, L.prog.top !== undefined ? { top: L.prog.top + 'px' } : { bottom: L.prog.bottom + 'px' });
 $('#endLogo').style.top = L.end.logoTop + 'px';
@@ -198,7 +198,7 @@ function coverState(t) {
   let lift = 0, rx = 0, ry = 0, sq = 1;
   // heat demo: lift and drop back
   const l1 = E.inOut(prog(t, ...T.lift1)), d1 = E.in(prog(t, ...T.drop1));
-  if (t < T.lift2[0]) lift = 0.55 * l1 * (1 - d1);
+  if (t < T.lift2[0]) lift = 0.42 * l1 * (1 - d1);
   // landing squash
   const land = (tl) => { const k = prog(t, tl, tl + 0.45); return k > 0 && k < 1 ? 1 - 0.07 * Math.sin(Math.PI * k) * (1 - k) * 2 : 1; };
   sq *= land(T.drop1[1]);
