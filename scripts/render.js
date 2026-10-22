@@ -72,6 +72,8 @@ function writeFrame(stream, buf) {
 
   const browser = await chromium.launch();
   const page = await browser.newPage({ viewport: { width: vw, height: vh }, deviceScaleFactor: 1 });
+  // Software WebGL under full CPU load can take well over the 30 s default per frame.
+  page.setDefaultTimeout(0);
   page.on('pageerror', e => { console.error('page error:', e.message); process.exitCode = 1; });
   page.on('console', m => { if (m.type() === 'error') console.error('console:', m.text()); });
   await page.goto(url);
