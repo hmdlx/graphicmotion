@@ -9,7 +9,10 @@
     "laguna-m:stills": "node scripts/render.js projects/laguna-m/composition.html build/laguna-m/stills --plates build/laguna-m/plates --stills 1,2,4,5,7,10,11,13,14.5,16,17.6,18,19,21",
     "everest:render": "node scripts/render.js projects/everest/composition.html projects/everest/output/HomeDeluxe_Everest_2in1_1x1.mp4 --plates projects/everest/source",
     "everest:webp": "ffmpeg -v error -y -i projects/everest/output/HomeDeluxe_Everest_2in1_1x1.mp4 -vf scale=640:640:flags=lanczos -c:v libwebp_anim -lossless 0 -q:v 88 -loop 0 -an projects/everest/output/HomeDeluxe_Everest_2in1_640.webp",
-    "everest:stills": "node scripts/render.js projects/everest/composition.html build/everest/stills --plates projects/everest/source --stills 0,2.7,2.85,3.05,4.5,6.0,6.25,6.5,8,9.95,10.1,10.35"
+    "everest:stills": "node scripts/render.js projects/everest/composition.html build/everest/stills --plates projects/everest/source --stills 0,2.7,2.85,3.05,4.5,6.0,6.25,6.5,8,9.95,10.1,10.35",
+    "everest-16x9:render": "node scripts/render.js projects/everest/composition-16x9.html projects/everest/output/HomeDeluxe_Everest_2in1_16x9.mp4 --plates projects/everest/source",
+    "everest-16x9:webp": "ffmpeg -v error -y -i projects/everest/output/HomeDeluxe_Everest_2in1_16x9.mp4 -vf scale=1280:720:flags=lanczos -c:v libwebp_anim -lossless 0 -q:v 85 -loop 0 -an projects/everest/output/HomeDeluxe_Everest_2in1_16x9_1280.webp",
+    "everest-16x9:stills": "node scripts/render.js projects/everest/composition-16x9.html build/everest-16x9/stills --plates projects/everest/source --stills 0,2.7,2.85,3.05,4.5,6.0,6.25,6.5,8,9.95,10.1,10.35"
   },
   "devDependencies": {
     "playwright": "1.56.1"

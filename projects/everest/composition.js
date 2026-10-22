@@ -1,4 +1,4 @@
-// Kombisauna EVEREST – 2 in 1, Shop-Kachel 1:1 als Loop. Die Infokarten drehen sich
+// Kombisauna EVEREST – 2 in 1 als Loop (Shop-Kachel 1:1 und 16:9). Die Infokarten drehen sich
 // wie ein Karussell (Trommel um die waagerechte Achse): Sauna -> Infrarot, am Ende
 // stehen beide Karten untereinander. Überschrift und Eck-Klammern im Produktfoto
 // folgen immer der Karte, die gerade vorne ist:
@@ -8,7 +8,9 @@
 // window.COMP.seek(n) puts the stage into the exact state of output frame n.
 (() => {
   const FPS = 30;
-  const W = 1080, H = 1080;
+  // Formatabhängige Maße; die 16:9-Fassung setzt window.LAYOUT vor diesem Skript.
+  const L = Object.assign({ W: 1080, H: 1080, cardH: 216, gap: 22, photoW: 320, photoH: 616 }, window.LAYOUT);
+  const { W, H } = L;
   const TOTAL = 312;                              // 10,4 s, letztes Bild = Startbild -> nahtloser Loop
   const params = new URLSearchParams(location.search);
   const SRC = params.get('plates') || 'source';
@@ -19,15 +21,15 @@
     both: 5.8, bothDur: 1.0,                      // Infrarot rutscht in Slot 2, Sauna dreht oben wieder rein
     back: 9.8, backDur: 0.6,                      // Infrarot rollt zurück in die Trommel -> Startzustand
   };
-  const SLOT2 = 238;                              // Abstand Slot 1 -> Slot 2 (Kartenhöhe 216 + 22)
-  const DEPTH = 108;                              // halbe Kartenhöhe = Trommelradius
+  const SLOT2 = L.cardH + L.gap;                  // Abstand Slot 1 -> Slot 2
+  const DEPTH = L.cardH / 2;                      // halbe Kartenhöhe = Trommelradius
 
-  // Produktfoto: Quelle 468 x 900, angezeigt 320 x 616. Bauteile in Quell-px.
-  const SX = 320 / 468, SY = 616 / 900;
+  // Produktfoto: Quelle 468 x 900, angezeigt photoW x photoH. Bauteile in Quell-px.
+  const SX = L.photoW / 468, SY = L.photoH / 900, PS = L.photoW / 320;
   const box = ([x0, y0, x1, y1]) => [x0 * SX, y0 * SY, x1 * SX, y1 * SY];
   const OFEN = box([16, 586, 178, 886]);
   const STRAHLER = box([196, 212, 276, 494]);
-  const ARM = 22;
+  const ARM = 22 * PS;
 
   const NAVY = [14, 34, 52], GREY = [189, 193, 196];
 
@@ -124,8 +126,8 @@
 
     // --- Wärme: Ofen glüht bei Sauna, Strahler bei Infrarot ---
     const pulse = 0.5 + 0.5 * Math.sin(t * 2 * Math.PI / 1.3);
-    glow(el.glowOfen, [OFEN[0], OFEN[1] - 8, OFEN[2], OFEN[1] + 40], 170, 110, visA * (0.22 + 0.12 * pulse));
-    glow(el.glowIr, STRAHLER, 120, 250, visB * (0.18 + 0.14 * pulse));
+    glow(el.glowOfen, [OFEN[0], OFEN[1] - 8 * PS, OFEN[2], OFEN[1] + 40 * PS], 170 * PS, 110 * PS, visA * (0.22 + 0.12 * pulse));
+    glow(el.glowIr, STRAHLER, 120 * PS, 250 * PS, visB * (0.18 + 0.14 * pulse));
   }
 
   const img = $('#photo');

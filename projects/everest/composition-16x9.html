@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>Kombisauna EVEREST – 2 in 1 Karussell 16:9</title>
+<style>
+  @font-face { font-family: Poppins; font-weight: 400; src: url(../../assets/fonts/poppins/poppins-latin-400-normal.woff2) format("woff2"); }
+  @font-face { font-family: Poppins; font-weight: 500; src: url(../../assets/fonts/poppins/poppins-latin-500-normal.woff2) format("woff2"); }
+  @font-face { font-family: Poppins; font-weight: 600; src: url(../../assets/fonts/poppins/poppins-latin-600-normal.woff2) format("woff2"); }
+  @font-face { font-family: Poppins; font-weight: 700; src: url(../../assets/fonts/poppins/poppins-latin-700-normal.woff2) format("woff2"); }
+  @font-face { font-family: Poppins; font-weight: 800; src: url(../../assets/fonts/poppins/poppins-latin-800-normal.woff2) format("woff2"); }
+
+  /* Home Deluxe CI: Navy + Weiß + Grautöne, eckige Ecken, Poppins.
+     16:9: links Überschrift + Karussell, rechts das Produktfoto, unten Logo und Preis. */
+  :root {
+    --navy: #0e2234;
+    --grey: #bdc1c4;
+    --card: #ececec;
+    --text: #43474a;
+    --margin: 96px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; border-radius: 0; }
+  html, body { width: 1920px; height: 1080px; overflow: hidden; background: #fff; }
+  body { font-family: Poppins, sans-serif; color: var(--navy); -webkit-font-smoothing: antialiased; }
+  #stage { position: absolute; inset: 0; overflow: hidden; background: #fff; }
+
+  #kicker { position: absolute; left: 104px; top: 66px; font-weight: 600; font-size: 30px; line-height: 1; letter-spacing: .015em; color: var(--text); white-space: nowrap; }
+  #twoinone { position: absolute; left: 89px; top: 104px; font-weight: 800; font-size: 210px; line-height: 1; letter-spacing: -.008em; white-space: nowrap; }
+  .mode { position: absolute; left: 830px; font-weight: 800; font-size: 84px; line-height: 1; letter-spacing: -.025em; white-space: nowrap; }
+  #m-sauna { top: 136px; }
+  #m-ir { top: 231px; }
+
+  /* Karussell: Karten sind Flächen einer Trommel, die um die waagerechte Achse dreht */
+  #carousel { position: absolute; left: var(--margin); top: 350px; width: 1204px; height: 240px; perspective: 2400px; perspective-origin: 50% 50%; }
+  .card { position: absolute; left: 0; top: 0; width: 1204px; height: 240px; background: var(--card); padding: 31px 38px 0; backface-visibility: hidden; transform-origin: 50% 50%; will-change: transform; }
+  .card .shade { position: absolute; inset: 0; background: var(--navy); opacity: 0; pointer-events: none; }
+  .card .lbl { font-weight: 700; font-size: 21px; line-height: 1; letter-spacing: .01em; }
+  .card .big { margin: 13px 0 0 -4px; font-weight: 800; font-size: 96px; line-height: 1; letter-spacing: -.005em; white-space: nowrap; }
+  .card .name { margin-top: 7px; font-weight: 700; font-size: 30px; line-height: 1; letter-spacing: .005em; }
+  .card .sub { margin-top: 8px; font-weight: 400; font-size: 26px; line-height: 1; letter-spacing: -.01em; color: #2a3138; }
+
+  #photo-wrap { position: absolute; left: 1415px; top: 70px; width: 409px; height: 786px; overflow: hidden; }
+  #photo { display: block; width: 100%; height: 100%; object-fit: cover; }
+  .glow { position: absolute; left: 0; top: 0; border-radius: 50%; mix-blend-mode: screen; pointer-events: none; opacity: 0; }
+  #glow-ir { background: radial-gradient(closest-side, rgba(255, 70, 40, .85), rgba(255, 50, 30, .35) 45%, rgba(255, 40, 20, 0) 100%); }
+  #glow-ofen { background: radial-gradient(closest-side, rgba(255, 170, 90, .75), rgba(255, 140, 60, .3) 45%, rgba(255, 120, 40, 0) 100%); }
+  #brackets { position: absolute; left: 0; top: 0; overflow: visible; }
+
+  #divider { position: absolute; left: var(--margin); top: 896px; width: 1728px; height: 3px; background: var(--card); }
+  #logo { position: absolute; left: var(--margin); top: 960px; width: 360px; height: auto; display: block; }
+  #price { position: absolute; left: 1554px; top: 930px; width: 270px; height: 98px; background: var(--navy); color: #fff; display: flex; align-items: center; justify-content: center;
+    font-weight: 800; font-size: 59px; line-height: 1; letter-spacing: .005em; padding-top: 5px; }
+</style>
+</head>
+<body>
+<div id="stage">
+  <div id="kicker">NEU &nbsp;·&nbsp; KOMBISAUNA EVEREST</div>
+  <div id="twoinone">2 IN 1</div>
+  <div class="mode" id="m-sauna">SAUNA</div>
+  <div class="mode" id="m-ir">+ INFRAROT</div>
+
+  <div id="carousel">
+    <!-- Karte 1: Sauna -> markiert den Saunaofen -->
+    <div class="card" id="card-sauna">
+      <div class="lbl">MAX. TEMPERATUR</div>
+      <div class="big">100 °C</div>
+      <div class="name">FINNISCHE SAUNA</div>
+      <div class="sub">inkl. 3,6 kW Saunaofen</div>
+      <div class="shade"></div>
+    </div>
+    <!-- Karte 2: Infrarot -> markiert den Vollspektrumstrahler -->
+    <div class="card" id="card-ir">
+      <div class="lbl">INFRAROT-LEISTUNG</div>
+      <div class="big">400 W</div>
+      <div class="name">INFRAROT-TIEFENWÄRME</div>
+      <div class="sub">inkl. Vollspektrumstrahler</div>
+      <div class="shade"></div>
+    </div>
+  </div>
+
+  <div id="photo-wrap">
+    <img id="photo" alt="">
+    <div class="glow" id="glow-ofen"></div>
+    <div class="glow" id="glow-ir"></div>
+    <svg id="brackets" width="409" height="786" viewBox="0 0 409 786">
+      <path id="br-sauna" d="" fill="none" stroke="#0e2234" stroke-width="6" stroke-linecap="square" />
+      <path id="br-ir" d="" fill="none" stroke="#0e2234" stroke-width="6" stroke-linecap="square" />
+    </svg>
+  </div>
+
+  <div id="divider"></div>
+  <img id="logo" src="../../assets/logo/homedeluxe-logo-navy.svg" alt="Home Deluxe">
+  <div id="price">1.799 €</div>
+</div>
+<script>window.LAYOUT = { W: 1920, H: 1080, cardH: 240, gap: 26, photoW: 409, photoH: 786 };</script>
+<script src="composition.js"></script>
+</body>
+</html>

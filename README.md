@@ -10,6 +10,7 @@ rendert. ffmpeg schreibt die Frames anschließend als MP4.
 |---|---|---|
 | `projects/laguna-m` | 9:16, 1080×1920, 30 fps, 18,5 s | `output/HomeDeluxe_Laguna-M_Reel_9x16.mp4` + Titelbild |
 | `projects/everest` | 1:1, 1080×1080, 30 fps, 10,4 s Loop | `output/HomeDeluxe_Everest_2in1_1x1.mp4` + `output/HomeDeluxe_Everest_2in1_640.webp` |
+| `projects/everest` (16:9) | 16:9, 1920×1080, 30 fps, 10,4 s Loop | `output/HomeDeluxe_Everest_2in1_16x9.mp4` + `output/HomeDeluxe_Everest_2in1_16x9_1280.webp` |
 
 ### Laguna M – Schnitt und Übergänge
 
@@ -45,7 +46,7 @@ Produktfoto folgen immer der Karte, die gerade vorne ist:
 | 6,8–9,8 s | **beide Karten** untereinander | **SAUNA + INFRAROT** navy | Ofen und Strahler |
 | 9,8–10,4 s | Infrarot rollt zurück unter die Sauna-Karte | + INFRAROT wird grau | Strahler-Klammern ziehen sich zusammen |
 
-Das letzte Bild entspricht dem ersten, die Datei läuft also nahtlos im Loop. Daten laut Produktseite
+Das letzte Bild entspricht dem ersten, die Datei läuft also nahtlos im Loop. Die 16:9-Fassung (`composition-16x9.html`) nutzt dasselbe `composition.js` mit identischem Timing; sie setzt nur `window.LAYOUT` (Format, Kartenhöhe, Fotogröße): links Überschrift und Karussell, rechts das Produktfoto, unten Logo und Preis. Daten laut Produktseite
 (homedeluxe.de, Art.-Nr. 75499): max. 80–100 °C, Saunaofen 3,6 kW, 1× 400 W Infrarot-Vollspektrumstrahler.
 Das Produktfoto ist der Freisteller `75499-…-EVEREST-S-freisteller01.jpg`, auf die Kabine zugeschnitten.
 
@@ -61,6 +62,8 @@ npm run laguna-m:render     # -> projects/laguna-m/output/HomeDeluxe_Laguna-M_Re
 npm run laguna-m:stills     # Kontrollbilder nach build/laguna-m/stills
 npm run everest:render      # -> projects/everest/output/HomeDeluxe_Everest_2in1_1x1.mp4
 npm run everest:webp        # -> animierte WebP 640×640 für Shop/Ads (Loop)
+npm run everest-16x9:render # -> projects/everest/output/HomeDeluxe_Everest_2in1_16x9.mp4
+npm run everest-16x9:webp   # -> animierte WebP 1280×720 (Loop)
 ```
 
 Ein einzelnes Frame lässt sich auch im Browser prüfen:
