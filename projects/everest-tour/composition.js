@@ -7,13 +7,16 @@
   const PLATES = params.get('plates') || '../../build/everest-tour/plates';
 
   // Schnittliste. clip: Plates mit Speed-Ramp (ramp 'inout' = Beschleunigen/Abbremsen, 'lin' = 1:1)
+  const DOOR_OPEN = 80;                           // Grad; positiv = Griffkante kommt zur Kamera (nach außen)
   const SEG = [
-    { id: 'pov1', clip: 'pov1', dur: 4.2, ramp: 'inout' },
+    { id: 'open', still: 'keyframes/k1_door_base.png', door: [0, DOOR_OPEN], dur: 1.4 },
+    { id: 'pov1', clip: 'pov1', dur: 4.0, ramp: 'inout' },
     { id: 'ofen', still: 'source/stop_ofen.jpg', dur: 3.0, push: 0.05 },
     { id: 'pov2', clip: 'pov2', dur: 3.6, ramp: 'inout' },
     { id: 'ir', still: 'source/stop_strahler.jpg', dur: 3.0, push: 0.05 },
-    { id: 'pov3', clip: 'pov3', dur: 4.4, ramp: 'inout' },
-    { id: 'k1', still: 'keyframes/k1_xl.png', dur: 1.6 },
+    { id: 'pov3', clip: 'pov3', dur: 4.2, ramp: 'inout' },
+    { id: 'close', still: 'keyframes/k1_door_base.png', door: [DOOR_OPEN, 0], dur: 1.0 },
+    { id: 'k1', still: 'keyframes/k1_xl.png', dur: 1.0 },
     { id: 'car1', clip: 'car1', dur: 5.0, ramp: 'lin' },
     { id: 'k2', still: 'keyframes/k2_l.png', dur: 1.6 },
     { id: 'car2', clip: 'car2', dur: 5.0, ramp: 'lin' },
@@ -93,6 +96,19 @@
     return 1;
   }
 
+  // Tür: Winkel im Tür-Segment (Basisbild ohne Tür + gedrehte Glasscheibe)
+  const door = $('#door'), doorwrap = $('#doorwrap');
+  function setDoor(t) {
+    const seg = SEG.find(s => s.door && t >= s.t0 && t < s.t1);
+    doorwrap.style.visibility = seg ? 'visible' : 'hidden';
+    if (!seg) return;
+    const a = lerp(seg.door[0], seg.door[1], E.inOutCubic(prog(t, seg.t0 + 0.15, seg.dur - 0.3)));
+    door.style.transform = `rotateY(${a.toFixed(3)}deg)`;
+    const glass = Math.abs(Math.sin(a * Math.PI / 180));
+    door.querySelector('.tint').style.opacity = glass.toFixed(3);
+    door.querySelector('.edge').style.opacity = glass.toFixed(3);
+  }
+
   function setImg(img, l) {
     if (!l) { img.style.opacity = 0; return Promise.resolve(); }
     img.style.opacity = l.alpha.toFixed(3);
@@ -158,13 +174,14 @@
     const L = layers(t);
     footage.style.transform = `scale(${camScale(t).toFixed(4)})`;
     await Promise.all([setImg(imgA, L[0]), setImg(imgB, L[1])]);
+    setDoor(t);
 
     // Blitz beim Ankommen an einem Stopp
     const fl = Math.max(...['ofen', 'ir'].map(id => 1 - prog(t, S[id].t0, 0.18)).map((v, i) => (t >= S[['ofen', 'ir'][i]].t0 ? v : 0)));
     el.flash.style.opacity = (0.35 * fl).toFixed(3);
 
     // Intro
-    lines(el.intro, t, 0.15, 1.75);
+    lines(el.intro, t, 0.15, S.pov1.t0 + 0.6);
 
     // Stopps: Karte + Klammern + Zähler
     lines(el.uspOfen, t, S.ofen.t0 + 0.1, S.ofen.t1 - 0.15);
@@ -229,6 +246,7 @@
   });
   window.COMP = { FPS, TOTAL, W, H, seek, ready: Promise.all([document.fonts.ready, manifest]).then(() => seek(0)) };
 
+  if (params.get('clean')) document.body.classList.add('clean');
   const t0 = params.get('t');
   if (t0 != null) window.COMP.ready.then(() => seek(Math.round(parseFloat(t0) * FPS)));
 })();

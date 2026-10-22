@@ -11,7 +11,7 @@ rendert. ffmpeg schreibt die Frames anschließend als MP4.
 | `projects/laguna-m` | 9:16, 1080×1920, 30 fps, 18,5 s | `output/HomeDeluxe_Laguna-M_Reel_9x16.mp4` + Titelbild |
 | `projects/everest` | 1:1, 1080×1080, 30 fps, 11,2 s Loop | `output/HomeDeluxe_Everest_2in1_1x1.mp4` + `output/HomeDeluxe_Everest_2in1_640.webp` |
 | `projects/everest` (16:9) | 16:9, 1920×1080, 30 fps, 11,2 s Loop | `output/HomeDeluxe_Everest_2in1_16x9.mp4` + `output/HomeDeluxe_Everest_2in1_16x9_1280.webp` |
-| `projects/everest-tour` | 16:9, 1920×1080, 30 fps, 44,4 s | `output/HomeDeluxe_Everest_Tour_16x9.mp4` |
+| `projects/everest-tour` | 16:9, 1920×1080, 30 fps, 45,8 s | `output/HomeDeluxe_Everest_Tour_16x9.mp4` |
 
 ### Laguna M – Schnitt und Übergänge
 
@@ -66,16 +66,24 @@ je 5 s, Start- und Endbild vorgegeben), alles Statische sind echte Bilder:
   der Seitenwand rechts (Front dreht nach links), rechts die mit der Seitenwand links.
 - **USP-Stopps** (`source/stop_ofen.jpg`, `source/stop_strahler.jpg`): die Detailfotos, per
   Higgsfield-Outpaint auf 16:9 erweitert.
+- **Tür** (`scripts/door_assets.py`): Die Front der XL hat eine Ganzglas-Drehtür (mittlere Scheibe,
+  Drehbeschläge oben/unten an der rechten Kante, Griff links, Logo-Druck auf der Scheibe). KI-Modelle
+  machen daraus zuverlässig eine Schiebetür, deshalb bewegt die KI die Tür nicht: Die Scheibe ist eine
+  eigene Ebene (`door_pane.png` auf `k1_door_base.png`) und dreht in `composition.js` per CSS-3D um
+  ihre rechte Kante nach außen (+80°). Die POV-Clips fahren durch die bereits offene Tür
+  (`k1_door_open.png` als Start- bzw. Endbild).
 
 | Zeit | Bild | Grafik |
 |---|---|---|
-| 0,0–4,2 s | POV: Studio → durch die Glastür → Saunaofen (Speed-Ramp) | Intro „EVEREST – Sauna + Infrarot in einem“ |
-| 4,2–7,2 s | Stopp Ofen (Standbild, Push-in, Blitz) | 01 Finnische Sauna · bis 100 °C (zählt hoch) · Saunaofen 3,6–8 kW, Klammern |
-| 7,2–10,8 s | POV: Ofen → Infrarot-Strahler | |
-| 10,8–13,8 s | Stopp Strahler | 02 Infrarot-Tiefenwärme · 400 W je Vollspektrumstrahler, Klammern |
-| 13,8–18,2 s | POV: Rausfahrt ins Studio | Chips: 4,4 cm Fichtenholz · 8 mm ESG-Glas · 4 cm Einstieg |
-| 18,2–39,6 s | Karussell XL → L → M → S (Halt 1,6 s, Drehung 5 s) | Modell-Label (Maße, Personen, Strahler, Ofen) + Größenwahl S/M/L/XL |
-| 39,6–44,4 s | Line-up aller vier Größen | „Sauna + Infrarot in 4 Größen“, ab 1.799 €, CTA homedeluxe.de |
+| 0,0–1,4 s | Glastür schwingt nach außen auf (Drehtür, rechte Scharniere) | Intro „EVEREST – Sauna + Infrarot in einem“ |
+| 1,4–5,4 s | POV: durch die offene Tür → Saunaofen (Speed-Ramp) | |
+| 5,4–8,4 s | Stopp Ofen (Standbild, Push-in, Blitz) | 01 Finnische Sauna · bis 100 °C (zählt hoch) · Saunaofen 3,6–8 kW, Klammern |
+| 8,4–12,0 s | POV: Ofen → Infrarot-Strahler | |
+| 12,0–15,0 s | Stopp Strahler | 02 Infrarot-Tiefenwärme · 400 W je Vollspektrumstrahler, Klammern |
+| 15,0–19,2 s | POV: Rausfahrt durch die offene Tür ins Studio | Chips: 4,4 cm Fichtenholz · 8 mm ESG-Glas · 4 cm Einstieg |
+| 19,2–20,2 s | Glastür schwingt zu | |
+| 20,2–41,0 s | Karussell XL → L → M → S (Halt 1,6 s, Drehung 5 s) | Modell-Label (Maße, Personen, Strahler, Ofen) + Größenwahl S/M/L/XL |
+| 41,0–45,8 s | Line-up aller vier Größen | „Sauna + Infrarot in 4 Größen“, ab 1.799 €, CTA homedeluxe.de |
 
 Gewählte Clip-Varianten stehen in `prepare.sh` (`source/clips/`). Modelldaten laut homedeluxe.de
 (Art.-Nr. 75499–75502): S 100 × 120 cm, 1× IR, 3,6 kW · M 120 × 120 cm, 2× IR, 3,6 kW ·

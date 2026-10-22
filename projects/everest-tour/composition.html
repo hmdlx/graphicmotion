@@ -21,6 +21,12 @@
   #footage { position: absolute; inset: 0; overflow: hidden; transform-origin: 50% 50%; }
   #footage img { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; object-fit: cover; transform-origin: 50% 50%; }
   #flash { position: absolute; inset: 0; background: #fff; opacity: 0; }
+  #doorwrap { position: absolute; inset: 0; perspective: 1700px; perspective-origin: 960px 540px; visibility: hidden; }
+  #door { position: absolute; left: 860px; top: 282px; width: 200px; height: 618px; transform-origin: 100% 50%; }
+  #footage #door img { position: absolute; left: 0; top: 0; width: 200px; height: 618px; object-fit: fill; }
+  #door .tint { position: absolute; inset: 0; background: linear-gradient(100deg, rgba(235, 242, 242, .10), rgba(255, 255, 255, .24) 45%, rgba(235, 242, 242, .08)); opacity: 0; }
+  #door .edge { position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: rgba(70, 95, 95, .6); opacity: 0; }
+  body.clean .stack, body.clean #sizes, body.clean #logo, body.clean .size-tag, body.clean #end-price, body.clean #brackets { display: none !important; }
 
   .layer { position: absolute; inset: 0; pointer-events: none; }
   .stack { position: absolute; display: flex; flex-direction: column; align-items: flex-start; }
@@ -75,7 +81,10 @@
 </head>
 <body>
 <div id="stage">
-  <div id="footage"><img id="imgA" alt=""><img id="imgB" alt=""></div>
+  <div id="footage"><img id="imgA" alt=""><img id="imgB" alt="">
+    <!-- Ganzglastür der XL: dreht um die Scharniere an ihrer rechten Kante -->
+    <div id="doorwrap"><div id="door"><i class="tint"></i><img src="keyframes/door_pane.png" alt=""><i class="edge"></i></div></div>
+  </div>
   <div id="flash"></div>
 
   <svg class="layer" id="brackets" width="1920" height="1080" viewBox="0 0 1920 1080">

@@ -5,7 +5,7 @@ set -e
 OUT=${1:-build/everest-tour/plates}
 DIR=$(dirname "$0")
 # Rolle im Schnitt = gewählte Variante in source/clips
-CLIPS="pov1:pov1a pov2:pov2a pov3:pov3a car1:car1a car2:car2b car3:car3c"
+CLIPS="pov1:pov1g pov2:pov2a pov3:pov3g car1:car1a car2:car2b car3:car3c"
 mkdir -p "$OUT"
 echo "window.PLATES = {" > "$OUT/manifest.js"
 for pair in $CLIPS; do
