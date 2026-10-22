@@ -45,6 +45,19 @@
   #glow-ir { background: radial-gradient(closest-side, rgba(255, 70, 40, .85), rgba(255, 50, 30, .35) 45%, rgba(255, 40, 20, 0) 100%); }
   #glow-ofen { background: radial-gradient(closest-side, rgba(255, 170, 90, .75), rgba(255, 140, 60, .3) 45%, rgba(255, 120, 40, 0) 100%); }
   #brackets { position: absolute; left: 0; top: 0; overflow: visible; }
+  #zoom { position: absolute; left: 0; top: 0; width: 100%; height: 100%; transform-origin: 0 0; will-change: transform; }
+  #fx { position: absolute; left: 0; top: 0; overflow: visible; }
+  #steam { filter: blur(9px); }
+  #waves { mix-blend-mode: screen; }
+
+  /* Zeilen fahren aus einer Maske ein und aus */
+  .ln { display: inline-block; overflow: hidden; vertical-align: top; padding: 0 .06em; margin: 0 -.06em; }
+  .ln > span { display: inline-block; will-change: transform; }
+  #twoinone { transform-origin: 0 60%; }
+  #accent { position: absolute; left: 0; top: 0; width: 0; height: 0; background: var(--navy); }
+  .num { font-variant-numeric: tabular-nums; }
+  #price { overflow: hidden; transform-origin: 50% 50%; }
+  #price .shine { position: absolute; top: -20%; left: 0; width: 35%; height: 140%; background: linear-gradient(90deg, rgba(255,255,255,0), rgba(255,255,255,.38), rgba(255,255,255,0)); transform: translateX(-150%) skewX(-20deg); }
 
   #divider { position: absolute; left: var(--margin); top: 952px; width: 1000px; height: 3px; background: var(--card); }
   #logo { position: absolute; left: var(--margin); top: 999px; width: 303px; height: auto; display: block; }
@@ -55,15 +68,16 @@
 <body>
 <div id="stage">
   <div id="kicker">NEU &nbsp;·&nbsp; KOMBISAUNA EVEREST</div>
-  <div id="twoinone">2 IN 1</div>
-  <div class="mode" id="m-sauna">SAUNA</div>
-  <div class="mode" id="m-ir">+ INFRAROT</div>
+  <div id="twoinone"><span class="ln"><span>2</span></span> <span class="ln"><span>IN</span></span> <span class="ln"><span>1</span></span></div>
+  <div class="mode" id="m-sauna"><span class="ln"><span>SAUNA</span></span></div>
+  <div class="mode" id="m-ir"><span class="ln"><span>+ INFRAROT</span></span></div>
+  <div id="accent"></div>
 
   <div id="carousel">
     <!-- Karte 1: Sauna -> markiert den Saunaofen -->
     <div class="card" id="card-sauna">
       <div class="lbl">MAX. TEMPERATUR</div>
-      <div class="big">100 °C</div>
+      <div class="big"><span class="num">100</span> °C</div>
       <div class="name">FINNISCHE SAUNA</div>
       <div class="sub">inkl. 3,6 kW Saunaofen</div>
       <div class="shade"></div>
@@ -71,7 +85,7 @@
     <!-- Karte 2: Infrarot -> markiert den Vollspektrumstrahler -->
     <div class="card" id="card-ir">
       <div class="lbl">INFRAROT-LEISTUNG</div>
-      <div class="big">400 W</div>
+      <div class="big"><span class="num">400</span> W</div>
       <div class="name">INFRAROT-TIEFENWÄRME</div>
       <div class="sub">inkl. Vollspektrumstrahler</div>
       <div class="shade"></div>
@@ -79,9 +93,15 @@
   </div>
 
   <div id="photo-wrap">
-    <img id="photo" alt="">
-    <div class="glow" id="glow-ofen"></div>
-    <div class="glow" id="glow-ir"></div>
+    <div id="zoom">
+      <img id="photo" alt="">
+      <div class="glow" id="glow-ofen"></div>
+      <div class="glow" id="glow-ir"></div>
+      <svg id="fx" width="100%" height="100%">
+        <g id="steam" fill="#fff"></g>
+        <g id="waves" fill="none" stroke="#ff6a3d"></g>
+      </svg>
+    </div>
     <svg id="brackets" width="320" height="616" viewBox="0 0 320 616">
       <path id="br-sauna" d="" fill="none" stroke="#0e2234" stroke-width="5" stroke-linecap="square" />
       <path id="br-ir" d="" fill="none" stroke="#0e2234" stroke-width="5" stroke-linecap="square" />
@@ -90,7 +110,7 @@
 
   <div id="divider"></div>
   <img id="logo" src="../../assets/logo/homedeluxe-logo-navy.svg" alt="Home Deluxe">
-  <div id="price">1.799 €</div>
+  <div id="price"><span>1.799 €</span><i class="shine"></i></div>
 </div>
 <script src="composition.js"></script>
 </body>
