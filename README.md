@@ -9,6 +9,32 @@ rendert. ffmpeg schreibt die Frames anschließend als MP4.
 | Projekt | Format | Ergebnis |
 |---|---|---|
 | `projects/laguna-m` | 9:16, 1080×1920, 30 fps, 18,5 s | `output/HomeDeluxe_Laguna-M_Reel_9x16.mp4` + Titelbild |
+| `projects/thermo-scan` | 9:16 (1080×1920) + 1:1 (1080×1080), 30 fps, 26 s, mit Sounddesign | `output/HomeDeluxe_SPLASH-THERMO_Thermo-Scan_9x16.mp4`, `…_1x1.mp4` + Titelbilder |
+
+### SPLASH THERMO – Thermo-Scan
+
+Hochwertiger Content-Clip zur aufblasbaren Thermoabdeckung SPLASH THERMO (nicht für den
+Newsletter). Basis sind das Ambientebild und der 3/4-Freisteller aus dem Shop; alle weiteren
+Perspektiven entstehen in einer prozedural gebauten three.js-Szene (`scene.js`) nach den
+Produktmaßen: Whirlpool Ø 208 × 70 cm mit Drop-Stitch-Wänden, Abdeckung 162 × 162 × 20 cm mit
+sieben Luftkammern und Ventil. Keine KI-Generierung, keine Credits.
+
+| Zeit | Einstellung | Inhalt |
+|---|---|---|
+| 0,0–2,9 s | Foto | Ambientebild mit Push-in, Titel „Wärme bleibt drin.“ |
+| 2,9–4,9 s | Thermo-Scan | Scanlinie legt die Röntgenansicht frei (Konturen + Wärmebild), Match-Cut in die 3D-Szene |
+| 4,9–8,2 s | Querschnitt | Kamerafahrt in die Seitenansicht, Schnittebene teilt Pool und Abdeckung; Callouts Luftpolster / PVC / Badewasser |
+| 8,2–11,9 s | Wärmebild | Abdeckung hebt ab → Wärme entweicht, Wasser kühlt aus; Abdeckung sitzt wieder → Wärme bleibt. 01 Wärmeschutz |
+| 11,6–15,2 s | Produkt | Scan-Wipe vom Röntgen- in den Studio-Look, Abdeckung schwebt mit Maßlinien Ø 162 cm / 20 cm. 02 Handling |
+| 15,2–19,0 s | Wetter | Herbstlaub fällt auf die Abdeckung, Regen mit Aufprallringen auf dem PVC. 03 Schutz |
+| 19,0–21,9 s | Wasser | Abdeckung fliegt mit dem Laub davon, Draufsicht auf klares Wasser mit Kaustiken. 04 Wasserqualität |
+| 22,2–26,0 s | Endcard | Freisteller, Maße, CTA „Jetzt entdecken“ + homedeluxe.de, Hinweis auf DROP THERMO |
+
+Die Aussagen stützen sich auf die Produktseite (Luftpolster, energieeffizienter, wetterfestes PVC
+gegen Regen, Schnee und UV, Schutz vor Blättern, Insekten und Schmutz, kristallklarer Badespaß).
+Beide Formate kommen aus derselben Timeline; die horizontale Brennweite ist fest, 9:16 bekommt
+dadurch Luft über und unter dem Produkt für Texte. Der Ton (`sound.py`) ist komplett synthetisch
+und wird beim Zusammenfügen auf −16 LUFS normalisiert.
 
 ### Laguna M – Schnitt und Übergänge
 
@@ -40,6 +66,16 @@ npm run laguna-m:track      # Punkt-Tracking -> projects/laguna-m/tracks.js (nur
 npm run laguna-m:render     # -> projects/laguna-m/output/HomeDeluxe_Laguna-M_Reel_9x16.mp4
 npm run laguna-m:stills     # Kontrollbilder nach build/laguna-m/stills
 ```
+
+```bash
+npm run thermo-scan:plates  # Foto, Röntgenfassung, Freisteller (build/thermo-scan/plates)
+npm run thermo-scan:stills  # Kontrollbilder 9:16
+npm run thermo-scan:render  # beide Formate parallel in Teilstücken + Ton -> projects/thermo-scan/output/
+```
+
+`render.js` kennt dafür zusätzlich `--serve 1` (lokaler HTTP-Server für ES-Module), `--size WxH`,
+`--query`, `--audio` und `--range a:b`. three.js rendert in Chromium über SwiftShader (Software-WebGL),
+rund 3 s pro Frame in 9:16.
 
 Ein einzelnes Frame lässt sich auch im Browser prüfen:
 `projects/laguna-m/composition.html?t=4.6` (Zeit in Sekunden, Plates müssen unter `build/` liegen).

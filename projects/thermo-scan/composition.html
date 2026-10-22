@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>SPLASH THERMO – Thermo-Scan</title>
+<script type="importmap">
+{ "imports": {
+  "three": "../../node_modules/three/build/three.module.js",
+  "three/addons/": "../../node_modules/three/examples/jsm/"
+} }
+</script>
+<style>
+  @font-face { font-family: Poppins; font-weight: 400; src: url(../../assets/fonts/poppins/poppins-latin-400-normal.woff2) format("woff2"); }
+  @font-face { font-family: Poppins; font-weight: 500; src: url(../../assets/fonts/poppins/poppins-latin-500-normal.woff2) format("woff2"); }
+  @font-face { font-family: Poppins; font-weight: 600; src: url(../../assets/fonts/poppins/poppins-latin-600-normal.woff2) format("woff2"); }
+  @font-face { font-family: Poppins; font-weight: 700; src: url(../../assets/fonts/poppins/poppins-latin-700-normal.woff2) format("woff2"); }
+  @font-face { font-family: Poppins; font-weight: 800; src: url(../../assets/fonts/poppins/poppins-latin-800-normal.woff2) format("woff2"); }
+
+  /* Home Deluxe CI: Navy + Weiß + Grautöne, eckige Ecken, Poppins. Scan-Akzent: Eisblau. */
+  :root {
+    --navy: #0e2234;
+    --navy-2: #1c3a54;
+    --navy-deep: #07131f;
+    --ice: #8fe3ff;
+    --amber: #ffb547;
+    --light: #e9eef4;
+    --m: 72px;          /* side margin */
+    --u: 1px;           /* type unit, 1:1 scales it down */
+  }
+  body.sq { --m: 56px; --u: .8px; }
+  * { box-sizing: border-box; margin: 0; padding: 0; border-radius: 0; }
+  html, body { width: 100vw; height: 100vh; overflow: hidden; background: var(--navy-deep); }
+  body { font-family: Poppins, sans-serif; color: #fff; -webkit-font-smoothing: antialiased; }
+  #stage { position: absolute; inset: 0; overflow: hidden; background: var(--navy-deep); }
+  #gl { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+  .layer { position: absolute; inset: 0; pointer-events: none; }
+
+  /* Photo window (S1/S2). 1:1 = full frame, 9:16 = centred square */
+  #win { position: absolute; left: 0; width: 100vw; height: 100vw; overflow: hidden; }
+  #win img { position: absolute; left: 50%; top: 50%; width: 100%; height: 100%; transform-origin: 50% 46.5%; }
+  #xray { clip-path: inset(0 0 100% 0); }
+  #scan { position: absolute; left: 0; right: 0; height: 2px; background: #fff;
+          box-shadow: 0 0 12px 3px rgba(143,227,255,.95), 0 0 60px 18px rgba(143,227,255,.45); }
+  #scanGlow { position: absolute; left: 0; right: 0; height: 180px;
+          background: linear-gradient(to top, rgba(143,227,255,.28), rgba(143,227,255,0)); }
+  #mask { position: absolute; left: 0; width: 100vw; height: 100vw; box-shadow: 0 0 0 1400px var(--navy); }
+
+  /* HUD */
+  #hud .br { position: absolute; width: 54px; height: 54px; border-color: var(--ice); border-style: solid; border-width: 0; }
+  #hud .br.tl { border-top-width: 3px; border-left-width: 3px; }
+  #hud .br.tr { border-top-width: 3px; border-right-width: 3px; }
+  #hud .br.bl { border-bottom-width: 3px; border-left-width: 3px; }
+  #hud .br.brr { border-bottom-width: 3px; border-right-width: 3px; }
+  .hudtxt { position: absolute; font-weight: 600; font-size: calc(22 * var(--u)); letter-spacing: .2em; text-transform: uppercase; color: var(--ice); white-space: nowrap; font-variant-numeric: tabular-nums; }
+  .hudtxt b { color: #fff; font-weight: 700; }
+  .rec { display: inline-block; width: calc(12 * var(--u)); height: calc(12 * var(--u)); background: var(--ice); margin-right: calc(14 * var(--u)); vertical-align: 1px; }
+  #meter { position: absolute; height: 4px; background: rgba(143,227,255,.25); }
+  #meter i { position: absolute; left: 0; top: 0; bottom: 0; background: var(--ice); box-shadow: 0 0 10px rgba(143,227,255,.9); }
+
+  /* Logo */
+  #logo { position: absolute; left: var(--m); top: 110px; padding: 20px 24px; background: var(--navy); }
+  #logo img { display: block; width: 260px; height: auto; }
+  body.sq #logo { top: 48px; padding: 14px 18px; }
+  body.sq #logo img { width: 190px; }
+
+  /* Text blocks */
+  .stack { position: absolute; left: var(--m); display: flex; flex-direction: column; align-items: flex-start; }
+  .blk { position: relative; background: var(--navy); color: #fff; }
+  .blk.white { background: #fff; color: var(--navy); }
+  .ln { display: block; overflow: hidden; padding-bottom: .06em; margin-bottom: -.06em; }
+  .ln > span { display: inline-block; will-change: transform; }
+  .kicker { font-weight: 600; font-size: calc(24 * var(--u)); line-height: 1; letter-spacing: .2em; text-transform: uppercase; color: var(--ice); display: flex; align-items: center; gap: 16px; }
+  .kicker i { display: block; width: 46px; height: 2px; background: var(--ice); }
+
+  #title .kicker { margin-bottom: 22px; color: #fff; }
+  #title .kicker i { background: #fff; }
+  #title .big { font-weight: 700; font-size: calc(108 * var(--u)); line-height: 1.02; letter-spacing: -.02em; padding: 16px 34px 12px; }
+  #title .tag { margin-top: 12px; font-weight: 600; font-size: calc(34 * var(--u)); line-height: 1; padding: 20px 34px 18px; }
+
+  .cap .kicker { margin-bottom: 20px; }
+  .cap .hl { font-weight: 700; font-size: calc(76 * var(--u)); line-height: 1.04; letter-spacing: -.015em; padding: 18px 32px 14px; }
+  .cap .sub { margin-top: 10px; font-weight: 500; font-size: calc(32 * var(--u)); line-height: 1.25; padding: 18px 32px 16px; background: rgba(14,34,52,.92); max-width: calc(860 * var(--u)); }
+
+  /* status chips (heat demo) */
+  .chip { position: absolute; left: var(--m); display: flex; align-items: center; gap: 16px; padding: 16px 24px 15px; font-weight: 700; font-size: calc(26 * var(--u)); letter-spacing: .12em; text-transform: uppercase; white-space: nowrap; }
+  .chip i { display: block; width: calc(14 * var(--u)); height: calc(14 * var(--u)); }
+  #chipOff { background: rgba(255,181,71,.14); color: var(--amber); border: 2px solid var(--amber); }
+  #chipOff i { background: var(--amber); }
+  #chipOn { background: rgba(143,227,255,.12); color: var(--ice); border: 2px solid var(--ice); }
+  #chipOn i { background: var(--ice); }
+
+  /* thermal legend */
+  #legend { position: absolute; width: 22px; }
+  #legend .bar { position: absolute; inset: 0; background: linear-gradient(to top, #0a0d38, #4d0f73, #d92442, #ff730f, #ffcc38, #fff7d1); }
+  #legend span { position: absolute; left: 36px; font-weight: 600; font-size: calc(18 * var(--u)); letter-spacing: .18em; color: var(--ice); white-space: nowrap; }
+
+  /* progress */
+  #prog { position: absolute; display: flex; gap: 10px; }
+  #prog div { width: calc(58 * var(--u)); }
+  #prog div b { display: block; font-weight: 700; font-size: calc(18 * var(--u)); letter-spacing: .12em; color: rgba(233,238,244,.5); margin-bottom: 8px; }
+  #prog div s { display: block; height: 3px; background: rgba(233,238,244,.22); position: relative; text-decoration: none; }
+  #prog div s i { position: absolute; left: 0; top: 0; bottom: 0; background: #fff; }
+  #prog div.on b { color: #fff; }
+
+  /* callouts / dimensions: drawn in an SVG over the canvas */
+  svg#ov { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+  .clab { position: absolute; white-space: nowrap; }
+  .clab .t { font-weight: 700; font-size: calc(26 * var(--u)); letter-spacing: .02em; color: #fff; background: rgba(7,19,31,.78); padding: 10px 16px 9px; display: inline-block; border-left: 3px solid var(--ice); }
+  .clab .s { display: block; font-weight: 600; font-size: calc(17 * var(--u)); letter-spacing: .2em; text-transform: uppercase; color: var(--ice); margin: 0 0 8px 2px; }
+  .dimlab { position: absolute; font-weight: 700; font-size: calc(34 * var(--u)); color: var(--navy); background: #fff; padding: 8px 16px 6px; white-space: nowrap; transform: translate(-50%, -50%); font-variant-numeric: tabular-nums; }
+
+  /* end card */
+  #end { background: var(--navy); }
+  #endGlow { position: absolute; left: 50%; width: 1400px; height: 1400px; transform: translate(-50%, -50%);
+             background: radial-gradient(closest-side, rgba(70,130,180,.42), rgba(14,34,52,0)); }
+  #endCover { position: absolute; left: 50%; transform: translate(-50%, -50%); }
+  #endCover img { display: block; width: 100%; height: auto; }
+  #endShadow { position: absolute; left: 50%; transform: translate(-50%, -50%); height: 60px; border-radius: 50% !important;
+               background: radial-gradient(closest-side, rgba(0,0,0,.55), rgba(0,0,0,0)); }
+  #endText { position: absolute; left: var(--m); right: var(--m); }
+  #endText .kicker { color: var(--ice); margin-bottom: 18px; }
+  #endText .name { font-weight: 800; font-size: calc(96 * var(--u)); line-height: 1; letter-spacing: -.02em; }
+  #endText .type { font-weight: 500; font-size: calc(34 * var(--u)); line-height: 1.2; margin-top: 14px; color: var(--light); }
+  #endText .specs { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 30px; }
+  #endText .specs span { font-weight: 600; font-size: calc(25 * var(--u)); padding: 12px 18px 11px; border: 2px solid rgba(233,238,244,.35); color: #fff; white-space: nowrap; }
+  #endText .cta { display: flex; align-items: stretch; margin-top: 40px; }
+  #endText .cta .btn { background: #fff; color: var(--navy); font-weight: 700; font-size: calc(34 * var(--u)); padding: 22px 34px 20px; }
+  #endText .cta .url { font-weight: 600; font-size: calc(30 * var(--u)); padding: 22px 0 20px 28px; color: var(--light); display: flex; align-items: center; }
+  #endText .fit { margin-top: 26px; font-weight: 500; font-size: calc(24 * var(--u)); color: rgba(233,238,244,.7); }
+  #endLogo { position: absolute; left: var(--m); }
+  #endLogo img { display: block; width: 300px; }
+  body.sq #endLogo img { width: 210px; }
+
+  #splitLine { position: absolute; left: 0; right: 0; height: 2px; background: #fff;
+               box-shadow: 0 0 12px 3px rgba(143,227,255,.95), 0 0 60px 18px rgba(143,227,255,.4); }
+  #wipe { position: absolute; left: 0; right: 0; background: var(--navy); }
+  #flash { position: absolute; inset: 0; background: #dff6ff; }
+  #grain { position: absolute; inset: 0; mix-blend-mode: overlay; opacity: .09; }
+  #vig { position: absolute; inset: 0; background: radial-gradient(ellipse at 50% 48%, rgba(0,0,0,0) 55%, rgba(0,0,0,.42) 100%); }
+</style>
+</head>
+<body>
+<div id="stage">
+  <canvas id="gl"></canvas>
+
+  <div id="win" class="layer">
+    <img id="photo" alt="">
+    <img id="xray" alt="">
+    <div id="scanGlow"></div>
+    <div id="scan"></div>
+  </div>
+  <div id="mask" class="layer"></div>
+
+  <div id="splitLine"></div>
+  <svg id="ov" class="layer"></svg>
+  <div id="labels" class="layer"></div>
+
+  <div id="hud" class="layer">
+    <div class="br tl"></div><div class="br tr"></div><div class="br bl"></div><div class="br brr"></div>
+    <div class="hudtxt" id="hudTitle"><span class="rec"></span>Thermo-Scan · <b>SPLASH THERMO</b></div>
+    <div class="hudtxt" id="hudRead">Scan <b id="hudPct">000</b> %</div>
+    <div id="meter"><i></i></div>
+    <div class="hudtxt" id="hudMode">Ansicht · Röntgen</div>
+  </div>
+
+  <div id="legend" class="layer"><div class="bar"></div><span style="top:-6px">WARM</span><span style="bottom:-8px">KALT</span></div>
+
+  <div id="chipOff" class="chip"><i></i>Ohne Abdeckung · Wärme entweicht</div>
+  <div id="chipOn" class="chip"><i></i>Mit SPLASH THERMO · Wärme bleibt</div>
+
+  <div id="title" class="stack">
+    <div class="kicker"><i></i><span>Aufblasbare Thermoabdeckung</span></div>
+    <div class="blk white big"><span class="ln"><span>Wärme</span></span><span class="ln"><span>bleibt drin.</span></span></div>
+    <div class="blk tag"><span class="ln"><span>SPLASH THERMO</span></span></div>
+  </div>
+
+  <div id="cap1" class="stack cap">
+    <div class="kicker"><i></i><span>01 · Wärmeschutz</span></div>
+    <div class="blk white hl"><span class="ln"><span>Die Wärme bleibt</span></span><span class="ln"><span>im Wasser.</span></span></div>
+    <div class="blk sub"><span class="ln"><span>Das Luftpolster isoliert –</span></span><span class="ln"><span>für mehr Energieeffizienz.</span></span></div>
+  </div>
+  <div id="cap2" class="stack cap">
+    <div class="kicker"><i></i><span>02 · Handling</span></div>
+    <div class="blk white hl"><span class="ln"><span>Aufblasbar</span></span><span class="ln"><span>&amp; leicht.</span></span></div>
+    <div class="blk sub"><span class="ln"><span>Mühelos auf- und abdecken.</span></span></div>
+  </div>
+  <div id="cap3" class="stack cap">
+    <div class="kicker"><i></i><span>03 · Schutz</span></div>
+    <div class="blk white hl"><span class="ln"><span>Laub &amp; Schmutz</span></span><span class="ln"><span>bleiben draußen.</span></span></div>
+    <div class="blk sub"><span class="ln"><span>Wetterfestes PVC – gegen</span></span><span class="ln"><span>Regen, Schnee und UV.</span></span></div>
+  </div>
+  <div id="cap4" class="stack cap">
+    <div class="kicker"><i></i><span>04 · Wasserqualität</span></div>
+    <div class="blk white hl"><span class="ln"><span>Das Wasser</span></span><span class="ln"><span>bleibt klar.</span></span></div>
+    <div class="blk sub"><span class="ln"><span>Für kristallklaren Badespaß.</span></span></div>
+  </div>
+
+  <div id="prog">
+    <div><b>01</b><s><i></i></s></div><div><b>02</b><s><i></i></s></div><div><b>03</b><s><i></i></s></div><div><b>04</b><s><i></i></s></div>
+  </div>
+
+  <div id="logo"><img src="../../assets/logo/homedeluxe-logo-white.svg" alt="Home Deluxe"></div>
+
+  <div id="wipe"></div>
+  <div id="end" class="layer">
+    <div id="endGlow"></div>
+    <div id="endShadow"></div>
+    <div id="endCover"><img id="coverImg" alt=""></div>
+    <div id="endLogo"><img src="../../assets/logo/homedeluxe-logo-white.svg" alt="Home Deluxe"></div>
+    <div id="endText">
+      <div class="kicker"><i></i><span>Aufblasbare Thermoabdeckung</span></div>
+      <div class="name"><span class="ln"><span>SPLASH THERMO</span></span></div>
+      <div class="type"><span class="ln"><span>Passend für den Outdoor-Whirlpool SPLASH</span></span></div>
+      <div class="specs"><span>162 × 162 × 20 cm</span><span>Luftpolster-Isolierung</span><span>Wetterfestes PVC</span></div>
+      <div class="cta"><div class="btn">Jetzt entdecken</div><div class="url">homedeluxe.de</div></div>
+      <div class="fit">Auch als DROP THERMO für den Whirlpool DROP erhältlich.</div>
+    </div>
+  </div>
+
+  <div id="flash" class="layer"></div>
+  <div id="vig" class="layer"></div>
+  <canvas id="grain" class="layer"></canvas>
+</div>
+<script type="module" src="composition.js"></script>
+</body>
+</html>
