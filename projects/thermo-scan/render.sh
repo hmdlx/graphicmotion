@@ -15,6 +15,7 @@ mkdir -p "$C" "$OUT"
 python3 -I projects/thermo-scan/sound.py $B/sound.wav
 
 if [ "${1:-}" != finish ]; then
+  rm -f $C/*.mp4 $C/*.log    # stale chunks would be picked up by join
   R="node scripts/render.js projects/thermo-scan/composition.html"
   O="--plates $B/plates --serve 1"
   $R $C/p0.mp4 $O --size 1080x1920 --range 0:435   > $C/p0.log 2>&1 &
