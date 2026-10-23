@@ -32,13 +32,16 @@ Preise sind bewusst nicht eingebaut, weil sie sich häufig ändern.
 
 ### Whirlpool – Details in Zeitlupe
 
-Technisches Produktvideo, kein Lifestyle, clean: keine Boxen oder Cards, nur weiße Schrift
-unten links (über der Reels-Caption) auf einem weichen Verlauf zum unteren Bildrand. Die
-Texte sind animiert wie die TextAnimate-Komponente mit dem Preset `blurInUp`: Titel
-zeichenweise, Detailzeile wortweise, jedes Segment mit Blur 18 px → 0, Fade und 36 px Hub
-(Web-Werte ×2 für das 1080er-Format), Stagger = duration / Segmente. Der Exit läuft in
-umgekehrter Reihenfolge kurz vor dem Schnitt, der nächste Text startet kurz danach.
-Einstellungen je Text (`data-by`, `data-delay`, `data-dur`) stehen in `composition.html`.
+Technisches Produktvideo, kein Lifestyle, clean: Jeder Text sitzt in einer Glasbox unten
+links (über der Reels-Caption) – #0f2334 getönt, mattiert (`backdrop-filter`), scharfkantig,
+feine helle Kante. Die Box kommt kurz vor ihrem Text, geht in einen Hover-Zustand über
+(leichter Lift, hellere Kante, tieferer Schatten, wandernder Lichtpunkt, ein Glanzstreifen)
+und geht nach dem Text. Die Texte darin sind animiert wie die TextAnimate-Komponente mit dem
+Preset `blurInUp`: Titel zeichenweise, Detailzeile wortweise, jedes Segment mit Blur 18 px → 0,
+Fade und 36 px Hub (Web-Werte ×2 für das 1080er-Format), Stagger = duration / Segmente. Der
+Exit läuft in umgekehrter Reihenfolge kurz vor dem Schnitt, der nächste Text startet kurz
+danach. Einstellungen je Text (`data-by`, `data-delay`, `data-dur`) stehen in
+`composition.html`.
 
 Zeitlupe: `scripts/retime.py` rampt jede Einstellung laut `edit.json` (Tempo-Keys je
 Quell-Frame) und rechnet die Zwischenbilder mit RIFE 4.9 (ONNX, CPU) – keine

@@ -9,8 +9,9 @@
   @font-face { font-family: Poppins; font-weight: 600; src: url(../../assets/fonts/poppins/poppins-latin-600-normal.woff2) format("woff2"); }
   @font-face { font-family: Poppins; font-weight: 700; src: url(../../assets/fonts/poppins/poppins-latin-700-normal.woff2) format("woff2"); }
 
-  /* Home Deluxe CI: Weiß auf Bild, Poppins. Keine Flächen, keine Boxen – nur Text,
-     animiert wie TextAnimate (blurInUp: pro Zeichen bzw. Wort Blur + Fade + Hub). */
+  /* Home Deluxe CI: Navy #0f2334 als Glas, scharfkantig, Poppins. Je Text eine Glasbox
+     mit Hover-Zustand (Lift, hellere Kante, Lichtpunkt, Glanzstreifen); der Text darin
+     ist animiert wie TextAnimate (blurInUp: pro Zeichen bzw. Wort Blur + Fade + Hub). */
   :root {
     --x: 72px;          /* left edge */
     --b: 420px;         /* bottom edge, above the Reels caption + buttons */
@@ -21,12 +22,21 @@
 
   #stage { position: absolute; inset: 0; overflow: hidden; background: #000; }
   #plate { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; display: block; }
-  /* Soft grade towards the bottom so white type holds on light floor and acrylic. */
-  #scrim { position: absolute; left: 0; right: 0; bottom: 0; height: 1000px;
-           background: linear-gradient(to top, rgba(0,0,0,.62) 0%, rgba(0,0,0,.5) 30%, rgba(0,0,0,.22) 62%, rgba(0,0,0,0) 100%); }
-
-  .txt { position: absolute; left: var(--x); bottom: var(--b); width: 936px; text-shadow: 0 2px 28px rgba(0, 0, 0, .35); }
-  .txt > * { display: block; white-space: pre-wrap; }
+  /* Glass box: #0f2334 tinted, frosted, square corners. JS drives the hover state through
+     --h (0…1) and the light spot through --mx / --my. */
+  .txt { position: absolute; left: var(--x); bottom: var(--b); max-width: 936px; padding: 38px 46px 42px;
+         --h: 0; --mx: 30%; --my: 20%;
+         background: rgba(15, 35, 52, calc(.66 + .08 * var(--h)));
+         backdrop-filter: blur(22px) saturate(1.25); -webkit-backdrop-filter: blur(22px) saturate(1.25);
+         border: 2px solid rgba(255, 255, 255, calc(.16 + .3 * var(--h)));
+         box-shadow: 0 calc(20px + 26px * var(--h)) calc(50px + 40px * var(--h)) rgba(0, 0, 0, calc(.28 + .14 * var(--h))),
+                     inset 0 1px 0 rgba(255, 255, 255, calc(.12 + .14 * var(--h)));
+         overflow: hidden; }
+  .txt > :not(i) { position: relative; display: block; white-space: pre-wrap; }
+  .txt > i { position: absolute; inset: 0; pointer-events: none; }
+  .spot { opacity: var(--h); background: radial-gradient(520px circle at var(--mx) var(--my), rgba(255, 255, 255, .13), transparent 60%); }
+  .sheen { background: linear-gradient(105deg, transparent 38%, rgba(255, 255, 255, .16) 50%, transparent 62%);
+           transform: translateX(var(--sx, -120%)); }
   .seg { display: inline-block; white-space: pre; will-change: transform, filter, opacity; }
   .title { font-weight: 700; font-size: 92px; line-height: 1.05; letter-spacing: -.02em; }
   .desc { margin-top: 18px; font-weight: 500; font-size: 36px; line-height: 1.3; color: rgba(255, 255, 255, .86); }
@@ -38,34 +48,40 @@
 <body>
 <div id="stage">
   <img id="plate" alt="">
-  <div id="scrim"></div>
 
-  <!-- data-by: character | word | text, data-delay / data-dur in Sekunden (wie TextAnimate); Einblendung nach dem Schnitt, Ausblendung kurz davor -->
+  <!-- data-by: character | word | text, data-delay / data-dur in Sekunden (wie TextAnimate); Einblendung nach dem Schnitt, Ausblendung kurz davor; die Glasbox kommt und geht mit dem Text -->
   <div class="txt" data-sec="intro">
+    <i class="spot"></i><i class="sheen"></i>
     <p class="title" data-by="character" data-dur="0.45">Whirlpool</p>
     <p class="desc" data-by="word" data-delay="0.25" data-dur="0.4">Die Details in Zeitlupe</p>
   </div>
   <div class="txt" data-sec="B">
+    <i class="spot"></i><i class="sheen"></i>
     <p class="title" data-by="character" data-dur="0.5">Massagedüsen</p>
     <p class="desc" data-by="word" data-delay="0.25" data-dur="0.4">Im Rücken- und Sitzbereich</p>
   </div>
   <div class="txt" data-sec="C">
+    <i class="spot"></i><i class="sheen"></i>
     <p class="title" data-by="character" data-dur="0.45">Verkleidung</p>
     <p class="desc" data-by="word" data-delay="0.2" data-dur="0.35">Anthrazit, umlaufend mit Holzstruktur</p>
   </div>
   <div class="txt" data-sec="D">
+    <i class="spot"></i><i class="sheen"></i>
     <p class="title" data-by="character" data-dur="0.5">Kopfstützen</p>
     <p class="desc" data-by="word" data-delay="0.25" data-dur="0.4">Gepolstert, ergonomisch geformt</p>
   </div>
   <div class="txt" data-sec="E">
+    <i class="spot"></i><i class="sheen"></i>
     <p class="title" data-by="word" data-dur="0.3">Einstiegstreppe</p>
     <p class="desc" data-by="word" data-delay="0.12" data-dur="0.3">Zweistufig, passend zur Verkleidung</p>
   </div>
   <div class="txt" data-sec="F">
+    <i class="spot"></i><i class="sheen"></i>
     <p class="title" data-by="character" data-dur="0.45">Bedienfeld</p>
     <p class="desc" data-by="word" data-delay="0.2" data-dur="0.35">Mit Display, direkt am Wannenrand</p>
   </div>
   <div class="txt" data-sec="G">
+    <i class="spot"></i><i class="sheen"></i>
     <img class="logo" data-by="text" data-delay="0" data-dur="0.3" src="../../assets/logo/homedeluxe-logo-white.svg" alt="Home Deluxe">
     <p class="title" data-by="character" data-delay="0.15" data-dur="0.5">Whirlpool</p>
     <p class="url" data-by="word" data-delay="0.6" data-dur="0.4">Jetzt entdecken auf homedeluxe.de</p>
