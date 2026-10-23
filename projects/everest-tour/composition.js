@@ -6,25 +6,55 @@
   const params = new URLSearchParams(location.search);
   const PLATES = params.get('plates') || '../../build/everest-tour/plates';
 
-  // Schnittliste. clip: Plates mit Speed-Ramp (ramp 'inout' = Beschleunigen/Abbremsen, 'lin' = 1:1)
+  // Schnittlisten. clip: Plates mit Speed-Ramp (ramp 'inout' = Beschleunigen/Abbremsen, 'lin' = linear).
+  // 'full' = 45,8 s; '20s' = gleiche Szenen und Logik, schnellere Ramps, kürzere Stopps, ohne USP-Chips.
+  // Die Fassung wählt window.CUT (composition-20s.html) oder ?cut=.
   const DOOR_OPEN = 80;                           // Grad; positiv = Griffkante kommt zur Kamera (nach außen)
-  const SEG = [
-    { id: 'open', still: 'keyframes/k1_door_base.png', door: [0, DOOR_OPEN], dur: 1.4 },
-    { id: 'pov1', clip: 'pov1', dur: 4.0, ramp: 'inout' },
-    { id: 'ofen', still: 'source/stop_ofen.jpg', dur: 3.0, push: 0.05 },
-    { id: 'pov2', clip: 'pov2', dur: 3.6, ramp: 'inout' },
-    { id: 'ir', still: 'source/stop_strahler.jpg', dur: 3.0, push: 0.05 },
-    { id: 'pov3', clip: 'pov3', dur: 4.2, ramp: 'inout' },
-    { id: 'close', still: 'keyframes/k1_door_base.png', door: [DOOR_OPEN, 0], dur: 1.0 },
-    { id: 'k1', still: 'keyframes/k1_xl.png', dur: 1.0 },
-    { id: 'car1', clip: 'car1', dur: 5.0, ramp: 'lin' },
-    { id: 'k2', still: 'keyframes/k2_l.png', dur: 1.6 },
-    { id: 'car2', clip: 'car2', dur: 5.0, ramp: 'lin' },
-    { id: 'k3', still: 'keyframes/k3_m.png', dur: 1.6 },
-    { id: 'car3', clip: 'car3', dur: 5.0, ramp: 'lin' },
-    { id: 'k4', still: 'keyframes/k4_s.png', dur: 1.6 },
-    { id: 'end', still: 'keyframes/k5_lineup.png', dur: 4.8 },
-  ];
+  const DOOR_BASE = 'keyframes/k1_door_base.png';
+  const CUTS = {
+    full: {
+      seg: [
+        { id: 'open', still: DOOR_BASE, door: [0, DOOR_OPEN], dur: 1.4 },
+        { id: 'pov1', clip: 'pov1', dur: 4.0, ramp: 'inout' },
+        { id: 'ofen', still: 'source/stop_ofen.jpg', dur: 3.0, push: 0.05 },
+        { id: 'pov2', clip: 'pov2', dur: 3.6, ramp: 'inout' },
+        { id: 'ir', still: 'source/stop_strahler.jpg', dur: 3.0, push: 0.05 },
+        { id: 'pov3', clip: 'pov3', dur: 4.2, ramp: 'inout' },
+        { id: 'close', still: DOOR_BASE, door: [DOOR_OPEN, 0], dur: 1.0 },
+        { id: 'k1', still: 'keyframes/k1_xl.png', dur: 1.0 },
+        { id: 'car1', clip: 'car1', dur: 5.0, ramp: 'lin' },
+        { id: 'k2', still: 'keyframes/k2_l.png', dur: 1.6 },
+        { id: 'car2', clip: 'car2', dur: 5.0, ramp: 'lin' },
+        { id: 'k3', still: 'keyframes/k3_m.png', dur: 1.6 },
+        { id: 'car3', clip: 'car3', dur: 5.0, ramp: 'lin' },
+        { id: 'k4', still: 'keyframes/k4_s.png', dur: 1.6 },
+        { id: 'end', still: 'keyframes/k5_lineup.png', dur: 4.8 },
+      ],
+      chips: true, doorPad: 0.15, countDur: 1.0, endXf: 0.8, end: { title: 0.5, price: 1.0, tags: 0.9 },
+    },
+    '20s': {
+      seg: [
+        { id: 'open', still: DOOR_BASE, door: [0, DOOR_OPEN], dur: 0.8 },
+        { id: 'pov1', clip: 'pov1', dur: 2.2, ramp: 'inout' },
+        { id: 'ofen', still: 'source/stop_ofen.jpg', dur: 1.7, push: 0.04 },
+        { id: 'pov2', clip: 'pov2', dur: 1.3, ramp: 'inout' },
+        { id: 'ir', still: 'source/stop_strahler.jpg', dur: 1.7, push: 0.04 },
+        { id: 'pov3', clip: 'pov3', dur: 1.9, ramp: 'inout' },
+        { id: 'close', still: DOOR_BASE, door: [DOOR_OPEN, 0], dur: 0.6 },
+        { id: 'k1', still: 'keyframes/k1_xl.png', dur: 0.3 },
+        { id: 'car1', clip: 'car1', dur: 2.2, ramp: 'lin' },
+        { id: 'k2', still: 'keyframes/k2_l.png', dur: 0.3 },
+        { id: 'car2', clip: 'car2', dur: 2.2, ramp: 'lin' },
+        { id: 'k3', still: 'keyframes/k3_m.png', dur: 0.3 },
+        { id: 'car3', clip: 'car3', dur: 2.2, ramp: 'lin' },
+        { id: 'k4', still: 'keyframes/k4_s.png', dur: 0.2 },
+        { id: 'end', still: 'keyframes/k5_lineup.png', dur: 2.1 },
+      ],
+      chips: false, doorPad: 0.08, countDur: 0.6, endXf: 0.5, end: { title: 0.3, price: 0.6, tags: 0.6 },
+    },
+  };
+  const CUT = CUTS[params.get('cut') || window.CUT || 'full'];
+  const SEG = CUT.seg;
   let acc = 0;
   for (const s of SEG) { s.t0 = acc; acc += s.dur; s.t1 = acc; }
   const TOTAL = Math.round(acc * FPS);
@@ -78,8 +108,8 @@
     const seg = SEG[i < 0 ? SEG.length - 1 : i];
     const next = SEG[SEG.indexOf(seg) + 1];
     if (seg.id === 'end') {                        // Überblendung Karussell -> Line-up
-      const k = E.inOutCubic(prog(t, seg.t0, 0.8));
-      return [{ src: S.k4.still, alpha: 1, scale: 1 - 0.04 * k }, { src: seg.still, alpha: k, scale: 1.04 - 0.04 * E.outCubic(prog(t, seg.t0, 1.6)) }];
+      const k = E.inOutCubic(prog(t, seg.t0, CUT.endXf));
+      return [{ src: S.k4.still, alpha: 1, scale: 1 - 0.04 * k }, { src: seg.still, alpha: k, scale: 1.04 - 0.04 * E.outCubic(prog(t, seg.t0, CUT.endXf * 2)) }];
     }
     if (seg.still) return [{ src: seg.still, alpha: 1, scale: stillScale(seg, t) }];
     const out = [{ src: plate(seg, t), alpha: 1, scale: 1 }];
@@ -102,7 +132,7 @@
     const seg = SEG.find(s => s.door && t >= s.t0 && t < s.t1);
     doorwrap.style.visibility = seg ? 'visible' : 'hidden';
     if (!seg) return;
-    const a = lerp(seg.door[0], seg.door[1], E.inOutCubic(prog(t, seg.t0 + 0.15, seg.dur - 0.3)));
+    const a = lerp(seg.door[0], seg.door[1], E.inOutCubic(prog(t, seg.t0 + CUT.doorPad, seg.dur - 2 * CUT.doorPad)));
     door.style.transform = `rotateY(${a.toFixed(3)}deg)`;
     const glass = Math.abs(Math.sin(a * Math.PI / 180));
     door.querySelector('.tint').style.opacity = glass.toFixed(3);
@@ -155,7 +185,7 @@
   const scaled = (r, s) => [960 + (r[0] - 960) * s, 540 + (r[1] - 540) * s, 960 + (r[2] - 960) * s, 540 + (r[3] - 540) * s];
 
   function count(root, t, t0) {
-    root.querySelectorAll('.num').forEach(n => { n.textContent = String(Math.round(+n.dataset.to * E.outCubic(prog(t, t0, 1.0)))); });
+    root.querySelectorAll('.num').forEach(n => { n.textContent = String(Math.round(+n.dataset.to * E.outCubic(prog(t, t0, CUT.countDur)))); });
   }
 
   const el = {
@@ -200,8 +230,9 @@
     }
     brackets(el.br1, b1, bs, ba); brackets(el.br2, b2, bs, ba);
 
-    // Rausfahrt: Chips nacheinander
-    lines(el.chips, t, S.pov3.t0 + 0.5, S.pov3.t1 - 1.5, 0.4);
+    // Rausfahrt: Chips nacheinander (nur in der langen Fassung)
+    if (CUT.chips) lines(el.chips, t, S.pov3.t0 + 0.5, S.pov3.t1 - 1.5, 0.4);
+    else show(el.chips, false);
 
     // Modell-Label + Größenwahl
     const mStart = S.k1.t0 - 0.5, mEnd = S.end.t0;
@@ -230,10 +261,10 @@
     }
 
     // Endcard
-    lines(el.endTitle, t, S.end.t0 + 0.5, null);
-    lines(el.endPrice, t, S.end.t0 + 1.0, null);
+    lines(el.endTitle, t, S.end.t0 + CUT.end.title, null);
+    lines(el.endPrice, t, S.end.t0 + CUT.end.price, null);
     sizeTags.forEach((n, i) => {
-      const k = E.outBack(prog(t, S.end.t0 + 0.9 + i * 0.12, 0.45));
+      const k = E.outBack(prog(t, S.end.t0 + CUT.end.tags + i * 0.12, 0.45));
       n.style.opacity = clamp(k * 3).toFixed(3);
       n.style.transform = `translateX(-50%) translateY(${((1 - k) * 30).toFixed(1)}px)`;
     });

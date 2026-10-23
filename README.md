@@ -12,6 +12,7 @@ rendert. ffmpeg schreibt die Frames anschließend als MP4.
 | `projects/everest` | 1:1, 1080×1080, 30 fps, 11,2 s Loop | `output/HomeDeluxe_Everest_2in1_1x1.mp4` + `output/HomeDeluxe_Everest_2in1_640.webp` |
 | `projects/everest` (16:9) | 16:9, 1920×1080, 30 fps, 11,2 s Loop | `output/HomeDeluxe_Everest_2in1_16x9.mp4` + `output/HomeDeluxe_Everest_2in1_16x9_1280.webp` |
 | `projects/everest-tour` | 16:9, 1920×1080, 30 fps, 45,8 s | `output/HomeDeluxe_Everest_Tour_16x9.mp4` |
+| `projects/everest-tour` (20 s) | 16:9, 1920×1080, 30 fps, 20,0 s | `output/HomeDeluxe_Everest_Tour_20s_16x9.mp4` |
 
 ### Laguna M – Schnitt und Übergänge
 
@@ -85,6 +86,11 @@ je 5 s, Start- und Endbild vorgegeben), alles Statische sind echte Bilder:
 | 20,2–41,0 s | Karussell XL → L → M → S (Halt 1,6 s, Drehung 5 s) | Modell-Label (Maße, Personen, Strahler, Ofen) + Größenwahl S/M/L/XL |
 | 41,0–45,8 s | Line-up aller vier Größen | „Sauna + Infrarot in 4 Größen“, ab 1.799 €, CTA homedeluxe.de |
 
+**20-s-Fassung** (`composition-20s.html`, gleiche Clips, gleiches `composition.js`, Schnittliste `CUTS['20s']`):
+Tür auf 0,8 s → POV 2,2 s → Stopp Ofen 1,7 s → POV 1,3 s → Stopp Infrarot 1,7 s → Rausfahrt 1,9 s →
+Tür zu 0,6 s → Karussell XL → L → M → S (je 2,2 s Drehung, 0,2–0,3 s Halt) → Line-up mit Preis 2,1 s.
+Die USP-Chips der Rausfahrt entfallen, Zähler laufen in 0,6 s hoch.
+
 Gewählte Clip-Varianten stehen in `prepare.sh` (`source/clips/`). Modelldaten laut homedeluxe.de
 (Art.-Nr. 75499–75502): S 100 × 120 cm, 1× IR, 3,6 kW · M 120 × 120 cm, 2× IR, 3,6 kW ·
 L 180 × 120 cm, 3× IR, 6 kW · XL 200 × 200 cm, 5× IR, 8 kW; alle bis 100 °C, 400 W je Strahler,
@@ -106,6 +112,7 @@ npm run everest-16x9:render # -> projects/everest/output/HomeDeluxe_Everest_2in1
 npm run everest-16x9:webp   # -> animierte WebP 1280×720, 25 fps (Loop)
 npm run everest-tour:plates # gewählte KI-Clips -> build/everest-tour/plates
 npm run everest-tour:render # -> projects/everest-tour/output/HomeDeluxe_Everest_Tour_16x9.mp4
+npm run everest-tour-20s:render # -> projects/everest-tour/output/HomeDeluxe_Everest_Tour_20s_16x9.mp4
 ```
 
 Ein einzelnes Frame lässt sich auch im Browser prüfen:
