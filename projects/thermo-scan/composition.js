@@ -6,8 +6,11 @@ import { World, DIM, coverTop, rng } from './scene.js';
 const FPS = 30;
 const TOTAL = 780;                       // 26 s
 const W = innerWidth, H = innerHeight;
-const P = H > W;                         // portrait 9:16, else 1:1
-document.body.classList.add(P ? 'pt' : 'sq');
+const P = H > W;                         // portrait 9:16
+const LS = W > H;                        // landscape 16:9 (shares the 1:1 type scale)
+document.body.classList.add(...(P ? ['pt'] : LS ? ['sq', 'ls'] : ['sq']));
+// 16:9: the product sits right of centre, captions get the left side
+const SX = LS ? 230 : 0;
 const params = new URLSearchParams(location.search);
 const PLATES = params.get('plates') || '../../build/thermo-scan/plates';
 
@@ -98,6 +101,12 @@ const L = P ? {
   capBottom: 150, titleBottom: 118,
   chip: { top: 1090, left: 72 }, legend: { x: W - 72 - 22 - 64, y: 520, h: 360 },
   end: { logoTop: 140, coverY: 790, coverW: 470, xS: 300, xD: 780, textTop: 1170 },
+} : LS ? {
+  winTop: 0, winLeft: (W - H) / 2 + SX,
+  frame: { l: 28, t: 28, r: W - 28, b: H - 28 },
+  capBottom: 72, titleBottom: 72,
+  chip: { top: 140, left: 56 }, legend: { x: W - 56 - 22 - 60, y: 420, h: 260 },
+  end: { logoTop: 56, coverY: 500, coverW: 410, xS: 1190, xD: 1650, textTop: 410, textW: 820 },
 } : {
   winTop: 0,
   frame: { l: 28, t: 28, r: W - 28, b: H - 28 },
@@ -105,15 +114,15 @@ const L = P ? {
   chip: { top: 178, right: 56 }, legend: { x: W - 56 - 22 - 60, y: 420, h: 260 },
   end: { logoTop: 56, coverY: 320, coverW: 360, xS: 300, xD: 780, textTop: 560 },
 };
-const WIN = { l: 0, t: L.winTop, r: W, b: L.winTop + W };
+const WS = Math.min(W, H);               // photo window: full width, or a centred square
+const WIN = { l: L.winLeft || 0, t: L.winTop, r: (L.winLeft || 0) + WS, b: L.winTop + WS };
 
 // DOM setup -------------------------------------------------------------------------------
 $('#photo').src = PLATES + '/photo.jpg';
 $('#xray').src = PLATES + '/photo_xray.png';
 $('#coverImg').src = PLATES + '/cover_34.png';
 $('#dropImg').src = PLATES + '/drop_34.png';
-$('#win').style.top = WIN.t + 'px';
-$('#mask').style.top = WIN.t + 'px';
+for (const id of ['#win', '#mask']) Object.assign($(id).style, { left: WIN.l + 'px', top: WIN.t + 'px', width: WS + 'px', height: WS + 'px' });
 for (const id of ['#cap1', '#cap2', '#cap3', '#cap4']) $(id).style.bottom = L.capBottom + 'px';
 $('#title').style.bottom = L.titleBottom + 'px';
 for (const c of $$('.chip')) Object.assign(c.style, { top: L.chip.top + 'px' }, L.chip.right !== undefined ? { left: 'auto', right: L.chip.right + 'px' } : { left: L.chip.left + 'px' });
@@ -123,6 +132,10 @@ $('#endText').style.top = L.end.textTop + 'px';
 Object.assign($('#ecS').style, { left: L.end.xS + 'px', top: L.end.coverY + 'px', width: L.end.coverW + 'px' });
 Object.assign($('#ecD').style, { left: L.end.xD + 'px', top: L.end.coverY + 'px', width: L.end.coverW + 'px' });
 $('#endGlow').style.top = L.end.coverY + 'px';
+if (LS) {
+  $('#endGlow').style.left = (L.end.xS + L.end.xD) / 2 + 'px';
+  Object.assign($('#endText').style, { right: 'auto', width: L.end.textW + 'px' });
+}
 // both cut-outs stand on the same base line, so the names line up
 for (const e of $$('.ecov .eimg')) e.style.height = Math.round(L.end.coverW * 0.46) + 'px';
 
@@ -365,6 +378,7 @@ function seek(n) {
   world.cover.updateMatrixWorld(true);
 
   const c = cam(t);
+  c.sx = SX;
   world.setCamera(c);
 
   const d = cutPos(t);
@@ -419,7 +433,7 @@ function seek(n) {
   $('#scan').style.top = scanY - 1 + 'px';
   $('#scanGlow').style.top = scanY - 180 + 'px';
   vis($('#win'), DBG === 'match' ? 0.5 : 1 - E.inOut(prog(t, ...T.dissolve)));
-  vis($('#mask'), P ? 1 - E.inOut(prog(t, ...T.mask)) : 0);
+  vis($('#mask'), P || LS ? 1 - E.inOut(prog(t, ...T.mask)) : 0);
 
   // ---- HUD
   const hudIn = E.out(prog(t, T.hud, T.hud + 0.4));

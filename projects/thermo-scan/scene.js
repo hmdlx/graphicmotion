@@ -806,7 +806,8 @@ export class World {
     cam.lookAt(target);
     const aspect = this.W / this.H;
     cam.aspect = aspect;
-    cam.fov = THREE.MathUtils.radToDeg(2 * Math.atan(Math.tan(THREE.MathUtils.degToRad(hfov) / 2) / aspect));
+    // portrait widens the view upwards; landscape keeps the 1:1 height and gains width
+    cam.fov = THREE.MathUtils.radToDeg(2 * Math.atan(Math.tan(THREE.MathUtils.degToRad(hfov) / 2) / Math.min(aspect, 1)));
     if (sx || sy) cam.setViewOffset(this.W, this.H, -sx, -sy, this.W, this.H); else cam.clearViewOffset();
     cam.updateProjectionMatrix();
     cam.updateMatrixWorld();
