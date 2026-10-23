@@ -12,7 +12,7 @@ from pathlib import Path
 import numpy as np
 
 SR = 48000
-DUR = 29.0
+DUR = 26.0
 N = int(SR * DUR)
 rng = np.random.default_rng(3)
 L = np.zeros(N)
@@ -152,9 +152,9 @@ chord2 = [55.0, 82.41, 110.0, 138.59, 164.81, 220.0]   # A major colour at the e
 for f in chord1:
     pad += np.sin(2 * np.pi * f * t + rng.random() * 6) * (1 + 0.3 * np.sin(2 * np.pi * 0.07 * t + f))
 for f in chord2:
-    pad += np.sin(2 * np.pi * (f * 1.002) * t) * np.clip((t - 24.6) / 1.5, 0, 1) * 0.6
-pad = lp(pad, 900 + 500 * np.clip((t - 4.5) / 2, 0, 1) + 600 * np.clip((t - 24.6) / 2, 0, 1), 2)
-pad_env = np.clip(t / 2.0, 0, 1) * (1 - np.clip((t - 27.6) / 1.4, 0, 1))
+    pad += np.sin(2 * np.pi * (f * 1.002) * t) * np.clip((t - 21.85) / 1.5, 0, 1) * 0.6
+pad = lp(pad, 900 + 500 * np.clip((t - 4.5) / 2, 0, 1) + 600 * np.clip((t - 21.85) / 2, 0, 1), 2)
+pad_env = np.clip(t / 2.0, 0, 1) * (1 - np.clip((t - 24.6) / 1.4, 0, 1))
 pad *= pad_env * 0.02
 L += pad
 R += np.roll(pad, 240)
@@ -234,13 +234,9 @@ for k in range(16):
     f = rng.choice([1760, 2093, 2349, 2637, 3136])
     place(tonal_hit([f], 0.8, 0.04, 0.0), 19.8 + rng.random() * 2.0, pan=rng.random() * 1.4 - 0.7)
 place(whoosh(0.5, 300, 3000, 0.28), 21.8)                              # wipe
-# DROP THERMO: panel lifts off the ambient shot
-place(whoosh(0.5, 3000, 300, 0.24), 22.2)
-place(tonal_hit([330, 495, 660], 2.0, 0.16, 0.6), 22.55)
-place(whoosh(0.5, 300, 3000, 0.28), 24.55)                             # wipe
-place(thud(40, 2.0, 0.7), 25.0)                                        # end card
-place(tonal_hit([220, 277.18, 329.63, 440], 3.5, 0.32, 0.5), 25.0)
-place(blip(1320, 0.06, 0.10), 25.95)                                   # CTA
+place(thud(40, 2.0, 0.7), 22.25)                                       # end card
+place(tonal_hit([220, 277.18, 329.63, 440], 3.5, 0.32, 0.5), 22.25)
+place(blip(1320, 0.06, 0.10), 23.2)                                    # CTA
 
 # --- master ---------------------------------------------------------------------------------
 mix = np.stack([L, R], -1)

@@ -36,8 +36,8 @@
   .layer { position: absolute; inset: 0; pointer-events: none; }
 
   /* Photo window (S1/S2). 1:1 = full frame, 9:16 = centred square */
-  #win, #dwin { position: absolute; left: 0; width: 100vw; height: 100vw; overflow: hidden; }
-  #win img, #dwin img { position: absolute; left: 50%; top: 50%; width: 100%; height: 100%; transform-origin: 50% 46.5%; }
+  #win { position: absolute; left: 0; width: 100vw; height: 100vw; overflow: hidden; }
+  #win img { position: absolute; left: 50%; top: 50%; width: 100%; height: 100%; transform-origin: 50% 46.5%; }
   #xray { clip-path: inset(0 0 100% 0); }
   #scan { position: absolute; left: 0; right: 0; height: 2px; background: #fff;
           box-shadow: 0 0 12px 3px rgba(143,227,255,.95), 0 0 60px 18px rgba(143,227,255,.45); }
@@ -78,7 +78,6 @@
   #title .tag { margin-top: 12px; font-weight: 600; font-size: calc(34 * var(--u)); line-height: 1; padding: 20px 34px 18px; }
 
   .cap .kicker { margin-bottom: 20px; }
-  #cap5 .kicker { align-self: flex-start; background: rgba(7,19,31,.82); padding: 11px 16px 10px; }
   .cap .hl { font-weight: 700; font-size: calc(76 * var(--u)); line-height: 1.04; letter-spacing: -.015em; padding: 18px 32px 14px; }
   .cap .sub { margin-top: 10px; font-weight: 500; font-size: calc(32 * var(--u)); line-height: 1.25; padding: 18px 32px 16px; background: rgba(14,34,52,.92); max-width: calc(860 * var(--u)); }
 
@@ -153,9 +152,6 @@
     <div id="scanGlow"></div>
     <div id="scan"></div>
   </div>
-  <div id="dwin" class="layer">
-    <img id="dphoto" alt="">
-  </div>
   <div id="mask" class="layer"></div>
 
   <div id="splitLine"></div>
@@ -188,10 +184,6 @@
   </div>
   <div id="cap4" class="stack cap">
     <div class="blk white hl"><span class="ln"><span>Das Wasser</span></span><span class="ln"><span>bleibt klar.</span></span></div>
-  </div>
-  <div id="cap5" class="stack cap">
-    <div class="blk white hl"><span class="ln"><span>DROP THERMO</span></span></div>
-    <div class="blk sub"><span class="ln"><span>Passend für den Whirlpool DROP.</span></span></div>
   </div>
 
 

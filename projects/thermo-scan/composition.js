@@ -4,7 +4,7 @@ import * as THREE from 'three';
 import { World, DIM, coverTop, rng } from './scene.js';
 
 const FPS = 30;
-const TOTAL = 870;                       // 29 s
+const TOTAL = 780;                       // 26 s
 const W = innerWidth, H = innerHeight;
 const P = H > W;                         // portrait 9:16, else 1:1
 document.body.classList.add(P ? 'pt' : 'sq');
@@ -33,10 +33,7 @@ const T = {
   lift3: [19.0, 19.9],
   cap1: [9.9, 11.9], cap2: [12.9, 14.9], cap3: [15.9, 18.9], cap4: [20.0, 21.85],
   wipe: [21.85, 22.25],
-  // DROP THERMO: its ambient shot with a slow push-in, then the shared end card
-  drop: { out: [22.25, 22.6], logo: [22.4, 24.6], cap: [22.55, 24.7] },
-  wipe2: [24.6, 25.0],
-  end: 25.0,
+  end: 22.25,
 };
 
 // Helpers ---------------------------------------------------------------------------------
@@ -115,11 +112,9 @@ $('#photo').src = PLATES + '/photo.jpg';
 $('#xray').src = PLATES + '/photo_xray.png';
 $('#coverImg').src = PLATES + '/cover_34.png';
 $('#dropImg').src = PLATES + '/drop_34.png';
-$('#dphoto').src = PLATES + '/drop.jpg';
 $('#win').style.top = WIN.t + 'px';
-$('#dwin').style.top = WIN.t + 'px';
 $('#mask').style.top = WIN.t + 'px';
-for (const id of ['#cap1', '#cap2', '#cap3', '#cap4', '#cap5']) $(id).style.bottom = L.capBottom + 'px';
+for (const id of ['#cap1', '#cap2', '#cap3', '#cap4']) $(id).style.bottom = L.capBottom + 'px';
 $('#title').style.bottom = L.titleBottom + 'px';
 for (const c of $$('.chip')) Object.assign(c.style, { top: L.chip.top + 'px' }, L.chip.right !== undefined ? { left: 'auto', right: L.chip.right + 'px' } : { left: L.chip.left + 'px' });
 Object.assign($('#legend').style, { left: L.legend.x + 'px', top: L.legend.y + 'px', height: L.legend.h + 'px' });
@@ -436,13 +431,12 @@ function seek(n) {
   vis($('#legend'), win(t, [3.4, 11.7], 0.5, 0.4));
 
   // ---- Logo, title, captions, chips, progress
-  vis($('#logo'), Math.max(Math.min(E.out(prog(t, T.logo[0], T.logo[0] + 0.4)), 1 - prog(t, T.logo[1] - 0.3, T.logo[1])), win(t, T.drop.logo, 0.4, 0.3)));
+  vis($('#logo'), Math.min(E.out(prog(t, T.logo[0], T.logo[0] + 0.4)), 1 - prog(t, T.logo[1] - 0.3, T.logo[1])));
   stackAnim($('#title'), t, T.title);
   stackAnim($('#cap1'), t, T.cap1);
   stackAnim($('#cap2'), t, T.cap2);
   stackAnim($('#cap3'), t, T.cap3);
   stackAnim($('#cap4'), t, T.cap4);
-  stackAnim($('#cap5'), t, T.drop.cap);
   for (const [id, w] of [['#chipOff', T.chipOff]]) {
     const k = win(t, w, 0.3, 0.3);
     vis($(id), k);
@@ -515,22 +509,11 @@ function seek(n) {
   const fl = Math.max(0.35 * (1 - prog(t, T.scan[1], T.scan[1] + 0.35)) * (t >= T.scan[1] ? 1 : 0),
     0.5 * Math.max(0, 1 - Math.abs(t - T.look[0]) / 0.18) * 0);
   vis($('#flash'), fl);
-  // Navy panel: rises over the water shot, leaves upwards to uncover DROP, rises again for the end card.
+  // Navy panel rises over the water shot and hands over to the end card.
+  const wp = E.inOut(prog(t, ...T.wipe));
   const wipe = $('#wipe');
-  const wIn = E.inOut(prog(t, ...T.wipe)), wOut = E.inOut(prog(t, ...T.drop.out)), w2 = E.inOut(prog(t, ...T.wipe2));
-  if (t < T.drop.out[0]) { vis(wipe, wIn > 0 ? 1 : 0); wipe.style.top = H * (1 - wIn) + 'px'; wipe.style.bottom = '0px'; }
-  else if (t < T.drop.out[1]) { vis(wipe, 1); wipe.style.top = '0px'; wipe.style.bottom = H * wOut + 'px'; }
-  else if (t < T.end + 0.02) { vis(wipe, w2 > 0 ? 1 : 0); wipe.style.top = H * (1 - w2) + 'px'; wipe.style.bottom = '0px'; }
-  else vis(wipe, 0);
-
-  // DROP beat: ambient shot with a slow push-in
-  const dropOn = t >= T.drop.out[0] && t < T.end;
-  vis($('#dwin'), dropOn ? 1 : 0);
-  if (dropOn) {
-    if (P) vis($('#mask'), 1);
-    const dz = 1 + 0.07 * E.sine(prog(t, T.drop.out[0], T.end));
-    $('#dphoto').style.transform = `translate(-50%, -50%) scale(${dz})`;
-  }
+  vis(wipe, wp > 0 && t < T.end + 0.02 ? 1 : 0);
+  wipe.style.top = H * (1 - wp) + 'px'; wipe.style.bottom = '0px';
   const endOn = t >= T.end;
   vis($('#end'), endOn ? 1 : 0);
   if (endOn) {
