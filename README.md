@@ -9,6 +9,7 @@ rendert. ffmpeg schreibt die Frames anschließend als MP4.
 | Projekt | Format | Ergebnis |
 |---|---|---|
 | `projects/laguna-m` | 9:16, 1080×1920, 30 fps, 18,5 s | `output/HomeDeluxe_Laguna-M_Reel_9x16.mp4` + Titelbild |
+| `projects/whirlpool` | 9:16, 1080×1920, 30 fps, 17,6 s | `output/HomeDeluxe_Whirlpool_Details_Reel_9x16.mp4` + Titelbild |
 
 ### Laguna M – Schnitt und Übergänge
 
@@ -29,9 +30,49 @@ läuft nur mit ihren sauberen Frames (Schnittliste `SHOTS` in `composition.js`),
 Die Produktdaten stammen aus den Shop- und Händlerangaben zur LAGUNA M (homedeluxe.de, Hornbach).
 Preise sind bewusst nicht eingebaut, weil sie sich häufig ändern.
 
+### Whirlpool – Details in Zeitlupe
+
+Technisches Produktvideo, kein Lifestyle: Alle Grafiken sitzen in **einem** kompakten Modul
+unten links (über der Reels-Caption), nichts ist über das Bild verteilt. Das Modul zeigt
+Logo, Kapitelzähler `01 / 05`, Kapitel-Fortschritt, Merkmal und Detailzeile sowie eine
+Live-Anzeige der echten Abspielgeschwindigkeit (`SPEED 0.33×`, Tempo-Kurve des ganzen
+Videos mit Abspielkopf, Timecode). Am Ende wächst es zur Endcard mit CTA.
+
+Zeitlupe: `scripts/retime.py` rampt jede Einstellung laut `edit.json` (Tempo-Keys je
+Quell-Frame) und rechnet die Zwischenbilder mit RIFE 4.9 (ONNX, CPU) – keine
+Frame-Doppelungen, keine Geisterkanten. Die Schnitte liegen auf dem Musik-Raster:
+`scripts/music.py` dehnt das Intro tonhöhenneutral und loopt den Drop taktgenau, der Drop
+fällt auf den Schnitt zu den Kopfstützen.
+
+| Zeit | Einstellung | Tempo | Modul |
+|---|---|---|---|
+| 0,00–2,00 s | Totale, Anflug | 1× → 0,39× → 1× | Produkt-Check · Whirlpool · 5 Details in Zeitlupe |
+| 2,00–4,82 s | Wanne, Düsen | 1× / 0,5× / 0,19× | 01 Massage · Massagedüsen |
+| 4,82–6,66 s | Verkleidung | 1× → 0,56× | 02 Verkleidung · Anthrazit |
+| 6,66–9,66 s | Kopfstützen (Drop) | 0,33× | 03 Ergonomie · Kopfstützen |
+| 9,66–11,16 s | Treppe | 1× → 0,70× | 04 Einstieg · Treppe |
+| 11,16–13,66 s | Bedienfeld | 0,41× | 05 Bedienung · Bedienfeld |
+| 13,66–17,60 s | Totale, Orbit | 0,30× | Endcard: Whirlpool · Jetzt entdecken · homedeluxe.de |
+
+Die Texte beschreiben nur, was im Bild zu sehen ist (keine Maße, Düsenzahlen oder Preise).
+Modellname und Daten lassen sich in `composition.html` ergänzen.
+
+```bash
+npm run whirlpool:model     # RIFE-Modell (ONNX, ~21 MB) nach build/models
+pip install onnxruntime     # einmalig
+npm run whirlpool:plates    # Schnitt + Zeitlupe -> build/whirlpool/plates, projects/whirlpool/timeline.js (~30 min CPU)
+npm run whirlpool:music     # Tonspur auf Schnittlänge -> build/whirlpool/music.wav
+npm run whirlpool:render    # -> projects/whirlpool/output/HomeDeluxe_Whirlpool_Details_Reel_9x16.mp4
+```
+
+Timing ändern: Tempo-Keys und Dauer je Einstellung in `projects/whirlpool/edit.json`, dann
+`whirlpool:plates` (bereits gerechnete Zwischenbilder werden aus dem Cache genommen) und
+`whirlpool:music`, falls sich die Gesamtlänge ändert.
+
 ## Rendern
 
-Voraussetzungen: Node 18+, Python 3 mit numpy + Pillow, ffmpeg, Chromium für Playwright.
+Voraussetzungen: Node 18+, Python 3 mit numpy + Pillow (Whirlpool zusätzlich onnxruntime), ffmpeg mit
+rubberband, Chromium für Playwright.
 
 ```bash
 npm install                 # Playwright (PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1, wenn Chromium schon da ist)
@@ -51,7 +92,9 @@ assets/fonts/poppins/     Poppins 400–800 (latin, OFL)
 assets/logo/              Home-Deluxe-Logo (weiß, SVG)
 scripts/prepare_plates.sh Hochskalieren + Grading der Quelle
 scripts/track_points.py   Template-Tracking für Marker, die am Bild kleben
-scripts/render.js         Chromium -> PNG-Frames -> ffmpeg (H.264 + stumme AAC-Spur)
+scripts/retime.py         Speed-Ramps + RIFE-Zwischenbilder -> ein Plate je Ausgabe-Frame
+scripts/music.py          Original-Tonspur taktgenau auf die Schnittlänge bringen
+scripts/render.js         Chromium -> PNG-Frames -> ffmpeg (H.264 + AAC, stumm oder --audio)
 projects/<name>/          source/, composition.html/.js, tracking.json, tracks.js, output/
 ```
 

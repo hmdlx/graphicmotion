@@ -4,6 +4,7 @@
 //
 //   node scripts/render.js <composition.html> <out.mp4> --plates <dir>
 //   node scripts/render.js <composition.html> <out_dir> --plates <dir> --stills 1,4.5,18
+//   --audio <file>  muxes a soundtrack instead of the silent track
 //
 // The composition must expose window.COMP = { FPS, TOTAL, seek(n), ready }.
 const path = require('path');
@@ -54,11 +55,11 @@ function writeFrame(stream, buf) {
   const ff = spawn('ffmpeg', [
     '-v', 'error', '-y',
     '-f', 'image2pipe', '-framerate', String(FPS), '-c:v', 'png', '-i', '-',
-    '-f', 'lavfi', '-t', String(TOTAL / FPS), '-i', 'anullsrc=r=48000:cl=stereo',
+    ...(opts.audio ? ['-i', opts.audio] : ['-f', 'lavfi', '-t', String(TOTAL / FPS), '-i', 'anullsrc=r=48000:cl=stereo']),
     '-map', '0:v', '-map', '1:a',
     '-c:v', 'libx264', '-preset', 'slow', '-crf', '16', '-pix_fmt', 'yuv420p',
     '-profile:v', 'high', '-level', '4.2', '-r', String(FPS),
-    '-c:a', 'aac', '-b:a', '128k', '-shortest', '-movflags', '+faststart',
+    '-c:a', 'aac', '-b:a', opts.audio ? '192k' : '128k', '-shortest', '-movflags', '+faststart',
     opts.out,
   ], { stdio: ['pipe', 'inherit', 'inherit'] });
   const done = new Promise((res, rej) => ff.on('close', c => (c === 0 ? res() : rej(new Error('ffmpeg exit ' + c)))));

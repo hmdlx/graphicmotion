@@ -1,0 +1,25 @@
+{
+  "_doc": "Schnittliste + Zeitlupe. keys = [Quell-Frame, Tempo]; Tempo 1 = Echtzeit, \"S\" = wird so gelöst, dass die Einstellung genau dur Sekunden lang ist. Zwischen den Keys wird das Tempo linear gerampt.",
+  "src_fps": 24,
+  "fps": 30,
+  "grade": "hqdn3d=1:1:3:3,unsharp=5:5:0.35:3:3:0,eq=contrast=1.04:saturation=1.03",
+  "shots": [
+    { "id": "A", "name": "Totale, Anflug",     "src": [0, 29],    "dur": 2.00, "keys": [[0, 1], [7, 1], [10, "S"], [19, "S"], [23, 1], [29, 1]] },
+    { "id": "B", "name": "Wanne, Düsen",       "src": [30, 59],   "dur": 2.82, "keys": [[30, 1], [33, 1], [35, 0.5], [40, 0.5], [42, 1], [51, 1], [53, "S"], [59, "S"]] },
+    { "id": "C", "name": "Verkleidung",        "src": [60, 88],   "dur": 1.84, "keys": [[60, 1], [68, 1], [71, "S"], [88, "S"]] },
+    { "id": "D", "name": "Kopfstützen",        "src": [89, 118],  "dur": 3.00, "keys": [[89, 1], [91, 1], [93, "S"], [112, "S"], [116, 1], [118, 1]] },
+    { "id": "E", "name": "Treppe",             "src": [119, 145], "dur": 1.50, "keys": [[119, 1], [124, 1], [126, "S"], [145, "S"]] },
+    { "id": "F", "name": "Bedienfeld",         "src": [146, 174], "dur": 2.50, "keys": [[146, 1], [150, "S"], [169, "S"], [172, 1], [174, 1]] },
+    { "id": "G", "name": "Totale, Orbit",      "src": [175, 202], "dur": 3.94, "keys": [[175, "S"], [202, "S"]] }
+  ],
+  "music": {
+    "_doc": "Segmente der Original-Tonspur in Ausgabe-Reihenfolge: [von, bis] in Quell-Sekunden, stretch = Zieldauer (Intro wird tonhöhenneutral gedehnt).",
+    "segments": [
+      { "src": [0.0, 4.621], "stretch": 6.66 },
+      { "src": [4.621, 8.616] },
+      { "src": [4.621, 8.616] },
+      { "src": [4.621, 6.619] },
+      { "src": [8.616, 9.04], "tail": true }
+    ]
+  }
+}
