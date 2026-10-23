@@ -9,7 +9,7 @@ rendert. ffmpeg schreibt die Frames anschließend als MP4.
 | Projekt | Format | Ergebnis |
 |---|---|---|
 | `projects/laguna-m` | 9:16, 1080×1920, 30 fps, 18,5 s | `output/HomeDeluxe_Laguna-M_Reel_9x16.mp4` + Titelbild |
-| `projects/thermo-scan` | 9:16 (1080×1920) + 1:1 (1080×1080), 30 fps, 29 s, mit Sounddesign | `output/HomeDeluxe_SPLASH-THERMO_Thermo-Scan_9x16.mp4`, `…_1x1.mp4` + Titelbilder |
+| `projects/thermo-scan` | 9:16 (1080×1920), 1:1 (1080×1080), 16:9 (1920×1080), 30 fps, 26 s, mit Sounddesign | `output/HomeDeluxe_SPLASH-THERMO_Thermo-Scan_9x16.mp4`, `…_1x1.mp4`, `…_16x9.mp4`, `…_1x1.gif` + Titelbilder |
 
 ### SPLASH THERMO / DROP THERMO – Thermo-Scan
 
