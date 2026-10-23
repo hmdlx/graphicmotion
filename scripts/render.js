@@ -4,8 +4,12 @@
 //
 //   node scripts/render.js <composition.html> <out.mp4> --plates <dir>
 //   node scripts/render.js <composition.html> <out_dir> --plates <dir> --stills 1,4.5,18
+//   node scripts/render.js <composition.html> <out.mp4> --plates <dir> --audio <source.mp4>
 //
 // The composition must expose window.COMP = { FPS, TOTAL, seek(n), ready }.
+// With --audio the source's sound is kept (padded, faded out at the end); if the
+// composition also exposes COMP.CUES (seconds), a soft notification chime is
+// mixed in at each cue. Without --audio the video gets a silent track.
 const path = require('path');
 const fs = require('fs');
 const { spawn } = require('child_process');
@@ -16,10 +20,30 @@ function parseArgs(argv) {
   const opts = { comp, out };
   for (let i = 0; i < rest.length; i += 2) opts[rest[i].replace(/^--/, '')] = rest[i + 1];
   if (!comp || !out || !opts.plates) {
-    console.error('usage: render.js <composition.html> <out.mp4|out_dir> --plates <dir> [--stills t1,t2]');
+    console.error('usage: render.js <composition.html> <out.mp4|out_dir> --plates <dir> [--stills t1,t2] [--audio file]');
     process.exit(1);
   }
   return opts;
+}
+
+// Two-tone chime (sine partials with exponential decay), synthesised so no
+// third-party sound file is needed.
+const CHIME = '0.26*sin(2*PI*1318.5*t)*exp(-7*t)'
+  + '+0.2*sin(2*PI*1975.5*(t-0.085))*exp(-7*(t-0.085))*gte(t\\,0.085)';
+
+function audioArgs(opts, dur, cues) {
+  if (!opts.audio) {
+    return { inputs: ['-f', 'lavfi', '-t', String(dur), '-i', 'anullsrc=r=48000:cl=stereo'], map: ['-map', '1:a'] };
+  }
+  const fade = Math.max(0, dur - 0.8).toFixed(3);
+  const parts = [`[1:a]aresample=48000,aformat=channel_layouts=stereo,apad,atrim=0:${dur},afade=t=out:st=${fade}:d=0.8[bg]`];
+  cues.forEach((c, i) => {
+    const ms = Math.round(c * 1000);
+    parts.push(`aevalsrc=${CHIME}:s=48000:d=0.9,aformat=channel_layouts=stereo,adelay=${ms}|${ms}[c${i}]`);
+  });
+  const ins = ['[bg]', ...cues.map((_, i) => `[c${i}]`)].join('');
+  parts.push(`${ins}amix=inputs=${cues.length + 1}:normalize=0:duration=first,alimiter=limit=0.9[a]`);
+  return { inputs: ['-i', opts.audio], map: ['-filter_complex', parts.join(';'), '-map', '[a]'] };
 }
 
 function writeFrame(stream, buf) {
@@ -35,7 +59,7 @@ function writeFrame(stream, buf) {
   page.on('pageerror', e => { console.error('page error:', e.message); process.exitCode = 1; });
   await page.goto(url);
   await page.evaluate(() => window.COMP.ready);
-  const { FPS, TOTAL } = await page.evaluate(() => ({ FPS: window.COMP.FPS, TOTAL: window.COMP.TOTAL }));
+  const { FPS, TOTAL, CUES } = await page.evaluate(() => ({ FPS: window.COMP.FPS, TOTAL: window.COMP.TOTAL, CUES: window.COMP.CUES || [] }));
 
   if (opts.stills) {
     fs.mkdirSync(opts.out, { recursive: true });
@@ -51,11 +75,12 @@ function writeFrame(stream, buf) {
   }
 
   fs.mkdirSync(path.dirname(opts.out), { recursive: true });
+  const audio = audioArgs(opts, TOTAL / FPS, CUES);
   const ff = spawn('ffmpeg', [
     '-v', 'error', '-y',
     '-f', 'image2pipe', '-framerate', String(FPS), '-c:v', 'png', '-i', '-',
-    '-f', 'lavfi', '-t', String(TOTAL / FPS), '-i', 'anullsrc=r=48000:cl=stereo',
-    '-map', '0:v', '-map', '1:a',
+    ...audio.inputs,
+    '-map', '0:v', ...audio.map,
     '-c:v', 'libx264', '-preset', 'slow', '-crf', '16', '-pix_fmt', 'yuv420p',
     '-profile:v', 'high', '-level', '4.2', '-r', String(FPS),
     '-c:a', 'aac', '-b:a', '128k', '-shortest', '-movflags', '+faststart',

@@ -9,6 +9,7 @@ rendert. ffmpeg schreibt die Frames anschließend als MP4.
 | Projekt | Format | Ergebnis |
 |---|---|---|
 | `projects/laguna-m` | 9:16, 1080×1920, 30 fps, 18,5 s | `output/HomeDeluxe_Laguna-M_Reel_9x16.mp4` + Titelbild |
+| `projects/wohnzimmer-casara` | 9:16, 1080×1920, 24 fps, 13,8 s | `output/HomeDeluxe_Wohnzimmer-CASARA_Reel_9x16.mp4` |
 
 ### Laguna M – Schnitt und Übergänge
 
@@ -29,6 +30,28 @@ läuft nur mit ihren sauberen Frames (Schnittliste `SHOTS` in `composition.js`),
 Die Produktdaten stammen aus den Shop- und Händlerangaben zur LAGUNA M (homedeluxe.de, Hornbach).
 Preise sind bewusst nicht eingebaut, weil sie sich häufig ändern.
 
+### Wohnzimmer CASARA – Mitteilungen im iOS-Stil
+
+Der Raum-Clip (Wohnzimmer → Essbereich) läuft ungeschnitten; darüber erscheinen Mitteilungen
+im Aufbau eines iPhone-Banners, aber in CI: Milchglas-Weiß, Navy-Text, Navy-App-Icon, eckig.
+Neue Mitteilungen fliegen mit einer gedämpften Feder von oben ein und schieben die älteren in
+einen Stapel; jede Gruppe verlässt das Bild mit dem Reißschwenk der Quelle. Zu jeder Mitteilung
+mischt `render.js` einen synthetischen Zweiklang unter den Originalton (`--audio`, Cues aus
+`COMP.CUES`). Die letzte Plate steht 1,75 s länger mit langsamem Push-in für die Schlusskarte.
+
+| Zeit | Bild | Mitteilung |
+|---|---|---|
+| 0,4 s | Wohnzimmer total | Sofa CASARA – 258 cm geschwungener Komfort, schwebendes Design |
+| 1,8 s | Sessel close-up | Sessel CASARA – tiefe Sitzfläche, vormontiert |
+| 3,95 s | Wohnzimmer mit Sessel | Lounge Set CASARA – Sofa und Sessel im Set |
+| 5,45 s | Reißschwenk | Stapel fliegt nach oben raus |
+| 6,85 s | Essbereich total | Esstisch CAMILLO – rund, Ø 120 cm, Holzoptik Schwarz |
+| 8,35 s | Tisch close-up | Esszimmerstuhl CELESTE – Bouclé in Weiß |
+| 10,3 s | Essbereich total | „Dein neues Zuhause ist bereit.“ + Aktionen „Jetzt entdecken“ / homedeluxe.de, Logo-Plate mit Slogan |
+
+Produktdaten und Freisteller-Thumbnails (`assets/`) stammen von den Produktseiten auf homedeluxe.de.
+Der Couchtisch im Clip hat keine eigene Mitteilung, weil er im Shop nicht gefunden wurde.
+
 ## Rendern
 
 Voraussetzungen: Node 18+, Python 3 mit numpy + Pillow, ffmpeg, Chromium für Playwright.
@@ -39,6 +62,10 @@ npm run laguna-m:plates     # Rohschnitt -> hochskalierte, leicht gegradete JPG-
 npm run laguna-m:track      # Punkt-Tracking -> projects/laguna-m/tracks.js (nur nötig, wenn tracking.json geändert wurde)
 npm run laguna-m:render     # -> projects/laguna-m/output/HomeDeluxe_Laguna-M_Reel_9x16.mp4
 npm run laguna-m:stills     # Kontrollbilder nach build/laguna-m/stills
+
+npm run wohnzimmer-casara:plates   # Quelle -> Plates (build/wohnzimmer-casara/plates)
+npm run wohnzimmer-casara:render   # -> projects/wohnzimmer-casara/output/…_Reel_9x16.mp4 (mit Ton)
+npm run wohnzimmer-casara:stills   # Kontrollbilder nach build/wohnzimmer-casara/stills
 ```
 
 Ein einzelnes Frame lässt sich auch im Browser prüfen:
@@ -51,7 +78,8 @@ assets/fonts/poppins/     Poppins 400–800 (latin, OFL)
 assets/logo/              Home-Deluxe-Logo (weiß, SVG)
 scripts/prepare_plates.sh Hochskalieren + Grading der Quelle
 scripts/track_points.py   Template-Tracking für Marker, die am Bild kleben
-scripts/render.js         Chromium -> PNG-Frames -> ffmpeg (H.264 + stumme AAC-Spur)
+scripts/render.js         Chromium -> PNG-Frames -> ffmpeg (H.264 + stumme AAC-Spur oder
+                          mit --audio Originalton + Mitteilungston an COMP.CUES)
 projects/<name>/          source/, composition.html/.js, tracking.json, tracks.js, output/
 ```
 

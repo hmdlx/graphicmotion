@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>Wohnzimmer CASARA – Reel 9:16</title>
+<style>
+  @font-face { font-family: Poppins; font-weight: 400; src: url(../../assets/fonts/poppins/poppins-latin-400-normal.woff2) format("woff2"); }
+  @font-face { font-family: Poppins; font-weight: 500; src: url(../../assets/fonts/poppins/poppins-latin-500-normal.woff2) format("woff2"); }
+  @font-face { font-family: Poppins; font-weight: 600; src: url(../../assets/fonts/poppins/poppins-latin-600-normal.woff2) format("woff2"); }
+  @font-face { font-family: Poppins; font-weight: 700; src: url(../../assets/fonts/poppins/poppins-latin-700-normal.woff2) format("woff2"); }
+  @font-face { font-family: Poppins; font-weight: 800; src: url(../../assets/fonts/poppins/poppins-latin-800-normal.woff2) format("woff2"); }
+
+  /* Home Deluxe CI: Navy + Weiß + Grautöne, eckige Ecken, Poppins */
+  :root {
+    --navy: #0e2234;
+    --navy-2: #1c3a54;
+    --muted: #66727d;
+    --line: #e3e7ec;
+    --soft: #f4f6f8;
+    --light: #e9eef4;
+    --margin: 40px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; border-radius: 0; }
+  html, body { width: 1080px; height: 1920px; overflow: hidden; background: var(--navy); }
+  body { font-family: Poppins, sans-serif; color: var(--navy); -webkit-font-smoothing: antialiased; }
+
+  #stage { position: absolute; inset: 0; overflow: hidden; background: var(--navy); }
+  #footage { position: absolute; inset: 0; overflow: hidden; }
+  #footage img { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; display: block; transform-origin: 540px 1100px; }
+
+  /* Mitteilungen im iOS-Aufbau, in CI: Milchglas-Weiß, Navy-Text, eckig */
+  #notes { position: absolute; left: var(--margin); top: 128px; width: 1000px; }
+  .note { position: absolute; left: 0; top: 0; width: 1000px; transform-origin: 500px 0; will-change: transform, opacity; }
+  .note .card {
+    position: relative; display: grid; grid-template-columns: 92px 1fr 150px; column-gap: 28px; align-items: center;
+    padding: 28px 28px 28px 30px; background: rgba(255, 255, 255, .80);
+    -webkit-backdrop-filter: blur(30px) saturate(1.5); backdrop-filter: blur(30px) saturate(1.5);
+    box-shadow: 0 26px 64px rgba(14, 34, 52, .26), 0 2px 0 rgba(255, 255, 255, .6) inset;
+  }
+  .note .card::before { content: ""; position: absolute; left: 0; top: 0; width: 6px; height: 100%; background: var(--navy); }
+  .note .content { display: contents; }
+  .icon { width: 92px; height: 92px; background: var(--navy); display: flex; align-items: center; justify-content: center; align-self: start; margin-top: 4px; }
+  .icon svg { display: block; }
+  .txt { min-width: 0; }
+  .meta { display: flex; justify-content: space-between; align-items: baseline; font-weight: 600; font-size: 23px; line-height: 1; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); margin-bottom: 14px; }
+  .meta em { font-style: normal; font-weight: 500; letter-spacing: .02em; text-transform: none; font-size: 24px; }
+  .title { font-weight: 700; font-size: 42px; line-height: 1.08; letter-spacing: -.01em; color: var(--navy); }
+  .body { margin-top: 8px; font-weight: 400; font-size: 31px; line-height: 1.3; color: #2c3d4d; }
+  .thumb { width: 150px; height: 150px; background: #fff; border: 1px solid var(--line); overflow: hidden; }
+  .thumb img { display: block; width: 100%; height: 100%; object-fit: cover; }
+
+  /* Schlussmitteilung mit Aktionen */
+  #final .card { grid-template-columns: 92px 1fr; }
+  #final .title { font-size: 46px; }
+  .actions { margin-top: 12px; display: flex; flex-direction: column; gap: 12px; }
+  .action { display: flex; align-items: center; justify-content: space-between; padding: 28px 34px 26px; font-weight: 600; font-size: 36px; line-height: 1; will-change: transform, opacity; }
+  .action.primary { background: var(--navy); color: #fff; box-shadow: 0 22px 54px rgba(14, 34, 52, .28); }
+  .action.secondary { background: rgba(255, 255, 255, .80); color: var(--navy); -webkit-backdrop-filter: blur(30px) saturate(1.5); backdrop-filter: blur(30px) saturate(1.5); box-shadow: 0 22px 54px rgba(14, 34, 52, .2); }
+  .action svg { display: block; }
+
+  /* Logo-Plate unten */
+  #brand { position: absolute; left: 0; right: 0; bottom: 0; height: 330px; background: var(--navy); display: flex; flex-direction: column; justify-content: center; padding: 0 72px; }
+  #brand img { display: block; width: 420px; height: auto; }
+  #brand .slogan { margin-top: 26px; font-weight: 500; font-size: 34px; line-height: 1; letter-spacing: .02em; color: rgba(233, 238, 244, .78); }
+  #brand .rule { position: absolute; left: 72px; top: 0; height: 4px; width: 120px; background: #fff; transform-origin: left; }
+</style>
+</head>
+<body>
+<div id="stage">
+  <div id="footage"><img alt=""></div>
+
+  <template id="house">
+    <svg width="54" height="54" viewBox="0 0 54 54"><path d="M7 25 27 8l20 17M13 21v24h28V21M23 45V32h8v13" fill="none" stroke="#fff" stroke-width="3.6" stroke-linejoin="miter" stroke-linecap="square"/></svg>
+  </template>
+
+  <div id="notes">
+    <div class="note" id="n-sofa">
+      <div class="card">
+        <div class="icon"></div>
+        <div class="txt"><div class="meta"><span>Home Deluxe</span><em>jetzt</em></div>
+          <div class="title">Sofa CASARA</div>
+          <div class="body">258 cm geschwungener Komfort – mit schwebendem Design.</div></div>
+        <div class="thumb"><img src="assets/sofa-casara.jpg" alt=""></div>
+      </div>
+    </div>
+    <div class="note" id="n-sessel">
+      <div class="card">
+        <div class="icon"></div>
+        <div class="txt"><div class="meta"><span>Home Deluxe</span><em>jetzt</em></div>
+          <div class="title">Sessel CASARA</div>
+          <div class="body">Tiefe Sitzfläche, vormontiert – sofort nutzbar.</div></div>
+        <div class="thumb"><img src="assets/sessel-casara.jpg" alt=""></div>
+      </div>
+    </div>
+    <div class="note" id="n-set">
+      <div class="card">
+        <div class="icon"></div>
+        <div class="txt"><div class="meta"><span>Home Deluxe</span><em>jetzt</em></div>
+          <div class="title">Lounge Set CASARA</div>
+          <div class="body">Sofa und Sessel im Set.</div></div>
+        <div class="thumb"><img src="assets/lounge-set-casara.jpg" alt=""></div>
+      </div>
+    </div>
+    <div class="note" id="n-tisch">
+      <div class="card">
+        <div class="icon"></div>
+        <div class="txt"><div class="meta"><span>Home Deluxe</span><em>jetzt</em></div>
+          <div class="title">Esstisch CAMILLO</div>
+          <div class="body">Rund, Ø 120 cm – Holzoptik in Schwarz.</div></div>
+        <div class="thumb"><img src="assets/esstisch-camillo.jpg" alt=""></div>
+      </div>
+    </div>
+    <div class="note" id="n-stuhl">
+      <div class="card">
+        <div class="icon"></div>
+        <div class="txt"><div class="meta"><span>Home Deluxe</span><em>jetzt</em></div>
+          <div class="title">Esszimmerstuhl CELESTE</div>
+          <div class="body">Bouclé in Weiß, weich gepolstert.</div></div>
+        <div class="thumb"><img src="assets/stuhl-celeste.jpg" alt=""></div>
+      </div>
+    </div>
+    <div class="note" id="final">
+      <div class="card">
+        <div class="icon"></div>
+        <div class="txt"><div class="meta"><span>Home Deluxe</span><em>jetzt</em></div>
+          <div class="title">Dein neues Zuhause ist bereit.</div>
+          <div class="body">Wohnzimmer und Essbereich – der ganze Look zum Nachshoppen.</div></div>
+      </div>
+      <div class="actions">
+        <div class="action primary"><span>Jetzt entdecken</span>
+          <svg width="40" height="24" viewBox="0 0 40 24"><path d="M0 12h36M26 2l10 10-10 10" fill="none" stroke="#fff" stroke-width="3.2"/></svg>
+        </div>
+        <div class="action secondary"><span>homedeluxe.de</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="brand">
+    <div class="rule"></div>
+    <img src="../../assets/logo/homedeluxe-logo-white.svg" alt="Home Deluxe">
+    <div class="slogan">Wir machen dein Zuhause.</div>
+  </div>
+</div>
+
+<script src="composition.js"></script>
+</body>
+</html>
