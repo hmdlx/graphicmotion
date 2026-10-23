@@ -37,4 +37,8 @@ join s "$OUT/${NAME}_1x1.mp4"
 # Cover frames (end card)
 ffmpeg -v error -y -ss 25.0 -i "$OUT/${NAME}_9x16.mp4" -frames:v 1 -q:v 2 "$OUT/${NAME}_Cover_9x16.jpg"
 ffmpeg -v error -y -ss 25.0 -i "$OUT/${NAME}_1x1.mp4" -frames:v 1 -q:v 2 "$OUT/${NAME}_Cover_1x1.jpg"
+# GIF of the 1:1 version: 540 px, 10 fps, grain filtered out (it bloats GIFs)
+ffmpeg -v error -y -i "$OUT/${NAME}_1x1.mp4" \
+  -vf "fps=10,hqdn3d=4:4:14:14,scale=540:540:flags=lanczos,split[a][b];[a]palettegen=stats_mode=diff:max_colors=128[p];[b][p]paletteuse=dither=bayer:bayer_scale=4:diff_mode=rectangle" \
+  -loop 0 "$OUT/${NAME}_1x1.gif"
 ls -la "$OUT"
