@@ -1,10 +1,10 @@
-// SPLASH THERMO – Thermo-Scan film, 9:16 and 1:1 from one timeline.
+// SPLASH THERMO / DROP THERMO – Thermo-Scan film, 9:16 and 1:1 from one timeline.
 // window.COMP.seek(n) puts the stage into the exact state of output frame n.
 import * as THREE from 'three';
 import { World, DIM, coverTop, rng } from './scene.js';
 
 const FPS = 30;
-const TOTAL = 780;                       // 26 s
+const TOTAL = 870;                       // 29 s
 const W = innerWidth, H = innerHeight;
 const P = H > W;                         // portrait 9:16, else 1:1
 document.body.classList.add(P ? 'pt' : 'sq');
@@ -33,7 +33,10 @@ const T = {
   lift3: [19.0, 19.9],
   cap1: [9.9, 11.9], cap2: [12.9, 14.9], cap3: [15.9, 18.9], cap4: [20.0, 21.85],
   wipe: [21.85, 22.25],
-  end: 22.25,
+  // DROP THERMO: its own ambient shot with a scan, then the shared end card
+  drop: { out: [22.25, 22.6], hud: [22.45, 24.6], logo: [22.4, 24.6], scan: [22.75, 23.65], cap: [22.55, 24.7], legend: [23.0, 24.6] },
+  wipe2: [24.6, 25.0],
+  end: 25.0,
 };
 
 // Helpers ---------------------------------------------------------------------------------
@@ -98,14 +101,14 @@ const L = P ? {
   capBottom: 150, titleBottom: 118,
   chip: { top: 1090, left: 72 }, legend: { x: W - 72 - 22 - 64, y: 520, h: 360 },
   prog: { right: 72, top: 140 },
-  end: { logoTop: 140, coverY: 770, coverW: 880, shadowY: 1110, shadowW: 720, textTop: 1190 },
+  end: { logoTop: 140, coverY: 700, coverW: 470, xS: 300, xD: 780, textTop: 1070 },
 } : {
   winTop: 0,
   frame: { l: 28, t: 28, r: W - 28, b: H - 28 },
   capBottom: 56, titleBottom: 56,
   chip: { top: 178, right: 56 }, legend: { x: W - 56 - 22 - 60, y: 420, h: 260 },
   prog: { right: 56, bottom: 60 },
-  end: { logoTop: 56, coverY: 330, coverW: 620, shadowY: 545, shadowW: 520, textTop: 610 },
+  end: { logoTop: 56, coverY: 262, coverW: 360, xS: 300, xD: 780, textTop: 478 },
 };
 const WIN = { l: 0, t: L.winTop, r: W, b: L.winTop + W };
 
@@ -113,18 +116,24 @@ const WIN = { l: 0, t: L.winTop, r: W, b: L.winTop + W };
 $('#photo').src = PLATES + '/photo.jpg';
 $('#xray').src = PLATES + '/photo_xray.png';
 $('#coverImg').src = PLATES + '/cover_34.png';
+$('#dropImg').src = PLATES + '/drop_34.png';
+$('#dphoto').src = PLATES + '/drop.jpg';
+$('#dxray').src = PLATES + '/drop_xray.png';
 $('#win').style.top = WIN.t + 'px';
+$('#dwin').style.top = WIN.t + 'px';
 $('#mask').style.top = WIN.t + 'px';
-for (const id of ['#cap1', '#cap2', '#cap3', '#cap4']) $(id).style.bottom = L.capBottom + 'px';
+for (const id of ['#cap1', '#cap2', '#cap3', '#cap4', '#cap5']) $(id).style.bottom = L.capBottom + 'px';
 $('#title').style.bottom = L.titleBottom + 'px';
 for (const c of $$('.chip')) Object.assign(c.style, { top: L.chip.top + 'px' }, L.chip.right !== undefined ? { left: 'auto', right: L.chip.right + 'px' } : { left: L.chip.left + 'px' });
 Object.assign($('#legend').style, { left: L.legend.x + 'px', top: L.legend.y + 'px', height: L.legend.h + 'px' });
 Object.assign($('#prog').style, { right: L.prog.right + 'px' }, L.prog.top !== undefined ? { top: L.prog.top + 'px' } : { bottom: L.prog.bottom + 'px' });
 $('#endLogo').style.top = L.end.logoTop + 'px';
 $('#endText').style.top = L.end.textTop + 'px';
-Object.assign($('#endCover').style, { top: L.end.coverY + 'px', width: L.end.coverW + 'px' });
-Object.assign($('#endShadow').style, { top: L.end.shadowY + 'px', width: L.end.shadowW + 'px' });
+Object.assign($('#ecS').style, { left: L.end.xS + 'px', top: L.end.coverY + 'px', width: L.end.coverW + 'px' });
+Object.assign($('#ecD').style, { left: L.end.xD + 'px', top: L.end.coverY + 'px', width: L.end.coverW + 'px' });
 $('#endGlow').style.top = L.end.coverY + 'px';
+// both cut-outs stand on the same base line, so the names line up
+for (const e of $$('.ecov .eimg')) e.style.height = Math.round(L.end.coverW * 0.46) + 'px';
 
 const canvas = $('#gl');
 canvas.width = W; canvas.height = H;
@@ -423,37 +432,35 @@ function seek(n) {
   vis($('#mask'), P ? 1 - E.inOut(prog(t, ...T.mask)) : 0);
 
   // ---- HUD
-  const hudIn = E.out(prog(t, T.hud, T.hud + 0.4));
-  const hudOut = prog(t, T.wipe[0] - 0.3, T.wipe[0]);
+  const inDrop = t >= T.drop.out[0];
+  const hudIn = inDrop ? E.out(prog(t, T.drop.hud[0], T.drop.hud[0] + 0.4)) : E.out(prog(t, T.hud, T.hud + 0.4));
+  const hudOut = inDrop ? prog(t, T.drop.hud[1] - 0.3, T.drop.hud[1]) : prog(t, T.wipe[0] - 0.3, T.wipe[0]);
   vis($('#hud'), hudIn * (1 - hudOut));
   const inset = r => ({ l: r.l + 24, t: r.t + 24, r: r.r - 24, b: r.b - 24 });
-  const rect = mixRect(inset(WIN), L.frame, E.inOut(prog(t, 4.5, 5.3)));
+  const rect = inDrop ? inset(WIN) : mixRect(inset(WIN), L.frame, E.inOut(prog(t, 4.5, 5.3)));
   bracket(rect, hudIn);
+  $('#hudTitle b').textContent = inDrop ? 'DROP THERMO' : 'SPLASH THERMO';
   // 1:1: the logo sits in the top-left corner, the HUD title goes below it
   const hudTop = P ? rect.t + 24 : Math.max(rect.t + 24, 128);
   Object.assign($('#hudTitle').style, { left: rect.l + 26 + 'px', top: hudTop + 'px' });
   // 1:1 has no room for the title next to the product shots; it steps back there
-  const hudTxt = P ? 1 : 1 - prog(t, 11.6, 12.0);
+  const hudTxt = P || inDrop ? 1 : 1 - prog(t, 11.6, 12.0);
   $('#hudTitle').style.opacity = hudTxt; $('#meter').style.opacity = hudTxt;
-  const rd = $('#hudRead');
-  Object.assign(rd.style, { left: 'auto', right: W - rect.r + 26 + 'px', top: rect.t + 24 + 'px' });
   Object.assign($('#meter').style, { left: rect.l + 26 + 'px', top: hudTop + (P ? 42 : 36) + 'px', width: (P ? 360 : 300) + 'px' });
-  $('#meter i').style.width = s * 100 + '%';
-  const md = $('#hudMode');
-  Object.assign(md.style, { left: 'auto', right: W - rect.r + 26 + 'px', top: rect.t + 62 + 'px' });
-  md.textContent = t < 6.0 ? 'Modus · Röntgen' : t < 8.2 ? 'Modus · Querschnitt' : t < 11.8 ? 'Modus · Wärmebild' : t < 15.4 ? 'Modus · Produkt' : t < 19.1 ? 'Modus · Wetter' : 'Modus · Wasser';
-  rd.innerHTML = t < T.scan[1] + 0.3 ? `Scan <b>${String(Math.round(s * 100)).padStart(3, '0')}</b> %` : 'Scan <b>OK</b>';
+  const ds = E.inOut(prog(t, ...T.drop.scan));
+  $('#meter i').style.width = (inDrop ? ds : s) * 100 + '%';
   $('.rec').style.opacity = (Math.floor(t * 2) % 2) ? 0.25 : 1;
 
-  vis($('#legend'), win(t, [3.4, 11.7], 0.5, 0.4));
+  vis($('#legend'), Math.max(win(t, [3.4, 11.7], 0.5, 0.4), win(t, T.drop.legend, 0.4, 0.3)));
 
   // ---- Logo, title, captions, chips, progress
-  vis($('#logo'), Math.min(E.out(prog(t, T.logo[0], T.logo[0] + 0.4)), 1 - prog(t, T.logo[1] - 0.3, T.logo[1])));
+  vis($('#logo'), Math.max(Math.min(E.out(prog(t, T.logo[0], T.logo[0] + 0.4)), 1 - prog(t, T.logo[1] - 0.3, T.logo[1])), win(t, T.drop.logo, 0.4, 0.3)));
   stackAnim($('#title'), t, T.title);
   stackAnim($('#cap1'), t, T.cap1);
   stackAnim($('#cap2'), t, T.cap2);
   stackAnim($('#cap3'), t, T.cap3);
   stackAnim($('#cap4'), t, T.cap4);
+  stackAnim($('#cap5'), t, T.drop.cap);
   for (const [id, w] of [['#chipOff', T.chipOff], ['#chipOn', T.chipOn]]) {
     const k = win(t, w, 0.3, 0.3);
     vis($(id), k);
@@ -532,20 +539,44 @@ function seek(n) {
   const fl = Math.max(0.35 * (1 - prog(t, T.scan[1], T.scan[1] + 0.35)) * (t >= T.scan[1] ? 1 : 0),
     0.5 * Math.max(0, 1 - Math.abs(t - T.look[0]) / 0.18) * 0);
   vis($('#flash'), fl);
-  const wp = E.inOut(prog(t, ...T.wipe));
+  // Navy panel: rises over the water shot, leaves upwards to uncover DROP, rises again for the end card.
   const wipe = $('#wipe');
-  vis(wipe, wp > 0 && t < T.end + 0.02 ? 1 : 0);
-  wipe.style.top = H * (1 - wp) + 'px'; wipe.style.bottom = '0px';
+  const wIn = E.inOut(prog(t, ...T.wipe)), wOut = E.inOut(prog(t, ...T.drop.out)), w2 = E.inOut(prog(t, ...T.wipe2));
+  if (t < T.drop.out[0]) { vis(wipe, wIn > 0 ? 1 : 0); wipe.style.top = H * (1 - wIn) + 'px'; wipe.style.bottom = '0px'; }
+  else if (t < T.drop.out[1]) { vis(wipe, 1); wipe.style.top = '0px'; wipe.style.bottom = H * wOut + 'px'; }
+  else if (t < T.end + 0.02) { vis(wipe, w2 > 0 ? 1 : 0); wipe.style.top = H * (1 - w2) + 'px'; wipe.style.bottom = '0px'; }
+  else vis(wipe, 0);
+
+  // DROP beat: ambient shot, push-in, scan to the x-ray
+  const dropOn = t >= T.drop.out[0] && t < T.end;
+  vis($('#dwin'), dropOn ? 1 : 0);
+  if (dropOn) {
+    if (P) vis($('#mask'), 1);
+    const dz = 1 + 0.07 * E.sine(prog(t, T.drop.out[0], T.end));
+    for (const img of [$('#dphoto'), $('#dxray')]) img.style.transform = `translate(-50%, -50%) scale(${dz})`;
+    $('#dxray').style.clipPath = `inset(0 0 ${(1 - ds) * 100}% 0)`;
+    const don = t > T.drop.scan[0] - 0.05 && t < T.drop.scan[1] + 0.25;
+    const fade = don ? Math.min(1, 1 - prog(t, T.drop.scan[1], T.drop.scan[1] + 0.25)) : 0;
+    vis($('#dscan'), fade); vis($('#dscanGlow'), fade);
+    $('#dscan').style.top = ds * winH - 1 + 'px';
+    $('#dscanGlow').style.top = ds * winH - 180 + 'px';
+  }
   const endOn = t >= T.end;
   vis($('#end'), endOn ? 1 : 0);
   if (endOn) {
     const te = t - T.end;
-    const kc = E.out5(prog(te, 0.0, 1.1));
-    const bob = Math.sin(te * 1.6) * 8;
-    $('#endCover').style.transform = `translate(-50%, calc(-50% + ${(1 - kc) * -120 + bob}px)) scale(${0.9 + 0.1 * kc}) rotate(${Math.sin(te * 1.1) * 0.8}deg)`;
-    $('#endCover').style.opacity = kc;
-    $('#endShadow').style.opacity = kc * (0.85 - bob * 0.02);
-    $('#endShadow').style.transform = `translate(-50%, -50%) scale(${1 - bob * 0.006})`;
+    [['#ecS', 0, 0], ['#ecD', 0.15, 1.7]].forEach(([id, dl, ph]) => {
+      const el = $(id);
+      const kc = E.out5(prog(te, dl, dl + 1.1));
+      const bob = Math.sin(te * 1.6 + ph) * 7;
+      const img = el.querySelector('.eimg img'), sh = el.querySelector('.esh'), lab = el.querySelector('.elab');
+      img.style.transform = `translateY(${(1 - kc) * -110 + bob}px) scale(${0.9 + 0.1 * kc}) rotate(${Math.sin(te * 1.1 + ph) * 0.8}deg)`;
+      img.style.opacity = kc;
+      sh.style.opacity = kc * (0.85 - bob * 0.02);
+      sh.style.transform = `scale(${1 - bob * 0.008})`;
+      const kl = E.out(prog(te, dl + 0.45, dl + 0.85));
+      lab.style.opacity = kl; lab.style.transform = `translateY(${(1 - kl) * 16}px)`;
+    });
     $('#endGlow').style.opacity = E.out(prog(te, 0, 1.2));
     vis($('#endLogo'), E.out(prog(te, 0.2, 0.7)));
     const et = $('#endText');
@@ -553,7 +584,6 @@ function seek(n) {
     $$('.ln > span', et).forEach((sp, i) => { const k2 = E.out(prog(te, 0.45 + i * 0.12, 0.95 + i * 0.12)); sp.style.transform = `translateY(${(1 - k2) * 105}%)`; });
     $$('.specs span', et).forEach((sp, i) => { const k3 = E.out(prog(te, 0.85 + i * 0.1, 1.25 + i * 0.1)); sp.style.opacity = k3; sp.style.transform = `translateY(${(1 - k3) * 20}px)`; });
     const k4 = E.back(prog(te, 1.25, 1.75)); const cta = et.querySelector('.cta'); cta.style.opacity = clamp(k4); cta.style.transform = `scale(${0.9 + 0.1 * k4})`; cta.style.transformOrigin = '0 50%';
-    const k5 = E.out(prog(te, 1.6, 2.1)); et.querySelector('.fit').style.opacity = k5;
   }
 
   // ---- Grain

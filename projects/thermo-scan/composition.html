@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
 <meta charset="utf-8">
-<title>SPLASH THERMO – Thermo-Scan</title>
+<title>SPLASH & DROP THERMO – Thermo-Scan</title>
 <script type="importmap">
 { "imports": {
   "three": "../../node_modules/three/build/three.module.js",
@@ -36,12 +36,12 @@
   .layer { position: absolute; inset: 0; pointer-events: none; }
 
   /* Photo window (S1/S2). 1:1 = full frame, 9:16 = centred square */
-  #win { position: absolute; left: 0; width: 100vw; height: 100vw; overflow: hidden; }
-  #win img { position: absolute; left: 50%; top: 50%; width: 100%; height: 100%; transform-origin: 50% 46.5%; }
-  #xray { clip-path: inset(0 0 100% 0); }
-  #scan { position: absolute; left: 0; right: 0; height: 2px; background: #fff;
+  #win, #dwin { position: absolute; left: 0; width: 100vw; height: 100vw; overflow: hidden; }
+  #win img, #dwin img { position: absolute; left: 50%; top: 50%; width: 100%; height: 100%; transform-origin: 50% 46.5%; }
+  #xray, #dxray { clip-path: inset(0 0 100% 0); }
+  #scan, #dscan { position: absolute; left: 0; right: 0; height: 2px; background: #fff;
           box-shadow: 0 0 12px 3px rgba(143,227,255,.95), 0 0 60px 18px rgba(143,227,255,.45); }
-  #scanGlow { position: absolute; left: 0; right: 0; height: 180px;
+  #scanGlow, #dscanGlow { position: absolute; left: 0; right: 0; height: 180px;
           background: linear-gradient(to top, rgba(143,227,255,.28), rgba(143,227,255,0)); }
   #mask { position: absolute; left: 0; width: 100vw; height: 100vw; box-shadow: 0 0 0 1400px var(--navy); }
 
@@ -69,7 +69,7 @@
   .blk.white { background: #fff; color: var(--navy); }
   .ln { display: block; overflow: hidden; padding-bottom: .06em; margin-bottom: -.06em; }
   .ln > span { display: inline-block; will-change: transform; }
-  .kicker { font-weight: 600; font-size: calc(24 * var(--u)); line-height: 1; letter-spacing: .2em; text-transform: uppercase; color: var(--ice); display: flex; align-items: center; gap: 16px; }
+  .kicker { font-weight: 600; font-size: calc(24 * var(--u)); line-height: 1; letter-spacing: .2em; text-transform: uppercase; color: var(--ice); display: flex; align-items: center; gap: 16px; text-shadow: 0 1px 10px rgba(0,0,0,.65); }
   .kicker i { display: block; width: 46px; height: 2px; background: var(--ice); }
 
   #title .kicker { margin-bottom: 22px; color: #fff; }
@@ -78,6 +78,7 @@
   #title .tag { margin-top: 12px; font-weight: 600; font-size: calc(34 * var(--u)); line-height: 1; padding: 20px 34px 18px; }
 
   .cap .kicker { margin-bottom: 20px; }
+  #cap5 .kicker { align-self: flex-start; background: rgba(7,19,31,.82); padding: 11px 16px 10px; }
   .cap .hl { font-weight: 700; font-size: calc(76 * var(--u)); line-height: 1.04; letter-spacing: -.015em; padding: 18px 32px 14px; }
   .cap .sub { margin-top: 10px; font-weight: 500; font-size: calc(32 * var(--u)); line-height: 1.25; padding: 18px 32px 16px; background: rgba(14,34,52,.92); max-width: calc(860 * var(--u)); }
 
@@ -113,10 +114,14 @@
   #end { background: var(--navy); }
   #endGlow { position: absolute; left: 50%; width: 1400px; height: 1400px; transform: translate(-50%, -50%);
              background: radial-gradient(closest-side, rgba(70,130,180,.42), rgba(14,34,52,0)); }
-  #endCover { position: absolute; left: 50%; transform: translate(-50%, -50%); }
-  #endCover img { display: block; width: 100%; height: auto; }
-  #endShadow { position: absolute; left: 50%; transform: translate(-50%, -50%); height: 60px; border-radius: 50% !important;
+  .ecov { position: absolute; transform: translate(-50%, -50%); }
+  .ecov .eimg { position: relative; display: flex; align-items: flex-end; }
+  .ecov .eimg img { position: relative; display: block; width: 100%; height: auto; }
+  .ecov .esh { position: absolute; left: 8%; right: 8%; bottom: -26px; height: 56px; border-radius: 50% !important;
                background: radial-gradient(closest-side, rgba(0,0,0,.55), rgba(0,0,0,0)); }
+  .ecov .elab { margin-top: 44px; text-align: center; }
+  .ecov .elab b { display: block; font-weight: 800; font-size: calc(36 * var(--u)); letter-spacing: -.01em; }
+  .ecov .elab span { display: block; margin-top: 6px; font-weight: 600; font-size: calc(23 * var(--u)); letter-spacing: .08em; color: var(--ice); font-variant-numeric: tabular-nums; }
   #endText { position: absolute; left: var(--m); right: var(--m); }
   #endText .kicker { color: var(--ice); margin-bottom: 18px; }
   #endText .name { font-weight: 800; font-size: calc(96 * var(--u)); line-height: 1; letter-spacing: -.02em; }
@@ -126,7 +131,6 @@
   #endText .cta { display: flex; align-items: stretch; margin-top: 40px; }
   #endText .cta .btn { background: #fff; color: var(--navy); font-weight: 700; font-size: calc(34 * var(--u)); padding: 22px 34px 20px; }
   #endText .cta .url { font-weight: 600; font-size: calc(30 * var(--u)); padding: 22px 0 20px 28px; color: var(--light); display: flex; align-items: center; }
-  #endText .fit { margin-top: 26px; font-weight: 500; font-size: calc(24 * var(--u)); color: rgba(233,238,244,.7); }
   #endLogo { position: absolute; left: var(--m); }
   #endLogo img { display: block; width: 300px; }
   body.sq #endLogo img { width: 210px; }
@@ -149,6 +153,12 @@
     <div id="scanGlow"></div>
     <div id="scan"></div>
   </div>
+  <div id="dwin" class="layer">
+    <img id="dphoto" alt="">
+    <img id="dxray" alt="">
+    <div id="dscanGlow"></div>
+    <div id="dscan"></div>
+  </div>
   <div id="mask" class="layer"></div>
 
   <div id="splitLine"></div>
@@ -158,9 +168,7 @@
   <div id="hud" class="layer">
     <div class="br tl"></div><div class="br tr"></div><div class="br bl"></div><div class="br brr"></div>
     <div class="hudtxt" id="hudTitle"><span class="rec"></span>Thermo-Scan · <b>SPLASH THERMO</b></div>
-    <div class="hudtxt" id="hudRead">Scan <b id="hudPct">000</b> %</div>
     <div id="meter"><i></i></div>
-    <div class="hudtxt" id="hudMode">Ansicht · Röntgen</div>
   </div>
 
   <div id="legend" class="layer"><div class="bar"></div><span style="top:-6px">WARM</span><span style="bottom:-8px">KALT</span></div>
@@ -194,6 +202,11 @@
     <div class="blk white hl"><span class="ln"><span>Das Wasser</span></span><span class="ln"><span>bleibt klar.</span></span></div>
     <div class="blk sub"><span class="ln"><span>Für kristallklaren Badespaß.</span></span></div>
   </div>
+  <div id="cap5" class="stack cap">
+    <div class="kicker"><i></i><span>Auch für den Whirlpool DROP</span></div>
+    <div class="blk white hl"><span class="ln"><span>DROP THERMO</span></span></div>
+    <div class="blk sub"><span class="ln"><span>155 × 155 × 20 cm – mit</span></span><span class="ln"><span>Luftpolster-Isolierung.</span></span></div>
+  </div>
 
   <div id="prog">
     <div><b>01</b><s><i></i></s></div><div><b>02</b><s><i></i></s></div><div><b>03</b><s><i></i></s></div><div><b>04</b><s><i></i></s></div>
@@ -204,16 +217,15 @@
   <div id="wipe"></div>
   <div id="end" class="layer">
     <div id="endGlow"></div>
-    <div id="endShadow"></div>
-    <div id="endCover"><img id="coverImg" alt=""></div>
+    <div class="ecov" id="ecS"><div class="eimg"><div class="esh"></div><img id="coverImg" alt=""></div><div class="elab"><b>SPLASH THERMO</b><span>162 × 162 × 20 cm</span></div></div>
+    <div class="ecov" id="ecD"><div class="eimg"><div class="esh"></div><img id="dropImg" alt=""></div><div class="elab"><b>DROP THERMO</b><span>155 × 155 × 20 cm</span></div></div>
     <div id="endLogo"><img src="../../assets/logo/homedeluxe-logo-white.svg" alt="Home Deluxe"></div>
     <div id="endText">
-      <div class="kicker"><i></i><span>Aufblasbare Thermoabdeckung</span></div>
-      <div class="name"><span class="ln"><span>SPLASH THERMO</span></span></div>
-      <div class="type"><span class="ln"><span>Passend für den Outdoor-Whirlpool SPLASH</span></span></div>
-      <div class="specs"><span>162 × 162 × 20 cm</span><span>Luftpolster-Isolierung</span><span>Wetterfestes PVC</span></div>
+      <div class="kicker"><i></i><span>Aufblasbare Thermoabdeckungen</span></div>
+      <div class="name"><span class="ln"><span>Wärme bleibt drin.</span></span></div>
+      <div class="type"><span class="ln"><span>Passend für die Outdoor-Whirlpools</span></span><span class="ln"><span>SPLASH und DROP</span></span></div>
+      <div class="specs"><span>Luftpolster-Isolierung</span><span>Wetterfestes PVC</span><span>Schutz vor Laub</span></div>
       <div class="cta"><div class="btn">Jetzt entdecken</div><div class="url">homedeluxe.de</div></div>
-      <div class="fit">Auch als DROP THERMO für den Whirlpool DROP erhältlich.</div>
     </div>
   </div>
 

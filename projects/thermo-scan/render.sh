@@ -17,10 +17,10 @@ python3 -I projects/thermo-scan/sound.py $B/sound.wav
 if [ "${1:-}" != finish ]; then
   R="node scripts/render.js projects/thermo-scan/composition.html"
   O="--plates $B/plates --serve 1"
-  $R $C/p0.mp4 $O --size 1080x1920 --range 0:390   > $C/p0.log 2>&1 &
-  $R $C/p1.mp4 $O --size 1080x1920 --range 390:780 > $C/p1.log 2>&1 &
-  $R $C/s0.mp4 $O --size 1080x1080 --range 0:390   > $C/s0.log 2>&1 &
-  $R $C/s1.mp4 $O --size 1080x1080 --range 390:780 > $C/s1.log 2>&1 &
+  $R $C/p0.mp4 $O --size 1080x1920 --range 0:435   > $C/p0.log 2>&1 &
+  $R $C/p1.mp4 $O --size 1080x1920 --range 435:870 > $C/p1.log 2>&1 &
+  $R $C/s0.mp4 $O --size 1080x1080 --range 0:435   > $C/s0.log 2>&1 &
+  $R $C/s1.mp4 $O --size 1080x1080 --range 435:870 > $C/s1.log 2>&1 &
   wait
 fi
 
@@ -35,6 +35,6 @@ join p "$OUT/${NAME}_9x16.mp4"
 join s "$OUT/${NAME}_1x1.mp4"
 
 # Cover frames (end card)
-ffmpeg -v error -y -ss 25.0 -i "$OUT/${NAME}_9x16.mp4" -frames:v 1 -q:v 2 "$OUT/${NAME}_Cover_9x16.jpg"
-ffmpeg -v error -y -ss 25.0 -i "$OUT/${NAME}_1x1.mp4" -frames:v 1 -q:v 2 "$OUT/${NAME}_Cover_1x1.jpg"
+ffmpeg -v error -y -ss 28.0 -i "$OUT/${NAME}_9x16.mp4" -frames:v 1 -q:v 2 "$OUT/${NAME}_Cover_9x16.jpg"
+ffmpeg -v error -y -ss 28.0 -i "$OUT/${NAME}_1x1.mp4" -frames:v 1 -q:v 2 "$OUT/${NAME}_Cover_1x1.jpg"
 ls -la "$OUT"
