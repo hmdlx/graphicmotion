@@ -32,11 +32,15 @@ Preise sind bewusst nicht eingebaut, weil sie sich häufig ändern.
 
 ### Whirlpool – Details in Zeitlupe
 
-Technisches Produktvideo, kein Lifestyle: Alle Grafiken sitzen in **einem** kompakten Modul
-unten links (über der Reels-Caption), nichts ist über das Bild verteilt. Das Modul zeigt
-Logo, Kapitelzähler `01 / 05`, Kapitel-Fortschritt, Merkmal und Detailzeile sowie eine
-Live-Anzeige der echten Abspielgeschwindigkeit (`SPEED 0.33×`, Tempo-Kurve des ganzen
-Videos mit Abspielkopf, Timecode). Am Ende wächst es zur Endcard mit CTA.
+Technisches Produktvideo, kein Lifestyle: Alle Grafiken sitzen in **einer** kompakten
+3D-Card unten links (über der Reels-Caption), nichts ist über das Bild verteilt. Aufbau nach
+dem 3D-Card-Schema (CardContainer → CardBody → CardItem), umgesetzt im Home-Deluxe-CI:
+Navy-Körper, eckig, Poppins. Titel, Beschreibung und Detailbild schweben auf eigenen
+Ebenen (`translateZ` 50 / 60 / 100, das Bild zusätzlich gekippt), die Card driftet wie
+beim Hover. An jedem Schnitt sinken die Ebenen ab, die Card dreht über die Kante und
+kommt mit dem nächsten Detail zurück. Das Detailbild ist ein Ausschnitt aus dem Video
+(`data-pic` in `composition.html`: Quell-Frame, Bildmitte, Zoom). Die Endcard trägt
+zusätzlich die Button-Zeile „homedeluxe.de →“ / „Jetzt entdecken“.
 
 Zeitlupe: `scripts/retime.py` rampt jede Einstellung laut `edit.json` (Tempo-Keys je
 Quell-Frame) und rechnet die Zwischenbilder mit RIFE 4.9 (ONNX, CPU) – keine
@@ -44,15 +48,15 @@ Frame-Doppelungen, keine Geisterkanten. Die Schnitte liegen auf dem Musik-Raster
 `scripts/music.py` dehnt das Intro tonhöhenneutral und loopt den Drop taktgenau, der Drop
 fällt auf den Schnitt zu den Kopfstützen.
 
-| Zeit | Einstellung | Tempo | Modul |
+| Zeit | Einstellung | Tempo | Card |
 |---|---|---|---|
-| 0,00–2,00 s | Totale, Anflug | 1× → 0,39× → 1× | Produkt-Check · Whirlpool · 5 Details in Zeitlupe |
-| 2,00–4,82 s | Wanne, Düsen | 1× / 0,5× / 0,19× | 01 Massage · Massagedüsen |
-| 4,82–6,66 s | Verkleidung | 1× → 0,56× | 02 Verkleidung · Anthrazit |
-| 6,66–9,66 s | Kopfstützen (Drop) | 0,33× | 03 Ergonomie · Kopfstützen |
-| 9,66–11,16 s | Treppe | 1× → 0,70× | 04 Einstieg · Treppe |
-| 11,16–13,66 s | Bedienfeld | 0,41× | 05 Bedienung · Bedienfeld |
-| 13,66–17,60 s | Totale, Orbit | 0,30× | Endcard: Whirlpool · Jetzt entdecken · homedeluxe.de |
+| 0,00–2,00 s | Totale, Anflug | 1× → 0,39× → 1× | Whirlpool · Die Details in Zeitlupe (mit Logo) |
+| 2,00–4,82 s | Wanne, Düsen | 1× / 0,5× / 0,19× | Massagedüsen · Im Rücken- und Sitzbereich |
+| 4,82–6,66 s | Verkleidung | 1× → 0,56× | Verkleidung in Anthrazit · Umlaufend, mit Holzstruktur |
+| 6,66–9,66 s | Kopfstützen (Drop) | 0,33× | Kopfstützen · Gepolstert, ergonomisch geformt |
+| 9,66–11,16 s | Treppe | 1× → 0,70× | Einstiegstreppe · Zweistufig, passend zur Verkleidung |
+| 11,16–13,66 s | Bedienfeld | 0,41× | Bedienfeld · Mit Display, direkt am Wannenrand |
+| 13,66–17,60 s | Totale, Orbit | 0,30× | Endcard: Logo · Whirlpool · Wir machen dein Zuhause. · Buttons |
 
 Die Texte beschreiben nur, was im Bild zu sehen ist (keine Maße, Düsenzahlen oder Preise).
 Modellname und Daten lassen sich in `composition.html` ergänzen.

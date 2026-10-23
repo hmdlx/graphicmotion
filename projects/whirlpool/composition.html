@@ -10,142 +10,90 @@
   @font-face { font-family: Poppins; font-weight: 700; src: url(../../assets/fonts/poppins/poppins-latin-700-normal.woff2) format("woff2"); }
 
   /* Home Deluxe CI: Navy + Weiß + Grautöne, eckige Ecken, Poppins.
-     Alle Grafiken leben in einem einzigen Modul (#hud) – technisch, ruhig, kompakt. */
+     Alle Grafiken leben in einer einzigen 3D-Card: Titel, Text, Bild und Buttons
+     schweben auf eigenen Ebenen (translateZ) über dem Card-Körper. */
   :root {
     --navy: #0e2234;
-    --ink: rgba(233, 238, 244, .62);
-    --hair: rgba(233, 238, 244, .2);
+    --ink: rgba(233, 238, 244, .72);
+    --hair: rgba(233, 238, 244, .22);
     --x: 72px;          /* left edge */
     --b: 400px;         /* bottom edge, above the Reels caption + buttons */
-    --w: 700px;
+    --w: 640px;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; border-radius: 0; }
   html, body { width: 1080px; height: 1920px; overflow: hidden; background: #000; }
-  body { font-family: Poppins, sans-serif; color: #fff; -webkit-font-smoothing: antialiased; font-variant-numeric: tabular-nums; }
+  body { font-family: Poppins, sans-serif; color: #fff; -webkit-font-smoothing: antialiased; }
 
   #stage { position: absolute; inset: 0; overflow: hidden; background: #000; }
   #plate { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; display: block; }
 
-  #hud { position: absolute; left: var(--x); bottom: var(--b); width: var(--w); }
-  #box { position: absolute; left: 0; top: 0; width: 100%; background: rgba(14, 34, 52, .94); }
-  #hud .row { position: relative; display: flex; align-items: center; justify-content: space-between; padding: 0 30px; }
-  .hair { position: absolute; left: 0; height: 2px; width: 100%; background: var(--hair); transform-origin: left; }
-  .hair.lead { background: #fff; }
+  /* CardContainer → CardBody → CardItem */
+  #container { position: absolute; left: var(--x); bottom: var(--b); width: var(--w); perspective: 1500px; }
+  #body { position: relative; width: 100%; padding: 40px; transform-style: preserve-3d;
+          background: rgba(14, 34, 52, .95); border: 2px solid var(--hair);
+          box-shadow: 0 40px 90px rgba(0, 0, 0, .45); }
+  .card { transform-style: preserve-3d; }
+  .item { position: relative; transform-style: preserve-3d; will-change: transform; }
 
-  /* Header: logo + section index */
-  #hd { height: 68px; }
-  #hd img { display: block; width: 212px; height: auto; }
-  #idx { font-weight: 500; font-size: 22px; line-height: 1.2em; letter-spacing: .14em; color: var(--ink); display: flex; align-items: flex-start; gap: .5em; }
-  #idx b { font-weight: 600; color: #fff; display: inline-block; overflow: hidden; height: 1.2em; line-height: 1.2em; }
-  #idx b span { display: block; }
-
-  /* Body: kicker / headline / detail */
-  #bd { position: relative; padding: 30px 30px 32px; height: 236px; }
-  .slot { position: absolute; left: 30px; top: 30px; right: 30px; }
-  .kicker { display: flex; align-items: center; gap: 16px; font-weight: 600; font-size: 24px; line-height: 1; letter-spacing: .2em; text-transform: uppercase; color: var(--ink); }
-  .kicker i { display: block; width: 40px; height: 2px; background: var(--ink); }
-  .hl { margin-top: 22px; font-weight: 700; font-size: 74px; line-height: 1.02; letter-spacing: -.015em; }
-  .sub { margin-top: 16px; font-weight: 500; font-size: 29px; line-height: 1.25; color: rgba(233, 238, 244, .82); }
-  .ln { display: block; overflow: hidden; padding-bottom: .08em; margin-bottom: -.08em; }
-  .ln > span { display: inline-block; will-change: transform; }
-
-  /* End card extras inside the body */
-  #end .hl { font-size: 92px; }
-  #cta { margin-top: 34px; display: flex; align-items: center; gap: 26px; }
-  #cta .btn { white-space: nowrap; background: #fff; color: var(--navy); font-weight: 600; font-size: 30px; line-height: 1; padding: 21px 26px 19px; display: flex; align-items: center; gap: 16px; }
-  #cta .url { white-space: nowrap; font-weight: 600; font-size: 29px; line-height: 1; position: relative; padding-bottom: 9px; }
-  #cta .url i { position: absolute; left: 0; bottom: 0; height: 2px; width: 100%; background: #fff; transform-origin: left; }
-  #slogan { margin-top: 30px; font-weight: 500; font-size: 26px; line-height: 1; color: var(--ink); letter-spacing: .02em; }
-
-  /* Footer: live speed readout + speed curve + timecode */
-  #ft { height: 64px; gap: 22px; justify-content: flex-start; }
-  #led { width: 10px; height: 10px; background: var(--hair); flex: none; }
-  .lbl { font-weight: 600; font-size: 18px; letter-spacing: .2em; color: var(--ink); }
-  #spd { font-weight: 600; font-size: 28px; width: 96px; letter-spacing: .02em; }
-  #curve { display: block; flex: none; }
-  #tc { margin-left: auto; font-weight: 500; font-size: 22px; letter-spacing: .12em; color: var(--ink); }
-
-  /* Crop marks on the module corners */
-  .mark { position: absolute; width: 16px; height: 16px; border: 0 solid #fff; }
-  .mark.tl { left: -10px; top: -10px; border-left-width: 2px; border-top-width: 2px; }
-  .mark.tr { right: -10px; top: -10px; border-right-width: 2px; border-top-width: 2px; }
-  .mark.bl { left: -10px; bottom: -10px; border-left-width: 2px; border-bottom-width: 2px; }
-  .mark.br { right: -10px; bottom: -10px; border-right-width: 2px; border-bottom-width: 2px; }
+  .logo { margin-bottom: 30px; }
+  .logo img { display: block; width: 236px; height: auto; }
+  .title { font-weight: 700; font-size: 58px; line-height: 1.06; letter-spacing: -.015em; }
+  .desc { margin-top: 12px; font-weight: 500; font-size: 29px; line-height: 1.3; color: var(--ink); max-width: 520px; }
+  .pic { margin-top: 32px; width: 100%; height: 270px; overflow: hidden; background: #000;
+         box-shadow: 0 26px 60px rgba(0, 0, 0, .5); }
+  .pic img { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; display: block; transform-origin: 0 0; }
+  .btns { margin-top: 44px; display: flex; justify-content: space-between; align-items: center; transform-style: preserve-3d; }
+  .ghost { font-weight: 500; font-size: 28px; line-height: 1; padding: 18px 4px; white-space: nowrap; }
+  .solid { background: #fff; color: var(--navy); font-weight: 700; font-size: 28px; line-height: 1; padding: 22px 30px 20px; white-space: nowrap; }
 </style>
 </head>
 <body>
 <div id="stage">
   <img id="plate" alt="">
 
-  <div id="hud">
-    <div id="box"></div>
-    <div id="frame" style="position:absolute;left:0;top:0;width:100%">
-      <div class="mark tl"></div><div class="mark tr"></div><div class="mark bl"></div><div class="mark br"></div>
-    </div>
-    <div id="inner" style="position:relative">
-      <div class="row" id="hd">
-        <img src="../../assets/logo/homedeluxe-logo-white.svg" alt="Home Deluxe">
-        <div id="idx"><b><span>00</span></b><span>/</span><span>05</span></div>
+  <div id="container">
+    <div id="body">
+      <!-- data-pic: Quell-Frame, Bildmitte x y im Frame, Zoom -->
+      <div class="card" data-sec="intro" data-pic="12 512 1100 0.58">
+        <div class="item logo" data-z="40"><img src="../../assets/logo/homedeluxe-logo-white.svg" alt="Home Deluxe"></div>
+        <div class="item title" data-z="50">Whirlpool</div>
+        <div class="item desc" data-z="60">Die Details in Zeitlupe</div>
+        <div class="item pic" data-z="100" data-rx="10" data-rz="-3"><img alt=""></div>
       </div>
-      <div class="hair" id="hair-top"></div>
-      <div class="hair lead" id="progress"></div>
-
-      <div id="bd">
-        <div class="slot" data-sec="intro">
-          <div class="kicker"><span class="ln"><span>Produkt-Check</span></span></div>
-          <div class="hl"><span class="ln"><span>Whirlpool</span></span></div>
-          <div class="sub"><span class="ln"><span>5 Details in Zeitlupe</span></span></div>
-        </div>
-        <div class="slot" data-sec="B">
-          <div class="kicker"><span class="ln"><span>01</span></span><i></i><span class="ln"><span>Massage</span></span></div>
-          <div class="hl"><span class="ln"><span>Massagedüsen</span></span></div>
-          <div class="sub"><span class="ln"><span>Im Rücken- und Sitzbereich</span></span></div>
-        </div>
-        <div class="slot" data-sec="C">
-          <div class="kicker"><span class="ln"><span>02</span></span><i></i><span class="ln"><span>Verkleidung</span></span></div>
-          <div class="hl"><span class="ln"><span>Anthrazit</span></span></div>
-          <div class="sub"><span class="ln"><span>Umlaufend, mit Holzstruktur</span></span></div>
-        </div>
-        <div class="slot" data-sec="D">
-          <div class="kicker"><span class="ln"><span>03</span></span><i></i><span class="ln"><span>Ergonomie</span></span></div>
-          <div class="hl"><span class="ln"><span>Kopfstützen</span></span></div>
-          <div class="sub"><span class="ln"><span>Gepolstert, ergonomisch geformt</span></span></div>
-        </div>
-        <div class="slot" data-sec="E">
-          <div class="kicker"><span class="ln"><span>04</span></span><i></i><span class="ln"><span>Einstieg</span></span></div>
-          <div class="hl"><span class="ln"><span>Treppe</span></span></div>
-          <div class="sub"><span class="ln"><span>Zweistufig, passend zur Verkleidung</span></span></div>
-        </div>
-        <div class="slot" data-sec="F">
-          <div class="kicker"><span class="ln"><span>05</span></span><i></i><span class="ln"><span>Bedienung</span></span></div>
-          <div class="hl"><span class="ln"><span>Bedienfeld</span></span></div>
-          <div class="sub"><span class="ln"><span>Mit Display, direkt am Wannenrand</span></span></div>
-        </div>
-        <div class="slot" data-sec="G" id="end">
-          <div class="kicker"><span class="ln"><span>Alle Details online</span></span></div>
-          <div class="hl"><span class="ln"><span>Whirlpool</span></span></div>
-          <div id="cta">
-            <div class="btn"><span>Jetzt entdecken</span>
-              <svg width="34" height="22" viewBox="0 0 34 22"><path d="M0 11h30M21 2l9 9-9 9" fill="none" stroke="#0e2234" stroke-width="3"/></svg>
-            </div>
-            <div class="url">homedeluxe.de<i></i></div>
-          </div>
-          <div id="slogan"><span class="ln"><span>Wir machen dein Zuhause.</span></span></div>
-        </div>
+      <div class="card" data-sec="B" data-pic="38 540 860 1.0">
+        <div class="item title" data-z="50">Massagedüsen</div>
+        <div class="item desc" data-z="60">Im Rücken- und Sitzbereich</div>
+        <div class="item pic" data-z="100" data-rx="10" data-rz="-3"><img alt=""></div>
       </div>
-
-      <div class="hair" id="hair-bot"></div>
-      <div class="row" id="ft">
-        <div id="led"></div>
-        <span class="lbl">SPEED</span>
-        <span id="spd">1.00×</span>
-        <svg id="curve" width="230" height="30" viewBox="0 0 230 30">
-          <path id="curve-fill" fill="rgba(233,238,244,.12)" />
-          <path id="curve-line" fill="none" stroke="rgba(233,238,244,.55)" stroke-width="2" />
-          <line id="curve-head" y1="0" y2="30" stroke="#fff" stroke-width="2" />
-          <rect id="curve-dot" width="8" height="8" fill="#fff" />
-        </svg>
-        <span id="tc">00:00:00</span>
+      <div class="card" data-sec="C" data-pic="72 640 520 0.85">
+        <div class="item title" data-z="50">Verkleidung in Anthrazit</div>
+        <div class="item desc" data-z="60">Umlaufend, mit Holzstruktur</div>
+        <div class="item pic" data-z="100" data-rx="10" data-rz="-3"><img alt=""></div>
+      </div>
+      <div class="card" data-sec="D" data-pic="110 620 470 0.62">
+        <div class="item title" data-z="50">Kopfstützen</div>
+        <div class="item desc" data-z="60">Gepolstert, ergonomisch geformt</div>
+        <div class="item pic" data-z="100" data-rx="10" data-rz="-3"><img alt=""></div>
+      </div>
+      <div class="card" data-sec="E" data-pic="135 380 1150 0.72">
+        <div class="item title" data-z="50">Einstiegstreppe</div>
+        <div class="item desc" data-z="60">Zweistufig, passend zur Verkleidung</div>
+        <div class="item pic" data-z="100" data-rx="10" data-rz="-3"><img alt=""></div>
+      </div>
+      <div class="card" data-sec="F" data-pic="158 560 740 1.0">
+        <div class="item title" data-z="50">Bedienfeld</div>
+        <div class="item desc" data-z="60">Mit Display, direkt am Wannenrand</div>
+        <div class="item pic" data-z="100" data-rx="10" data-rz="-3"><img alt=""></div>
+      </div>
+      <div class="card" data-sec="G" data-pic="56 740 980 0.75">
+        <div class="item logo" data-z="40"><img src="../../assets/logo/homedeluxe-logo-white.svg" alt="Home Deluxe"></div>
+        <div class="item title" data-z="50">Whirlpool</div>
+        <div class="item desc" data-z="60">Wir machen dein Zuhause.</div>
+        <div class="item pic" data-z="100" data-rx="10" data-rz="-3"><img alt=""></div>
+        <div class="btns">
+          <div class="item ghost" data-z="26" data-x="-16">homedeluxe.de →</div>
+          <div class="item solid" data-z="26" data-x="16">Jetzt entdecken</div>
+        </div>
       </div>
     </div>
   </div>
