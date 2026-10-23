@@ -234,21 +234,13 @@ for k in range(16):
     f = rng.choice([1760, 2093, 2349, 2637, 3136])
     place(tonal_hit([f], 0.8, 0.04, 0.0), 19.8 + rng.random() * 2.0, pan=rng.random() * 1.4 - 0.7)
 place(whoosh(0.5, 300, 3000, 0.28), 21.8)                              # wipe
-# DROP THERMO: panel lifts, second scan
+# DROP THERMO: panel lifts off the ambient shot
 place(whoosh(0.5, 3000, 300, 0.24), 22.2)
 place(tonal_hit([330, 495, 660], 2.0, 0.16, 0.6), 22.55)
-for k, f in enumerate([1800, 2400, 1800]):
-    place(blip(f, 0.04, 0.10), 22.45 + k * 0.07, pan=0.3)
-place(whoosh(0.95, 300, 6000, 0.2), 22.75)
-place(sweep_tone(0.9, 300, 1200, 0.05), 22.75)
-for k in range(11):
-    place(tick(0.09), 22.75 + k * 0.08, pan=-0.2 + 0.04 * k)
-place(blip(1320, 0.06, 0.14), 23.65)
-place(blip(1760, 0.09, 0.14), 23.72)
 place(whoosh(0.5, 300, 3000, 0.28), 24.55)                             # wipe
 place(thud(40, 2.0, 0.7), 25.0)                                        # end card
 place(tonal_hit([220, 277.18, 329.63, 440], 3.5, 0.32, 0.5), 25.0)
-place(blip(1320, 0.06, 0.10), 26.25)                                   # CTA
+place(blip(1320, 0.06, 0.10), 25.95)                                   # CTA
 
 # --- master ---------------------------------------------------------------------------------
 mix = np.stack([L, R], -1)

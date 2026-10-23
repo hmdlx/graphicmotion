@@ -38,10 +38,10 @@
   /* Photo window (S1/S2). 1:1 = full frame, 9:16 = centred square */
   #win, #dwin { position: absolute; left: 0; width: 100vw; height: 100vw; overflow: hidden; }
   #win img, #dwin img { position: absolute; left: 50%; top: 50%; width: 100%; height: 100%; transform-origin: 50% 46.5%; }
-  #xray, #dxray { clip-path: inset(0 0 100% 0); }
-  #scan, #dscan { position: absolute; left: 0; right: 0; height: 2px; background: #fff;
+  #xray { clip-path: inset(0 0 100% 0); }
+  #scan { position: absolute; left: 0; right: 0; height: 2px; background: #fff;
           box-shadow: 0 0 12px 3px rgba(143,227,255,.95), 0 0 60px 18px rgba(143,227,255,.45); }
-  #scanGlow, #dscanGlow { position: absolute; left: 0; right: 0; height: 180px;
+  #scanGlow { position: absolute; left: 0; right: 0; height: 180px;
           background: linear-gradient(to top, rgba(143,227,255,.28), rgba(143,227,255,0)); }
   #mask { position: absolute; left: 0; width: 100vw; height: 100vw; box-shadow: 0 0 0 1400px var(--navy); }
 
@@ -155,9 +155,6 @@
   </div>
   <div id="dwin" class="layer">
     <img id="dphoto" alt="">
-    <img id="dxray" alt="">
-    <div id="dscanGlow"></div>
-    <div id="dscan"></div>
   </div>
   <div id="mask" class="layer"></div>
 
@@ -167,50 +164,36 @@
 
   <div id="hud" class="layer">
     <div class="br tl"></div><div class="br tr"></div><div class="br bl"></div><div class="br brr"></div>
-    <div class="hudtxt" id="hudTitle"><span class="rec"></span>Thermo-Scan · <b>SPLASH THERMO</b></div>
-    <div id="meter"><i></i></div>
   </div>
 
   <div id="legend" class="layer"><div class="bar"></div><span style="top:-6px">WARM</span><span style="bottom:-8px">KALT</span></div>
 
   <div id="chipOff" class="chip"><i></i>Ohne Abdeckung · Wärme entweicht</div>
-  <div id="chipOn" class="chip"><i></i>Mit SPLASH THERMO · Wärme bleibt</div>
 
   <div id="title" class="stack">
-    <div class="kicker"><i></i><span>Aufblasbare Thermoabdeckung</span></div>
     <div class="blk white big"><span class="ln"><span>Wärme</span></span><span class="ln"><span>bleibt drin.</span></span></div>
     <div class="blk tag"><span class="ln"><span>SPLASH THERMO</span></span></div>
   </div>
 
   <div id="cap1" class="stack cap">
-    <div class="kicker"><i></i><span>01 · Wärmeschutz</span></div>
     <div class="blk white hl"><span class="ln"><span>Die Wärme bleibt</span></span><span class="ln"><span>im Wasser.</span></span></div>
-    <div class="blk sub"><span class="ln"><span>Das Luftpolster isoliert –</span></span><span class="ln"><span>für mehr Energieeffizienz.</span></span></div>
+    <div class="blk sub"><span class="ln"><span>Für mehr Energieeffizienz.</span></span></div>
   </div>
   <div id="cap2" class="stack cap">
-    <div class="kicker"><i></i><span>02 · Handling</span></div>
     <div class="blk white hl"><span class="ln"><span>Aufblasbar</span></span><span class="ln"><span>&amp; leicht.</span></span></div>
-    <div class="blk sub"><span class="ln"><span>Mühelos auf- und abdecken.</span></span></div>
   </div>
   <div id="cap3" class="stack cap">
-    <div class="kicker"><i></i><span>03 · Schutz</span></div>
     <div class="blk white hl"><span class="ln"><span>Laub &amp; Schmutz</span></span><span class="ln"><span>bleiben draußen.</span></span></div>
-    <div class="blk sub"><span class="ln"><span>Wetterfestes PVC – gegen</span></span><span class="ln"><span>Regen, Schnee und UV.</span></span></div>
+    <div class="blk sub"><span class="ln"><span>Wetterfest bei Regen, Schnee und UV.</span></span></div>
   </div>
   <div id="cap4" class="stack cap">
-    <div class="kicker"><i></i><span>04 · Wasserqualität</span></div>
     <div class="blk white hl"><span class="ln"><span>Das Wasser</span></span><span class="ln"><span>bleibt klar.</span></span></div>
-    <div class="blk sub"><span class="ln"><span>Für kristallklaren Badespaß.</span></span></div>
   </div>
   <div id="cap5" class="stack cap">
-    <div class="kicker"><i></i><span>Auch für den Whirlpool DROP</span></div>
     <div class="blk white hl"><span class="ln"><span>DROP THERMO</span></span></div>
-    <div class="blk sub"><span class="ln"><span>155 × 155 × 20 cm – mit</span></span><span class="ln"><span>Luftpolster-Isolierung.</span></span></div>
+    <div class="blk sub"><span class="ln"><span>Passend für den Whirlpool DROP.</span></span></div>
   </div>
 
-  <div id="prog">
-    <div><b>01</b><s><i></i></s></div><div><b>02</b><s><i></i></s></div><div><b>03</b><s><i></i></s></div><div><b>04</b><s><i></i></s></div>
-  </div>
 
   <div id="logo"><img src="../../assets/logo/homedeluxe-logo-white.svg" alt="Home Deluxe"></div>
 
@@ -221,10 +204,8 @@
     <div class="ecov" id="ecD"><div class="eimg"><div class="esh"></div><img id="dropImg" alt=""></div><div class="elab"><b>DROP THERMO</b><span>155 × 155 × 20 cm</span></div></div>
     <div id="endLogo"><img src="../../assets/logo/homedeluxe-logo-white.svg" alt="Home Deluxe"></div>
     <div id="endText">
-      <div class="kicker"><i></i><span>Aufblasbare Thermoabdeckungen</span></div>
       <div class="name"><span class="ln"><span>Wärme bleibt drin.</span></span></div>
-      <div class="type"><span class="ln"><span>Passend für die Outdoor-Whirlpools</span></span><span class="ln"><span>SPLASH und DROP</span></span></div>
-      <div class="specs"><span>Luftpolster-Isolierung</span><span>Wetterfestes PVC</span><span>Schutz vor Laub</span></div>
+      <div class="type"><span class="ln"><span>Für die Whirlpools SPLASH und DROP</span></span></div>
       <div class="cta"><div class="btn">Jetzt entdecken</div><div class="url">homedeluxe.de</div></div>
     </div>
   </div>

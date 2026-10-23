@@ -23,7 +23,7 @@ const T = {
   callouts: [6.75, 8.2],
   lift1: [8.2, 8.8], drop1: [9.6, 10.15],
   heatLoss: [8.5, 9.9], heatBack: [10.3, 11.5],
-  chipOff: [8.45, 9.7], chipOn: [10.25, 11.6],
+  chipOff: [8.45, 9.7],
   cutClose: [11.2, 11.9],
   look: [11.6, 12.4],                    // x-ray -> studio, scan wipe
   lift2: [12.1, 13.1], hover: [13.1, 14.5], drop2: [14.5, 15.2],
@@ -33,8 +33,8 @@ const T = {
   lift3: [19.0, 19.9],
   cap1: [9.9, 11.9], cap2: [12.9, 14.9], cap3: [15.9, 18.9], cap4: [20.0, 21.85],
   wipe: [21.85, 22.25],
-  // DROP THERMO: its own ambient shot with a scan, then the shared end card
-  drop: { out: [22.25, 22.6], hud: [22.45, 24.6], logo: [22.4, 24.6], scan: [22.75, 23.65], cap: [22.55, 24.7], legend: [23.0, 24.6] },
+  // DROP THERMO: its ambient shot with a slow push-in, then the shared end card
+  drop: { out: [22.25, 22.6], logo: [22.4, 24.6], cap: [22.55, 24.7] },
   wipe2: [24.6, 25.0],
   end: 25.0,
 };
@@ -100,15 +100,13 @@ const L = P ? {
   frame: { l: 36, t: 290, r: W - 36, b: H - 96 },
   capBottom: 150, titleBottom: 118,
   chip: { top: 1090, left: 72 }, legend: { x: W - 72 - 22 - 64, y: 520, h: 360 },
-  prog: { right: 72, top: 140 },
-  end: { logoTop: 140, coverY: 700, coverW: 470, xS: 300, xD: 780, textTop: 1070 },
+  end: { logoTop: 140, coverY: 790, coverW: 470, xS: 300, xD: 780, textTop: 1170 },
 } : {
   winTop: 0,
   frame: { l: 28, t: 28, r: W - 28, b: H - 28 },
   capBottom: 56, titleBottom: 56,
   chip: { top: 178, right: 56 }, legend: { x: W - 56 - 22 - 60, y: 420, h: 260 },
-  prog: { right: 56, bottom: 60 },
-  end: { logoTop: 56, coverY: 262, coverW: 360, xS: 300, xD: 780, textTop: 478 },
+  end: { logoTop: 56, coverY: 320, coverW: 360, xS: 300, xD: 780, textTop: 560 },
 };
 const WIN = { l: 0, t: L.winTop, r: W, b: L.winTop + W };
 
@@ -118,7 +116,6 @@ $('#xray').src = PLATES + '/photo_xray.png';
 $('#coverImg').src = PLATES + '/cover_34.png';
 $('#dropImg').src = PLATES + '/drop_34.png';
 $('#dphoto').src = PLATES + '/drop.jpg';
-$('#dxray').src = PLATES + '/drop_xray.png';
 $('#win').style.top = WIN.t + 'px';
 $('#dwin').style.top = WIN.t + 'px';
 $('#mask').style.top = WIN.t + 'px';
@@ -126,7 +123,6 @@ for (const id of ['#cap1', '#cap2', '#cap3', '#cap4', '#cap5']) $(id).style.bott
 $('#title').style.bottom = L.titleBottom + 'px';
 for (const c of $$('.chip')) Object.assign(c.style, { top: L.chip.top + 'px' }, L.chip.right !== undefined ? { left: 'auto', right: L.chip.right + 'px' } : { left: L.chip.left + 'px' });
 Object.assign($('#legend').style, { left: L.legend.x + 'px', top: L.legend.y + 'px', height: L.legend.h + 'px' });
-Object.assign($('#prog').style, { right: L.prog.right + 'px' }, L.prog.top !== undefined ? { top: L.prog.top + 'px' } : { bottom: L.prog.bottom + 'px' });
 $('#endLogo').style.top = L.end.logoTop + 'px';
 $('#endText').style.top = L.end.textTop + 'px';
 Object.assign($('#ecS').style, { left: L.end.xS + 'px', top: L.end.coverY + 'px', width: L.end.coverW + 'px' });
@@ -156,16 +152,15 @@ function svgEl(tag, attrs) { const e = document.createElementNS(SVGNS, tag); for
 
 // Callouts on the section (world anchors on the cut plane z = 0)
 const CALLOUTS = [
-  { at: [-0.30, DIM.coverRest + 0.105, 0], dx: P ? -40 : -60, dy: P ? -260 : -200, s: 'Abdeckung', t: 'Isolierendes Luftpolster', delay: 0.0, side: 'right' },
-  { at: [0.50, DIM.coverRest + coverTop(0.5, 0) - 0.003, 0], dx: P ? 10 : 40, dy: P ? -170 : -150, s: 'Material', t: 'Wetterfestes PVC', delay: 0.25, side: 'left-r' },
-  { at: [0.15, 0.24, 0], dx: P ? 40 : 120, dy: P ? 210 : 120, s: 'Becken', t: 'Warmes Badewasser', delay: 0.5, side: 'left' },
+  { at: [-0.30, DIM.coverRest + 0.105, 0], dx: P ? -40 : -60, dy: P ? -260 : -200, t: 'Isolierendes Luftpolster', delay: 0.0, side: 'right' },
+  { at: [0.50, DIM.coverRest + coverTop(0.5, 0) - 0.003, 0], dx: P ? 10 : 40, dy: P ? -170 : -150, t: 'Wetterfestes PVC', delay: 0.25, side: 'left-r' },
 ];
 for (const c of CALLOUTS) {
   c.line = svgEl('polyline', { fill: 'none', stroke: '#8fe3ff', 'stroke-width': 2.5 });
   c.dot = svgEl('circle', { r: 9, fill: '#ffffff', stroke: '#8fe3ff', 'stroke-width': 4 });
   c.ring = svgEl('circle', { r: 9, fill: 'none', stroke: '#8fe3ff', 'stroke-width': 2 });
   c.el = document.createElement('div'); c.el.className = 'clab';
-  c.el.innerHTML = `<span class="s">${c.s}</span><span class="t">${c.t}</span>`;
+  c.el.innerHTML = `<span class="t">${c.t}</span>`;
   labels.appendChild(c.el);
 }
 // Dimension lines
@@ -432,26 +427,13 @@ function seek(n) {
   vis($('#mask'), P ? 1 - E.inOut(prog(t, ...T.mask)) : 0);
 
   // ---- HUD
-  const inDrop = t >= T.drop.out[0];
-  const hudIn = inDrop ? E.out(prog(t, T.drop.hud[0], T.drop.hud[0] + 0.4)) : E.out(prog(t, T.hud, T.hud + 0.4));
-  const hudOut = inDrop ? prog(t, T.drop.hud[1] - 0.3, T.drop.hud[1]) : prog(t, T.wipe[0] - 0.3, T.wipe[0]);
+  const hudIn = E.out(prog(t, T.hud, T.hud + 0.4));
+  const hudOut = prog(t, T.wipe[0] - 0.3, T.wipe[0]);
   vis($('#hud'), hudIn * (1 - hudOut));
   const inset = r => ({ l: r.l + 24, t: r.t + 24, r: r.r - 24, b: r.b - 24 });
-  const rect = inDrop ? inset(WIN) : mixRect(inset(WIN), L.frame, E.inOut(prog(t, 4.5, 5.3)));
+  const rect = mixRect(inset(WIN), L.frame, E.inOut(prog(t, 4.5, 5.3)));
   bracket(rect, hudIn);
-  $('#hudTitle b').textContent = inDrop ? 'DROP THERMO' : 'SPLASH THERMO';
-  // 1:1: the logo sits in the top-left corner, the HUD title goes below it
-  const hudTop = P ? rect.t + 24 : Math.max(rect.t + 24, 128);
-  Object.assign($('#hudTitle').style, { left: rect.l + 26 + 'px', top: hudTop + 'px' });
-  // 1:1 has no room for the title next to the product shots; it steps back there
-  const hudTxt = P || inDrop ? 1 : 1 - prog(t, 11.6, 12.0);
-  $('#hudTitle').style.opacity = hudTxt; $('#meter').style.opacity = hudTxt;
-  Object.assign($('#meter').style, { left: rect.l + 26 + 'px', top: hudTop + (P ? 42 : 36) + 'px', width: (P ? 360 : 300) + 'px' });
-  const ds = E.inOut(prog(t, ...T.drop.scan));
-  $('#meter i').style.width = (inDrop ? ds : s) * 100 + '%';
-  $('.rec').style.opacity = (Math.floor(t * 2) % 2) ? 0.25 : 1;
-
-  vis($('#legend'), Math.max(win(t, [3.4, 11.7], 0.5, 0.4), win(t, T.drop.legend, 0.4, 0.3)));
+  vis($('#legend'), win(t, [3.4, 11.7], 0.5, 0.4));
 
   // ---- Logo, title, captions, chips, progress
   vis($('#logo'), Math.max(Math.min(E.out(prog(t, T.logo[0], T.logo[0] + 0.4)), 1 - prog(t, T.logo[1] - 0.3, T.logo[1])), win(t, T.drop.logo, 0.4, 0.3)));
@@ -461,19 +443,13 @@ function seek(n) {
   stackAnim($('#cap3'), t, T.cap3);
   stackAnim($('#cap4'), t, T.cap4);
   stackAnim($('#cap5'), t, T.drop.cap);
-  for (const [id, w] of [['#chipOff', T.chipOff], ['#chipOn', T.chipOn]]) {
+  for (const [id, w] of [['#chipOff', T.chipOff]]) {
     const k = win(t, w, 0.3, 0.3);
     vis($(id), k);
     $(id).style.transform = `translateY(${(1 - E.out(prog(t, w[0], w[0] + 0.3))) * -20}px)`;
   }
   const blink = 0.65 + 0.35 * Math.sin(t * 14);
   $('#chipOff i').style.opacity = blink;
-  vis($('#prog'), win(t, [5.0, T.wipe[0]], 0.5, 0.3));
-  [T.cap1, T.cap2, T.cap3, T.cap4].forEach((w, i) => {
-    const seg = $$('#prog > div')[i];
-    seg.querySelector('i').style.width = prog(t, w[0], w[1]) * 100 + '%';
-    seg.classList.toggle('on', t >= w[0]);
-  });
 
   // ---- Callouts
   for (const co of CALLOUTS) {
@@ -547,19 +523,13 @@ function seek(n) {
   else if (t < T.end + 0.02) { vis(wipe, w2 > 0 ? 1 : 0); wipe.style.top = H * (1 - w2) + 'px'; wipe.style.bottom = '0px'; }
   else vis(wipe, 0);
 
-  // DROP beat: ambient shot, push-in, scan to the x-ray
+  // DROP beat: ambient shot with a slow push-in
   const dropOn = t >= T.drop.out[0] && t < T.end;
   vis($('#dwin'), dropOn ? 1 : 0);
   if (dropOn) {
     if (P) vis($('#mask'), 1);
     const dz = 1 + 0.07 * E.sine(prog(t, T.drop.out[0], T.end));
-    for (const img of [$('#dphoto'), $('#dxray')]) img.style.transform = `translate(-50%, -50%) scale(${dz})`;
-    $('#dxray').style.clipPath = `inset(0 0 ${(1 - ds) * 100}% 0)`;
-    const don = t > T.drop.scan[0] - 0.05 && t < T.drop.scan[1] + 0.25;
-    const fade = don ? Math.min(1, 1 - prog(t, T.drop.scan[1], T.drop.scan[1] + 0.25)) : 0;
-    vis($('#dscan'), fade); vis($('#dscanGlow'), fade);
-    $('#dscan').style.top = ds * winH - 1 + 'px';
-    $('#dscanGlow').style.top = ds * winH - 180 + 'px';
+    $('#dphoto').style.transform = `translate(-50%, -50%) scale(${dz})`;
   }
   const endOn = t >= T.end;
   vis($('#end'), endOn ? 1 : 0);
@@ -580,10 +550,8 @@ function seek(n) {
     $('#endGlow').style.opacity = E.out(prog(te, 0, 1.2));
     vis($('#endLogo'), E.out(prog(te, 0.2, 0.7)));
     const et = $('#endText');
-    const kk = et.querySelector('.kicker'); const kk1 = E.out(prog(te, 0.35, 0.8)); kk.style.opacity = kk1; kk.style.transform = `translateX(${(1 - kk1) * -30}px)`;
     $$('.ln > span', et).forEach((sp, i) => { const k2 = E.out(prog(te, 0.45 + i * 0.12, 0.95 + i * 0.12)); sp.style.transform = `translateY(${(1 - k2) * 105}%)`; });
-    $$('.specs span', et).forEach((sp, i) => { const k3 = E.out(prog(te, 0.85 + i * 0.1, 1.25 + i * 0.1)); sp.style.opacity = k3; sp.style.transform = `translateY(${(1 - k3) * 20}px)`; });
-    const k4 = E.back(prog(te, 1.25, 1.75)); const cta = et.querySelector('.cta'); cta.style.opacity = clamp(k4); cta.style.transform = `scale(${0.9 + 0.1 * k4})`; cta.style.transformOrigin = '0 50%';
+    const k4 = E.back(prog(te, 0.95, 1.45)); const cta = et.querySelector('.cta'); cta.style.opacity = clamp(k4); cta.style.transform = `scale(${0.9 + 0.1 * k4})`; cta.style.transformOrigin = '0 50%';
   }
 
   // ---- Grain
