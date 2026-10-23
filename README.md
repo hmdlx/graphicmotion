@@ -9,12 +9,12 @@ rendert. ffmpeg schreibt die Frames anschließend als MP4.
 | Projekt | Format | Ergebnis |
 |---|---|---|
 | `projects/laguna-m` | 9:16, 1080×1920, 30 fps, 18,5 s | `output/HomeDeluxe_Laguna-M_Reel_9x16.mp4` + Titelbild |
-| `projects/thermo-scan` | 9:16 (1080×1920) + 1:1 (1080×1080), 30 fps, 26 s, mit Sounddesign | `output/HomeDeluxe_SPLASH-THERMO_Thermo-Scan_9x16.mp4`, `…_1x1.mp4` + Titelbilder |
+| `projects/thermo-scan` | 9:16 (1080×1920) + 1:1 (1080×1080), 30 fps, 29 s, mit Sounddesign | `output/HomeDeluxe_SPLASH-THERMO_Thermo-Scan_9x16.mp4`, `…_1x1.mp4` + Titelbilder |
 
-### SPLASH THERMO – Thermo-Scan
+### SPLASH THERMO / DROP THERMO – Thermo-Scan
 
-Hochwertiger Content-Clip zur aufblasbaren Thermoabdeckung SPLASH THERMO (nicht für den
-Newsletter). Basis sind das Ambientebild und der 3/4-Freisteller aus dem Shop; alle weiteren
+Hochwertiger Content-Clip zu den aufblasbaren Thermoabdeckungen SPLASH THERMO und DROP THERMO
+(nicht für den Newsletter). Basis sind die Ambientebilder und 3/4-Freisteller aus dem Shop; alle weiteren
 Perspektiven entstehen in einer prozedural gebauten three.js-Szene (`scene.js`) nach den
 Produktmaßen: Whirlpool Ø 208 × 70 cm mit Drop-Stitch-Wänden, Abdeckung 162 × 162 × 20 cm mit
 sieben Luftkammern und Ventil. Keine KI-Generierung, keine Credits.
@@ -28,7 +28,8 @@ sieben Luftkammern und Ventil. Keine KI-Generierung, keine Credits.
 | 11,6–15,2 s | Produkt | Scan-Wipe vom Röntgen- in den Studio-Look, Abdeckung schwebt mit Maßlinien Ø 162 cm / 20 cm. 02 Handling |
 | 15,2–19,0 s | Wetter | Herbstlaub fällt auf die Abdeckung, Regen mit Aufprallringen auf dem PVC. 03 Schutz |
 | 19,0–21,9 s | Wasser | Abdeckung fliegt mit dem Laub davon, Draufsicht auf klares Wasser mit Kaustiken. 04 Wasserqualität |
-| 22,2–26,0 s | Endcard | Freisteller, Maße, CTA „Jetzt entdecken“ + homedeluxe.de, Hinweis auf DROP THERMO |
+| 22,2–25,0 s | DROP | Ambientebild DROP, Scan zur Röntgenansicht mit Wärmebild unter der achteckigen Abdeckung, „DROP THERMO · 155 × 155 × 20 cm“ |
+| 25,0–29,0 s | Endcard | Beide Freisteller mit Maßen, „Wärme bleibt drin.“, CTA „Jetzt entdecken“ + homedeluxe.de |
 
 Die Aussagen stützen sich auf die Produktseite (Luftpolster, energieeffizienter, wetterfestes PVC
 gegen Regen, Schnee und UV, Schutz vor Blättern, Insekten und Schmutz, kristallklarer Badespaß).
