@@ -96,7 +96,7 @@
     outBack: k => { const c1 = 1.3, c3 = c1 + 1; return 1 + c3 * Math.pow(k - 1, 3) + c1 * Math.pow(k - 1, 2); },
   };
 
-  const imgA = $('#imgA'), imgB = $('#imgB'), footage = $('#footage');
+  const imgA = $('#imgA'), imgB = $('#imgB'), imgBg = $('#imgBg'), footage = $('#footage');
 
   // --- Bildquelle für Zeit t: [{src, alpha, scale}] ---
   function plate(seg, t) {
@@ -108,17 +108,30 @@
   }
   function stillScale(seg, t) { return seg.push ? 1 + seg.push * E.outCubic(prog(t, seg.t0, seg.dur)) : 1; }
 
+  // 9:16-Band: Die Karussell-Szenen laufen als unskaliertes 16:9-Band (BAND.x/y), der Hintergrund
+  // (BAND.bg) setzt die Hohlkehle darüber/darunter fort. Bandbilder kommen aus BAND.kf.
+  const BAND = LAYOUT.band;
+  const inBand = seg => !!(BAND && seg && BAND.ids.includes(seg.id));
+  const bandSrc = seg => (seg.still ? seg.still.replace(`${KF}/`, `${BAND.kf}/`) : null);
+
   function layers(t) {
     const i = SEG.findIndex(s => t < s.t1);
     const seg = SEG[i < 0 ? SEG.length - 1 : i];
     const next = SEG[SEG.indexOf(seg) + 1];
     if (seg.id === 'end') {                        // Überblendung Karussell -> Line-up
       const k = E.inOutCubic(prog(t, seg.t0, CUT.endXf));
-      return [{ src: S.k4.still, alpha: 1, scale: 1 - 0.04 * k }, { src: seg.still, alpha: k, scale: 1.04 - 0.04 * E.outCubic(prog(t, seg.t0, CUT.endXf * 2)) }];
+      const k4 = inBand(S.k4) ? { src: bandSrc(S.k4), band: true } : { src: S.k4.still };
+      return [{ ...k4, alpha: 1, scale: 1 - 0.04 * k }, { src: seg.still, alpha: k, scale: 1.04 - 0.04 * E.outCubic(prog(t, seg.t0, CUT.endXf * 2)) }];
     }
-    if (seg.still) return [{ src: seg.still, alpha: 1, scale: stillScale(seg, t) }];
-    const out = [{ src: plate(seg, t), alpha: 1, scale: 1 }];
-    if (next && next.still && t > seg.t1 - XF) out.push({ src: next.still, alpha: prog(t, seg.t1 - XF, XF), scale: 1 });
+    if (BAND && seg.id === 'k1') {                 // Hochformat-Türbild zoomt in die Band-Ansicht zurück
+      // erst zoomen, bis die XL exakt auf Band-Größe steht, dann kurz überblenden
+      const z = E.inOutCubic(prog(t, seg.t0, seg.dur * 0.7)), x = E.inOutCubic(prog(t, seg.t0 + seg.dur * 0.6, seg.dur * 0.4));
+      return [{ src: seg.still, alpha: 1, scale: lerp(1, BAND.fromNative.scale, z), origin: BAND.fromNative.origin, ty: BAND.fromNative.ty * z, soft: z > 0 },
+        { src: bandSrc(seg), alpha: x, scale: 1, band: true }];
+    }
+    if (seg.still) return [{ src: inBand(seg) ? bandSrc(seg) : seg.still, alpha: 1, scale: stillScale(seg, t), band: inBand(seg) }];
+    const out = [{ src: plate(seg, t), alpha: 1, scale: 1, band: inBand(seg), blur: rampBlur(t) }];
+    if (next && next.still && t > seg.t1 - XF) out.push({ src: inBand(next) ? bandSrc(next) : next.still, alpha: prog(t, seg.t1 - XF, XF), scale: 1, band: inBand(next) });
     return out;
   }
 
@@ -144,10 +157,31 @@
     door.querySelector('.edge').style.opacity = glass.toFixed(3);
   }
 
+  // Bewegungsunschärfe auf Clips mit Speed-Ramp, nur wo LAYOUT.motionBlur gesetzt ist (9:16):
+  // stärkste Unschärfe im schnellsten Teil der Fahrt
+  function rampBlur(t) {
+    const mb = LAYOUT.motionBlur;
+    const seg = SEG.find(s => t >= s.t0 && t < s.t1);
+    if (!mb || !seg || !seg.clip || seg.ramp !== 'inout' || !mb[seg.id]) return 0;
+    const speed = Math.sin(Math.PI * prog(t, seg.t0, seg.dur));
+    return mb[seg.id] * clamp((speed - 0.55) / 0.45);
+  }
+
   function setImg(img, l) {
     if (!l) { img.style.opacity = 0; return Promise.resolve(); }
     img.style.opacity = l.alpha.toFixed(3);
-    img.style.transform = `scale(${l.scale.toFixed(4)})`;
+    img.style.filter = l.blur ? `blur(${l.blur.toFixed(2)}px)` : 'none';
+    img.style.transform = `translateY(${(l.ty || 0).toFixed(2)}px) scale(${l.scale.toFixed(4)})`;
+    img.style.transformOrigin = l.origin || '50% 50%';
+    if (BAND) {                                    // Band-Bild: 16:9 in Originalgröße, oben/unten weich
+      const f = BAND.feather;
+      Object.assign(img.style, l.band
+        ? { left: `${BAND.x}px`, top: `${BAND.y}px`, width: `${BAND.w}px`, height: `${BAND.h}px`,
+          webkitMaskImage: `linear-gradient(to bottom, transparent 0, #000 ${f}px, #000 ${BAND.h - f}px, transparent ${BAND.h}px)` }
+        : { left: '0px', top: '0px', width: `${W}px`, height: `${H}px`,
+          // beim Rückzoom weiche Ränder, damit das verkleinerte Hochformatbild nicht als Kante steht
+          webkitMaskImage: l.soft ? 'radial-gradient(ellipse 60% 52% at 50% 52%, #000 70%, transparent 100%)' : 'none' });
+    }
     const url = new URL(l.src, location.href).href;
     if (img.src === url) return Promise.resolve();
     img.src = url;
@@ -209,6 +243,10 @@
     // Footage
     const L = layers(t);
     footage.style.transform = `scale(${camScale(t).toFixed(4)})`;
+    if (imgBg) {                                   // Hohlkehle hinter dem Band
+      const segNow = SEG.find(s => t < s.t1) || SEG[SEG.length - 1];
+      imgBg.style.opacity = inBand(segNow) || segNow.id === 'end' ? 1 : 0;
+    }
     await Promise.all([setImg(imgA, L[0]), setImg(imgB, L[1])]);
     setDoor(t);
 

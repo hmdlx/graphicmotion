@@ -18,7 +18,11 @@
     "everest-tour:render": "node scripts/render.js projects/everest-tour/composition.html projects/everest-tour/output/HomeDeluxe_Everest_Tour_16x9.mp4 --plates build/everest-tour/plates",
     "everest-tour:stills": "node scripts/render.js projects/everest-tour/composition.html build/everest-tour/stills --plates build/everest-tour/plates --stills 0.8,3,5.6,9,12.6,15,17.5,19.4,22,24.6,29,32,36,39,41,43.5",
     "everest-tour-20s:render": "node scripts/render.js projects/everest-tour/composition-20s.html projects/everest-tour/output/HomeDeluxe_Everest_Tour_20s_16x9.mp4 --plates build/everest-tour/plates",
-    "everest-tour-20s:stills": "node scripts/render.js projects/everest-tour/composition-20s.html build/everest-tour-20s/stills --plates build/everest-tour/plates --stills 0.4,1.5,3.6,6.4,8.6,10.0,11.6,13.9,16.4,18.2,19.0,19.9"
+    "everest-tour-20s:stills": "node scripts/render.js projects/everest-tour/composition-20s.html build/everest-tour-20s/stills --plates build/everest-tour/plates --stills 0.4,1.5,3.6,6.4,8.6,10.0,11.6,13.9,16.4,18.2,19.0,19.9",
+    "everest-tour-9x16:keyframes": "python3 -I scripts/studio_keyframes.py projects/everest-tour/source projects/everest-tour/keyframes-9x16 9x16 && python3 -I scripts/door_assets.py projects/everest-tour/keyframes-9x16",
+    "everest-tour-9x16:plates": "projects/everest-tour/prepare.sh build/everest-tour-9x16/plates 9x16",
+    "everest-tour-20s-9x16:render": "node scripts/render.js projects/everest-tour/composition-20s-9x16.html projects/everest-tour/output/HomeDeluxe_Everest_Tour_20s_9x16.mp4 --plates build/everest-tour-9x16/plates",
+    "everest-tour-20s-9x16:stills": "node scripts/render.js projects/everest-tour/composition-20s-9x16.html build/everest-tour-9x16/stills --plates build/everest-tour-9x16/plates --stills 0.4,1.5,2.4,3.6,5.3,6.4,8.4,9.8,10.4,11.6,13.9,16.4,18.2,19.9"
   },
   "devDependencies": {
     "playwright": "1.56.1"

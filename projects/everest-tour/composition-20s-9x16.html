@@ -110,7 +110,7 @@
 </head>
 <body>
 <div id="stage">
-  <div id="footage"><img id="imgA" alt=""><img id="imgB" alt="">
+  <div id="footage"><img id="imgBg" src="keyframes-9x16/band_bg.png" alt=""><img id="imgA" alt=""><img id="imgB" alt="">
     <!-- Ganzglastür der XL: dreht um die Scharniere an ihrer rechten Kante -->
     <div id="doorwrap"><div id="door"><i class="tint"></i><img src="keyframes-9x16/door_pane.png" alt=""><i class="edge"></i></div></div>
   </div>
@@ -182,6 +182,14 @@
     stops: { ofen: 'source/stop_ofen_9x16.jpg', ir: 'source/stop_strahler_9x16.jpg' },
     br: { ofen: [[190, 590, 910, 910]], ir: [[370, 630, 480, 1190], [780, 600, 924, 1264]] },
     sizeStep: 106,
+    motionBlur: { pov1: 3, pov2: 3, pov3: 7 },  // px bei Höchstgeschwindigkeit der Fahrt
+    // Karussell als 16:9-Band (bewährte Clips, unskaliert) in der verlängerten Hohlkehle
+    band: {
+      ids: ['k1', 'car1', 'k2', 'car2', 'k3', 'car3', 'k4'], kf: 'keyframes',
+      x: -420, y: 420, w: 1920, h: 1080, feather: 110,
+      // XL im Hochformat-Keyframe (780 px hoch, Mitte 540/1000) -> XL im Band (650 px, Mitte 540/1010)
+      fromNative: { scale: 650 / 780, origin: '540px 1000px', ty: 10 },
+    },
   };
 </script>
 <script src="composition.js"></script>

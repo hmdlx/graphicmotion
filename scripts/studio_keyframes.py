@@ -14,9 +14,11 @@ W, H = (1920, 1080) if FMT == '16x9' else (1080, 1920)
 HORIZON = 690 if FMT == '16x9' else 1190
 PLACED = {}
 
-def backdrop():
-    y = np.linspace(0, 1, H)[:, None]
-    x = np.linspace(-1, 1, W)[None, :]
+def backdrop(y=None, x=None, H=H, W=W, HORIZON=HORIZON):
+    # y, x: normierte Koordinaten (Standard: ganzes Bild); für die 9:16-Bandfassung wird die
+    # 16:9-Hohlkehle über ihren Bildrand hinaus weitergerechnet.
+    y = np.linspace(0, 1, H)[:, None] if y is None else y
+    x = np.linspace(-1, 1, W)[None, :] if x is None else x
     wall = np.array([226, 223, 218]); floor = np.array([240, 238, 234]); near = np.array([246, 245, 242])
     t = np.clip((y * H - (HORIZON - 120)) / 240, 0, 1)            # weicher Übergang der Hohlkehle
     t = t * t * (3 - 2 * t)
@@ -26,7 +28,7 @@ def backdrop():
     soft = np.exp(-((x * 0.9) ** 2) / 0.35 - ((y - 0.18) ** 2) / 0.12)[..., None]   # Softbox oben mittig
     vign = (1 - 0.10 * (x ** 2)[..., None]) * (1 - 0.06 * (y ** 2)[..., None])
     img = (base + soft * 14) * vign
-    img = np.broadcast_to(img, (H, W, 3))
+    img = np.broadcast_to(img, (y.shape[0], x.shape[1], 3))
     return Image.fromarray(np.clip(img, 0, 255).astype(np.uint8)).convert('RGBA')
 
 def place(canvas, name, cx, base_y, height):
@@ -91,3 +93,12 @@ for row, base_y, h, gap in rows:
         place(c, n, x + w / 2, base_y, h); x += w + gap
 c.convert('RGB').save(os.path.join(OUT, 'k5_lineup.png')); print('k5_lineup')
 json.dump(PLACED, open(os.path.join(OUT, 'placement.json'), 'w'), indent=1)
+
+# 9:16: Hintergrund für das Karussell-Band. Die 16:9-Karussell-Clips laufen unskaliert als Band
+# (x -420, y 420) im Hochformat; darüber und darunter geht die 16:9-Hohlkehle nahtlos weiter.
+if FMT == '9x16':
+    BX, BY = -420, 420
+    rows = (np.arange(1920) - BY)[:, None] / (1080 - 1)
+    cols = -1 + 2 * (np.arange(1080) - BX)[None, :] / (1920 - 1)
+    backdrop(rows, cols, H=1080, W=1920, HORIZON=690).convert('RGB').save(os.path.join(OUT, 'band_bg.png'))
+    print('band_bg')

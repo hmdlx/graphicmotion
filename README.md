@@ -13,6 +13,7 @@ rendert. ffmpeg schreibt die Frames anschließend als MP4.
 | `projects/everest` (16:9) | 16:9, 1920×1080, 30 fps, 11,2 s Loop | `output/HomeDeluxe_Everest_2in1_16x9.mp4` + `output/HomeDeluxe_Everest_2in1_16x9_1280.webp` |
 | `projects/everest-tour` | 16:9, 1920×1080, 30 fps, 45,8 s | `output/HomeDeluxe_Everest_Tour_16x9.mp4` |
 | `projects/everest-tour` (20 s) | 16:9, 1920×1080, 30 fps, 20,0 s | `output/HomeDeluxe_Everest_Tour_20s_16x9.mp4` |
+| `projects/everest-tour` (20 s, 9:16) | 9:16, 1080×1920, 30 fps, 20,0 s | `output/HomeDeluxe_Everest_Tour_20s_9x16.mp4` |
 
 ### Laguna M – Schnitt und Übergänge
 
@@ -91,6 +92,19 @@ Tür auf 0,8 s → POV 2,2 s → Stopp Ofen 1,7 s → POV 1,3 s → Stopp Infrar
 Tür zu 0,6 s → Karussell XL → L → M → S (je 2,2 s Drehung, 0,2–0,3 s Halt) → Line-up mit Preis 2,1 s.
 Die USP-Chips der Rausfahrt entfallen, Zähler laufen in 0,6 s hoch.
 
+**9:16-Fassung** (`composition-20s-9x16.html`): gleicher 20-s-Schnitt, aber nativ im Hochformat –
+eigene Studio-Keyframes (`keyframes-9x16/`, Hero groß, Nachbarn an den Rändern angeschnitten, Line-up 2 × 2),
+Detailbilder per Outpaint auf 9:16 (`source/stop_*_9x16.jpg`), Tür-Ebene über `placement.json`/`door.json`
+neu berechnet und eigene Kling-Clips in 9:16 für die POV-Fahrten (`source/clips-9x16/`). Das Karussell
+lief als 9:16-KI-Clip nicht sauber (Kabinen drehten auf der Stelle und gingen ineinander über), daher
+laufen dort die 16:9-Karussell-Clips unskaliert als Band (`LAYOUT.band`, x −420 / y 420) in einer
+pixelgleich verlängerten Hohlkehle (`keyframes-9x16/band_bg.png`); beim Übergang zoomt das Hochformat-
+Türbild exakt auf die XL im Band zurück. Die Rausfahrt verbiegt in allen 9:16-Varianten kurz die
+Glasfront; `LAYOUT.motionBlur` legt im schnellsten Teil der Fahrt Bewegungsunschärfe darüber.
+`window.LAYOUT` setzt Bühne,
+Keyframe-Ordner, Stopp-Bilder und Klammer-Positionen; Grafiken stehen oben (Titel, Stopps, Modell-Label),
+Größenwahl unter dem Produkt, Preis + CTA unter dem Line-up.
+
 Gewählte Clip-Varianten stehen in `prepare.sh` (`source/clips/`). Modelldaten laut homedeluxe.de
 (Art.-Nr. 75499–75502): S 100 × 120 cm, 1× IR, 3,6 kW · M 120 × 120 cm, 2× IR, 3,6 kW ·
 L 180 × 120 cm, 3× IR, 6 kW · XL 200 × 200 cm, 5× IR, 8 kW; alle bis 100 °C, 400 W je Strahler,
@@ -113,6 +127,8 @@ npm run everest-16x9:webp   # -> animierte WebP 1280×720, 25 fps (Loop)
 npm run everest-tour:plates # gewählte KI-Clips -> build/everest-tour/plates
 npm run everest-tour:render # -> projects/everest-tour/output/HomeDeluxe_Everest_Tour_16x9.mp4
 npm run everest-tour-20s:render # -> projects/everest-tour/output/HomeDeluxe_Everest_Tour_20s_16x9.mp4
+npm run everest-tour-9x16:plates       # 9:16-Clips -> build/everest-tour-9x16/plates
+npm run everest-tour-20s-9x16:render  # -> projects/everest-tour/output/HomeDeluxe_Everest_Tour_20s_9x16.mp4
 ```
 
 Ein einzelnes Frame lässt sich auch im Browser prüfen:
