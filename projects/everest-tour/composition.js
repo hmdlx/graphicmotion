@@ -2,33 +2,41 @@
 // Start-/Endbild) als Plates; Stopps und Karussell-Halte sind echte Standbilder (Outpaint bzw.
 // Studio-Keyframes aus den Freistellern). window.COMP.seek(n) puts the stage into frame n.
 (() => {
-  const FPS = 30, W = 1920, H = 1080;
+  const FPS = 30;
   const params = new URLSearchParams(location.search);
+  // Format: 16:9 ist Standard; die 9:16-Fassung setzt window.LAYOUT (Bühne, Keyframes, Stopp-Bilder, Klammern)
+  const LAYOUT = Object.assign({
+    W: 1920, H: 1080, kf: 'keyframes',
+    stops: { ofen: 'source/stop_ofen.jpg', ir: 'source/stop_strahler.jpg' },
+    br: { ofen: [[596, 176, 1330, 640]], ir: [[774, 300, 920, 760], [1210, 300, 1356, 760]] },
+    sizeStep: 82,                                 // Abstand der Felder in der Größenwahl
+  }, window.LAYOUT);
+  const { W, H } = LAYOUT, KF = LAYOUT.kf, STOP = LAYOUT.stops;
   const PLATES = params.get('plates') || '../../build/everest-tour/plates';
 
   // Schnittlisten. clip: Plates mit Speed-Ramp (ramp 'inout' = Beschleunigen/Abbremsen, 'lin' = linear).
   // 'full' = 45,8 s; '20s' = gleiche Szenen und Logik, schnellere Ramps, kürzere Stopps, ohne USP-Chips.
   // Die Fassung wählt window.CUT (composition-20s.html) oder ?cut=.
   const DOOR_OPEN = 80;                           // Grad; positiv = Griffkante kommt zur Kamera (nach außen)
-  const DOOR_BASE = 'keyframes/k1_door_base.png';
+  const DOOR_BASE = `${KF}/k1_door_base.png`;
   const CUTS = {
     full: {
       seg: [
         { id: 'open', still: DOOR_BASE, door: [0, DOOR_OPEN], dur: 1.4 },
         { id: 'pov1', clip: 'pov1', dur: 4.0, ramp: 'inout' },
-        { id: 'ofen', still: 'source/stop_ofen.jpg', dur: 3.0, push: 0.05 },
+        { id: 'ofen', still: STOP.ofen, dur: 3.0, push: 0.05 },
         { id: 'pov2', clip: 'pov2', dur: 3.6, ramp: 'inout' },
-        { id: 'ir', still: 'source/stop_strahler.jpg', dur: 3.0, push: 0.05 },
+        { id: 'ir', still: STOP.ir, dur: 3.0, push: 0.05 },
         { id: 'pov3', clip: 'pov3', dur: 4.2, ramp: 'inout' },
         { id: 'close', still: DOOR_BASE, door: [DOOR_OPEN, 0], dur: 1.0 },
-        { id: 'k1', still: 'keyframes/k1_xl.png', dur: 1.0 },
+        { id: 'k1', still: `${KF}/k1_xl.png`, dur: 1.0 },
         { id: 'car1', clip: 'car1', dur: 5.0, ramp: 'lin' },
-        { id: 'k2', still: 'keyframes/k2_l.png', dur: 1.6 },
+        { id: 'k2', still: `${KF}/k2_l.png`, dur: 1.6 },
         { id: 'car2', clip: 'car2', dur: 5.0, ramp: 'lin' },
-        { id: 'k3', still: 'keyframes/k3_m.png', dur: 1.6 },
+        { id: 'k3', still: `${KF}/k3_m.png`, dur: 1.6 },
         { id: 'car3', clip: 'car3', dur: 5.0, ramp: 'lin' },
-        { id: 'k4', still: 'keyframes/k4_s.png', dur: 1.6 },
-        { id: 'end', still: 'keyframes/k5_lineup.png', dur: 4.8 },
+        { id: 'k4', still: `${KF}/k4_s.png`, dur: 1.6 },
+        { id: 'end', still: `${KF}/k5_lineup.png`, dur: 4.8 },
       ],
       chips: true, doorPad: 0.15, countDur: 1.0, endXf: 0.8, end: { title: 0.5, price: 1.0, tags: 0.9 },
     },
@@ -36,19 +44,19 @@
       seg: [
         { id: 'open', still: DOOR_BASE, door: [0, DOOR_OPEN], dur: 0.8 },
         { id: 'pov1', clip: 'pov1', dur: 2.2, ramp: 'inout' },
-        { id: 'ofen', still: 'source/stop_ofen.jpg', dur: 1.7, push: 0.04 },
+        { id: 'ofen', still: STOP.ofen, dur: 1.7, push: 0.04 },
         { id: 'pov2', clip: 'pov2', dur: 1.3, ramp: 'inout' },
-        { id: 'ir', still: 'source/stop_strahler.jpg', dur: 1.7, push: 0.04 },
+        { id: 'ir', still: STOP.ir, dur: 1.7, push: 0.04 },
         { id: 'pov3', clip: 'pov3', dur: 1.9, ramp: 'inout' },
         { id: 'close', still: DOOR_BASE, door: [DOOR_OPEN, 0], dur: 0.6 },
-        { id: 'k1', still: 'keyframes/k1_xl.png', dur: 0.3 },
+        { id: 'k1', still: `${KF}/k1_xl.png`, dur: 0.3 },
         { id: 'car1', clip: 'car1', dur: 2.2, ramp: 'lin' },
-        { id: 'k2', still: 'keyframes/k2_l.png', dur: 0.3 },
+        { id: 'k2', still: `${KF}/k2_l.png`, dur: 0.3 },
         { id: 'car2', clip: 'car2', dur: 2.2, ramp: 'lin' },
-        { id: 'k3', still: 'keyframes/k3_m.png', dur: 0.3 },
+        { id: 'k3', still: `${KF}/k3_m.png`, dur: 0.3 },
         { id: 'car3', clip: 'car3', dur: 2.2, ramp: 'lin' },
-        { id: 'k4', still: 'keyframes/k4_s.png', dur: 0.2 },
-        { id: 'end', still: 'keyframes/k5_lineup.png', dur: 2.1 },
+        { id: 'k4', still: `${KF}/k4_s.png`, dur: 0.2 },
+        { id: 'end', still: `${KF}/k5_lineup.png`, dur: 2.1 },
       ],
       chips: false, doorPad: 0.08, countDur: 0.6, endXf: 0.5, end: { title: 0.3, price: 0.6, tags: 0.6 },
     },
@@ -72,10 +80,7 @@
   const CAR = ['car1', 'car2', 'car3'];
 
   // Bauteile in den Stopp-Standbildern (Bühnen-px bei Skalierung 1)
-  const BR = {
-    ofen: [[596, 176, 1330, 640]],
-    ir: [[774, 300, 920, 760], [1210, 300, 1356, 760]],
-  };
+  const BR = LAYOUT.br;
 
   const $ = s => document.querySelector(s);
   const $$ = s => [...document.querySelectorAll(s)];
@@ -182,7 +187,8 @@
     path.style.opacity = alpha.toFixed(3);
   }
   // Rechteck im Standbild -> Bühne (Standbild-Push um die Bildmitte)
-  const scaled = (r, s) => [960 + (r[0] - 960) * s, 540 + (r[1] - 540) * s, 960 + (r[2] - 960) * s, 540 + (r[3] - 540) * s];
+  const CX = W / 2, CY = H / 2;
+  const scaled = (r, s) => [CX + (r[0] - CX) * s, CY + (r[1] - CY) * s, CX + (r[2] - CX) * s, CY + (r[3] - CY) * s];
 
   function count(root, t, t0) {
     root.querySelectorAll('.num').forEach(n => { n.textContent = String(Math.round(+n.dataset.to * E.outCubic(prog(t, t0, CUT.countDur)))); });
@@ -195,7 +201,7 @@
     br1: $('#br1'), br2: $('#br2'), flash: $('#flash'), logo: $('#logo'),
   };
   const sizeTags = $$('.size-tag');
-  sizeTags.forEach(n => { n.style.left = `${n.dataset.x}px`; });
+  sizeTags.forEach(n => { n.style.left = `${n.dataset.x}px`; if (n.dataset.y) n.style.top = `${n.dataset.y}px`; });
 
   async function seek(n) {
     const t = n / FPS;
@@ -251,13 +257,13 @@
     lines(el.model, t, tin, tout);
     // Größenwahl: Füllung gleitet zur aktiven Größe
     {
-      const posOf = i => i * 82;
+      const posOf = i => i * LAYOUT.sizeStep;
       let x = posOf(MODELS[0].size);
       CAR.forEach((c, i) => { const s = S[c]; x = lerp(x, posOf(MODELS[i + 1].size), E.inOutCubic(prog(t, s.t0 + 0.6, s.dur - 1.2))); });
       el.fill.style.transform = `translateX(${x}px)`;
       const a = E.outExpo(prog(t, mStart + 0.2, 0.5)) * (1 - E.inExpo(prog(t, mEnd - 0.4, 0.4)));
       el.sizes.style.clipPath = `inset(0 0 0 ${((1 - a) * 100).toFixed(2)}%)`;
-      [...el.sizes.querySelectorAll('div')].forEach((d, i) => { d.style.color = Math.abs(x - posOf(i)) < 41 ? '#fff' : ''; });
+      [...el.sizes.querySelectorAll('div')].forEach((d, i) => { d.style.color = Math.abs(x - posOf(i)) < LAYOUT.sizeStep / 2 ? '#fff' : ''; });
     }
 
     // Endcard

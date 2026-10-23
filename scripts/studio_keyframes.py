@@ -2,14 +2,17 @@
 # Studio-Keyframes für das EVEREST-Karussell: echte Freisteller auf einer hellen Hohlkehle
 # mit Softbox-Licht und Kontaktschatten. Diese Bilder sind Start-/Endbilder der KI-Clips,
 # damit jedes Produkt exakt bleibt (kein Morphing).
-#   python3 -I scripts/studio_keyframes.py projects/everest-tour/source projects/everest-tour/keyframes
-import sys, os
+#   python3 -I scripts/studio_keyframes.py projects/everest-tour/source projects/everest-tour/keyframes [16x9|9x16]
+# Schreibt zusätzlich placement.json (Lage jedes Produkts je Keyframe, u. a. für die Tür-Ebene).
+import sys, os, json
 import numpy as np
 from PIL import Image, ImageFilter
 
 SRC, OUT = sys.argv[1], sys.argv[2]
-W, H = 1920, 1080
-HORIZON = 690
+FMT = sys.argv[3] if len(sys.argv) > 3 else '16x9'
+W, H = (1920, 1080) if FMT == '16x9' else (1080, 1920)
+HORIZON = 690 if FMT == '16x9' else 1190
+PLACED = {}
 
 def backdrop():
     y = np.linspace(0, 1, H)[:, None]
@@ -31,6 +34,7 @@ def place(canvas, name, cx, base_y, height):
     s = height / im.height
     im = im.resize((round(im.width * s), round(im.height * s)), Image.LANCZOS)
     x0, y0 = round(cx - im.width / 2), round(base_y - im.height)
+    PLACED.setdefault(CURRENT, {})[name] = {'x0': x0, 'y0': y0, 'w': im.width, 'h': im.height, 'scale': s}
     # Kontaktschatten folgen der Unterkante jeder Spalte (auch bei schräg gedrehten Kabinen)
     al = np.asarray(im.split()[3]) > 128
     cols = np.where(al.any(0))[0]
@@ -47,9 +51,14 @@ def place(canvas, name, cx, base_y, height):
         canvas.alpha_composite(dark)
     canvas.alpha_composite(im, (x0, y0))
 
-CENTER = dict(cx=960, base_y=915, height=650)
-LEFT = dict(cx=330, base_y=850, height=430)
-RIGHT = dict(cx=1590, base_y=850, height=430)
+if FMT == '16x9':
+    CENTER = dict(cx=960, base_y=915, height=650)
+    LEFT = dict(cx=330, base_y=850, height=430)
+    RIGHT = dict(cx=1590, base_y=850, height=430)
+else:                                          # 9:16: Hero groß, Nachbarn an den Rändern angeschnitten
+    CENTER = dict(cx=540, base_y=1390, height=780)
+    LEFT = dict(cx=-40, base_y=1280, height=420)
+    RIGHT = dict(cx=1120, base_y=1280, height=420)
 
 FRAMES = {
     'k1_xl': [('l_right', RIGHT), ('xl_front', CENTER)],
@@ -61,20 +70,24 @@ FRAMES = {
 
 os.makedirs(OUT, exist_ok=True)
 for key, items in FRAMES.items():
+    CURRENT = key
     c = backdrop()
     for name, pos in items:
         place(c, name, **pos)
     c.convert('RGB').save(os.path.join(OUT, key + '.png'))
     print(key)
 
-# Line-up für den Schluss: alle vier Größen frontal, gleiche Höhe = gleicher Maßstab (190 cm)
+# Line-up für den Schluss: alle vier Größen frontal, gleiche Höhe = gleicher Maßstab (190 cm).
+# 16:9 in einer Reihe, 9:16 als 2 × 2 (S M / L XL).
+CURRENT = 'k5_lineup'
 c = backdrop()
 names = ['s_front', 'm_front', 'l_front', 'xl_front']
-h = 430
-widths = [Image.open(os.path.join(SRC, n + '.png')).size for n in names]
-widths = [w * h / hh for w, hh in widths]
-gap = 56
-x = (W - (sum(widths) + gap * 3)) / 2
-for n, w in zip(names, widths):
-    place(c, n, x + w / 2, 900, h); x += w + gap
+size = {n: Image.open(os.path.join(SRC, n + '.png')).size for n in names}
+rows = [(names, 900, 430, 56)] if FMT == '16x9' else [(names[:2], 1040, 420, 48), (names[2:], 1520, 420, 40)]
+for row, base_y, h, gap in rows:
+    widths = [size[n][0] * h / size[n][1] for n in row]
+    x = (W - (sum(widths) + gap * (len(row) - 1))) / 2
+    for n, w in zip(row, widths):
+        place(c, n, x + w / 2, base_y, h); x += w + gap
 c.convert('RGB').save(os.path.join(OUT, 'k5_lineup.png')); print('k5_lineup')
+json.dump(PLACED, open(os.path.join(OUT, 'placement.json'), 'w'), indent=1)
