@@ -70,17 +70,17 @@
   #b-l1, #b-l2 { font-size: 200px; }
 
   /* C Versus */
-  #c-bg { width: 2501px; height: 1655px; filter: brightness(.8); }
-  #c-tint { background: linear-gradient(105deg, rgba(28,58,84,.82) 0 50%, rgba(14,34,52,.88) 50% 100%); }
-  .vs-panel { position: absolute; top: 430px; width: 400px; height: 500px; }
-  .vs-panel .card { position: absolute; inset: 0; background: #fff; clip-path: polygon(14% 0, 100% 0, 86% 100%, 0 100%); display: flex; align-items: center; justify-content: center; }
-  .vs-panel .card img { max-width: 62%; max-height: 62%; }
-  .vs-panel .name { position: absolute; left: -40px; width: 480px; top: 540px; text-align: center; font-weight: 800; font-size: 40px; letter-spacing: .02em; text-transform: uppercase; white-space: nowrap; }
-  #vs-l { left: 44px; } #vs-r { left: 636px; }
-  #vs { position: absolute; left: 0; width: 1080px; top: 610px; text-align: center; font-size: 150px; }
-  #vs-ring { position: absolute; left: 540px; top: 680px; width: 0; height: 0; }
-  #vs-ring div { position: absolute; left: -100px; top: -100px; width: 200px; height: 200px; border: 6px solid #fff; transform: rotate(45deg); }
-  #c-kick { position: absolute; left: 0; width: 1080px; top: 250px; justify-content: center; }
+  #c-bg { width: 2501px; height: 1655px; filter: brightness(.7); }
+  #c-tint { background: radial-gradient(1000px 760px at 50% 46%, rgba(28,58,84,.62) 0%, rgba(14,34,52,.9) 62%, rgba(8,20,31,.97) 100%); }
+  .vs-tile { position: absolute; top: 570px; width: 380px; }
+  .vs-tile .card { width: 380px; height: 380px; background: #fff; display: flex; align-items: center; justify-content: center; box-shadow: 0 40px 90px rgba(2,8,14,.45); }
+  .vs-tile .card img { max-width: 64%; max-height: 64%; display: block; }
+  .vs-tile .name { margin-top: 36px; text-align: center; font-weight: 700; font-size: 27px; line-height: 1; letter-spacing: .2em; text-transform: uppercase; white-space: nowrap; }
+  #vs-l { left: 90px; } #vs-r { left: 610px; }
+  #vs { position: absolute; left: 470px; width: 140px; top: 570px; height: 380px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 24px; }
+  #vs span { font-weight: 600; font-size: 44px; line-height: 1; letter-spacing: .24em; margin-right: -.24em; }
+  #vs i { display: block; width: 2px; height: 104px; background: rgba(233,238,244,.45); }
+  #c-kick { position: absolute; left: 0; width: 1080px; top: 420px; justify-content: center; }
 
   /* D 4x2 */
   #d { background: radial-gradient(900px 900px at 50% 40%, #1f4262 0%, var(--navy) 55%, #08141f 100%); }
@@ -199,12 +199,10 @@
   <section class="scene" id="c">
     <img class="abs" id="c-bg" src="../dfb-pokal-gewinnspiel/source/stadion-blur.jpg" alt="">
     <div class="fill" id="c-tint"></div>
-    <div class="fill c-lines"></div>
     <div class="kick" id="c-kick"><span class="ln"><span>DFB-Pokal</span></span><i></i><span class="ln"><span>Mi 28.10.2026</span></span></div>
-    <div class="vs-panel" id="vs-l"><div class="card"><img src="../dfb-pokal-gewinnspiel/source/wappen-scp07.png" alt="SC Paderborn 07"></div><div class="name">SC Paderborn 07</div></div>
-    <div class="vs-panel" id="vs-r"><div class="card"><img src="../dfb-pokal-gewinnspiel/source/wappen-vfb.png" alt="VfB Stuttgart"></div><div class="name">VfB Stuttgart</div></div>
-    <div id="vs-ring"><div></div></div>
-    <div class="big skew" id="vs">vs</div>
+    <div class="vs-tile" id="vs-l"><div class="card"><img src="../dfb-pokal-gewinnspiel/source/wappen-scp07.png" alt="SC Paderborn 07"></div><div class="name"><span class="ln"><span>SC Paderborn 07</span></span></div></div>
+    <div class="vs-tile" id="vs-r"><div class="card"><img src="../dfb-pokal-gewinnspiel/source/wappen-vfb.png" alt="VfB Stuttgart"></div><div class="name"><span class="ln"><span>VfB Stuttgart</span></span></div></div>
+    <div id="vs"><i></i><span>VS</span><i></i></div>
   </section>
 
   <section class="scene" id="d">

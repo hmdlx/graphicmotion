@@ -32,15 +32,15 @@
     f: [18.70, 21.10], g: [21.10, 25.20], h: [25.20, 31.45], i: [31.45, END + 1],
   };
   const IMPACTS = [ // [time, shake px]
-    [T.flut, 12], [T.pokal, 9], [T.sc, 12], [T.gegen, 20], [T.vfb, 14], [T.wir, 6], [T.vier, 22], [T.zwei, 18],
+    [T.flut, 12], [T.pokal, 9], [T.sc, 3], [T.gegen, 4], [T.vfb, 3], [T.wir, 6], [T.vier, 22], [T.zwei, 18],
     [T.tickets, 14], [T.mittwoch, 8], [T.datum, 16], [T.achtzehn, 16], [T.home, 12], [T.like, 9], [T.markiere, 9],
     [T.d27, 18], [T.logo, 22],
   ];
   const FLASHES = [ // [time, peak, decay s]
-    [T.flut, 0.75, 0.3], [S.b[1], 0.95, 0.32], [S.c[1], 0.45, 0.2], [T.vier, 0.25, 0.15], [S.d[1], 0.5, 0.22],
+    [T.flut, 0.75, 0.3], [S.b[1], 0.95, 0.32], [S.c[1], 0.3, 0.2], [T.vier, 0.25, 0.15], [S.d[1], 0.5, 0.22],
     [S.e[1], 0.85, 0.3], [S.g[1], 0.45, 0.22], [T.d27, 0.22, 0.15], [T.logo - 0.04, 1.0, 0.5],
   ];
-  const STREAKS = [T.flut, T.pokal, T.gegen, T.vier, T.tickets, T.datum, T.achtzehn, S.e[1], T.home, T.d27, T.logo];
+  const STREAKS = [T.flut, T.pokal, T.vier, T.tickets, T.datum, T.achtzehn, S.e[1], T.home, T.d27, T.logo];
 
   const $ = (s, root = document) => root.querySelector(s);
   const $$ = (s, root = document) => [...root.querySelectorAll(s)];
@@ -332,22 +332,36 @@
     slamX($('#b-l2'), t, T.pokal + 0.2, { dx: 1100, base: 'skewX(-9deg)' });
   }
   function C(t) {
-    const k0 = E.outExpo(P(t, S.c[0], 0.7));
-    tf($('#c'), `scale(${1.25 - 0.25 * k0 + 0.04 * P(t, T.stutt, 1.6)})`);
-    mblur($('#c'), 0);
-    tf($('#c-bg'), `translate(${-760 + 160 * P(t, S.c[0], 4.2)}px, -110px)`);
-    speedLines(t, 1 - P(t, S.c[1] - 0.1, 0.1));
-    riseAll($('#c-kick'), t, S.c[0] + 0.25, S.c[1] - 0.2);
-    const out = S.c[1] - 0.18;
-    slamX($('#vs-l'), t, T.sc, { dx: -1100, tout: out, dxOut: -1300 });
-    slamX($('#vs-r'), t, T.vfb, { dx: 1100, tout: out, dxOut: 1300 });
-    $$('.vs-panel .name').forEach((n, i) => { n.style.opacity = P(t, (i ? T.vfb : T.sc) + 0.25, 0.2); });
-    slamS($('#vs'), t, T.gegen, { from: 3.2, dur: 0.24, base: 'skewX(-9deg)', tout: out, blur: 20 });
-    const rk = P(t, T.gegen, 0.55);
-    const ring = $('#vs-ring div');
-    show(ring, rk > 0 && rk < 1);
-    tf(ring, `rotate(45deg) scale(${0.4 + 5 * E.outCubic(rk)})`);
-    ring.style.opacity = (1 - rk).toFixed(3);
+    const k0 = E.outExpo(P(t, S.c[0], 0.9));
+    tf($('#c'), `scale(${1.08 - 0.08 * k0 + 0.03 * P(t, T.stutt, 1.6)})`);
+    tf($('#c-bg'), `translate(${-760 + 120 * P(t, S.c[0], 4.2)}px, -110px)`);
+    riseAll($('#c-kick'), t, S.c[0] + 0.25, S.c[1] - 0.22);
+    const out = S.c[1] - 0.24;
+    // Crest tiles glide in from their side, settle, and part again on the way out.
+    for (const [id, tin, dir] of [['#vs-l', T.sc, -1], ['#vs-r', T.vfb, 1]]) {
+      const el = $(id);
+      const pos = tt => {
+        const k = E.outExpo(P(tt, tin, 0.9));
+        const o = E.inCubic(P(tt, out, 0.24));
+        return [dir * 150 * (1 - k) + dir * 90 * o, k, o];
+      };
+      const [x, k, o] = pos(t);
+      const v = (pos(t + 1 / 120)[0] - pos(t - 1 / 120)[0]) * 60;
+      show(el, k > 0);
+      el.style.opacity = (clamp(k * 1.6) * (1 - o)).toFixed(3);
+      tf(el, `translateX(${x}px) scale(${0.95 + 0.05 * k})`);
+      mblur(el, Math.min(6, Math.abs(v) / 160));
+      rise($('.name .ln > span', el), t, tin + 0.25, out);
+    }
+    const vs = $('#vs');
+    const kv = E.outExpo(P(t, T.gegen, 0.8));
+    const ov = E.inCubic(P(t, out, 0.2));
+    show(vs, kv > 0);
+    vs.style.opacity = ((1 - ov)).toFixed(3);
+    const sp = $('span', vs);
+    sp.style.opacity = clamp(kv * 1.5).toFixed(3);
+    sp.style.letterSpacing = `${lerp(0.7, 0.24, kv)}em`;
+    $$('i', vs).forEach(l => tf(l, `scaleY(${kv})`));
   }
   function D(t) {
     plate($('#d-plate'), 'pokal', 2.15 + (t - S.d[0]) * 0.6);
@@ -496,7 +510,7 @@
       sc[id].style.display = live ? 'block' : 'none';
       if (live) SCENE_FN[id](t);
     }
-    if (!on('c', t) && !on('d', t) && !on('h', t)) speedLines(t, 0);
+    if (!on('d', t) && !on('h', t)) speedLines(t, 0);
     camera(t);
     slashes(t);
     bars(t);
