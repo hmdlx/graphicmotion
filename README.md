@@ -9,6 +9,23 @@ rendert. ffmpeg schreibt die Frames anschließend als MP4.
 | Projekt | Format | Ergebnis |
 |---|---|---|
 | `projects/laguna-m` | 9:16, 1080×1920, 30 fps, 18,5 s | `output/HomeDeluxe_Laguna-M_Reel_9x16.mp4` + Titelbild |
+| `projects/dfb-pokal-gewinnspiel` | 3:4, 1080×1440, 30 fps, 21 s | `output/HomeDeluxe_DFB-Pokal_Gewinnspiel_3x4.mp4` + Titelbild |
+
+### DFB-Pokal Gewinnspiel – Ablauf
+
+Instagram-Feedpost (3:4) zum Gewinnspiel 4 × 2 Tickets für SC Paderborn 07 – VfB Stuttgart,
+Mi 28.10.2026, 18:00 Uhr, Home Deluxe Arena. Teilnahme bis 27.10.2026. Alle Objekte sind echte
+CSS-3D-Körper (Tickets, Wappen-Kacheln, Info-Prismen, Schritt-Karten mit Kanten) bzw. extrudierte
+Schrift/Logo aus gestapelten Ebenen; gerendert mit 4 Sub-Frames Motion Blur (`--mblur 4`).
+
+| Zeit | Szene | Übergang danach |
+|---|---|---|
+| 0,0–3,3 s | Stadion bei Nacht (Dolly), „Gewinnspiel“ klappt Buchstabe für Buchstabe hoch | Szene 2 schwingt wie eine Tür herein |
+| 2,7–6,6 s | Extrudiertes „4×2“ dreht sich ein, „Tickets“, vier 3D-Tickets fliegen in einen Fächer | Kamera fliegt durch den Abriss des vorderen Tickets |
+| 6,6–10,6 s | DFB-Pokal, Wappen SC Paderborn 07 / VfB Stuttgart als 3D-Kacheln | Würfeldrehung nach oben |
+| 9,9–13,6 s | Datum, Anstoß, Ort als rollende Prismen, Uhrzeiger läuft auf 18:00 | Lamellen drehen zu und wieder auf |
+| 13,6–17,9 s | Spielerfoto, „So bist du dabei“: Like, Freund markieren, Nachricht abwarten; Teilnahme bis 27.10.2026 | 3D-Karussell |
+| 17,1–21,0 s | Endcard: extrudiertes Logo, „Viel Glück!“, Teilnahmeschluss, @homedeluxe.de, Instagram-Hinweis | – |
 
 ### Laguna M – Schnitt und Übergänge
 
@@ -39,6 +56,8 @@ npm run laguna-m:plates     # Rohschnitt -> hochskalierte, leicht gegradete JPG-
 npm run laguna-m:track      # Punkt-Tracking -> projects/laguna-m/tracks.js (nur nötig, wenn tracking.json geändert wurde)
 npm run laguna-m:render     # -> projects/laguna-m/output/HomeDeluxe_Laguna-M_Reel_9x16.mp4
 npm run laguna-m:stills     # Kontrollbilder nach build/laguna-m/stills
+npm run dfb-gewinnspiel:render   # -> projects/dfb-pokal-gewinnspiel/output/HomeDeluxe_DFB-Pokal_Gewinnspiel_3x4.mp4
+npm run dfb-gewinnspiel:stills   # Kontrollbilder nach build/dfb-pokal-gewinnspiel/stills
 ```
 
 Ein einzelnes Frame lässt sich auch im Browser prüfen:
@@ -51,7 +70,7 @@ assets/fonts/poppins/     Poppins 400–800 (latin, OFL)
 assets/logo/              Home-Deluxe-Logo (weiß, SVG)
 scripts/prepare_plates.sh Hochskalieren + Grading der Quelle
 scripts/track_points.py   Template-Tracking für Marker, die am Bild kleben
-scripts/render.js         Chromium -> PNG-Frames -> ffmpeg (H.264 + stumme AAC-Spur)
+scripts/render.js         Chromium -> PNG-Frames -> ffmpeg (H.264 + stumme AAC-Spur), optional --mblur N
 projects/<name>/          source/, composition.html/.js, tracking.json, tracks.js, output/
 ```
 

@@ -6,7 +6,9 @@
     "laguna-m:plates": "scripts/prepare_plates.sh projects/laguna-m/source/laguna-m_rohschnitt.mp4 build/laguna-m/plates",
     "laguna-m:track": "python3 -I scripts/track_points.py build/laguna-m/plates projects/laguna-m/tracking.json projects/laguna-m/tracks.js",
     "laguna-m:render": "node scripts/render.js projects/laguna-m/composition.html projects/laguna-m/output/HomeDeluxe_Laguna-M_Reel_9x16.mp4 --plates build/laguna-m/plates",
-    "laguna-m:stills": "node scripts/render.js projects/laguna-m/composition.html build/laguna-m/stills --plates build/laguna-m/plates --stills 1,2,4,5,7,10,11,13,14.5,16,17.6,18,19,21"
+    "laguna-m:stills": "node scripts/render.js projects/laguna-m/composition.html build/laguna-m/stills --plates build/laguna-m/plates --stills 1,2,4,5,7,10,11,13,14.5,16,17.6,18,19,21",
+    "dfb-gewinnspiel:render": "node scripts/render.js projects/dfb-pokal-gewinnspiel/composition.html projects/dfb-pokal-gewinnspiel/output/HomeDeluxe_DFB-Pokal_Gewinnspiel_3x4.mp4 --mblur 4",
+    "dfb-gewinnspiel:stills": "node scripts/render.js projects/dfb-pokal-gewinnspiel/composition.html build/dfb-pokal-gewinnspiel/stills --stills 2,4.5,8.5,12,16,20.5"
   },
   "devDependencies": {
     "playwright": "1.56.1"
