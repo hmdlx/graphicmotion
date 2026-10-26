@@ -8,17 +8,16 @@
   @font-face { font-family: Poppins; font-weight: 500; src: url(../../assets/fonts/poppins/poppins-latin-500-normal.woff2) format("woff2"); }
   @font-face { font-family: Poppins; font-weight: 600; src: url(../../assets/fonts/poppins/poppins-latin-600-normal.woff2) format("woff2"); }
   @font-face { font-family: Poppins; font-weight: 700; src: url(../../assets/fonts/poppins/poppins-latin-700-normal.woff2) format("woff2"); }
-  @font-face { font-family: Poppins; font-weight: 800; src: url(../../assets/fonts/poppins/poppins-latin-800-normal.woff2) format("woff2"); }
 
-  /* Home Deluxe CI: Navy + Weiß + Grautöne, eckige Ecken, Poppins.
-     Futuristisch nur über Licht, Linien und Tiefe – keine Fremdfarben. */
+  /* Home Deluxe CI (Navy, Weiß, Grautöne, Poppins, eckige Ecken) in apple.com-Haltung:
+     viel Raum, zentrierte große Typo, eine Aussage pro Bild, ruhige Bewegung. */
   :root {
     --navy: #0e2234;
     --navy-2: #1c3a54;
     --muted: #66727d;
     --line: #e3e7ec;
     --light: #e9eef4;
-    --margin: 64px;
+    --grey: #a3afbb;           /* Sekundärtext auf Navy (heller Grauton der CI-Familie) */
   }
   * { box-sizing: border-box; margin: 0; padding: 0; border-radius: 0; }
   html, body { width: 1080px; height: 1350px; overflow: hidden; background: var(--navy); }
@@ -26,145 +25,89 @@
 
   #stage { position: absolute; inset: 0; width: 1080px; height: 1350px; overflow: hidden; background: #000; }
   #gl { position: absolute; left: 0; top: 0; width: 1080px; height: 1350px; display: block; }
-  .layer { position: absolute; inset: 0; pointer-events: none; }
 
-  .stack { position: absolute; display: flex; flex-direction: column; align-items: flex-start; }
-  .blk { position: relative; background: var(--navy); color: #fff; box-shadow: 0 18px 50px rgba(0, 0, 0, .28); }
-  .blk.white { background: #fff; color: var(--navy); }
-  .blk.glass { background: rgba(14, 34, 52, .72); box-shadow: inset 0 0 0 1px rgba(233, 238, 244, .22); }
-  .ln { display: block; overflow: hidden; padding-bottom: .06em; margin-bottom: -.06em; }
-  .ln > span { display: inline-block; will-change: transform; }
+  /* Text blocks are centred columns; every line fades up out of a blur. */
+  .col { position: absolute; left: 0; width: 1080px; display: flex; flex-direction: column; align-items: center; text-align: center; }
+  .col > * { will-change: transform, opacity, filter; }
+  .eyebrow { font-weight: 600; font-size: 30px; line-height: 1.2; letter-spacing: -.005em; color: var(--grey); }
+  .hl { font-weight: 600; letter-spacing: -.035em; line-height: 1.04;
+        background: linear-gradient(180deg, #ffffff 35%, #c3cfdb 100%); -webkit-background-clip: text; background-clip: text; color: transparent; padding: 0 .04em .06em; }
+  .xl { font-size: 128px; }
+  .l { font-size: 92px; }
+  .sub { font-weight: 500; font-size: 34px; line-height: 1.3; letter-spacing: -.01em; color: var(--grey); }
+  .sub b { font-weight: 600; color: #fff; }
 
-  .kicker { font-weight: 600; font-size: 22px; line-height: 1; letter-spacing: .22em; text-transform: uppercase; color: rgba(233, 238, 244, .82); display: flex; align-items: center; gap: 16px; }
-  .kicker i { display: block; width: 40px; height: 2px; background: rgba(233, 238, 244, .55); }
-
-  /* HUD frame: corner brackets + micro labels */
-  #hud .corner { position: absolute; width: 44px; height: 44px; border-color: rgba(233, 238, 244, .7); border-style: solid; border-width: 0; }
-  #hud .tl { left: 34px; top: 34px; border-left-width: 2px; border-top-width: 2px; }
-  #hud .tr { right: 34px; top: 34px; border-right-width: 2px; border-top-width: 2px; }
-  #hud .bl { left: 34px; bottom: 34px; border-left-width: 2px; border-bottom-width: 2px; }
-  #hud .br { right: 34px; bottom: 34px; border-right-width: 2px; border-bottom-width: 2px; }
-  .micro { position: absolute; font-weight: 500; font-size: 17px; line-height: 1; letter-spacing: .24em; text-transform: uppercase; color: rgba(233, 238, 244, .72); white-space: nowrap; font-variant-numeric: tabular-nums; }
-  #m-tr { right: 92px; top: 47px; }
-  #m-bl { left: 92px; bottom: 47px; }
-  #m-br { right: 92px; bottom: 47px; }
-  #m-bl b, #m-br b { font-weight: 700; color: #fff; }
-  #rec { display: inline-block; width: 9px; height: 9px; background: #fff; margin-right: 12px; vertical-align: 1px; }
-
-  #logo { position: absolute; left: var(--margin); top: 64px; padding: 16px 20px; background: var(--navy); }
-  #logo img { display: block; width: 210px; height: auto; }
-
-  /* 01 Hook */
-  #hook-tag { left: var(--margin); top: 1104px; }
-  #hook-tag .blk { font-weight: 600; font-size: 34px; line-height: 1; padding: 20px 30px 18px; }
-  #hook-tag .blk b { font-weight: 800; }
-  #hook-tag .white { font-size: 28px; padding: 16px 30px 14px; margin-top: 8px; }
-
-  /* 02 / 03 Deals */
-  .deal { padding: 26px 34px 24px; }
-  .deal .kicker { margin-bottom: 14px; }
-  .deal .hl { font-weight: 700; font-size: 62px; line-height: 1.04; letter-spacing: -.01em; }
-  .deal-sub { margin-top: 8px; font-weight: 600; font-size: 30px; line-height: 1; padding: 18px 34px 16px; }
-  #deal1 { left: 420px; top: 860px; }
-  #deal2 { left: var(--margin); top: 880px; }
-
-  /* 04 Wellness */
-  #well { left: var(--margin); top: 1040px; }
-  #well .blk { font-weight: 700; font-size: 54px; line-height: 1.05; padding: 18px 30px 14px; }
-  #well .white { font-weight: 600; font-size: 28px; padding: 16px 30px 14px; margin-top: 8px; }
-
-  /* 05 Datum */
-  #date { left: 440px; top: 880px; }
-  #date .blk { padding: 22px 32px 20px; }
-  #date .hl { font-weight: 700; font-size: 50px; line-height: 1.05; }
-
-  /* Scan reticle */
-  #reticle { position: absolute; left: 0; top: 0; width: 0; height: 0; }
-  #reticle .box { position: absolute; border: 2px solid rgba(255, 255, 255, .85); transform: translate(-50%, -50%); }
-  #reticle .box::before, #reticle .box::after { content: ""; position: absolute; background: #fff; }
-  #reticle .box::before { left: 50%; top: -14px; width: 2px; height: 10px; }
-  #reticle .box::after { top: 50%; left: -14px; height: 2px; width: 10px; }
-  #reticle .lbl { position: absolute; left: 0; top: 0; font-weight: 600; font-size: 18px; letter-spacing: .2em; text-transform: uppercase; background: #fff; color: var(--navy); padding: 9px 12px 8px; white-space: nowrap; }
+  #intro-logo { top: 118px; }
+  #intro-logo img { display: block; width: 190px; height: auto; }
+  #intro { top: 172px; }
+  #intro-sub { top: 1150px; }
+  #date-line { top: 92px; }
+  #card1 { top: 268px; }
+  #card1-text { top: 860px; }
+  #card2 { top: 268px; }
+  #card2-text { top: 860px; }
+  #well { top: 1170px; }
 
   /* End card */
-  #end { left: var(--margin); top: 560px; }
-  #end .title { font-weight: 800; font-size: 96px; line-height: .98; letter-spacing: -.02em; padding: 24px 34px 18px; }
-  .row { margin-top: 10px; display: flex; align-items: baseline; font-weight: 500; font-size: 36px; line-height: 1; padding: 20px 34px 18px 28px; }
-  .row b { font-weight: 800; font-size: 46px; display: inline-block; width: 190px; letter-spacing: -.01em; }
-  #cta { position: absolute; left: var(--margin); top: 1050px; display: flex; align-items: center; gap: 30px; }
-  #cta .btn { background: #fff; color: var(--navy); font-weight: 600; font-size: 36px; line-height: 1; padding: 24px 36px 22px; display: flex; align-items: center; gap: 20px; }
-  #cta .btn svg { display: block; }
-  #cta .url { font-weight: 600; font-size: 34px; line-height: 1; position: relative; padding-bottom: 10px; }
-  #cta .url i { position: absolute; left: 0; bottom: 0; height: 3px; width: 100%; background: #fff; transform-origin: left; }
-  #fine { position: absolute; left: var(--margin); top: 1168px; font-weight: 500; font-size: 22px; line-height: 1.4; color: rgba(233, 238, 244, .72); letter-spacing: .02em; }
-
-  #flash { position: absolute; inset: 0; background: #fff; opacity: 0; }
+  #end { top: 560px; }
+  #end .rows { margin-top: 34px; display: flex; flex-direction: column; gap: 10px; }
+  #end .rows div { font-weight: 500; font-size: 40px; line-height: 1.25; letter-spacing: -.015em; color: var(--grey); }
+  #end .rows b { font-weight: 600; color: #fff; }
+  #end-cta { top: 1010px; flex-direction: row; justify-content: center; gap: 38px; }
+  .btn { background: #fff; color: var(--navy); font-weight: 600; font-size: 32px; line-height: 1; padding: 22px 38px 20px; }
+  .link { font-weight: 500; font-size: 32px; line-height: 1; color: #fff; display: flex; align-items: center; gap: 10px; }
+  .link svg { display: block; }
+  #end-date { top: 1120px; }
+  #end-date .sub { font-size: 26px; }
+  #end-logo { top: 1222px; }
+  #end-logo img { display: block; width: 170px; height: auto; opacity: .9; }
 </style>
 </head>
 <body>
 <div id="stage">
   <canvas id="gl" width="1080" height="1350"></canvas>
 
-  <div class="layer" id="reticle"><div class="box"></div><div class="lbl">Scan · Wellness</div></div>
+  <!-- 1 Intro: Totale -->
+  <div class="col" id="intro-logo"><img src="../../assets/logo/homedeluxe-logo-white.svg" alt="Home Deluxe"></div>
+  <div class="col" id="intro"><div class="hl xl">Cyber Monday.</div></div>
+  <div class="col" id="intro-sub"><div class="sub">Extra-Rabatte. <b>Auf alles.</b></div></div>
 
-  <!-- 01 Hook: 3D title lives in WebGL, this is the tag under it -->
-  <div class="stack" id="hook-tag">
-    <div class="blk"><span class="ln"><span>Nur am <b>30.11.</b></span></span></div>
-    <div class="blk white"><span class="ln"><span>Extra-Rabatte auf alles</span></span></div>
+  <!-- 2 Karte: –25 % (3D-Zahl in WebGL) -->
+  <div class="col" id="card1"><div class="eyebrow">Cyber Monday</div></div>
+  <div class="col" id="card1-text">
+    <div class="hl l">Extra auf Sale.</div>
+    <div class="sub" style="margin-top:18px">Zusätzlich zu bereits reduzierten Preisen.</div>
   </div>
 
-  <!-- 02 Deal: –25 % extra auf Sale -->
-  <div class="stack" id="deal1">
-    <div class="blk deal">
-      <div class="kicker"><span class="ln"><span>Deal 01</span></span><i></i><span class="ln"><span>Sale</span></span></div>
-      <div class="hl"><span class="ln"><span>zusätzlich</span></span><span class="ln"><span>auf Sale</span></span></div>
+  <!-- 3 LED-Leiste -->
+  <div class="col" id="date-line"><div class="hl" style="font-size:76px">Nur am 30. November.</div></div>
+
+  <!-- 4 Karte: –10 % -->
+  <div class="col" id="card2"><div class="eyebrow">Cyber Monday</div></div>
+  <div class="col" id="card2-text">
+    <div class="hl l">Auf alles andere.</div>
+    <div class="sub" style="margin-top:18px">Auf alle Artikel, die nicht im Sale sind.</div>
+  </div>
+
+  <!-- 5 Liegefläche -->
+  <div class="col" id="well"><div class="sub"><b>Wellness für dein Zuhause.</b></div></div>
+
+  <!-- 6 Endcard -->
+  <div class="col" id="end">
+    <div class="hl xl">Cyber Monday.</div>
+    <div class="rows">
+      <div><b>–25 %</b> extra auf Sale</div>
+      <div><b>–10 %</b> auf alles andere</div>
     </div>
-    <div class="blk white deal-sub"><span class="ln"><span>on top auf reduzierte Preise</span></span></div>
   </div>
-
-  <!-- 03 Deal: –10 % auf alles andere -->
-  <div class="stack" id="deal2">
-    <div class="blk deal">
-      <div class="kicker"><span class="ln"><span>Deal 02</span></span><i></i><span class="ln"><span>Alles</span></span></div>
-      <div class="hl"><span class="ln"><span>auf alles</span></span><span class="ln"><span>andere</span></span></div>
+  <div class="col" id="end-cta">
+    <div class="btn">Jetzt sparen</div>
+    <div class="link">homedeluxe.de
+      <svg width="14" height="24" viewBox="0 0 14 24"><path d="M2 2l10 10L2 22" fill="none" stroke="#fff" stroke-width="2.6"/></svg>
     </div>
   </div>
-
-  <!-- 04 Wellness -->
-  <div class="stack" id="well">
-    <div class="blk"><span class="ln"><span>Wellness</span></span><span class="ln"><span>für dein Zuhause</span></span></div>
-    <div class="blk white"><span class="ln"><span>jetzt zum Cyber-Monday-Preis</span></span></div>
-  </div>
-
-  <!-- 05 Datum (3D „30.11.“ in WebGL) -->
-  <div class="stack" id="date">
-    <div class="blk"><div class="kicker"><span class="ln"><span>Nur 1 Tag</span></span><i></i></div>
-      <div class="hl"><span class="ln"><span>Cyber Monday</span></span></div></div>
-  </div>
-
-  <!-- End card -->
-  <div class="stack" id="end">
-    <div class="blk title"><span class="ln"><span>CYBER</span></span><span class="ln"><span>MONDAY</span></span></div>
-    <div class="blk white row"><b>–25 %</b>extra auf Sale</div>
-    <div class="blk white row"><b>–10 %</b>auf alles andere</div>
-  </div>
-  <div id="cta">
-    <div class="btn"><span>Jetzt sparen</span>
-      <svg width="38" height="24" viewBox="0 0 40 24"><path d="M0 12h36M26 2l10 10-10 10" fill="none" stroke="#0e2234" stroke-width="3.2"/></svg>
-    </div>
-    <div class="url">homedeluxe.de<i></i></div>
-  </div>
-  <div id="fine"><span class="ln"><span>Nur am Montag, 30.11.2026 · Wir machen dein Zuhause.</span></span></div>
-
-  <div class="layer" id="hud">
-    <div class="corner tl"></div><div class="corner tr"></div><div class="corner bl"></div><div class="corner br"></div>
-    <div class="micro" id="m-tr">Cyber Monday // 30.11.</div>
-    <div class="micro" id="m-bl"><span id="rec"></span>HD-CM<b>26</b></div>
-    <div class="micro" id="m-br"><span id="tc">00:00:00</span></div>
-  </div>
-
-  <div id="logo"><img src="../../assets/logo/homedeluxe-logo-white.svg" alt="Home Deluxe"></div>
-  <div id="flash"></div>
+  <div class="col" id="end-date"><div class="sub">Nur am Montag, 30.11.2026.</div></div>
+  <div class="col" id="end-logo"><img src="../../assets/logo/homedeluxe-logo-white.svg" alt="Home Deluxe"></div>
 </div>
 
 <script type="importmap">

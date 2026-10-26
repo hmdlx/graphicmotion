@@ -9,7 +9,7 @@ rendert. ffmpeg schreibt die Frames anschließend als MP4.
 | Projekt | Format | Ergebnis |
 |---|---|---|
 | `projects/laguna-m` | 9:16, 1080×1920, 30 fps, 18,5 s | `output/HomeDeluxe_Laguna-M_Reel_9x16.mp4` + Titelbild |
-| `projects/cyber-monday-ir` | 4:5, 1080×1350, 30 fps, 13,2 s | `output/HomeDeluxe_CyberMonday_Infrarotkabine_4x5.mp4` |
+| `projects/cyber-monday-ir` | 4:5, 1080×1350, 30 fps, 15,7 s | `output/HomeDeluxe_CyberMonday_Infrarotkabine_4x5.mp4` |
 
 ### Laguna M – Schnitt und Übergänge
 
@@ -36,22 +36,24 @@ Quelle ist ein 8,7-s-Clip einer Infrarotkabine vor orangem Studiohintergrund. De
 per Farbschlüssel auf Navy umgefärbt (`scripts/recolor_bg.py`, Regeln je Einstellung in `grade.json`:
 Holz und Magenta-LEDs bleiben unangetastet, in der Holz-Einstellung zählt nur die Fläche, die mit der
 Bildecke verbunden ist). Danach wird jede Einstellung einzeln per Bewegungsinterpolation auf 72 fps
-gerechnet, damit die Komposition beliebige Slow-Motion-Rampen fahren kann (`EDIT` in `composition.js`).
+gerechnet, damit die Komposition Slow Motion fahren kann (`EDIT` in `composition.js`).
 
-Footage, 3D-Objekte (three.js: Chrome-Typo aus Poppins ExtraBold, Hologramm-Ringe, Rasterboden,
-Lichtpartikel) und der Glitch-/Linsen-Pass laufen in einem WebGL-Canvas, Typo-Blöcke und HUD im DOM.
+Gestaltung im Stil von apple.com, aber in der CI: eine Aussage pro Bild, große zentrierte Poppins-Typo
+mit Verlauf Weiß → helles Grau, Einblendungen aus der Unschärfe, weiche Überblendungen, langsamer Push.
+Die Rabatte stehen als 3D-Objekte (three.js, gebürstetes Titan mit Navy-Flanken) auf Navy-Karten und
+drehen sich wie auf einem Produkt-Drehteller.
 
-| Zeit | Einstellung | Tempo | Grafik |
+| Zeit | Bild | Tempo | Text |
 |---|---|---|---|
-| 0,0–2,0 s | Totale | Slow-Mo 0,35×, Ramp in den Reißschwenk | 3D „CYBER MONDAY“ druckt sich aus Drahtgitter auf, Rasterboden, „Nur am 30.11.“ |
-| 2,0–3,9 s | LED-Leiste | Ramp 1,6× → 0,34× | 3D „–25 %“ mit Ring, „zusätzlich auf Sale“ |
-| 3,9–5,8 s | Seitenwand, Holzstruktur | 0,8× / 1,45× | 3D „–10 %“, „auf alles andere“ |
-| 5,8–7,7 s | Liegefläche | Slow-Mo 0,5× | Laser-Scan, Ziel-Rahmen, „Wellness für dein Zuhause“ |
-| 7,7–8,9 s | LED-Ecke | 0,9× | 3D „30.11.“, „Nur 1 Tag – Cyber Monday“ |
-| 8,9–13,2 s | Logo-Wand | Slow-Mo 0,62× | Endcard: 3D-%, –25 % / –10 %, CTA „Jetzt sparen“ + homedeluxe.de |
+| 0,0–2,5 s | Totale | Slow-Mo 0,3× | Logo, „Cyber Monday.“, „Extra-Rabatte. Auf alles.“ |
+| 2,1–4,8 s | Navy-Karte | – | 3D „–25 %“, „Extra auf Sale.“ / „Zusätzlich zu bereits reduzierten Preisen.“ |
+| 4,3–6,7 s | LED-Leiste | Slow-Mo 0,38× | „Nur am 30. November.“ |
+| 6,2–8,9 s | Navy-Karte | – | 3D „–10 %“, „Auf alles andere.“ / „Auf alle Artikel, die nicht im Sale sind.“ |
+| 8,5–10,6 s | Liegefläche | Slow-Mo 0,45× | „Wellness für dein Zuhause.“ |
+| 10,2–15,7 s | Logo-Wand | Echtzeit → Slow-Mo 0,42× | Endcard: „Cyber Monday.“, –25 % / –10 %, „Jetzt sparen“, homedeluxe.de, Logo |
 
 Ton: Original-Tonspur auf die neue Länge gestreckt plus synthetisches Sounddesign
-(Impacts, Whooshes, Glitches, Riser, UI-Ticks) nach `sound.json` (`scripts/sound_design.py`).
+(weiche Whooshes, Impacts, Klangfläche) nach `sound.json` (`scripts/sound_design.py`).
 
 ```bash
 npm run cyber-monday-ir:plates   # Umfärben + Interpolation -> build/cyber-monday-ir/plates (ca. 5 min)
@@ -61,7 +63,7 @@ npm run cyber-monday-ir:stills   # Kontrollbilder
 ```
 
 Ändert sich das Timing in `EDIT`, die Zeitstempel in `sound.json` nachziehen (`window.COMP.S` liefert die
-Schnittzeiten). Die 3D-Schrift kommt aus `assets/fonts/poppins/poppins-800.typeface.json`
+Schnittzeiten). Die 3D-Ziffern kommen aus `assets/fonts/poppins/poppins-600.typeface.json`
 (`node scripts/make_typeface.mjs <font.woff> <out.json> "<Zeichen>"`).
 
 ## Rendern
