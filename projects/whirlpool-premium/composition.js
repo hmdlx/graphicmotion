@@ -117,8 +117,9 @@
 
   S.claim = scene('s-claim');
   const claim = {
-    l1: A(S.claim, 'h2 muted', words('Je mehr du dir gönnst,'), 540, 890, 'font-size:92px'),
-    l2: A(S.claim, 'h2', words('desto mehr schenken wir dir.'), 540, 1000, 'font-size:92px'),
+    l1: A(S.claim, 'h2 muted', words('Je mehr du dir gönnst,'), 540, 840, 'font-size:84px'),
+    l2: A(S.claim, 'h2', words('desto mehr'), 540, 955, 'font-size:112px'),
+    l3: A(S.claim, 'h2', words('schenken wir dir.'), 540, 1080, 'font-size:112px'),
   };
 
   S.tiers = scene('s-tiers');
@@ -203,6 +204,7 @@
     // Claim
     revealWords(claim.l1, t, C.claim, { gap: 0.12 });
     revealWords(claim.l2, t, C.claim + 1.69, { gap: 0.12 });
+    revealWords(claim.l3, t, C.claim + 1.93, { gap: 0.12 });
 
     // Tiers: hairlines draw from the centre, amounts roll in.
     reveal(tiers.kick, t, C.tiers - 0.05);
