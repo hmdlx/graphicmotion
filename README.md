@@ -64,7 +64,8 @@ npm run cyber-monday-ir:stills   # Kontrollbilder
 
 **Story „Letzter Tag“ (9:16):** Das Motiv `story/higgsfield_motiv.jpg` ist mit Higgsfield erzeugt (GPT Image 2.5,
 das umgefärbte Kabinen-Frame als Referenz, Text bewusst ausgeschlossen). Typo, Logo und Button setzt
-`story/story.html` in CI darüber, gerendert mit `npm run cyber-monday-ir:story` (`scripts/still.js`). Oben und
+`story/story.html` in CI darüber, ebenso das echte Logo auf der beleuchteten Rückwand der Kabine (fehlt im
+KI-Motiv), gerendert mit `npm run cyber-monday-ir:story` (`scripts/still.js`). Oben und
 unten bleiben die Bereiche der Story-Bedienleisten frei.
 
 Ändert sich das Timing in `EDIT`, die Zeitstempel in `sound.json` nachziehen (`window.COMP.S` liefert die

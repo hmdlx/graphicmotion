@@ -28,6 +28,11 @@
   .rows { margin-top: 28px; display: flex; flex-direction: column; gap: 6px; }
   .rows div { font-weight: 500; font-size: 44px; line-height: 1.28; letter-spacing: -.015em; color: var(--grey); }
   .rows b { font-weight: 600; color: #fff; }
+  /* Logo on the lit back wall of the cabin, as on the real product (the generated motif lacks it).
+     Position/tilt follow the wall planes of higgsfield_motiv.jpg. */
+  #wall-logo { position: absolute; left: 0; top: 0; width: 104px; height: auto; transform-origin: 0 50%;
+               transform: translate(330px, 862px) rotate(6deg); opacity: .94;
+               filter: drop-shadow(0 0 3px rgba(255, 150, 255, .75)) drop-shadow(0 0 10px rgba(230, 80, 230, .45)); }
   #cta { top: 1576px; flex-direction: row; justify-content: center; gap: 40px; }
   .btn { background: #fff; color: var(--navy); font-weight: 600; font-size: 38px; line-height: 1; padding: 26px 44px 24px; }
   .link { font-weight: 500; font-size: 38px; line-height: 1; display: flex; align-items: center; gap: 12px; }
@@ -35,6 +40,7 @@
 </head>
 <body>
   <img id="bg" alt="">
+  <img id="wall-logo" src="../../../assets/logo/homedeluxe-logo-white.svg" alt="">
   <div id="shade"></div>
   <div class="col" id="logo"><img src="../../../assets/logo/homedeluxe-logo-white.svg" alt="Home Deluxe"></div>
   <div class="col" id="copy">
