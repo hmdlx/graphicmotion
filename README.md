@@ -9,6 +9,7 @@ rendert. ffmpeg schreibt die Frames anschließend als MP4.
 | Projekt | Format | Ergebnis |
 |---|---|---|
 | `projects/laguna-m` | 9:16, 1080×1920, 30 fps, 18,5 s | `output/HomeDeluxe_Laguna-M_Reel_9x16.mp4` + Titelbild |
+| `projects/black-friday` | 9:16, 1080×1920, 30 fps, 8 s, loopbar | `output/HomeDeluxe_Black-Friday_Story_9x16.mp4` + Titelbild |
 
 ### Laguna M – Schnitt und Übergänge
 
@@ -29,6 +30,22 @@ läuft nur mit ihren sauberen Frames (Schnittliste `SHOTS` in `composition.js`),
 Die Produktdaten stammen aus den Shop- und Händlerangaben zur LAGUNA M (homedeluxe.de, Hornbach).
 Preise sind bewusst nicht eingebaut, weil sie sich häufig ändern.
 
+### Black Friday – futuristische Story
+
+Neuauflage der schlichten Story „BLACK FRIDAY / -25% auf alles“ (Original unter `source/`).
+Der Hintergrund ist schwarz wie im Original, die Akzente kommen aus Navy, Eisblau und Violett.
+Keine Footage: Alles entsteht in `composition.html`/`.js`.
+
+| Zeit | Ablauf |
+|---|---|
+| 0,0–0,8 s | Aus Schwarz: unscharfe Lichtwolken, Perspektiv-Raster, Horizontlinie zieht von der Mitte auf |
+| 0,35–1,5 s | „BLACK FRIDAY“ öffnet sich wie ein Röhrenbildschirm aus einer Linie, stark verwischt, gedehnt, verzerrt und mit breitem RGB-Split, dann wird die Schrift scharf. Glitch bei 0,8 s |
+| 1,05–2,0 s | „-25% auf alles“ wird genauso scharf, Logo erscheint |
+| 2,0–6,9 s | Halten: VHS-Wellenverzerrung, atmender RGB-Split, Glow als seitliche Unschärfe, verwischter Geistertext, Lichtstreifen, Scanlines und Grain. Glitches bei 2,7 / 3,9 / 5,15 / 6,0 s, zwei Lichtbalken laufen durchs Bild |
+| 6,95–8,0 s | Schrift löst sich in Unschärfe und Glitch auf, klappt zu einer Linie zusammen (Röhre aus), kurzer Blitz, dann Schwarz, damit der Clip nahtlos loopt |
+
+Timings stehen in `T` und `GLITCH` in `composition.js`.
+
 ## Rendern
 
 Voraussetzungen: Node 18+, Python 3 mit numpy + Pillow, ffmpeg, Chromium für Playwright.
@@ -39,10 +56,13 @@ npm run laguna-m:plates     # Rohschnitt -> hochskalierte, leicht gegradete JPG-
 npm run laguna-m:track      # Punkt-Tracking -> projects/laguna-m/tracks.js (nur nötig, wenn tracking.json geändert wurde)
 npm run laguna-m:render     # -> projects/laguna-m/output/HomeDeluxe_Laguna-M_Reel_9x16.mp4
 npm run laguna-m:stills     # Kontrollbilder nach build/laguna-m/stills
+npm run black-friday:render # -> projects/black-friday/output/HomeDeluxe_Black-Friday_Story_9x16.mp4
+npm run black-friday:stills # Kontrollbilder nach build/black-friday/stills
 ```
 
 Ein einzelnes Frame lässt sich auch im Browser prüfen:
 `projects/laguna-m/composition.html?t=4.6` (Zeit in Sekunden, Plates müssen unter `build/` liegen).
+`--plates` braucht `render.js` nur für Kompositionen mit Footage.
 
 ## Struktur
 

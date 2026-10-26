@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>Black Friday – Story 9:16</title>
+<style>
+  @font-face { font-family: Poppins; font-weight: 400; src: url(../../assets/fonts/poppins/poppins-latin-400-normal.woff2) format("woff2"); }
+  @font-face { font-family: Poppins; font-weight: 500; src: url(../../assets/fonts/poppins/poppins-latin-500-normal.woff2) format("woff2"); }
+  @font-face { font-family: Poppins; font-weight: 800; src: url(../../assets/fonts/poppins/poppins-latin-800-normal.woff2) format("woff2"); }
+
+  /* Schwarz wie das Original, Akzente aus dem CI-Navy plus kaltes Eisblau */
+  :root {
+    --navy: #0e2234;
+    --navy-2: #1c3a54;
+    --ice: #8fd8ff;
+    --cyan: #19d3ff;
+    --violet: #6b4dff;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; border-radius: 0; }
+  html, body { width: 1080px; height: 1920px; overflow: hidden; background: #000; }
+  body { font-family: Poppins, sans-serif; color: #fff; -webkit-font-smoothing: antialiased; }
+
+  #stage { position: absolute; inset: 0; width: 1080px; height: 1920px; overflow: hidden; background: #000; }
+  .layer { position: absolute; inset: 0; pointer-events: none; }
+
+  /* Unscharfe Lichtwolken */
+  .blob { position: absolute; left: 0; top: 0; border-radius: 50%; filter: blur(140px); will-change: transform; }
+  #b1 { width: 900px; height: 900px; background: var(--navy-2); }
+  #b2 { width: 760px; height: 760px; background: var(--violet); }
+  #b3 { width: 680px; height: 680px; background: var(--cyan); }
+
+  /* Perspektiv-Raster unter dem Horizont */
+  #floor { position: absolute; left: -1080px; top: 1302px; width: 3240px; height: 1600px; transform-origin: 50% 0;
+           transform: perspective(700px) rotateX(74deg);
+           background-image:
+             linear-gradient(rgba(143, 216, 255, .55) 2px, transparent 2px),
+             linear-gradient(90deg, rgba(143, 216, 255, .55) 2px, transparent 2px);
+           background-size: 120px 120px;
+           -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 35%, #000 100%); }
+  #ceiling { position: absolute; left: -1080px; top: -1160px; width: 3240px; height: 1600px; transform-origin: 50% 100%;
+           transform: perspective(700px) rotateX(-74deg);
+           background-image:
+             linear-gradient(rgba(143, 216, 255, .28) 2px, transparent 2px),
+             linear-gradient(90deg, rgba(143, 216, 255, .28) 2px, transparent 2px);
+           background-size: 120px 120px;
+           -webkit-mask-image: linear-gradient(to top, transparent 0%, #000 40%, #000 100%); }
+  #grid { filter: blur(1.4px); }
+  #horizon { position: absolute; left: 0; top: 1300px; width: 1080px; height: 4px; background: #fff;
+             box-shadow: 0 0 30px 6px rgba(143, 216, 255, .85), 0 0 120px 30px rgba(25, 211, 255, .35); transform-origin: 50% 50%; }
+
+  /* Riesiger, verwischter Geistertext im Hintergrund */
+  #ghost { position: absolute; left: 0; top: 0; white-space: nowrap; font-weight: 800; font-size: 520px; line-height: 1;
+           letter-spacing: -.02em; color: transparent; -webkit-text-stroke: 6px rgba(143, 216, 255, .7); will-change: transform, filter; }
+
+  /* Lichtstreifen */
+  .streak { position: absolute; left: 0; height: 3px; background: linear-gradient(90deg, transparent, rgba(220, 245, 255, .95), transparent); filter: blur(2px); }
+
+  /* Headline: Kanäle für RGB-Split, Scheiben für Glitch */
+  #title { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; }
+  #title .warp { position: absolute; inset: 0; will-change: filter; }
+  .tset { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; mix-blend-mode: screen; }
+  .tset.r { color: #ff2a6d; }
+  .tset.c { color: var(--cyan); }
+  .tset.w { color: #fff; }
+  .lines { position: absolute; left: 0; width: 1080px; text-align: center; }
+  .head { top: 590px; font-weight: 800; font-size: 214px; line-height: .9; letter-spacing: -.02em; }
+  .head span { display: block; }
+  .deal { top: 1028px; display: flex; justify-content: center; align-items: baseline; gap: 26px; }
+  .deal .pct { font-weight: 800; font-size: 150px; line-height: 1; letter-spacing: -.02em; }
+  .deal .txt { font-weight: 400; font-size: 76px; line-height: 1; letter-spacing: .01em; }
+  #glow { position: absolute; inset: 0; filter: blur(30px); opacity: .55; }
+  #glow .tset { color: var(--ice); mix-blend-mode: normal; }
+
+  #slices .slice { position: absolute; inset: 0; }
+
+  /* Bildschirm-Textur */
+  #scan { background: repeating-linear-gradient(to bottom, rgba(255, 255, 255, .05) 0 2px, transparent 2px 6px); mix-blend-mode: screen; }
+  #sweep { position: absolute; left: 0; width: 1080px; height: 260px; background: linear-gradient(to bottom, transparent, rgba(143, 216, 255, .16) 45%, rgba(255, 255, 255, .32) 50%, rgba(143, 216, 255, .16) 55%, transparent); mix-blend-mode: screen; filter: blur(6px); }
+  #vignette { background: radial-gradient(ellipse 80% 62% at 50% 50%, transparent 55%, rgba(0, 0, 0, .78) 100%); }
+  #grain { mix-blend-mode: overlay; opacity: .5; }
+  #flash { background: #fff; mix-blend-mode: screen; }
+
+  #logo { position: absolute; left: 50%; top: 1640px; width: 280px; margin-left: -140px; opacity: .85; }
+  #logo img { display: block; width: 100%; height: auto; }
+  #rule { position: absolute; left: 50%; top: 1606px; width: 120px; height: 2px; margin-left: -60px; background: rgba(143, 216, 255, .8); box-shadow: 0 0 14px rgba(143, 216, 255, .8); }
+</style>
+</head>
+<body>
+<div id="stage">
+  <svg width="0" height="0" style="position:absolute">
+    <defs>
+      <!-- Horizontale Wellen-Verzerrung (VHS-artig) -->
+      <filter id="warp" x="-20%" y="-20%" width="140%" height="140%" color-interpolation-filters="sRGB">
+        <feTurbulence id="warp-noise" type="fractalNoise" baseFrequency="0.0012 0.035" numOctaves="2" seed="3" result="n"/>
+        <feDisplacementMap id="warp-map" in="SourceGraphic" in2="n" scale="12" xChannelSelector="R" yChannelSelector="B"/>
+      </filter>
+      <filter id="ghost-warp" x="-20%" y="-20%" width="140%" height="140%">
+        <feTurbulence id="ghost-noise" type="fractalNoise" baseFrequency="0.003 0.012" numOctaves="2" seed="9" result="n"/>
+        <feDisplacementMap id="ghost-map" in="SourceGraphic" in2="n" scale="140" xChannelSelector="R" yChannelSelector="G"/>
+      </filter>
+    </defs>
+  </svg>
+
+  <div class="layer" id="bg">
+    <div class="blob" id="b1"></div>
+    <div class="blob" id="b2"></div>
+    <div class="blob" id="b3"></div>
+  </div>
+  <div class="layer" id="grid">
+    <div id="ceiling"></div>
+    <div id="floor"></div>
+  </div>
+  <div class="layer" id="ghostwrap"><div id="ghost">BLACK FRIDAY</div></div>
+  <div id="horizon"></div>
+  <div class="layer" id="streaks"></div>
+
+  <div id="title">
+    <div id="glow"></div>
+    <div class="warp" id="channels"></div>
+    <div class="warp" id="slices"></div>
+  </div>
+
+  <div class="layer" id="sweep"></div>
+  <div class="layer" id="scan"></div>
+  <svg class="layer" id="grain" width="1080" height="1920" viewBox="0 0 1080 1920">
+    <filter id="grainf"><feTurbulence id="grain-noise" type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="1"/><feColorMatrix type="saturate" values="0"/></filter>
+    <rect width="1080" height="1920" filter="url(#grainf)"/>
+  </svg>
+  <div class="layer" id="vignette"></div>
+  <div id="rule"></div>
+  <div id="logo"><img src="../../assets/logo/homedeluxe-logo-white.svg" alt="Home Deluxe"></div>
+  <div class="layer" id="flash"></div>
+</div>
+
+<!-- Ein Satz Headline, wird für Kanäle, Glow und Glitch-Scheiben geklont -->
+<template id="tpl">
+  <div class="tset">
+    <div class="lines head"><span>BLACK</span><span>FRIDAY</span></div>
+    <div class="lines deal"><span class="pct">-25%</span><span class="txt">auf alles</span></div>
+  </div>
+</template>
+<script src="composition.js"></script>
+</body>
+</html>

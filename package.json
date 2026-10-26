@@ -6,7 +6,9 @@
     "laguna-m:plates": "scripts/prepare_plates.sh projects/laguna-m/source/laguna-m_rohschnitt.mp4 build/laguna-m/plates",
     "laguna-m:track": "python3 -I scripts/track_points.py build/laguna-m/plates projects/laguna-m/tracking.json projects/laguna-m/tracks.js",
     "laguna-m:render": "node scripts/render.js projects/laguna-m/composition.html projects/laguna-m/output/HomeDeluxe_Laguna-M_Reel_9x16.mp4 --plates build/laguna-m/plates",
-    "laguna-m:stills": "node scripts/render.js projects/laguna-m/composition.html build/laguna-m/stills --plates build/laguna-m/plates --stills 1,2,4,5,7,10,11,13,14.5,16,17.6,18,19,21"
+    "laguna-m:stills": "node scripts/render.js projects/laguna-m/composition.html build/laguna-m/stills --plates build/laguna-m/plates --stills 1,2,4,5,7,10,11,13,14.5,16,17.6,18,19,21",
+    "black-friday:render": "node scripts/render.js projects/black-friday/composition.html projects/black-friday/output/HomeDeluxe_Black-Friday_Story_9x16.mp4",
+    "black-friday:stills": "node scripts/render.js projects/black-friday/composition.html build/black-friday/stills --stills 0.6,1,1.5,3,3.95,6.05,7.1,7.5"
   },
   "devDependencies": {
     "playwright": "1.56.1"

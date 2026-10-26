@@ -5,6 +5,8 @@
 //   node scripts/render.js <composition.html> <out.mp4> --plates <dir>
 //   node scripts/render.js <composition.html> <out_dir> --plates <dir> --stills 1,4.5,18
 //
+// --plates is only needed for compositions built on footage.
+//
 // The composition must expose window.COMP = { FPS, TOTAL, seek(n), ready }.
 const path = require('path');
 const fs = require('fs');
@@ -15,8 +17,8 @@ function parseArgs(argv) {
   const [comp, out, ...rest] = argv;
   const opts = { comp, out };
   for (let i = 0; i < rest.length; i += 2) opts[rest[i].replace(/^--/, '')] = rest[i + 1];
-  if (!comp || !out || !opts.plates) {
-    console.error('usage: render.js <composition.html> <out.mp4|out_dir> --plates <dir> [--stills t1,t2]');
+  if (!comp || !out) {
+    console.error('usage: render.js <composition.html> <out.mp4|out_dir> [--plates <dir>] [--stills t1,t2]');
     process.exit(1);
   }
   return opts;
@@ -28,7 +30,8 @@ function writeFrame(stream, buf) {
 
 (async () => {
   const opts = parseArgs(process.argv.slice(2));
-  const url = 'file://' + path.resolve(opts.comp) + '?plates=' + encodeURIComponent('file://' + path.resolve(opts.plates));
+  let url = 'file://' + path.resolve(opts.comp);
+  if (opts.plates) url += '?plates=' + encodeURIComponent('file://' + path.resolve(opts.plates));
 
   const browser = await chromium.launch();
   const page = await browser.newPage({ viewport: { width: 1080, height: 1920 }, deviceScaleFactor: 1 });
