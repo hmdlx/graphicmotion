@@ -11,7 +11,7 @@
     "dfb-gewinnspiel:stills": "node scripts/render.js projects/dfb-pokal-gewinnspiel/composition.html build/dfb-pokal-gewinnspiel/stills --stills 2,4.5,8.5,12,16,20.5",
     "dfb-cinematic:plates": "projects/dfb-pokal-cinematic/prepare_plates.sh",
     "dfb-cinematic:audio": "python3 -I projects/dfb-pokal-cinematic/audio/score.py && projects/dfb-pokal-cinematic/audio/mix.sh",
-    "dfb-cinematic:render": "node scripts/render.js projects/dfb-pokal-cinematic/composition.html projects/dfb-pokal-cinematic/output/HomeDeluxe_DFB-Pokal_Gewinnspiel_Cinematic_3x4.mp4 --audio projects/dfb-pokal-cinematic/audio/mix.wav",
+    "dfb-cinematic:render": "node scripts/render.js projects/dfb-pokal-cinematic/composition.html projects/dfb-pokal-cinematic/output/HomeDeluxe_DFB-Pokal_Gewinnspiel_Cinematic_3x4.mp4 --audio projects/dfb-pokal-cinematic/audio/mix.wav && ffmpeg -v error -y -i projects/dfb-pokal-cinematic/output/HomeDeluxe_DFB-Pokal_Gewinnspiel_Cinematic_3x4.mp4 -c:v libx264 -preset slow -crf 20 -pix_fmt yuv420p -c:a copy -movflags +faststart build/cine-small.mp4 && mv build/cine-small.mp4 projects/dfb-pokal-cinematic/output/HomeDeluxe_DFB-Pokal_Gewinnspiel_Cinematic_3x4.mp4",
     "dfb-cinematic:stills": "node scripts/render.js projects/dfb-pokal-cinematic/composition.html build/dfb-pokal-cinematic/stills --stills 1.4,3,7.2,11,15.5,18.4,20.6,23.9,27,30.9,33.6,36"
   },
   "devDependencies": {
