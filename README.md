@@ -9,7 +9,7 @@ rendert. ffmpeg schreibt die Frames anschließend als MP4.
 | Projekt | Format | Ergebnis |
 |---|---|---|
 | `projects/laguna-m` | 9:16, 1080×1920, 30 fps, 18,5 s | `output/HomeDeluxe_Laguna-M_Reel_9x16.mp4` + Titelbild |
-| `projects/staffelrabatt-black-week` | 9:16, 1080×1920, 30 fps, 38 s, deutsches Voice-over | `output/HomeDeluxe_BlackWeek_Staffelrabatt_9x16.mp4` |
+| `projects/staffelrabatt-black-week` | 9:16, 1080×1920, 30 fps, 38 s, deutsches Voice-over, Musik + Sounds | `output/HomeDeluxe_BlackWeek_Staffelrabatt_9x16.mp4` |
 
 ### Laguna M – Schnitt und Übergänge
 
@@ -51,6 +51,14 @@ der Warenkorb, desto mehr schenkt Home Deluxe. Weiß `#fefefe`, Navy `#0f2334`, 
 | 28,1 s | „Code im Warenkorb eingeben – und dein Geschenk wird direkt abgezogen.“ | Kamera steigt über die Treppe, iPhone frontal: BLACK150 tippen, „−150 €“ springt aus dem Display |
 | 33,0 s | „Nur in der Black Week – auf homedeluxe.de.“ | Rückfahrt in die Totale der ganzen Treppe mit Produkten, Beträgen und Codes, CTA |
 
+Ton: Voice-over, Musik und Animations-Sounds. `scripts/sound_design.py` synthetisiert alles selbst (keine
+Samples, keine Lizenzen) und legt es auf die Ereignisse, die `composition.js` über `COMP.events()` ausgibt
+(`scripts/dump_events.js`): 120-BPM-Bett in a-Moll (Am–F–C–G) mit Swell im Intro, Beat-Einsatz, wenn das
+iPhone einfliegt, Breakdown beim Tippen des Codes und Schluss-Akkord auf der Endcard; Whooshes für jede
+Kamerafahrt, Pops, Tap-Klicks, „Pling“ beim Warenkorb, aufsteigende Chimes beim Freischalten jeder Stufe,
+Tastenklicks, Münz-Sound bei „−150 €“. Die Musik wird unter der Stimme automatisch abgesenkt, der Mix auf
+−14 LUFS normalisiert.
+
 Aufbau von `composition.js`: eine Orbit-Kamera (Ziel, Abstand, Gier/Neigung/Roll) mit Keyframes `CAM`
 (`swoop` = Ausholbewegung mitten im Flug), Weltobjekte als 3D-Matrizen, iPhone (`PHONE`) und Überschriften
 im Kameraraum mit leichtem Nachziehen, Bewegungsunschärfe aus der Kamerageschwindigkeit. Die Ebenen
@@ -70,7 +78,7 @@ lesen beide daraus.
 
 ## Rendern
 
-Voraussetzungen: Node 18+, Python 3 mit numpy + Pillow, ffmpeg, Chromium für Playwright.
+Voraussetzungen: Node 18+, Python 3 mit numpy + Pillow (+ scipy für den Ton), ffmpeg, Chromium für Playwright.
 
 ```bash
 npm install                 # Playwright (PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1, wenn Chromium schon da ist)
@@ -80,7 +88,8 @@ npm run laguna-m:render     # -> projects/laguna-m/output/HomeDeluxe_Laguna-M_Re
 npm run laguna-m:stills     # Kontrollbilder nach build/laguna-m/stills
 
 npm run staffelrabatt:vo      # Voice-over neu erzeugen (nur bei Textänderung; braucht Gemini-API-Zugang)
-npm run staffelrabatt:render  # Tonspur mischen + -> projects/staffelrabatt-black-week/output/HomeDeluxe_BlackWeek_Staffelrabatt_9x16.mp4
+npm run staffelrabatt:render  # Ton (Voice-over + Musik + Sounds) mischen + Video rendern -> projects/staffelrabatt-black-week/output/HomeDeluxe_BlackWeek_Staffelrabatt_9x16.mp4
+npm run staffelrabatt:remux   # nur den Ton neu mischen und ins fertige MP4 legen (ohne Frames neu zu rendern)
 npm run staffelrabatt:stills  # Kontrollbilder nach build/staffelrabatt-black-week/stills
 ```
 
@@ -97,6 +106,9 @@ scripts/track_points.py   Template-Tracking für Marker, die am Bild kleben
 scripts/render.js         Chromium -> PNG-Frames -> ffmpeg (H.264 + AAC, mit --audio sonst stumm)
 scripts/voiceover.py      Gemini-TTS -> ein WAV je Voice-over-Segment
 scripts/mix_audio.js      Segmente laut cues.js auf die Zeitachse legen
+scripts/dump_events.js    Sound-Cues einer Komposition (COMP.events()) als JSON
+scripts/sound_design.py   Musik + Animations-Sounds synthetisieren, mit dem Voice-over mischen
+scripts/remux_audio.js    Tonspur eines fertigen MP4 ersetzen
 projects/<name>/          source/, composition.html/.js, tracking.json, tracks.js, output/
 ```
 

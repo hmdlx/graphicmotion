@@ -518,5 +518,34 @@
     await seek(t0 ? Math.round(parseFloat(t0) * FPS) : 0);
   }
 
-  window.COMP = { FPS, TOTAL, seek, ready: init() };
+  // Sound cues (seconds) for scripts/sound_design.py, derived from the same timeline.
+  function events() {
+    const moves = CAM.slice(1).map((k, i) => [CAM[i].t, k.t, k.swoop || 0]).filter((_, i) => /Cubic|Quart/.test(CAM[i + 1].e));
+    const count = [];
+    for (let ms = 3550, last = 0; ms <= 4500; ms++) {
+      const v = Math.floor(150 * E.outCubic(prog(ms / 1000, 3.55, 0.9)) / 10);
+      if (v > last) { count.push(ms / 1000); last = v; }
+    }
+    return {
+      total: C.total,
+      flights: moves,                                  // [start, end, swoop]
+      slam: 0.2,
+      cubes: CUBES.map((_, i) => 0.15 + i * 0.12),
+      count,
+      phoneIn: [PHONE[0].t, PHONE[1].t],
+      pop: 7.3,
+      taps: TAPS.map(p => p.t0),
+      adds: ADD,
+      unlocks: CROSS,
+      chips: T.chips,
+      typing: Array.from({ length: CODE.length }, (_, i) => T.type + i * 0.1),
+      minus: T.applied + 0.2,
+      heads: Object.values(HEADS).map(h => h.in[0]),
+      phoneOut: PHONE[PHONE.length - 2].t,
+      end: T.end,
+      cta: T.end + 1.4,
+    };
+  }
+
+  window.COMP = { FPS, TOTAL, seek, events, ready: init() };
 })();
