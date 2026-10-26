@@ -11,7 +11,7 @@ rendert. ffmpeg schreibt die Frames anschließend als MP4.
 | `projects/laguna-m` | 9:16, 1080×1920, 30 fps, 18,5 s | `output/HomeDeluxe_Laguna-M_Reel_9x16.mp4` + Titelbild |
 | `projects/black-friday` | 9:16, 1080×1920, 30 fps, 8 s, loopbar | `output/HomeDeluxe_Black-Friday_Story_9x16.mp4` + Titelbild |
 | `projects/shop-3d` | 9:16, 1080×1920, 30 fps, 18,5 s | `output/HomeDeluxe_Shop-3D_Black-Friday_9x16.mp4` + Titelbild |
-| `projects/black-friday-premium` | 9:16, 1080×1920, 30 fps, 31,5 s | `output/HomeDeluxe_Black-Friday_Premium_9x16.mp4` + Titelbild |
+| `projects/black-friday-premium` | 9:16, 1080×1920, 30 fps, 37 s | `output/HomeDeluxe_Black-Friday_Premium_9x16.mp4` + Titelbild |
 
 ### Laguna M – Schnitt und Übergänge
 
@@ -70,23 +70,21 @@ Alpha, `--holes` für eingeschlossene weiße Flächen).
 
 ### Black Friday Premium – ruhiger Produktseiten-Scroll
 
-Hochwertige Variante im Stil großer Produktseiten: schwarzer Hintergrund, viel Raum, ruhige Typo, aber
+Hochwertige Variante im Stil großer Produktseiten: schwarzer Hintergrund, viel Raum, wenig Text, aber
 in Home-Deluxe-CI (Poppins, Navy, Weiß, Grautöne, eckige Buttons und Kacheln). Das Video ist ein
-gesteuerter Scroll durch eine lange Seite. Die Seite ruht, während Inhalte einblenden und Preise zählen.
-Die lokale Navigation „Black Friday · Entdecken · Kaufen“ bleibt oben stehen.
+langsamer, gesteuerter Scroll durch eine lange Seite. Jede Szene steht mehrere Sekunden und hat nur
+eine kurze Zeile. Die lokale Navigation „Black Friday · Entdecken · Kaufen“ bleibt oben stehen.
 
-| Zeit | Abschnitt |
+| Zeit | Szene |
 |---|---|
-| 0–3,4 s | Hero: „Black Friday / Alles reduziert.“, Chrom-Schriftzug „-25%“ mit Lichtkante, davor der Whirlpool BEACH |
-| 3,4–9 s | „Die Highlights.“: Karussell mit AMIRI XXL, LOMA, BEACH. Die Preise zählen, der Fortschrittsbalken läuft |
-| 9–13,6 s | „Das Upgrade für dein Zuhause.“: Text und Kennzahlen (974,75 € / 25 % / 499,75 €) |
-| 13,6–17 s | Vollformat-Bild Whirlpool SUNSHINE mit Parallax, Preis 4.299 € → 3.224,25 € |
-| 17–21 s | „Dein Spa. Ganz privat.“: Kombisauna EVEREST M, 1.999 € wird durchgestrichen, 1.499,25 € zählt herunter |
-| 21–27 s | „Alles. Minus 25 %.“: Segment-Umschalter Garten / Wohnen / Carport / Terrasse mit Bild und Preis |
-| 27–31,5 s | „Lohnt sich das? Und wie.“, Logo, „-25 % auf alles.“, Buttons, homedeluxe.de |
+| 0–5,6 s | Hero: „Black Friday“, Chrom-Schriftzug „-25%“ mit Lichtkante, davor der Whirlpool BEACH |
+| 5,6–17,8 s | „Die Highlights.“: AMIRI XXL, LOMA und BEACH, je rund 3 Sekunden, nur Name und Preis (zählt herunter) |
+| 17,8–23 s | Vollbild Whirlpool SUNSHINE mit langsamem Parallax, 4.299 € → 3.224,25 € |
+| 23–30,6 s | „Dein Spa.“: Kombisauna EVEREST M, 1.999 € wird durchgestrichen, 1.499,25 € zählt herunter |
+| 30,6–37 s | Logo, „-25 % auf alles.“, „Jetzt entdecken“, homedeluxe.de |
 
 Produktdaten kommen aus `projects/shop-3d/products.js`. Scroll-Stopps (`SCROLL`), Einblendzeiten
-(`REVEAL`) und Karussell- und Segmentzeiten stehen oben in `composition.js`.
+(`REVEAL`) und Karussellzeiten (`CAR`) stehen oben in `composition.js`.
 
 ## Rendern
 

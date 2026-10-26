@@ -48,20 +48,19 @@
 
   /* Hero */
   #hero { height: 1684px; text-align: center; overflow: hidden; }
-  #hero .name { padding-top: 96px; font-weight: 600; font-size: 50px; letter-spacing: -.01em; }
-  #hero .tag { margin-top: 6px; font-weight: 600; font-size: 128px; line-height: 1.04; letter-spacing: -.035em; }
-  #chrome { position: absolute; left: 0; top: 470px; width: 1080px; text-align: center; font-weight: 800; font-size: 360px; line-height: 1; letter-spacing: -.04em; }
+  #hero .name { padding-top: 150px; font-weight: 600; font-size: 56px; letter-spacing: -.01em; }
+  #chrome { position: absolute; left: 0; top: 330px; width: 1080px; text-align: center; font-weight: 800; font-size: 360px; line-height: 1; letter-spacing: -.04em; }
   #chrome span { display: inline-block; }
   .chrome { background: linear-gradient(180deg, #fff 0%, #dfe3e7 16%, #858d96 38%, #f4f6f8 50%, #8f969e 63%, #eef1f3 84%, #9ca3aa 100%);
             -webkit-background-clip: text; background-clip: text; color: transparent; }
   .sheen { position: absolute; left: 0; top: 0; width: 100%; color: transparent;
            background: linear-gradient(100deg, transparent 40%, rgba(255, 255, 255, .95) 50%, transparent 60%); background-size: 300% 100%;
            -webkit-background-clip: text; background-clip: text; }
-  #hero .glow { position: absolute; left: 50%; top: 900px; width: 1100px; height: 520px; margin-left: -550px; border-radius: 50%;
+  #hero .glow { position: absolute; left: 50%; top: 800px; width: 1100px; height: 520px; margin-left: -550px; border-radius: 50%;
                 background: radial-gradient(ellipse at center, rgba(28, 58, 84, .95) 0%, rgba(14, 34, 52, .55) 40%, transparent 70%); }
-  #hero .prod { position: absolute; left: 50%; top: 730px; width: 780px; margin-left: -390px; }
+  #hero .prod { position: absolute; left: 50%; top: 600px; width: 820px; margin-left: -410px; }
   #hero .prod img { display: block; width: 100%; height: auto; }
-  #hero .shadow { position: absolute; left: 50%; top: 1400px; width: 760px; height: 70px; margin-left: -380px; border-radius: 50%; background: radial-gradient(ellipse at center, rgba(0, 0, 0, .9), transparent 70%); }
+  #hero .shadow { position: absolute; left: 50%; top: 1310px; width: 760px; height: 70px; margin-left: -380px; border-radius: 50%; background: radial-gradient(ellipse at center, rgba(0, 0, 0, .9), transparent 70%); }
   #hero .sub { position: absolute; left: 0; top: 1500px; width: 1080px; font-weight: 400; font-size: 40px; color: var(--grey); }
 
   /* Typo-Bausteine */
@@ -74,15 +73,14 @@
 
   /* Highlights */
   #hl { padding-top: 160px; }
-  #hl .link { margin-top: 26px; display: inline-block; }
   .car { position: relative; margin-top: 70px; height: 1180px; overflow: hidden; }
   .track { position: absolute; left: var(--m); top: 0; display: flex; gap: 28px; }
   .hcard { position: relative; width: 920px; height: 1180px; overflow: hidden; background: var(--card); }
   .hcard img { position: absolute; left: 0; top: 0; width: 100%; height: 100%; object-fit: cover; }
   .hcard .fade { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0, 0, 0, .72) 0%, rgba(0, 0, 0, .25) 38%, transparent 55%); }
-  .hcard .cap { position: absolute; left: 0; top: 90px; width: 100%; padding: 0 70px; text-align: center; font-weight: 600; font-size: 50px; line-height: 1.3; letter-spacing: -.015em; }
-  .hcard .cap span { display: block; font-weight: 400; color: rgba(255, 255, 255, .78); }
-  .hcard .cap .px { font-style: normal; font-variant-numeric: tabular-nums; font-weight: 600; color: #fff; }
+  .hcard .cap { position: absolute; left: 0; top: 96px; width: 100%; padding: 0 70px; text-align: center; font-weight: 500; font-size: 46px; line-height: 1.3; letter-spacing: -.01em; color: rgba(255, 255, 255, .85); }
+  .hcard .cap .px { display: block; margin-top: 8px; font-weight: 600; font-size: 96px; line-height: 1.05; letter-spacing: -.035em; color: #fff; font-variant-numeric: tabular-nums; }
+  .hcard .cap s { display: block; margin-top: 6px; font-weight: 400; font-size: 40px; color: rgba(255, 255, 255, .6); }
   .ctrl { margin-top: 44px; display: flex; justify-content: center; gap: 22px; }
   .dots { display: flex; align-items: center; gap: 20px; padding: 0 34px; height: 84px; background: #1a222b; }
   .dot { position: relative; width: 16px; height: 16px; background: rgba(255, 255, 255, .45); overflow: hidden; }
@@ -90,59 +88,35 @@
   .pause { width: 84px; height: 84px; background: #1a222b; display: flex; align-items: center; justify-content: center; gap: 10px; }
   .pause i { width: 8px; height: 30px; background: #fff; }
 
-  /* Upgrade */
-  #up { padding-top: 260px; }
-  #up .h2 { margin-top: 20px; }
-  #up .body { margin-top: 56px; }
-  .rule { height: 1px; background: var(--line); margin: 80px var(--m) 0; }
-  .stats { padding: 0 var(--m); }
-  .stat { padding-top: 64px; }
-  .stat .k { font-weight: 500; font-size: 34px; color: var(--grey); }
-  .stat .v { font-weight: 600; font-size: 118px; line-height: 1.05; letter-spacing: -.035em; font-variant-numeric: tabular-nums; }
-  .stat .c { font-weight: 400; font-size: 34px; color: var(--grey); }
 
   /* Vollformat-Bild */
   #full { margin-top: 260px; height: 1520px; overflow: hidden; }
   #full img { position: absolute; left: 0; top: 0; width: 1080px; height: 1520px; object-fit: cover; transform-origin: 50% 50%; }
-  #full-cap { padding: 50px var(--m) 0; }
-  #full-cap .body { font-size: 40px; }
+  #full-cap { padding: 56px var(--m) 0; text-align: center; }
+  #full-cap .nm { font-weight: 500; font-size: 44px; color: var(--grey); }
+  #full-cap .pp { margin-top: 6px; display: flex; justify-content: center; align-items: baseline; gap: 26px; }
+  #full-cap .pp b { font-weight: 600; font-size: 104px; letter-spacing: -.035em; font-variant-numeric: tabular-nums; }
+  #full-cap .pp s { font-weight: 400; font-size: 44px; color: var(--grey-2); }
 
   /* Spa */
-  #spa { padding-top: 260px; }
-  #spa .h2 { margin-top: 20px; }
-  .spa-card { position: relative; margin: 80px var(--m) 0; height: 1180px; overflow: hidden;
+  #spa { padding-top: 420px; }
+  .spa-card { position: relative; margin: 70px var(--m) 0; height: 860px; overflow: hidden;
               background: radial-gradient(ellipse 80% 55% at 50% 72%, #1c3a54 0%, #0e2234 42%, #050a10 100%); }
-  .spa-card img { position: absolute; left: 50%; top: 110px; width: 600px; margin-left: -300px; }
-  .spa-card .floor { position: absolute; left: 50%; top: 1035px; width: 640px; height: 60px; margin-left: -320px; border-radius: 50%; background: radial-gradient(ellipse at center, rgba(0, 0, 0, .85), transparent 70%); }
-  .price { padding: 70px var(--m) 0; }
+  .spa-card img { position: absolute; left: 50%; top: 80px; width: 460px; margin-left: -230px; }
+  .spa-card .floor { position: absolute; left: 50%; top: 790px; width: 640px; height: 60px; margin-left: -320px; border-radius: 50%; background: radial-gradient(ellipse at center, rgba(0, 0, 0, .85), transparent 70%); }
+  .price { padding: 56px var(--m) 0; text-align: center; }
   .price .nm { font-weight: 500; font-size: 40px; color: var(--grey); }
   .price .old { position: relative; display: inline-block; margin-top: 18px; font-weight: 500; font-size: 56px; color: var(--grey-2); font-variant-numeric: tabular-nums; }
   .price .old::after { content: ""; position: absolute; left: -4px; right: -4px; top: 54%; height: 4px; background: var(--grey); transform: scaleX(var(--s, 0)); transform-origin: 0 50%; }
   .price .now { display: block; font-weight: 600; font-size: 168px; line-height: 1.02; letter-spacing: -.04em; font-variant-numeric: tabular-nums; }
-  .chip { display: inline-block; margin-top: 30px; font-weight: 500; font-size: 36px; line-height: 1; padding: 20px 26px 18px; border: 2px solid rgba(255, 255, 255, .7); }
 
-  /* Räume */
-  #rooms { padding-top: 300px; }
-  #rooms .h2 { margin-top: 20px; }
-  .room { position: relative; margin: 80px var(--m) 0; height: 920px; overflow: hidden; background: var(--card); }
-  .room img { position: absolute; left: 0; top: 0; width: 100%; height: 100%; object-fit: cover; }
-  .seg { position: relative; margin: 44px var(--m) 0; height: 92px; background: #1a222b; display: flex; }
-  .seg .hi { position: absolute; top: 8px; bottom: 8px; left: 8px; background: #fff; }
-  .seg span { position: relative; flex: 1; display: flex; align-items: center; justify-content: center; font-weight: 500; font-size: 32px; color: rgba(255, 255, 255, .85); }
-  .room-cap { padding: 50px var(--m) 0; text-align: center; }
-  .room-cap .nm { font-weight: 600; font-size: 44px; }
-  .room-cap .pp { margin-top: 10px; font-weight: 400; font-size: 44px; color: var(--grey); font-variant-numeric: tabular-nums; }
-  .room-cap .pp b { font-size: 44px; }
-  .room-cap .pp s { color: var(--grey-2); }
 
   /* Ende */
-  #end { padding-top: 520px; height: 2600px; text-align: center; }
-  #end .h2 { font-size: 120px; }
-  #end .body { margin-top: 50px; }
-  #end .logo { margin: 220px auto 0; width: 520px; }
+  #end { padding-top: 700px; height: 2600px; text-align: center; }
+  #end .logo { margin: 0 auto; width: 560px; }
   #end .logo img { width: 100%; height: auto; display: block; }
-  #end .claim { margin-top: 60px; font-weight: 600; font-size: 64px; letter-spacing: -.02em; }
-  #end .ctas { margin-top: 70px; display: flex; justify-content: center; gap: 22px; }
+  #end .claim { margin-top: 70px; font-weight: 600; font-size: 84px; letter-spacing: -.03em; }
+  #end .ctas { margin-top: 90px; display: flex; justify-content: center; gap: 22px; }
   #end .ctas .btn { font-size: 38px; padding: 30px 46px 28px; }
   #end .ctas .btn.ghost { padding: 28px 44px 26px; }
   #end .url { margin-top: 60px; font-weight: 400; font-size: 36px; color: var(--grey); letter-spacing: .02em; }
@@ -162,19 +136,14 @@
 
     <section id="hero">
       <div class="name rv" id="r-name">Black Friday</div>
-      <div class="tag rv" id="r-tag">Alles reduziert.</div>
       <div id="chrome" class="rv"><span class="chrome">-25%</span><span class="sheen">-25%</span></div>
       <div class="glow rv" id="r-glow"></div>
       <div class="shadow rv" id="r-shadow"></div>
       <div class="prod rv" id="r-prod"><img src="source/cut_02.png" alt=""></div>
-      <div class="sub rv" id="r-sub">Auf das gesamte Sortiment.</div>
     </section>
 
     <section id="hl">
-      <div class="pad">
-        <div class="h2 rv" id="r-hl">Die Highlights.</div>
-        <div class="link rv" id="r-hl-link">Alle Angebote ansehen<i>›</i></div>
-      </div>
+      <div class="pad"><div class="h2 rv" id="r-hl">Die Highlights.</div></div>
       <div class="car rv" id="r-car"><div class="track" id="track"></div></div>
       <div class="ctrl rv" id="r-ctrl">
         <div class="dots"><div class="dot"><i></i></div><div class="dot"><i></i></div><div class="dot"><i></i></div></div>
@@ -182,53 +151,23 @@
       </div>
     </section>
 
-    <section id="up">
-      <div class="pad">
-        <div class="eyebrow rv" id="r-up-eb">Black Friday bei Home Deluxe</div>
-        <div class="h2 rv" id="r-up-h">Das Upgrade für dein Zuhause.</div>
-        <div class="body rv" id="r-up-b">Vom Whirlpool über die Sauna bis zum Couchtisch: <b>25 % Rabatt auf alles.</b> Für Garten, Terrasse, Wellness und Wohnzimmer. <b>Gleiche Qualität. Deutlich kleinerer Preis.</b></div>
-      </div>
-      <div class="rule rv" id="r-rule"></div>
-      <div class="stats">
-        <div class="stat rv" id="r-s1"><div class="k">Bis zu</div><div class="v" id="v1"></div><div class="c">Ersparnis beim Outdoor Whirlpool BEACH</div></div>
-        <div class="stat rv" id="r-s2"><div class="k">Volle</div><div class="v" id="v2"></div><div class="c">Rabatt auf das gesamte Sortiment</div></div>
-        <div class="stat rv" id="r-s3"><div class="k">Satte</div><div class="v" id="v3"></div><div class="c">weniger für die Kombisauna EVEREST M</div></div>
-      </div>
-    </section>
-
     <section id="full"><img id="full-img" src="source/amb_14.jpg" alt=""></section>
-    <div id="full-cap" class="rv"><div class="body"><b>Outdoor Whirlpool SUNSHINE.</b> Jetzt <b id="full-px"></b> statt <span id="full-old"></span>.</div></div>
+    <div id="full-cap" class="rv"><div class="nm">Whirlpool SUNSHINE</div><div class="pp"><b id="full-px"></b><s id="full-old"></s></div></div>
 
     <section id="spa">
-      <div class="pad">
-        <div class="eyebrow rv" id="r-spa-eb">Sauna &amp; Infrarot</div>
-        <div class="h2 rv" id="r-spa-h">Dein Spa.<br>Ganz privat.</div>
-      </div>
+      <div class="pad"><div class="h2 rv" id="r-spa-h">Dein Spa.</div></div>
       <div class="spa-card rv" id="r-spa-card"><div class="floor"></div><img id="spa-img" src="source/cut_15.png" alt=""></div>
       <div class="price">
         <div class="nm rv" id="r-spa-nm">Kombisauna EVEREST M</div>
         <div class="old rv" id="spa-old"></div>
         <div class="now rv" id="spa-now"></div>
-        <div class="chip rv" id="spa-chip"></div>
       </div>
-    </section>
-
-    <section id="rooms">
-      <div class="pad">
-        <div class="eyebrow rv" id="r-ro-eb">Für jeden Raum</div>
-        <div class="h2 rv" id="r-ro-h">Alles.<br>Minus 25 %.</div>
-      </div>
-      <div class="room rv" id="r-room"></div>
-      <div class="seg rv" id="r-seg"><div class="hi" id="seg-hi"></div></div>
-      <div class="room-cap rv" id="r-room-cap"><div class="nm" id="room-nm"></div><div class="pp"><b id="room-now"></b> statt <s id="room-old"></s></div></div>
     </section>
 
     <section id="end">
-      <div class="h2 rv" id="r-end-h">Lohnt sich das?<br>Und wie.</div>
-      <div class="body rv" id="r-end-b">Nur zum Black Friday.</div>
       <div class="logo rv" id="r-end-logo"><img src="../../assets/logo/homedeluxe-logo-white.svg" alt="Home Deluxe"></div>
       <div class="claim rv" id="r-end-claim">-25 % auf alles.</div>
-      <div class="ctas rv" id="r-end-cta"><div class="btn solid">Jetzt entdecken</div><div class="btn ghost">Zum Shop</div></div>
+      <div class="ctas rv" id="r-end-cta"><div class="btn solid">Jetzt entdecken</div></div>
       <div class="url rv" id="r-end-url">homedeluxe.de</div>
     </section>
   </div>
