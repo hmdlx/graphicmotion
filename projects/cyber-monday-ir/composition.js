@@ -1,6 +1,6 @@
 // Cyber Monday – Infrarotkabine 4:5, apple.com-Haltung in Home-Deluxe-CI.
 // Deterministic, frame-addressed composition: window.COMP.seek(n) puts the stage
-// into the exact state of output frame n. Footage, navy cards and the 3D numbers
+// into the exact state of output frame n. Footage and the 3D discount numbers
 // render in one WebGL canvas, type sits in the DOM on top.
 import * as THREE from 'three';
 import { FontLoader } from 'three/addons/loaders/FontLoader.js';
@@ -19,15 +19,15 @@ const PLATE_DIR = params.get('plates') || '../../build/cyber-monday-ir/plates';
 
 // Edit decision list. Footage entries play a shot from `from` to `to` (source frames)
 // along a speed curve ([seconds into the entry, speed], eased between keys; < 1 is
-// slow motion from the interpolated plates). Card entries are navy product cards
-// with a 3D number. Neighbouring entries cross-dissolve over XF seconds.
+// slow motion from the interpolated plates). Neighbouring entries cross-dissolve
+// over XF seconds. `deal` puts a 3D discount on the shot's dark cabinet panel
+// (cx = panel centre in stage px).
 const SHOTS = { A: 0, B: 29, C: 55, D: 78, E: 102, F: 126, G: 152 };   // first source frame per shot
 const XF = 0.45;
 const EDIT = [
   { id: 'intro', shot: 'A', from: 0, to: 18, speed: [[0, 0.3]] },                    // Totale, Slow-Mo
-  { id: 'card1', card: true, dur: 2.7 },                                              // –25 %
-  { id: 'led', shot: 'B', from: 33, to: 54, speed: [[0, 0.38]] },                     // LED-Leiste, Slow-Mo
-  { id: 'card2', card: true, dur: 2.7 },                                              // –10 %
+  { id: 'deal1', shot: 'B', from: 31, to: 54, speed: [[0, 0.36]], deal: { cx: 740 } }, // LED-Leiste, Slow-Mo: –25 %
+  { id: 'deal2', shot: 'C', from: 55, to: 77, speed: [[0, 0.4]], deal: { cx: 640 } },  // Seitenwand, Slow-Mo: –10 %
   { id: 'wood', shot: 'E', from: 102, to: 125, speed: [[0, 0.45]] },                  // Liegefläche, Slow-Mo
   { id: 'end', shot: 'G', from: 152, to: 208, speed: [[0, 1], [0.7, 0.42]], hold: 0.5 }, // Logo-Wand: Echtzeit -> Slow-Mo
 ];
@@ -47,6 +47,7 @@ const E = {
 const rad = d => (d * Math.PI) / 180;
 // Stage px -> world units on the z = 0 plane (camera fov 30°, z = 12).
 const PX = H / (2 * 12 * Math.tan(rad(15)));
+const wx = px => (px - W / 2) / PX;
 const wy = py => (H / 2 - py) / PX;
 
 // --------------------------------------------------------------- timeline
@@ -62,13 +63,11 @@ function speedAt(keys, t) {
 let cursor = 0;
 for (const e of EDIT) {
   e.start = cursor;
-  if (!e.card) {
-    e.src = [];
-    let src = e.from, k = 0;
-    while (src <= e.to + 1e-6) { e.src.push(src); src += (speedAt(e.speed, k / FPS) * SRC_FPS) / FPS; k++; }
-    for (let h = 0; h < Math.round((e.hold || 0) * FPS); h++) e.src.push(e.to);
-    e.dur = e.src.length / FPS;
-  }
+  e.src = [];
+  let src = e.from, k = 0;
+  while (src <= e.to + 1e-6) { e.src.push(src); src += (speedAt(e.speed, k / FPS) * SRC_FPS) / FPS; k++; }
+  for (let h = 0; h < Math.round((e.hold || 0) * FPS); h++) e.src.push(e.to);
+  e.dur = e.src.length / FPS;
   e.end = e.start + e.dur;
   cursor = e.end - XF;
 }
@@ -82,6 +81,11 @@ function vis(i, t) {
   const b = next ? sstep(prog(t, next.start, XF)) : 0;
   return t < e.start || t >= e.end ? 0 : a * (1 - b);
 }
+// Deal graphics leave before their shot starts dissolving, so two discounts never overlap.
+function dealVis(i, t) {
+  const e = EDIT[i];
+  return vis(i, t) * (1 - sstep(prog(t, e.end - XF - 0.4, 0.35)));
+}
 
 // ------------------------------------------------------------------ WebGL
 const canvas = $('#gl');
@@ -91,35 +95,27 @@ renderer.setSize(W, H, false);
 renderer.outputColorSpace = THREE.SRGBColorSpace;
 renderer.toneMapping = THREE.NoToneMapping;
 
-// Background pass: two layers (footage plate or navy card), cross-dissolve, slow push,
-// end-card veil and soft shades behind captions.
+// Background pass: two footage layers, cross-dissolve, slow push, end-card veil and
+// soft shades behind captions.
 const bgMat = new THREE.ShaderMaterial({
   uniforms: {
-    tA: { value: null }, tB: { value: null }, kindA: { value: 0 }, kindB: { value: 0 },
-    zoomA: { value: 1 }, zoomB: { value: 1 }, mixB: { value: 0 },
-    veil: { value: 0 }, shade: { value: 0 }, topShade: { value: 0 },
+    tA: { value: null }, tB: { value: null }, zoomA: { value: 1 }, zoomB: { value: 1 }, mixB: { value: 0 },
+    veil: { value: 0 }, shade: { value: 0 }, dealShade: { value: 0 }, dealX: { value: 0.5 },
   },
   vertexShader: 'varying vec2 vUv; void main(){ vUv = uv; gl_Position = vec4(position.xy, 0., 1.); }',
   fragmentShader: `
-    uniform sampler2D tA, tB; uniform float kindA, kindB, zoomA, zoomB, mixB, veil, shade, topShade;
+    uniform sampler2D tA, tB; uniform float zoomA, zoomB, mixB, veil, shade, dealShade, dealX;
     varying vec2 vUv;
-    // Navy studio card: soft spotlight from above onto deep navy (linear-light CI values).
-    vec3 card(vec2 uv) {
-      vec2 d = (uv - vec2(.5, .62)) * vec2(1., 1.25);
-      float spot = exp(-dot(d, d) * 3.2);
-      vec3 deep = vec3(.0009, .0030, .0068), navy = vec3(.0047, .0160, .0350), lift = vec3(.0135, .0420, .0880);
-      return mix(deep, navy, smoothstep(.0, .55, spot)) + lift * pow(spot, 3.) * .9;
-    }
     vec3 plate(sampler2D t, float zoom, vec2 uv) {
       return texture2D(t, clamp((uv - .5) / zoom + .5, vec2(.0005), vec2(.9995))).rgb;
     }
     void main() {
-      vec3 a = kindA > .5 ? card(vUv) : plate(tA, zoomA, vUv);
-      vec3 b = kindB > .5 ? card(vUv) : plate(tB, zoomB, vUv);
-      vec3 c = mix(a, b, mixB);
+      vec3 c = mix(plate(tA, zoomA, vUv), plate(tB, zoomB, vUv), mixB);
       vec3 deep = vec3(.0012, .0045, .0100);
       c = mix(c, deep, shade * smoothstep(.36, .0, vUv.y) * .85);
-      c = mix(c, deep, topShade * smoothstep(.72, 1., vUv.y) * .8);
+      // Deals: soft navy pool on the panel behind number and copy, for contrast.
+      vec2 d = (vUv - vec2(dealX, .5)) * vec2(1.5, 1.);
+      c = mix(c, deep, dealShade * exp(-dot(d, d) * 7.) * .7);
       // End card: footage stays at the top, sinks into navy below.
       c = mix(c, deep, veil * mix(.45, .97, smoothstep(.78, .38, vUv.y)));
       gl_FragColor = vec4(c, 1.);
@@ -224,16 +220,6 @@ function number(parts) {
   };
 }
 
-// Soft navy light pool under the floating number.
-const glowMat = new THREE.ShaderMaterial({
-  uniforms: { o: { value: 0 } },
-  vertexShader: 'varying vec2 vUv; void main(){ vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.); }',
-  fragmentShader: 'uniform float o; varying vec2 vUv; void main(){ vec2 d = vUv - .5; float a = exp(-dot(d, d) * 14.); gl_FragColor = vec4(vec3(.05, .12, .22), a * o); }',
-  transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
-});
-const glow = new THREE.Mesh(new THREE.PlaneGeometry(9, 6), glowMat);
-scene.add(glow);
-
 // ------------------------------------------------------------- DOM motion
 // apple.com reveal: fade up from a few px below, out of a blur.
 function reveal(node, t, tin, k = 1, { dur = 0.9, dy = 24, blur = 14 } = {}) {
@@ -250,8 +236,7 @@ function col(root, t, tin, k, gap = 0.12, opts) {
 
 const el = {
   introLogo: $('#intro-logo'), intro: $('#intro'), introSub: $('#intro-sub'),
-  card1: $('#card1'), card1Text: $('#card1-text'), date: $('#date-line'),
-  card2: $('#card2'), card2Text: $('#card2-text'), well: $('#well'),
+  deal1: $('#deal1'), deal2: $('#deal2'), well: $('#well'),
   endTitle: $('#end .hl'), endRows: $$('#end .rows div'), endCta: $('#end-cta'), endDate: $('#end-date'), endLogo: $('#end-logo'),
   link: $('#end-cta .link svg'),
 };
@@ -278,9 +263,7 @@ function plateUrl(e, t) {
   const i = clamp(Math.round((e.src[k] - SHOTS[e.shot]) * MANIFEST.interp), 0, MANIFEST.count[e.shot] - 1);
   return `${PLATE_DIR}/${e.shot}/f${String(i).padStart(4, '0')}.jpg`;
 }
-async function setLayer(tex, kindU, zoomU, e, t) {
-  kindU.value = e.card ? 1 : 0;
-  if (e.card) return;
+async function setLayer(tex, zoomU, e, t) {
   const img = await loadImage(plateUrl(e, t));
   if (tex.image !== img) { tex.image = img; tex.needsUpdate = true; }
   // Slow, constant push over the whole entry.
@@ -291,22 +274,22 @@ async function setLayer(tex, kindU, zoomU, e, t) {
 let N1 = null, N2 = null;
 function build() {
   N1 = number([{ text: '–25', size: 1 }, { text: '%', size: 0.62, after: 0.05, y: 0.3 }]);
-  N1.fit(640);
+  N1.fit(520);
   N2 = number([{ text: '–10', size: 1 }, { text: '%', size: 0.62, after: 0.05, y: 0.3 }]);
-  N2.fit(620);
+  N2.fit(500);
 }
 
-// Card choreography for a 3D number: rises out of the dark while the light comes up,
-// then turns slowly on its axis like a product turntable, floating.
-function cardNumber(n, e, k, t) {
-  if (k <= 0.001) { n.set(0, 0); return 0; }
+// Deal choreography for a 3D number on its shot: rises out of the panel's dark while
+// the light comes up, then turns slowly on its axis like a product turntable, floating.
+function dealNumber(n, e, k, t) {
   const tl = t - e.start;
-  const rise = E.outCubic(prog(tl, 0.1, 1.3));
-  const light = E.inOutSine(prog(tl, 0.15, 1.2));
-  n.pivot.position.set(0, wy(560) + lerp(-0.35, 0, rise) + Math.sin(tl * 1.3) * 0.03, lerp(-1.6, 0, rise));
-  n.pivot.rotation.set(rad(lerp(14, 7, rise)), rad(lerp(-32, 20, E.inOutSine(prog(tl, 0, e.dur)))), 0);
-  n.set(k, light);
-  return light;
+  const fade = E.outCubic(prog(tl, 0.2, 0.8)) * k;
+  if (fade <= 0.001) { n.set(0, 0); return; }
+  const rise = E.outCubic(prog(tl, 0.2, 1.3));
+  const light = E.inOutSine(prog(tl, 0.25, 1.2));
+  n.pivot.position.set(wx(e.deal.cx), wy(540) + lerp(-0.35, 0, rise) + Math.sin(tl * 1.3) * 0.03, lerp(-1.6, 0, rise));
+  n.pivot.rotation.set(rad(lerp(14, 7, rise)), rad(lerp(-30, 18, E.inOutSine(prog(tl, 0, e.dur)))), 0);
+  n.set(fade, light);
 }
 
 // ------------------------------------------------------------- seek
@@ -317,21 +300,20 @@ async function seek(n) {
   if (!act.length) act.push(EDIT.length - 1);
   const ea = EDIT[act[0]], eb = act[1] != null ? EDIT[act[1]] : null;
   const u = bgMat.uniforms;
-  await setLayer(texA, u.kindA, u.zoomA, ea, t);
-  if (eb) await setLayer(texB, u.kindB, u.zoomB, eb, t);
+  await setLayer(texA, u.zoomA, ea, t);
+  if (eb) await setLayer(texB, u.zoomB, eb, t);
   u.mixB.value = eb ? sstep(prog(t, eb.start, XF)) : 0;
 
-  const V = Object.fromEntries(EDIT.map((e, i) => [e.id, vis(i, t)]));
+  const V = Object.fromEntries(EDIT.map((e, i) => [e.id, e.deal ? dealVis(i, t) : vis(i, t)]));
   u.veil.value = E.inOutCubic(prog(t, S.end.start + 0.9, 0.9));
   u.shade.value = Math.max(V.intro, V.wood) * 0.9;
-  u.topShade.value = V.led;
+  u.dealShade.value = Math.max(V.deal1, V.deal2);
+  u.dealX.value = (V.deal1 >= V.deal2 ? EDIT[1] : EDIT[2]).deal.cx / W;
   lens.uniforms.seed.value = (n * 7.31) % 97;
 
-  // 3D numbers on the cards.
-  const l1 = cardNumber(N1, EDIT[1], V.card1, t);
-  const l2 = cardNumber(N2, EDIT[3], V.card2, t);
-  glowMat.uniforms.o.value = Math.max(V.card1 * l1, V.card2 * l2) * 0.55;
-  glow.position.set(0, wy(560) - 0.2, -2);
+  // 3D discounts on the cabinet panels.
+  dealNumber(N1, EDIT[1], V.deal1, t);
+  dealNumber(N2, EDIT[2], V.deal2, t);
   scene.environmentRotation.set(0, rad(Math.sin(t * 0.5) * 25), 0);
 
   // ---- type
@@ -340,11 +322,8 @@ async function seek(n) {
   col(el.intro, t, I.start + 0.35, V.intro, 0.12, { dur: 1.1, dy: 30, blur: 18 });
   col(el.introSub, t, I.start + 0.95, V.intro);
 
-  col(el.card1, t, S.card1.start + 0.35, V.card1);
-  col(el.card1Text, t, S.card1.start + 0.75, V.card1, 0.18);
-  col(el.date, t, S.led.start + 0.4, V.led, 0.12, { dur: 1.0, dy: 26, blur: 16 });
-  col(el.card2, t, S.card2.start + 0.35, V.card2);
-  col(el.card2Text, t, S.card2.start + 0.75, V.card2, 0.18);
+  col(el.deal1, t, S.deal1.start + 0.75, V.deal1, 0.18);
+  col(el.deal2, t, S.deal2.start + 0.75, V.deal2, 0.18);
   col(el.well, t, S.wood.start + 0.45, V.wood);
 
   const te = S.end.start + 1.0;

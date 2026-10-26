@@ -9,7 +9,7 @@ rendert. ffmpeg schreibt die Frames anschließend als MP4.
 | Projekt | Format | Ergebnis |
 |---|---|---|
 | `projects/laguna-m` | 9:16, 1080×1920, 30 fps, 18,5 s | `output/HomeDeluxe_Laguna-M_Reel_9x16.mp4` + Titelbild |
-| `projects/cyber-monday-ir` | 4:5, 1080×1350, 30 fps, 15,7 s | `output/HomeDeluxe_CyberMonday_Infrarotkabine_4x5.mp4` |
+| `projects/cyber-monday-ir` | 4:5, 1080×1350, 30 fps, 13,4 s | `output/HomeDeluxe_CyberMonday_Infrarotkabine_4x5.mp4` |
 
 ### Laguna M – Schnitt und Übergänge
 
@@ -40,17 +40,16 @@ gerechnet, damit die Komposition Slow Motion fahren kann (`EDIT` in `composition
 
 Gestaltung im Stil von apple.com, aber in der CI: eine Aussage pro Bild, große zentrierte Poppins-Typo
 mit Verlauf Weiß → helles Grau, Einblendungen aus der Unschärfe, weiche Überblendungen, langsamer Push.
-Die Rabatte stehen als 3D-Objekte (three.js, gebürstetes Titan mit Navy-Flanken) auf Navy-Karten und
-drehen sich wie auf einem Produkt-Drehteller.
+Die Rabatte stehen als 3D-Objekte (three.js, gebürstetes Titan mit Navy-Flanken) direkt im Video auf der
+dunklen Seitenwand der Kabine und drehen sich wie auf einem Produkt-Drehteller.
 
-| Zeit | Bild | Tempo | Text |
+| Zeit | Einstellung | Tempo | Text |
 |---|---|---|---|
-| 0,0–2,5 s | Totale | Slow-Mo 0,3× | Logo, „Cyber Monday.“, „Extra-Rabatte. Auf alles.“ |
-| 2,1–4,8 s | Navy-Karte | – | 3D „–25 %“, „Extra auf Sale.“ / „Zusätzlich zu bereits reduzierten Preisen.“ |
-| 4,3–6,7 s | LED-Leiste | Slow-Mo 0,38× | „Nur am 30. November.“ |
-| 6,2–8,9 s | Navy-Karte | – | 3D „–10 %“, „Auf alles andere.“ / „Auf alle Artikel, die nicht im Sale sind.“ |
-| 8,5–10,6 s | Liegefläche | Slow-Mo 0,45× | „Wellness für dein Zuhause.“ |
-| 10,2–15,7 s | Logo-Wand | Echtzeit → Slow-Mo 0,42× | Endcard: „Cyber Monday.“, –25 % / –10 %, „Jetzt sparen“, homedeluxe.de, Logo |
+| 0,0–2,5 s | Totale | Slow-Mo 0,3× | Logo, „Cyber Monday.“, „Extra-Rabatte. Nur am 30. November.“ |
+| 2,1–4,8 s | LED-Leiste | Slow-Mo 0,36× | 3D „–25 %“, „Extra auf Sale.“ / „Zusätzlich zu bereits reduzierten Preisen.“ |
+| 4,3–6,6 s | Seitenwand | Slow-Mo 0,4× | 3D „–10 %“, „Auf alles andere.“ / „Auf alle Artikel, die nicht im Sale sind.“ |
+| 6,2–8,3 s | Liegefläche | Slow-Mo 0,45× | „Wellness für dein Zuhause.“ |
+| 7,8–13,4 s | Logo-Wand | Echtzeit → Slow-Mo 0,42× | Endcard: „Cyber Monday.“, –25 % / –10 %, „Jetzt sparen“, homedeluxe.de, Logo |
 
 Ton: Original-Tonspur auf die neue Länge gestreckt plus synthetisches Sounddesign
 (weiche Whooshes, Impacts, Klangfläche) nach `sound.json` (`scripts/sound_design.py`).

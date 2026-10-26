@@ -29,11 +29,9 @@
   /* Text blocks are centred columns; every line fades up out of a blur. */
   .col { position: absolute; left: 0; width: 1080px; display: flex; flex-direction: column; align-items: center; text-align: center; }
   .col > * { will-change: transform, opacity, filter; }
-  .eyebrow { font-weight: 600; font-size: 30px; line-height: 1.2; letter-spacing: -.005em; color: var(--grey); }
   .hl { font-weight: 600; letter-spacing: -.035em; line-height: 1.04;
         background: linear-gradient(180deg, #ffffff 35%, #c3cfdb 100%); -webkit-background-clip: text; background-clip: text; color: transparent; padding: 0 .04em .06em; }
   .xl { font-size: 128px; }
-  .l { font-size: 92px; }
   .sub { font-weight: 500; font-size: 34px; line-height: 1.3; letter-spacing: -.01em; color: var(--grey); }
   .sub b { font-weight: 600; color: #fff; }
 
@@ -41,11 +39,11 @@
   #intro-logo img { display: block; width: 190px; height: auto; }
   #intro { top: 172px; }
   #intro-sub { top: 1150px; }
-  #date-line { top: 92px; }
-  #card1 { top: 268px; }
-  #card1-text { top: 860px; }
-  #card2 { top: 268px; }
-  #card2-text { top: 860px; }
+  /* Deals sit centred on the dark cabinet panel of their shot (cx in composition.js). */
+  #deal1 { top: 760px; left: 340px; width: 800px; }
+  #deal2 { top: 760px; left: 240px; width: 800px; }
+  .deal .hl { font-size: 72px; }
+  .deal .sub { margin-top: 14px; font-size: 30px; }
   #well { top: 1170px; }
 
   /* End card */
@@ -70,29 +68,24 @@
   <!-- 1 Intro: Totale -->
   <div class="col" id="intro-logo"><img src="../../assets/logo/homedeluxe-logo-white.svg" alt="Home Deluxe"></div>
   <div class="col" id="intro"><div class="hl xl">Cyber Monday.</div></div>
-  <div class="col" id="intro-sub"><div class="sub">Extra-Rabatte. <b>Auf alles.</b></div></div>
+  <div class="col" id="intro-sub"><div class="sub">Extra-Rabatte. <b>Nur am 30. November.</b></div></div>
 
-  <!-- 2 Karte: –25 % (3D-Zahl in WebGL) -->
-  <div class="col" id="card1"><div class="eyebrow">Cyber Monday</div></div>
-  <div class="col" id="card1-text">
-    <div class="hl l">Extra auf Sale.</div>
-    <div class="sub" style="margin-top:18px">Zusätzlich zu bereits reduzierten Preisen.</div>
+  <!-- 2 LED-Leiste: –25 % (3D-Zahl in WebGL) -->
+  <div class="col deal" id="deal1">
+    <div class="hl">Extra auf Sale.</div>
+    <div class="sub">Zusätzlich zu bereits<br>reduzierten Preisen.</div>
   </div>
 
-  <!-- 3 LED-Leiste -->
-  <div class="col" id="date-line"><div class="hl" style="font-size:76px">Nur am 30. November.</div></div>
-
-  <!-- 4 Karte: –10 % -->
-  <div class="col" id="card2"><div class="eyebrow">Cyber Monday</div></div>
-  <div class="col" id="card2-text">
-    <div class="hl l">Auf alles andere.</div>
-    <div class="sub" style="margin-top:18px">Auf alle Artikel, die nicht im Sale sind.</div>
+  <!-- 3 Seitenwand: –10 % -->
+  <div class="col deal" id="deal2">
+    <div class="hl">Auf alles andere.</div>
+    <div class="sub">Auf alle Artikel,<br>die nicht im Sale sind.</div>
   </div>
 
-  <!-- 5 Liegefläche -->
+  <!-- 4 Liegefläche -->
   <div class="col" id="well"><div class="sub"><b>Wellness für dein Zuhause.</b></div></div>
 
-  <!-- 6 Endcard -->
+  <!-- 5 Endcard -->
   <div class="col" id="end">
     <div class="hl xl">Cyber Monday.</div>
     <div class="rows">
