@@ -7,9 +7,12 @@
     "laguna-m:track": "python3 -I scripts/track_points.py build/laguna-m/plates projects/laguna-m/tracking.json projects/laguna-m/tracks.js",
     "laguna-m:render": "node scripts/render.js projects/laguna-m/composition.html projects/laguna-m/output/HomeDeluxe_Laguna-M_Reel_9x16.mp4 --plates build/laguna-m/plates",
     "laguna-m:stills": "node scripts/render.js projects/laguna-m/composition.html build/laguna-m/stills --plates build/laguna-m/plates --stills 1,2,4,5,7,10,11,13,14.5,16,17.6,18,19,21",
-    "sauna-guide:plates": "scripts/prepare_stills.sh projects/sauna-guide/source build/sauna-guide/plates",
-    "sauna-guide:render": "node scripts/render.js projects/sauna-guide/composition.html projects/sauna-guide/output/HomeDeluxe_Sauna-Guide_MetaAd_9x16.mp4 --plates build/sauna-guide/plates",
-    "sauna-guide:stills": "node scripts/render.js projects/sauna-guide/composition.html build/sauna-guide/stills --plates build/sauna-guide/plates --stills 1.2,2.6,4.4,5.65,6.6,7.85,9.4,10.25,11.9,12.85,14.2,15.6,16.6,17.4,19.4,19.8,21.5,23"
+    "sauna-guide:upscale": "python3 -I scripts/upscale_esrgan.py build/models/realesrgan-x4.onnx projects/sauna-guide/source-hq projects/sauna-guide/source/*.png projects/sauna-guide/source/*.jpg --height 2160",
+    "sauna-guide:plates": "scripts/prepare_stills.sh projects/sauna-guide/source-hq build/sauna-guide/plates 2160",
+    "sauna-guide:sound": "python3 -I scripts/sound_sauna.py build/sauna-guide/sound_raw.wav && ffmpeg -v error -y -i build/sauna-guide/sound_raw.wav -af loudnorm=I=-15:TP=-1.5:LRA=11 -ar 48000 build/sauna-guide/sound.wav",
+    "sauna-guide:render": "node scripts/render.js projects/sauna-guide/composition.html projects/sauna-guide/output/HomeDeluxe_Sauna-Guide_MetaAd_9x16.mp4 --plates build/sauna-guide/plates --workers 3 --audio build/sauna-guide/sound.wav",
+    "sauna-guide:silent": "ffmpeg -v error -y -i projects/sauna-guide/output/HomeDeluxe_Sauna-Guide_MetaAd_9x16.mp4 -f lavfi -i anullsrc=r=48000:cl=stereo -map 0:v -map 1:a -c:v copy -c:a aac -b:a 128k -shortest -movflags +faststart projects/sauna-guide/output/HomeDeluxe_Sauna-Guide_MetaAd_9x16_ohne-Ton.mp4",
+    "sauna-guide:stills": "node scripts/render.js projects/sauna-guide/composition.html build/sauna-guide/stills --plates build/sauna-guide/plates --stills 0.5,2.9,3.2,4.8,6.0,7.3,8.3,9.9,10.9,12.4,13.4,15.8,17.35,18.4,20.7,24"
   },
   "devDependencies": {
     "playwright": "1.56.1"

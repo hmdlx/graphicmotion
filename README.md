@@ -9,7 +9,7 @@ rendert. ffmpeg schreibt die Frames anschließend als MP4.
 | Projekt | Format | Ergebnis |
 |---|---|---|
 | `projects/laguna-m` | 9:16, 1080×1920, 30 fps, 18,5 s | `output/HomeDeluxe_Laguna-M_Reel_9x16.mp4` + Titelbild |
-| `projects/sauna-guide` | 9:16, 1080×1920, 30 fps, 23,4 s, Meta Ad | `output/HomeDeluxe_Sauna-Guide_MetaAd_9x16.mp4` + Titelbild |
+| `projects/sauna-guide` | 9:16, 1080×1920, 30 fps, 24,3 s, Meta Ad | `output/HomeDeluxe_Sauna-Guide_MetaAd_9x16.mp4` (mit Ton), `…_ohne-Ton.mp4` + Titelbild |
 
 ### Laguna M – Schnitt und Übergänge
 
@@ -34,20 +34,30 @@ Preise sind bewusst nicht eingebaut, weil sie sich häufig ändern.
 
 Anzeige für Reels/Stories zum Ratgeber
 [Die Welt des Saunierens](https://www.homedeluxe.de/news-und-trends/wellness/die-welt-des-saunierens/).
-Gebaut aus den Artikelbildern und Produktbildern (`source/`); die Kamerafahrten über die
-Standbilder stehen in `CAM` in `composition.js`. Alle Texte liegen in der Meta-Safe-Zone
-(y 270–1250). Mit `composition.html?guides=1` werden die Sperrzonen eingeblendet.
+Gebaut aus den Artikel- und Produktbildern (`source/`), die mit Real-ESRGAN lokal auf 2160 px
+Höhe hochgerechnet sind (`source-hq/`). Jede Szene ist ein eigener Container, deshalb können die
+Übergänge ganze Szenen bewegen (Würfeldrehung, Flutung, Iris). Alle Texte liegen in der
+Meta-Safe-Zone (y 270–1250); `composition.html?guides=1` blendet die Sperrzonen ein.
 
-| Zeit | Bild | Grafik | Übergang danach |
+Durchgehend: Kamerafahrten über die Standbilder (`CAM`), echte Bewegungsunschärfe bei schnellen
+Bewegungen (Sub-Frames, siehe `mblur()`), Filmkorn, Vignette, Rollzähler für alle Zahlen,
+3D-Wortanimationen und Buchstaben-Einblendungen.
+
+| Zeit | Szene | Animation | Übergang danach |
 |---|---|---|---|
-| 0,0–3,3 s | Sauna mit Aufgusskübel, Schwenk mit Dampf | Hook „Dein erster Saunagang? – So gelingt er in 4 Schritten“ | Navy-Säulen steigen auf |
-| 3,3–5,9 s | Aufguss auf Steinen, Push-in mit Dampf | 01 Schwitzen: Stoppuhr läuft, „8–15 Minuten“, „Unten oder mittig sitzen“ | Reißschwenk, Grafik fährt mit |
-| 5,9–8,0 s | Gartensauna HYGGE DELUXE | 02 Frische Luft: „Tief durchatmen“, „30 Sek. bis 1 Min. draußen“ | helle Fläche steigt wie ein Wasserspiegel |
-| 8,0–10,6 s | reine Grafik | 03 Abkühlen: Pfeil wächst von den Beinen bis zum Gesicht, „Nie direkt am Herzen beginnen“ | Pfeilspitze öffnet ein Fenster |
-| 10,6–12,8 s | Ruhephase im Bademantel | 04 Ruhen: „10–20 Min.“, „2–3 Runden“ | Zoom in einen Lichtblitz |
-| 12,8–16,5 s | Thermometer, abgedunkelt | Sauna-Arten: Temperatur-Balken mit Zählern, Biosauna und Infrarotkabine „Ideal zum Einstieg“ | Bild blendet auf Navy |
-| 16,5–20,0 s | Produktkarten | „Deine eigene Sauna“: Kombisauna EVEREST, Infrarotkabine REDSUN DELUXE XXL, Gartensauna HYGGE DELUXE | Navy-Balken |
-| 20,0–23,4 s | Endcard | „Sauna-Guide“, Ablauf-Chips, CTA „Jetzt Guide lesen“ + homedeluxe.de, Slogan | – |
+| 0,0–3,4 s | Sauna mit Aufgusskübel | Rückwärtszoom, Schwenk, prozeduraler Dampf, Staub im Gegenlicht, warmes Glühen; Hook „Dein erster Saunagang? – So gelingt er in 4 Schritten“; Thermometer steigt von 20 auf 90 °C | Thermometer flutet das Bild, Fläche hebt ab |
+| 3,4–6,0 s | Aufguss auf Steinen | Dampfstoß, glimmendes Licht; 01 Schwitzen: Stoppuhr mit 15-Minuten-Skala, Zeiger läuft, Bereich 8–15 wächst, Zähler „8–15 Minuten“, Bank-Grafik „Unten oder mittig sitzen“ | Reißschwenk mit Bewegungsunschärfe |
+| 6,0–8,5 s | Gartensauna HYGGE DELUXE | Windlinien ziehen durchs Bild, „durchatmen“ atmet; 02 Frische Luft | Kaltes Wasser steigt in Wellen mit Gischt |
+| 8,5–11,2 s | Grafik auf Wasser-Kaustik | 03 Abkühlen: Pfeil wächst von den Beinen zum Gesicht, Stationen 1–4 mit Wellenringen, Warnhinweis pulsiert | Pfeilspitze öffnet ein Fenster |
+| 11,2–13,4 s | Ruhephase im Bademantel | Lichtfahrt, Staub; 04 Ruhen: Zähler „10–20 Min.“, „2–3 Runden“ mit drehendem Symbol und Rundenpunkten | Zoom in ein warmes Lichtleck |
+| 13,4–17,4 s | Thermometer, unscharf | Sauna-Arten: Symbole zeichnen sich, Balken mit Temperaturbereich und Glanz, Zähler, Skala, Badges „Ideal zum Einstieg“ | Würfeldrehung in 3D |
+| 17,4–20,9 s | Produkte | 3D-Karussell mit Spiegelung und Glanz: Kombisauna EVEREST, Infrarotkabine REDSUN DELUXE XXL, Gartensauna HYGGE DELUXE | Navy-Balken |
+| 20,9–24,3 s | Endcard | Bild mit Dampf, Rahmen zeichnet sich, „Sauna-Guide“ in 3D, Häkchen-Chips, CTA mit Glanz, Logo-Glanz | – |
+
+Ton (`scripts/sound_sauna.py`): komplett synthetisiert, ohne Samples und Lizenzen – Ambient-Pad
+in D-Dur, gezupftes Arpeggio, leiser Puls und Effekte auf den Schnitten (Dampfzischen,
+Stoppuhr-Ticks, Whooshes, Wasser, Tropfen, Lichtklang, Impact auf der Endcard), normalisiert auf
+−15 LUFS. Es gibt eine Fassung mit Ton und eine ohne.
 
 Alle Werte stammen aus dem Ratgeber. Preise und Gesundheitsversprechen sind bewusst nicht eingebaut.
 
@@ -72,10 +82,22 @@ npm run laguna-m:track      # Punkt-Tracking -> projects/laguna-m/tracks.js (nur
 npm run laguna-m:render     # -> projects/laguna-m/output/HomeDeluxe_Laguna-M_Reel_9x16.mp4
 npm run laguna-m:stills     # Kontrollbilder nach build/laguna-m/stills
 
-npm run sauna-guide:plates  # Standbilder -> 1920 px hohe, leicht gegradete JPG-Plates (build/)
-npm run sauna-guide:render  # -> projects/sauna-guide/output/HomeDeluxe_Sauna-Guide_MetaAd_9x16.mp4
-npm run sauna-guide:stills  # Kontrollbilder nach build/sauna-guide/stills
+npm run sauna-guide:upscale        # nur bei neuen Quellbildern: Real-ESRGAN x4 -> source-hq/ (s. u.)
+npm run sauna-guide:plates         # source-hq -> 2160 px hohe, leicht gegradete JPG-Plates (build/)
+npm run sauna-guide:sound          # Soundtrack -> build/sauna-guide/sound.wav
+npm run sauna-guide:render         # -> output/HomeDeluxe_Sauna-Guide_MetaAd_9x16.mp4 (mit Ton)
+npm run sauna-guide:silent         # gleiche Bildspur mit stummer Tonspur -> …_ohne-Ton.mp4
+npm run sauna-guide:stills         # Kontrollbilder nach build/sauna-guide/stills
 ```
+
+`render.js` kennt außerdem `--workers n` (parallele Browser-Seiten, Segmente werden danach
+verbunden), `--audio datei.wav` und `--range a,b` (nur ein Ausschnitt in Sekunden, zum Prüfen
+einzelner Übergänge). Liefert die Komposition `COMP.mblur(n)`, rendert es schnelle Frames als
+2/4/8 Sub-Frames mit 180°-Shutter und mittelt sie in ffmpeg (echte Bewegungsunschärfe).
+
+Hochrechnen: `scripts/upscale_esrgan.py` braucht numpy, Pillow und onnxruntime sowie das Modell
+Real-ESRGAN x4 (BSD-3) als ONNX unter `build/models/realesrgan-x4.onnx`, Download:
+https://huggingface.co/imgdesignart/realesrgan-x4-onnx/resolve/main/onnx/model.onnx
 
 Passt die Chromium-Version nicht zur installierten Playwright-Version, zeigt `CHROMIUM_PATH` auf ein
 vorhandenes Chromium, z. B. `CHROMIUM_PATH=/opt/pw-browsers/chromium npm run sauna-guide:render`.
@@ -89,9 +111,11 @@ Ein einzelnes Frame lässt sich auch im Browser prüfen:
 assets/fonts/poppins/     Poppins 400–800 (latin, OFL)
 assets/logo/              Home-Deluxe-Logo (weiß, SVG)
 scripts/prepare_plates.sh Hochskalieren + Grading der Quelle
-scripts/prepare_stills.sh Standbilder auf 1920 px Höhe skalieren + Grading
+scripts/prepare_stills.sh Standbilder auf feste Höhe skalieren + Grading
+scripts/upscale_esrgan.py Real-ESRGAN x4 (ONNX, CPU) für zu kleine Quellbilder
+scripts/sound_sauna.py    synthetisierter Soundtrack für den Sauna-Guide
 scripts/track_points.py   Template-Tracking für Marker, die am Bild kleben
-scripts/render.js         Chromium -> PNG-Frames -> ffmpeg (H.264 + stumme AAC-Spur)
+scripts/render.js         Chromium -> PNG-Frames (+ Sub-Frames) -> ffmpeg (H.264 + AAC)
 projects/<name>/          source/, composition.html/.js, tracking.json, tracks.js, output/
 ```
 
