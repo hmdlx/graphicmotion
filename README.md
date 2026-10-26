@@ -10,6 +10,7 @@ rendert. ffmpeg schreibt die Frames anschließend als MP4.
 |---|---|---|
 | `projects/laguna-m` | 9:16, 1080×1920, 30 fps, 18,5 s | `output/HomeDeluxe_Laguna-M_Reel_9x16.mp4` + Titelbild |
 | `projects/dfb-pokal-gewinnspiel` | 3:4, 1080×1440, 30 fps, 21 s | `output/HomeDeluxe_DFB-Pokal_Gewinnspiel_3x4.mp4` + Titelbild |
+| `projects/dfb-pokal-gewinnspiel` (Post) | 3:4 Standbild, Higgsfield GPT Image 2.5 | `output/HomeDeluxe_DFB-Pokal_Gewinnspiel_Post_*_V1/V2.jpg` |
 
 ### DFB-Pokal Gewinnspiel – Ablauf
 
