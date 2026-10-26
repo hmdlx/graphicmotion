@@ -10,6 +10,7 @@ rendert. ffmpeg schreibt die Frames anschließend als MP4.
 |---|---|---|
 | `projects/laguna-m` | 9:16, 1080×1920, 30 fps, 18,5 s | `output/HomeDeluxe_Laguna-M_Reel_9x16.mp4` + Titelbild |
 | `projects/cyber-monday-ir` | 4:5, 1080×1350, 30 fps, 13,4 s | `output/HomeDeluxe_CyberMonday_Infrarotkabine_4x5.mp4` |
+| `projects/cyber-monday-ir/story` | 9:16 Story-Bild, 1080×1920 | `output/HomeDeluxe_CyberMonday_Story_LetzterTag_9x16.jpg` (+ PNG) |
 
 ### Laguna M – Schnitt und Übergänge
 
@@ -61,6 +62,11 @@ npm run cyber-monday-ir:render   # -> projects/cyber-monday-ir/output/HomeDeluxe
 npm run cyber-monday-ir:stills   # Kontrollbilder
 ```
 
+**Story „Letzter Tag“ (9:16):** Das Motiv `story/higgsfield_motiv.jpg` ist mit Higgsfield erzeugt (GPT Image 2.5,
+das umgefärbte Kabinen-Frame als Referenz, Text bewusst ausgeschlossen). Typo, Logo und Button setzt
+`story/story.html` in CI darüber, gerendert mit `npm run cyber-monday-ir:story` (`scripts/still.js`). Oben und
+unten bleiben die Bereiche der Story-Bedienleisten frei.
+
 Ändert sich das Timing in `EDIT`, die Zeitstempel in `sound.json` nachziehen (`window.COMP.S` liefert die
 Schnittzeiten). Die 3D-Ziffern kommen aus `assets/fonts/poppins/poppins-600.typeface.json`
 (`node scripts/make_typeface.mjs <font.woff> <out.json> "<Zeichen>"`).
@@ -93,6 +99,7 @@ scripts/recolor_bg.py     Hintergrund per Farbschlüssel umfärben (Orange -> Na
 scripts/build_plates.sh   Umfärben + Slow-Mo-Interpolation je Einstellung
 scripts/sound_design.py   Tonbett + synthetisches Sounddesign
 scripts/make_typeface.mjs Schrift -> three.js-Typeface für 3D-Text
+scripts/still.js          statisches HTML-Layout -> PNG (Story-Bilder)
 projects/<name>/          source/, composition.html/.js, tracking.json, tracks.js, output/
 ```
 

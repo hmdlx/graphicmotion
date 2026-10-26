@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>Cyber Monday – Story letzter Tag 9:16</title>
+<style>
+  @font-face { font-family: Poppins; font-weight: 500; src: url(../../../assets/fonts/poppins/poppins-latin-500-normal.woff2) format("woff2"); }
+  @font-face { font-family: Poppins; font-weight: 600; src: url(../../../assets/fonts/poppins/poppins-latin-600-normal.woff2) format("woff2"); }
+
+  /* Home Deluxe CI in apple.com-Haltung, wie im Cyber-Monday-Video. Hintergrund: Higgsfield-Motiv. */
+  :root { --navy: #0e2234; --grey: #a3afbb; }
+  * { box-sizing: border-box; margin: 0; padding: 0; border-radius: 0; }
+  html, body { width: 1080px; height: 1920px; overflow: hidden; background: var(--navy); }
+  body { font-family: Poppins, sans-serif; color: #fff; -webkit-font-smoothing: antialiased; }
+  #bg { position: absolute; inset: 0; width: 1080px; height: 1920px; object-fit: cover; }
+  /* Keeps the copy area calm even if the motif is a touch brighter up top. */
+  #shade { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(4, 12, 21, .55) 0%, rgba(4, 12, 21, .25) 38%, rgba(4, 12, 21, 0) 52%, rgba(4, 12, 21, 0) 80%, rgba(4, 12, 21, .55) 100%); }
+
+  .col { position: absolute; left: 0; width: 1080px; display: flex; flex-direction: column; align-items: center; text-align: center; }
+  #logo { top: 1486px; }
+  #logo img { display: block; width: 210px; height: auto; opacity: .92; }
+  #copy { top: 262px; }
+  .eyebrow { font-weight: 600; font-size: 38px; line-height: 1.2; color: var(--grey); letter-spacing: -.005em; }
+  .hl { margin-top: 6px; font-weight: 600; font-size: 156px; line-height: 1.02; letter-spacing: -.04em;
+        background: linear-gradient(180deg, #ffffff 35%, #c3cfdb 100%); -webkit-background-clip: text; background-clip: text; color: transparent; padding: 0 .04em .06em; }
+  .sub { margin-top: 14px; font-weight: 500; font-size: 40px; line-height: 1.3; letter-spacing: -.01em; color: var(--grey); }
+  .sub b { font-weight: 600; color: #fff; }
+  .rows { margin-top: 28px; display: flex; flex-direction: column; gap: 6px; }
+  .rows div { font-weight: 500; font-size: 44px; line-height: 1.28; letter-spacing: -.015em; color: var(--grey); }
+  .rows b { font-weight: 600; color: #fff; }
+  #cta { top: 1576px; flex-direction: row; justify-content: center; gap: 40px; }
+  .btn { background: #fff; color: var(--navy); font-weight: 600; font-size: 38px; line-height: 1; padding: 26px 44px 24px; }
+  .link { font-weight: 500; font-size: 38px; line-height: 1; display: flex; align-items: center; gap: 12px; }
+</style>
+</head>
+<body>
+  <img id="bg" alt="">
+  <div id="shade"></div>
+  <div class="col" id="logo"><img src="../../../assets/logo/homedeluxe-logo-white.svg" alt="Home Deluxe"></div>
+  <div class="col" id="copy">
+    <div class="eyebrow">Cyber Monday</div>
+    <div class="hl">Letzter Tag.</div>
+    <div class="sub">Nur noch heute, <b>Montag, 30.11.</b></div>
+    <div class="rows">
+      <div><b>–25 %</b> extra auf Sale</div>
+      <div><b>–10 %</b> auf alles andere</div>
+    </div>
+  </div>
+  <div class="col" id="cta">
+    <div class="btn">Jetzt sparen</div>
+    <div class="link">homedeluxe.de
+      <svg width="16" height="28" viewBox="0 0 14 24"><path d="M2 2l10 10L2 22" fill="none" stroke="#fff" stroke-width="2.6"/></svg>
+    </div>
+  </div>
+<script>
+  // ?bg=<image url> sets the motif; window.READY resolves once image and fonts are in.
+  const bg = document.getElementById('bg');
+  bg.src = new URLSearchParams(location.search).get('bg') || 'higgsfield_motiv.jpg';
+  window.READY = Promise.all([bg.decode(), document.fonts.ready]);
+</script>
+</body>
+</html>

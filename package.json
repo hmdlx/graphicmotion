@@ -10,7 +10,8 @@
     "cyber-monday-ir:plates": "scripts/build_plates.sh projects/cyber-monday-ir/source/infrarotkabine_original.mp4 projects/cyber-monday-ir/grade.json build/cyber-monday-ir/plates",
     "cyber-monday-ir:audio": "python3 -I scripts/sound_design.py projects/cyber-monday-ir/source/infrarotkabine_original.mp4 projects/cyber-monday-ir/sound.json build/cyber-monday-ir/soundtrack.wav",
     "cyber-monday-ir:render": "node scripts/render.js projects/cyber-monday-ir/composition.html projects/cyber-monday-ir/output/HomeDeluxe_CyberMonday_Infrarotkabine_4x5.mp4 --plates build/cyber-monday-ir/plates --audio build/cyber-monday-ir/soundtrack.wav",
-    "cyber-monday-ir:stills": "node scripts/render.js projects/cyber-monday-ir/composition.html build/cyber-monday-ir/stills --plates build/cyber-monday-ir/plates --stills 0.5,1.2,1.9,2.6,3.4,4.3,4.9,5.5,6.6,7.4,8.4,9.3,10.5,11.8"
+    "cyber-monday-ir:stills": "node scripts/render.js projects/cyber-monday-ir/composition.html build/cyber-monday-ir/stills --plates build/cyber-monday-ir/plates --stills 0.5,1.2,1.9,2.6,3.4,4.3,4.9,5.5,6.6,7.4,8.4,9.3,10.5,11.8",
+    "cyber-monday-ir:story": "node scripts/still.js projects/cyber-monday-ir/story/story.html projects/cyber-monday-ir/output/HomeDeluxe_CyberMonday_Story_LetzterTag_9x16.png"
   },
   "devDependencies": {
     "@fontsource/poppins": "5.2.7",
