@@ -6,7 +6,10 @@
     "laguna-m:plates": "scripts/prepare_plates.sh projects/laguna-m/source/laguna-m_rohschnitt.mp4 build/laguna-m/plates",
     "laguna-m:track": "python3 -I scripts/track_points.py build/laguna-m/plates projects/laguna-m/tracking.json projects/laguna-m/tracks.js",
     "laguna-m:render": "node scripts/render.js projects/laguna-m/composition.html projects/laguna-m/output/HomeDeluxe_Laguna-M_Reel_9x16.mp4 --plates build/laguna-m/plates",
-    "laguna-m:stills": "node scripts/render.js projects/laguna-m/composition.html build/laguna-m/stills --plates build/laguna-m/plates --stills 1,2,4,5,7,10,11,13,14.5,16,17.6,18,19,21"
+    "laguna-m:stills": "node scripts/render.js projects/laguna-m/composition.html build/laguna-m/stills --plates build/laguna-m/plates --stills 1,2,4,5,7,10,11,13,14.5,16,17.6,18,19,21",
+    "sauna-guide:plates": "scripts/prepare_stills.sh projects/sauna-guide/source build/sauna-guide/plates",
+    "sauna-guide:render": "node scripts/render.js projects/sauna-guide/composition.html projects/sauna-guide/output/HomeDeluxe_Sauna-Guide_MetaAd_9x16.mp4 --plates build/sauna-guide/plates",
+    "sauna-guide:stills": "node scripts/render.js projects/sauna-guide/composition.html build/sauna-guide/stills --plates build/sauna-guide/plates --stills 1.2,2.6,4.4,5.65,6.6,7.85,9.4,10.25,11.9,12.85,14.2,15.6,16.6,17.4,19.4,19.8,21.5,23"
   },
   "devDependencies": {
     "playwright": "1.56.1"

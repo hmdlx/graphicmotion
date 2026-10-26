@@ -30,7 +30,8 @@ function writeFrame(stream, buf) {
   const opts = parseArgs(process.argv.slice(2));
   const url = 'file://' + path.resolve(opts.comp) + '?plates=' + encodeURIComponent('file://' + path.resolve(opts.plates));
 
-  const browser = await chromium.launch();
+  // CHROMIUM_PATH: use a pre-installed Chromium instead of Playwright's own download.
+  const browser = await chromium.launch(process.env.CHROMIUM_PATH ? { executablePath: process.env.CHROMIUM_PATH } : {});
   const page = await browser.newPage({ viewport: { width: 1080, height: 1920 }, deviceScaleFactor: 1 });
   page.on('pageerror', e => { console.error('page error:', e.message); process.exitCode = 1; });
   await page.goto(url);

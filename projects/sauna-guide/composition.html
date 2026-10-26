@@ -1,0 +1,345 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>Sauna-Guide – Meta Ad 9:16</title>
+<style>
+  @font-face { font-family: Poppins; font-weight: 400; src: url(../../assets/fonts/poppins/poppins-latin-400-normal.woff2) format("woff2"); }
+  @font-face { font-family: Poppins; font-weight: 500; src: url(../../assets/fonts/poppins/poppins-latin-500-normal.woff2) format("woff2"); }
+  @font-face { font-family: Poppins; font-weight: 600; src: url(../../assets/fonts/poppins/poppins-latin-600-normal.woff2) format("woff2"); }
+  @font-face { font-family: Poppins; font-weight: 700; src: url(../../assets/fonts/poppins/poppins-latin-700-normal.woff2) format("woff2"); }
+  @font-face { font-family: Poppins; font-weight: 800; src: url(../../assets/fonts/poppins/poppins-latin-800-normal.woff2) format("woff2"); }
+
+  /* Home Deluxe CI: Navy + Weiß + Grautöne, eckige Ecken, Poppins.
+     Meta-Safe-Zone (Reels/Stories): Texte nur zwischen y 270 und y 1250. */
+  :root {
+    --navy: #0e2234;
+    --navy-2: #1c3a54;
+    --muted: #66727d;
+    --line: #e3e7ec;
+    --soft: #f4f6f8;
+    --light: #e9eef4;
+    --margin: 72px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; border-radius: 0; }
+  html, body { width: 1080px; height: 1920px; overflow: hidden; background: var(--navy); }
+  body { font-family: Poppins, sans-serif; color: #fff; -webkit-font-smoothing: antialiased; }
+
+  #stage { position: absolute; inset: 0; width: 1080px; height: 1920px; overflow: hidden; background: var(--navy); }
+  #footage { position: absolute; inset: 0; overflow: hidden; }
+  .shot { position: absolute; inset: 0; overflow: hidden; visibility: hidden; }
+  .shot img { position: absolute; left: 0; top: 0; display: block; transform-origin: 0 0; }
+  /* Darkening so white type stays readable on bright wood. */
+  .shot::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(14,34,52,.42) 0%, rgba(14,34,52,.12) 46%, rgba(14,34,52,0) 62%, rgba(14,34,52,.34) 100%); }
+  #shot-temps::after { background: rgba(14, 34, 52, .82); }
+  #shot-temps img { filter: blur(5px); }
+
+  #steam { position: absolute; inset: 0; overflow: hidden; }
+  .puff { position: absolute; left: 0; top: 0; width: 600px; height: 600px; border-radius: 50%;
+          background: radial-gradient(closest-side, rgba(255,255,255,.55), rgba(255,255,255,.18) 55%, rgba(255,255,255,0)); }
+
+  /* Transition elements */
+  #cols, #rows { position: absolute; inset: 0; }
+  .col { position: absolute; top: 0; height: 1920px; width: 180px; background: var(--navy); }
+  .col:nth-child(even) { background: var(--navy-2); }
+  .row { position: absolute; left: 0; width: 1080px; height: 240px; background: var(--navy); }
+  .row:nth-child(even) { background: var(--navy-2); }
+  #sep { position: absolute; top: 0; height: 1920px; width: 160px; background: var(--navy); }
+  #flash { position: absolute; inset: 0; background: #fff; }
+  #iris { position: absolute; left: 0; top: 0; border: 4px solid var(--navy); }
+
+  /* Step 03: graphic-only scene */
+  #cold { position: absolute; inset: 0; background: var(--light); overflow: hidden; }
+  #cold .edge { position: absolute; left: 0; width: 1080px; height: 26px; background: var(--navy); }
+  #cold .wave { position: absolute; left: -40px; width: 1160px; height: 2px; background: rgba(14, 34, 52, .08); }
+  #flow { position: absolute; inset: 0; }
+  #flow .node { position: absolute; left: 0; top: 0; display: flex; align-items: center; gap: 30px; }
+  #flow .node .pt { width: 34px; height: 34px; background: var(--navy); flex: none; }
+  #flow .node .txt { font-weight: 600; font-size: 46px; line-height: 1; color: var(--navy); white-space: nowrap; }
+  #flow .node .txt small { font-weight: 500; font-size: 30px; color: var(--muted); margin-left: 14px; }
+  #warn { position: absolute; left: var(--margin); top: 1162px; display: flex; align-items: center; gap: 18px;
+          border: 3px solid var(--navy); color: var(--navy); font-weight: 600; font-size: 32px; line-height: 1; padding: 20px 26px 18px; background: #fff; }
+  #warn b { display: inline-flex; width: 38px; height: 38px; background: var(--navy); color: #fff; align-items: center; justify-content: center; font-weight: 800; font-size: 28px; }
+
+  .layer { position: absolute; inset: 0; pointer-events: none; }
+  .stack { position: absolute; left: var(--margin); display: flex; flex-direction: column; align-items: flex-start; }
+  .blk { position: relative; background: var(--navy); color: #fff; box-shadow: 0 18px 50px rgba(14, 34, 52, .22); }
+  .blk.white { background: #fff; color: var(--navy); }
+  .ln { display: block; overflow: hidden; padding-bottom: .06em; margin-bottom: -.06em; }
+  .ln > span { display: inline-block; will-change: transform; }
+
+  .kicker { font-weight: 600; font-size: 26px; line-height: 1; letter-spacing: .18em; text-transform: uppercase; color: rgba(233, 238, 244, .78); display: flex; align-items: center; gap: 18px; }
+  .kicker i { display: block; width: 46px; height: 2px; background: rgba(233, 238, 244, .55); }
+  .white .kicker { color: var(--muted); }
+  .white .kicker i { background: var(--line); }
+
+  /* Logo plate (persistent, just inside the safe zone) */
+  #logo { position: absolute; left: var(--margin); top: 272px; padding: 20px 24px; background: var(--navy); }
+  #logo img { display: block; width: 250px; height: auto; }
+
+  /* Hook */
+  #hook { top: 420px; }
+  #hook .pre { font-weight: 600; font-size: 30px; line-height: 1; padding: 20px 30px 18px; letter-spacing: .12em; text-transform: uppercase; margin-bottom: 12px; }
+  #hook .big { font-weight: 700; font-size: 112px; line-height: 1.04; letter-spacing: -.015em; padding: 14px 34px 10px; }
+  #hook .tag { margin-top: 14px; font-weight: 600; font-size: 40px; line-height: 1; padding: 22px 34px 20px; }
+  #hook .tag b { font-weight: 800; }
+
+  /* Step cards */
+  .card { padding: 34px 40px 32px; }
+  .card .kicker { margin-bottom: 20px; }
+  .card .hl { font-weight: 700; font-size: 88px; line-height: 1.04; letter-spacing: -.015em; }
+  .sub { margin-top: 10px; font-weight: 500; font-size: 36px; line-height: 1; padding: 20px 40px 18px; }
+  .steps { top: 420px; }
+
+  #s1 .meter { display: flex; align-items: center; gap: 34px; margin-top: 4px; }
+  #s1 svg { display: block; flex: none; }
+  #s1 .num { font-weight: 800; font-size: 176px; line-height: .86; letter-spacing: -.03em; font-variant-numeric: tabular-nums; }
+  #s1 .unit { font-weight: 600; font-size: 52px; line-height: 1; margin-top: 12px; }
+  #s4 .num { font-weight: 800; font-size: 150px; line-height: .9; letter-spacing: -.03em; }
+  #s4 .num small { font-size: 64px; font-weight: 700; letter-spacing: 0; margin-left: 10px; }
+
+  #s3 .blk.navy2 { background: var(--navy-2); }
+
+  #rounds { top: 1010px; }
+  #rounds .blk { display: flex; align-items: center; gap: 30px; padding: 26px 40px 24px 30px; }
+  #rounds svg { display: block; flex: none; }
+  #rounds .big { font-weight: 800; font-size: 76px; line-height: 1; letter-spacing: -.02em; }
+  #rounds .small { font-weight: 500; font-size: 30px; line-height: 1.1; color: rgba(233, 238, 244, .8); margin-top: 6px; }
+
+  /* Sauna-Arten */
+  #temps-head { top: 420px; }
+  #temps { position: absolute; left: var(--margin); top: 760px; width: 936px; }
+  .trow { position: relative; height: 162px; }
+  .trow .name { position: absolute; left: 0; top: 0; font-weight: 600; font-size: 40px; line-height: 1; display: flex; align-items: center; gap: 18px; white-space: nowrap; }
+  .trow .val { position: absolute; right: 0; top: -6px; font-weight: 800; font-size: 52px; line-height: 1; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .trow .val small { font-weight: 600; font-size: 34px; margin-left: 6px; }
+  .trow .track { position: absolute; left: 0; top: 66px; width: 936px; height: 18px; background: rgba(233, 238, 244, .16); }
+  .trow .fill { position: absolute; left: 0; top: 0; height: 18px; background: rgba(233, 238, 244, .38); }
+  .trow .range { position: absolute; top: 0; height: 18px; background: #fff; }
+  .trow .note { position: absolute; left: 0; top: 100px; font-weight: 500; font-size: 26px; line-height: 1; color: rgba(233, 238, 244, .62); letter-spacing: .02em; }
+  .badge { font-weight: 700; font-size: 22px; line-height: 1; letter-spacing: .12em; text-transform: uppercase; background: #fff; color: var(--navy); padding: 10px 14px 9px; }
+
+  /* Products */
+  #prod-head { top: 420px; }
+  #deck { position: absolute; left: var(--margin); top: 640px; width: 600px; height: 600px; }
+  .pcard { position: absolute; left: 0; top: 0; width: 600px; height: 600px; overflow: hidden; background: #fff; box-shadow: 0 26px 70px rgba(0, 0, 0, .35); transform-origin: 50% 100%; }
+  .pcard img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
+  .pcard .shade { position: absolute; inset: 0; background: var(--navy); }
+  #plabel { position: absolute; left: var(--margin); top: 1130px; }
+  #plabel .blk { padding: 22px 30px 20px; }
+  #plabel .kicker { margin-bottom: 12px; font-size: 22px; }
+  #plabel .pname { font-weight: 800; font-size: 54px; line-height: 1; letter-spacing: -.01em; }
+  #pcount { position: absolute; left: 708px; top: 640px; display: flex; flex-direction: column; gap: 18px; }
+  #pcount div { width: 8px; height: 60px; background: rgba(233, 238, 244, .25); }
+  #pcount div.on { background: #fff; }
+
+  /* End card */
+  #end-img { position: absolute; left: 72px; top: 400px; width: 936px; height: 430px; overflow: hidden; }
+  #end-img img { position: absolute; left: 0; top: 0; transform-origin: 0 0; display: block; }
+  #end-head { top: 868px; }
+  #end-head .blk { padding: 26px 34px 22px; box-shadow: none; }
+  #end-head .title { font-weight: 800; font-size: 120px; line-height: .95; letter-spacing: -.02em; margin-top: 12px; }
+  #chips { position: absolute; left: var(--margin); top: 1074px; display: flex; gap: 12px; }
+  .chip { font-weight: 500; font-size: 26px; line-height: 1; padding: 15px 18px 13px; border: 2px solid rgba(233, 238, 244, .4); color: #fff; white-space: nowrap; }
+  #cta { position: absolute; left: var(--margin); top: 1150px; display: flex; align-items: center; gap: 34px; }
+  #cta .btn { background: #fff; color: var(--navy); font-weight: 600; font-size: 40px; line-height: 1; padding: 26px 40px 24px; display: flex; align-items: center; gap: 22px; }
+  #cta .btn svg { display: block; }
+  #cta .url { font-weight: 600; font-size: 38px; line-height: 1; position: relative; padding-bottom: 10px; }
+  #cta .url i { position: absolute; left: 0; bottom: 0; height: 3px; width: 100%; background: #fff; transform-origin: left; }
+  #slogan { position: absolute; left: var(--margin); top: 1300px; font-weight: 500; font-size: 30px; line-height: 1; color: rgba(233, 238, 244, .7); letter-spacing: .02em; }
+
+  #guides { position: absolute; inset: 0; pointer-events: none; display: none; }
+  #guides div { position: absolute; left: 0; width: 1080px; background: rgba(255, 0, 80, .22); }
+</style>
+</head>
+<body>
+<div id="stage">
+  <div id="footage">
+    <div class="shot" id="shot-hook"><img data-plate="saunieren-titelbild" alt=""></div>
+    <div class="shot" id="shot-s1"><img data-plate="saunieren-aufguss" alt=""></div>
+    <div class="shot" id="shot-s2"><img data-plate="gartensauna-hygge-deluxe" alt=""></div>
+    <div class="shot" id="shot-s4"><img data-plate="saunieren-ruhephase" alt=""></div>
+    <div class="shot" id="shot-temps"><img data-plate="thermometer-hygrometer" alt=""></div>
+  </div>
+  <div id="steam"></div>
+
+  <svg width="0" height="0" style="position:absolute">
+    <filter id="hblur" x="-15%" y="0" width="130%" height="100%" color-interpolation-filters="sRGB">
+      <feGaussianBlur id="hblur-g" stdDeviation="0 0" />
+    </filter>
+  </svg>
+
+  <!-- 03 Abkühlen: reine Grafik-Szene -->
+  <div id="cold">
+    <div class="wave" style="top:300px"></div><div class="wave" style="top:520px"></div>
+    <div class="wave" style="top:740px"></div><div class="wave" style="top:960px"></div>
+    <div class="wave" style="top:1180px"></div><div class="wave" style="top:1400px"></div>
+    <div class="wave" style="top:1620px"></div>
+    <svg class="layer" width="1080" height="1920" viewBox="0 0 1080 1920">
+      <line id="flow-track" x1="89" y1="1110" x2="89" y2="772" stroke="rgba(14,34,52,.16)" stroke-width="6" />
+      <line id="flow-line" x1="89" y1="1110" x2="89" y2="1110" stroke="#0e2234" stroke-width="6" />
+      <path id="flow-head" d="M-22 14 L0 -12 L22 14" fill="none" stroke="#0e2234" stroke-width="6" />
+    </svg>
+    <div id="flow">
+      <div class="node"><div class="pt"></div><div class="txt">Beine<small>rechts, dann links</small></div></div>
+      <div class="node"><div class="pt"></div><div class="txt">Arme<small>rechts, dann links</small></div></div>
+      <div class="node"><div class="pt"></div><div class="txt">Rumpf</div></div>
+      <div class="node"><div class="pt"></div><div class="txt">Gesicht</div></div>
+    </div>
+    <div id="warn"><b>!</b><span>Nie direkt am Herzen beginnen</span></div>
+    <div class="edge"></div>
+  </div>
+
+  <div id="iris"></div>
+
+  <!-- Hook -->
+  <div class="stack" id="hook">
+    <div class="blk white pre"><span class="ln"><span>Saunieren für Einsteiger</span></span></div>
+    <div class="blk big"><span class="ln"><span>Dein erster</span></span></div>
+    <div class="blk big"><span class="ln"><span>Saunagang?</span></span></div>
+    <div class="blk white tag"><span class="ln"><span>So gelingt er – in <b>4 Schritten</b></span></span></div>
+  </div>
+
+  <!-- 01 Schwitzen -->
+  <div class="stack steps" id="s1">
+    <div class="blk card">
+      <div class="kicker"><span class="ln"><span>01</span></span><i></i><span class="ln"><span>Schwitzen</span></span></div>
+      <div class="meter">
+        <svg width="150" height="150" viewBox="-75 -75 150 150">
+          <circle r="62" fill="none" stroke="rgba(233,238,244,.18)" stroke-width="10" />
+          <circle id="s1-ring" r="62" fill="none" stroke="#fff" stroke-width="10" transform="rotate(-90)" />
+          <g id="s1-ticks"></g>
+          <line id="s1-hand" x1="0" y1="0" x2="0" y2="-44" stroke="#fff" stroke-width="5" />
+          <rect x="-7" y="-7" width="14" height="14" fill="#fff" />
+        </svg>
+        <div>
+          <div class="num"><span class="ln"><span id="s1-num">8–15</span></span></div>
+          <div class="unit"><span class="ln"><span>Minuten</span></span></div>
+        </div>
+      </div>
+    </div>
+    <div class="blk white sub"><span class="ln"><span>Unten oder mittig sitzen</span></span></div>
+  </div>
+
+  <!-- 02 Frische Luft -->
+  <div class="stack steps" id="s2">
+    <div class="blk card">
+      <div class="kicker"><span class="ln"><span>02</span></span><i></i><span class="ln"><span>Frische Luft</span></span></div>
+      <div class="hl"><span class="ln"><span>Tief</span></span><span class="ln"><span>durchatmen</span></span></div>
+    </div>
+    <div class="blk white sub"><span class="ln"><span>30 Sek. bis 1 Min. draußen</span></span></div>
+  </div>
+
+  <!-- 03 Abkühlen -->
+  <div class="stack steps" id="s3">
+    <div class="blk card">
+      <div class="kicker"><span class="ln"><span>03</span></span><i></i><span class="ln"><span>Abkühlen</span></span></div>
+      <div class="hl"><span class="ln"><span>Kalt abduschen</span></span></div>
+    </div>
+    <div class="blk navy2 sub"><span class="ln"><span>Von den Füßen aufwärts</span></span></div>
+  </div>
+
+  <!-- 04 Ruhen -->
+  <div class="stack steps" id="s4">
+    <div class="blk card">
+      <div class="kicker"><span class="ln"><span>04</span></span><i></i><span class="ln"><span>Ruhen</span></span></div>
+      <div class="num"><span class="ln"><span>10–20<small>Min.</small></span></span></div>
+    </div>
+    <div class="blk white sub"><span class="ln"><span>Bademantel an, Wasser trinken</span></span></div>
+  </div>
+  <div class="stack" id="rounds">
+    <div class="blk">
+      <svg width="96" height="96" viewBox="-48 -48 96 96">
+        <path id="rounds-arc" d="M 0 -36 A 36 36 0 1 1 -31.18 18" fill="none" stroke="#fff" stroke-width="8" />
+        <path id="rounds-tip" d="M-44 6 L-31 20 L-17 7" fill="none" stroke="#fff" stroke-width="8" />
+      </svg>
+      <div>
+        <div class="big"><span class="ln"><span>2–3 Runden</span></span></div>
+        <div class="small"><span class="ln"><span>Mehr bringt keinen Zusatznutzen</span></span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sauna-Arten -->
+  <div class="stack" id="temps-head">
+    <div class="blk card">
+      <div class="kicker"><span class="ln"><span>Sauna-Arten</span></span><i></i><span class="ln"><span>im Vergleich</span></span></div>
+      <div class="hl"><span class="ln"><span>Welche Wärme</span></span><span class="ln"><span>passt zu dir?</span></span></div>
+    </div>
+  </div>
+  <div id="temps">
+    <div class="trow" data-min="80" data-max="100">
+      <div class="name"><span class="ln"><span>Finnische Sauna</span></span></div>
+      <div class="val"><span class="v">80–100</span><small>°C</small></div>
+      <div class="track"><div class="fill"></div><div class="range"></div></div>
+      <div class="note">klassisch, mit Aufguss</div>
+    </div>
+    <div class="trow" data-min="45" data-max="60">
+      <div class="name"><span class="ln"><span>Biosauna</span></span><span class="badge">Ideal zum Einstieg</span></div>
+      <div class="val"><span class="v">45–60</span><small>°C</small></div>
+      <div class="track"><div class="fill"></div><div class="range"></div></div>
+      <div class="note">mild, oft mit Duft und Licht</div>
+    </div>
+    <div class="trow" data-min="30" data-max="50">
+      <div class="name"><span class="ln"><span>Infrarotkabine</span></span><span class="badge">Ideal zum Einstieg</span></div>
+      <div class="val"><span class="v">30–50</span><small>°C</small></div>
+      <div class="track"><div class="fill"></div><div class="range"></div></div>
+      <div class="note">Tiefenwärme, schnell startklar</div>
+    </div>
+  </div>
+
+  <!-- Produkte -->
+  <div class="stack" id="prod-head">
+    <div class="blk card">
+      <div class="kicker"><span class="ln"><span>Für Zuhause</span></span><i></i><span class="ln"><span>und Garten</span></span></div>
+      <div class="hl"><span class="ln"><span>Deine eigene Sauna</span></span></div>
+    </div>
+  </div>
+  <div id="deck">
+    <div class="pcard"><img data-plate="kombisauna-everest-xl" alt=""><div class="shade"></div></div>
+    <div class="pcard"><img data-plate="infrarotkabine-redsun-deluxe-xxl" alt=""><div class="shade"></div></div>
+    <div class="pcard"><img data-plate="gartensauna-hygge-deluxe" alt=""><div class="shade"></div></div>
+  </div>
+  <div id="pcount"><div></div><div></div><div></div></div>
+  <div class="stack" id="plabel">
+    <div class="blk"><div class="kicker"><span class="ln"><span id="ptype"></span></span></div><div class="pname"><span class="ln"><span id="pname"></span></span></div></div>
+  </div>
+
+  <!-- End card -->
+  <div id="end-img"><img data-plate="saunieren-titelbild" alt=""></div>
+  <svg class="layer" width="1080" height="1920" viewBox="0 0 1080 1920">
+    <rect id="frame-rect" x="58" y="386" width="964" height="458" fill="none" stroke="rgba(233,238,244,.45)" stroke-width="2" />
+  </svg>
+  <div class="stack" id="end-head">
+    <div class="blk">
+      <div class="kicker"><span class="ln"><span>Saunieren für Einsteiger</span></span></div>
+      <div class="title"><span class="ln"><span>Sauna-Guide</span></span></div>
+    </div>
+  </div>
+  <div id="chips">
+    <div class="chip">8–15 Min.</div>
+    <div class="chip">Frische Luft</div>
+    <div class="chip">Kalt abkühlen</div>
+    <div class="chip">Ruhen</div>
+  </div>
+  <div id="cta">
+    <div class="btn"><span>Jetzt Guide lesen</span>
+      <svg width="40" height="24" viewBox="0 0 40 24"><path d="M0 12h36M26 2l10 10-10 10" fill="none" stroke="#0e2234" stroke-width="3.2"/></svg>
+    </div>
+    <div class="url">homedeluxe.de<i></i></div>
+  </div>
+  <div id="slogan"><span class="ln"><span>Wir machen dein Zuhause.</span></span></div>
+
+  <div id="sep"></div>
+  <div id="flash"></div>
+  <div id="cols"></div>
+  <div id="rows"></div>
+
+  <div id="logo"><img src="../../assets/logo/homedeluxe-logo-white.svg" alt="Home Deluxe"></div>
+
+  <div id="guides"><div style="top:0;height:270px"></div><div style="top:1250px;height:670px"></div></div>
+</div>
+
+<script src="composition.js"></script>
+</body>
+</html>
