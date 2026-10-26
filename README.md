@@ -12,6 +12,7 @@ rendert. ffmpeg schreibt die Frames anschließend als MP4.
 | `projects/black-friday` | 9:16, 1080×1920, 30 fps, 8 s, loopbar | `output/HomeDeluxe_Black-Friday_Story_9x16.mp4` + Titelbild |
 | `projects/shop-3d` | 9:16, 1080×1920, 30 fps, 18,5 s | `output/HomeDeluxe_Shop-3D_Black-Friday_9x16.mp4` + Titelbild |
 | `projects/black-friday-premium` | 9:16, 1080×1920, 30 fps, 37 s | `output/HomeDeluxe_Black-Friday_Premium_9x16.mp4` + Titelbild |
+| `projects/story-letzter-tag` | 9:16, 1520×2688, Standbild | `output/HomeDeluxe_Black-Friday_Letzter-Tag_Story_9x16_A.png` / `_B.png` |
 
 ### Laguna M – Schnitt und Übergänge
 
@@ -85,6 +86,14 @@ eine kurze Zeile. Die lokale Navigation „Black Friday · Entdecken · Kaufen�
 
 Produktdaten kommen aus `projects/shop-3d/products.js`. Scroll-Stopps (`SCROLL`), Einblendzeiten
 (`REVEAL`) und Karussellzeiten (`CAR`) stehen oben in `composition.js`.
+
+### Story „Letzter Tag“ (Higgsfield)
+
+Instagram-Story-Bild zum letzten Aktionstag, mit Higgsfield erzeugt (Modell GPT Image 2.5, 9:16, 2K,
+Qualität „high“). Referenzen waren der freigestellte Whirlpool BEACH, das weiße Home-Deluxe-Logo und das
+Titelbild der Premium-Fassung als Stilvorlage. Texte: „Black Friday“, „Letzter Tag.“, Chrom „-25%“,
+„Nur noch heute – auf alles.“, Logo, homedeluxe.de. Zwei Varianten (A, B), oben und unten bleibt
+Platz für die Story-Bedienelemente.
 
 ## Rendern
 
