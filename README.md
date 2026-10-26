@@ -9,6 +9,7 @@ rendert. ffmpeg schreibt die Frames anschließend als MP4.
 | Projekt | Format | Ergebnis |
 |---|---|---|
 | `projects/laguna-m` | 9:16, 1080×1920, 30 fps, 18,5 s | `output/HomeDeluxe_Laguna-M_Reel_9x16.mp4` + Titelbild |
+| `projects/cyber-monday-ir` | 4:5, 1080×1350, 30 fps, 13,2 s | `output/HomeDeluxe_CyberMonday_Infrarotkabine_4x5.mp4` |
 
 ### Laguna M – Schnitt und Übergänge
 
@@ -29,12 +30,47 @@ läuft nur mit ihren sauberen Frames (Schnittliste `SHOTS` in `composition.js`),
 Die Produktdaten stammen aus den Shop- und Händlerangaben zur LAGUNA M (homedeluxe.de, Hornbach).
 Preise sind bewusst nicht eingebaut, weil sie sich häufig ändern.
 
+### Cyber Monday – Infrarotkabine
+
+Quelle ist ein 8,7-s-Clip einer Infrarotkabine vor orangem Studiohintergrund. Der Hintergrund wird
+per Farbschlüssel auf Navy umgefärbt (`scripts/recolor_bg.py`, Regeln je Einstellung in `grade.json`:
+Holz und Magenta-LEDs bleiben unangetastet, in der Holz-Einstellung zählt nur die Fläche, die mit der
+Bildecke verbunden ist). Danach wird jede Einstellung einzeln per Bewegungsinterpolation auf 72 fps
+gerechnet, damit die Komposition beliebige Slow-Motion-Rampen fahren kann (`EDIT` in `composition.js`).
+
+Footage, 3D-Objekte (three.js: Chrome-Typo aus Poppins ExtraBold, Hologramm-Ringe, Rasterboden,
+Lichtpartikel) und der Glitch-/Linsen-Pass laufen in einem WebGL-Canvas, Typo-Blöcke und HUD im DOM.
+
+| Zeit | Einstellung | Tempo | Grafik |
+|---|---|---|---|
+| 0,0–2,0 s | Totale | Slow-Mo 0,35×, Ramp in den Reißschwenk | 3D „CYBER MONDAY“ druckt sich aus Drahtgitter auf, Rasterboden, „Nur am 30.11.“ |
+| 2,0–3,9 s | LED-Leiste | Ramp 1,6× → 0,34× | 3D „–25 %“ mit Ring, „zusätzlich auf Sale“ |
+| 3,9–5,8 s | Seitenwand, Holzstruktur | 0,8× / 1,45× | 3D „–10 %“, „auf alles andere“ |
+| 5,8–7,7 s | Liegefläche | Slow-Mo 0,5× | Laser-Scan, Ziel-Rahmen, „Wellness für dein Zuhause“ |
+| 7,7–8,9 s | LED-Ecke | 0,9× | 3D „30.11.“, „Nur 1 Tag – Cyber Monday“ |
+| 8,9–13,2 s | Logo-Wand | Slow-Mo 0,62× | Endcard: 3D-%, –25 % / –10 %, CTA „Jetzt sparen“ + homedeluxe.de |
+
+Ton: Original-Tonspur auf die neue Länge gestreckt plus synthetisches Sounddesign
+(Impacts, Whooshes, Glitches, Riser, UI-Ticks) nach `sound.json` (`scripts/sound_design.py`).
+
+```bash
+npm run cyber-monday-ir:plates   # Umfärben + Interpolation -> build/cyber-monday-ir/plates (ca. 5 min)
+npm run cyber-monday-ir:audio    # -> build/cyber-monday-ir/soundtrack.wav
+npm run cyber-monday-ir:render   # -> projects/cyber-monday-ir/output/HomeDeluxe_CyberMonday_Infrarotkabine_4x5.mp4
+npm run cyber-monday-ir:stills   # Kontrollbilder
+```
+
+Ändert sich das Timing in `EDIT`, die Zeitstempel in `sound.json` nachziehen (`window.COMP.S` liefert die
+Schnittzeiten). Die 3D-Schrift kommt aus `assets/fonts/poppins/poppins-800.typeface.json`
+(`node scripts/make_typeface.mjs <font.woff> <out.json> "<Zeichen>"`).
+
 ## Rendern
 
 Voraussetzungen: Node 18+, Python 3 mit numpy + Pillow, ffmpeg, Chromium für Playwright.
 
 ```bash
-npm install                 # Playwright (PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1, wenn Chromium schon da ist)
+npm install                 # Playwright, three.js (PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1, wenn Chromium schon da ist)
+                            # vorhandenes Chromium nutzen: CHROMIUM_PATH=/pfad/zu/chrome npm run ...
 npm run laguna-m:plates     # Rohschnitt -> hochskalierte, leicht gegradete JPG-Plates (build/)
 npm run laguna-m:track      # Punkt-Tracking -> projects/laguna-m/tracks.js (nur nötig, wenn tracking.json geändert wurde)
 npm run laguna-m:render     # -> projects/laguna-m/output/HomeDeluxe_Laguna-M_Reel_9x16.mp4
@@ -51,7 +87,11 @@ assets/fonts/poppins/     Poppins 400–800 (latin, OFL)
 assets/logo/              Home-Deluxe-Logo (weiß, SVG)
 scripts/prepare_plates.sh Hochskalieren + Grading der Quelle
 scripts/track_points.py   Template-Tracking für Marker, die am Bild kleben
-scripts/render.js         Chromium -> PNG-Frames -> ffmpeg (H.264 + stumme AAC-Spur)
+scripts/render.js         Chromium -> PNG-Frames -> ffmpeg (H.264 + AAC, stumm oder --audio)
+scripts/recolor_bg.py     Hintergrund per Farbschlüssel umfärben (Orange -> Navy)
+scripts/build_plates.sh   Umfärben + Slow-Mo-Interpolation je Einstellung
+scripts/sound_design.py   Tonbett + synthetisches Sounddesign
+scripts/make_typeface.mjs Schrift -> three.js-Typeface für 3D-Text
 projects/<name>/          source/, composition.html/.js, tracking.json, tracks.js, output/
 ```
 

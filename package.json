@@ -6,9 +6,16 @@
     "laguna-m:plates": "scripts/prepare_plates.sh projects/laguna-m/source/laguna-m_rohschnitt.mp4 build/laguna-m/plates",
     "laguna-m:track": "python3 -I scripts/track_points.py build/laguna-m/plates projects/laguna-m/tracking.json projects/laguna-m/tracks.js",
     "laguna-m:render": "node scripts/render.js projects/laguna-m/composition.html projects/laguna-m/output/HomeDeluxe_Laguna-M_Reel_9x16.mp4 --plates build/laguna-m/plates",
-    "laguna-m:stills": "node scripts/render.js projects/laguna-m/composition.html build/laguna-m/stills --plates build/laguna-m/plates --stills 1,2,4,5,7,10,11,13,14.5,16,17.6,18,19,21"
+    "laguna-m:stills": "node scripts/render.js projects/laguna-m/composition.html build/laguna-m/stills --plates build/laguna-m/plates --stills 1,2,4,5,7,10,11,13,14.5,16,17.6,18,19,21",
+    "cyber-monday-ir:plates": "scripts/build_plates.sh projects/cyber-monday-ir/source/infrarotkabine_original.mp4 projects/cyber-monday-ir/grade.json build/cyber-monday-ir/plates",
+    "cyber-monday-ir:audio": "python3 -I scripts/sound_design.py projects/cyber-monday-ir/source/infrarotkabine_original.mp4 projects/cyber-monday-ir/sound.json build/cyber-monday-ir/soundtrack.wav",
+    "cyber-monday-ir:render": "node scripts/render.js projects/cyber-monday-ir/composition.html projects/cyber-monday-ir/output/HomeDeluxe_CyberMonday_Infrarotkabine_4x5.mp4 --plates build/cyber-monday-ir/plates --audio build/cyber-monday-ir/soundtrack.wav",
+    "cyber-monday-ir:stills": "node scripts/render.js projects/cyber-monday-ir/composition.html build/cyber-monday-ir/stills --plates build/cyber-monday-ir/plates --stills 0.5,1.2,1.9,2.6,3.4,4.3,4.9,5.5,6.6,7.4,8.4,9.3,10.5,11.8"
   },
   "devDependencies": {
-    "playwright": "1.56.1"
+    "@fontsource/poppins": "5.2.7",
+    "opentype.js": "1.3.4",
+    "playwright": "1.56.1",
+    "three": "0.180.0"
   }
 }
