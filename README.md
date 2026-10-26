@@ -10,6 +10,7 @@ rendert. ffmpeg schreibt die Frames anschließend als MP4.
 |---|---|---|
 | `projects/laguna-m` | 9:16, 1080×1920, 30 fps, 18,5 s | `output/HomeDeluxe_Laguna-M_Reel_9x16.mp4` + Titelbild |
 | `projects/black-friday` | 9:16, 1080×1920, 30 fps, 8 s, loopbar | `output/HomeDeluxe_Black-Friday_Story_9x16.mp4` + Titelbild |
+| `projects/shop-3d` | 9:16, 1080×1920, 30 fps, 18,5 s | `output/HomeDeluxe_Shop-3D_Black-Friday_9x16.mp4` + Titelbild |
 
 ### Laguna M – Schnitt und Übergänge
 
@@ -46,6 +47,26 @@ Keine Footage: Alles entsteht in `composition.html`/`.js`.
 
 Timings stehen in `T` und `GLITCH` in `composition.js`.
 
+### Shop 3D – Kamerafahrt durch homedeluxe.de mit -25 %
+
+Eine 3D-Fahrt (CSS 3D, eigene Kamera auf `#world`) durch den nachgebauten mobilen Shop. Header,
+Produktkacheln und Preise sehen aus wie auf homedeluxe.de. Produkte, Preise und Bilder kommen von
+der Startseite (Stand 26.10.2026, `products.js`, Bilder in `source/products/`). Der Aktionspreis ist der
+aktuelle Shop-Preis minus 25 %.
+
+| Zeit | Ablauf |
+|---|---|
+| 0,0–1,0 s | Mobile Startseite: Sticky-Header mit Laufband, Black-Friday-Banner, Topseller. Die Seite scrollt |
+| 1,0–3,4 s | Die Kacheln heben ab und fliegen in einen Gang. Die Seite kippt nach hinten und wird zum Boden. Die Kamera fährt zurück und taucht in den Gang ein. Alle Kachelpreise zählen auf -25 % herunter |
+| 3,4–13,4 s | Vier Stationen (Wohnen: AMIRI XXL, Garten: LOMA, Sauna & Infrarot: EVEREST M, Whirlpools: BEACH). Das freigestellte Produkt schwebt über einem Podest. „-25%“ knallt ins Preisschild, der alte Preis wird durchgestrichen, der neue zählt herunter, dann „Du sparst …“ und der Warenkorb zählt hoch. Dazwischen schnelle Fahrten mit Speed-Lines und Bewegungsunschärfe. Kacheln im Gang ändern ihre Preise, sobald die Kamera vorbeikommt |
+| 13,4–15,2 s | Alle 20 Produkte fliegen an der Kamera vorbei in eine Produktwand, jede mit Aktionspreis |
+| 15,4–18,5 s | Endcard „BLACK FRIDAY -25% auf alles“, „Jetzt shoppen“, homedeluxe.de |
+
+Das Bodenraster zeichnet ein 2D-Canvas mit derselben Kameramathematik (`view()` in `composition.js`).
+Große 3D-Ebenen, die hinter die Kamera reichen, sprengen Chromiums Tile-Speicher und lassen dann
+andere Ebenen verschwinden. Freisteller entstehen mit `scripts/key_white.py` (weißer Hintergrund →
+Alpha, `--holes` für eingeschlossene weiße Flächen).
+
 ## Rendern
 
 Voraussetzungen: Node 18+, Python 3 mit numpy + Pillow, ffmpeg, Chromium für Playwright.
@@ -58,6 +79,8 @@ npm run laguna-m:render     # -> projects/laguna-m/output/HomeDeluxe_Laguna-M_Re
 npm run laguna-m:stills     # Kontrollbilder nach build/laguna-m/stills
 npm run black-friday:render # -> projects/black-friday/output/HomeDeluxe_Black-Friday_Story_9x16.mp4
 npm run black-friday:stills # Kontrollbilder nach build/black-friday/stills
+npm run shop-3d:render      # -> projects/shop-3d/output/HomeDeluxe_Shop-3D_Black-Friday_9x16.mp4 (ca. 30 min)
+npm run shop-3d:stills      # Kontrollbilder nach build/shop-3d/stills
 ```
 
 Ein einzelnes Frame lässt sich auch im Browser prüfen:
@@ -71,6 +94,7 @@ assets/fonts/poppins/     Poppins 400–800 (latin, OFL)
 assets/logo/              Home-Deluxe-Logo (weiß, SVG)
 scripts/prepare_plates.sh Hochskalieren + Grading der Quelle
 scripts/track_points.py   Template-Tracking für Marker, die am Bild kleben
+scripts/key_white.py      Produkt-Freisteller: weißer Hintergrund -> PNG mit Alpha
 scripts/render.js         Chromium -> PNG-Frames -> ffmpeg (H.264 + stumme AAC-Spur)
 projects/<name>/          source/, composition.html/.js, tracking.json, tracks.js, output/
 ```

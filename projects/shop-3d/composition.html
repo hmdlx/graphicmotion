@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>Shop 3D – Black Friday 9:16</title>
+<style>
+  @font-face { font-family: Poppins; font-weight: 400; src: url(../../assets/fonts/poppins/poppins-latin-400-normal.woff2) format("woff2"); }
+  @font-face { font-family: Poppins; font-weight: 500; src: url(../../assets/fonts/poppins/poppins-latin-500-normal.woff2) format("woff2"); }
+  @font-face { font-family: Poppins; font-weight: 600; src: url(../../assets/fonts/poppins/poppins-latin-600-normal.woff2) format("woff2"); }
+  @font-face { font-family: Poppins; font-weight: 700; src: url(../../assets/fonts/poppins/poppins-latin-700-normal.woff2) format("woff2"); }
+  @font-face { font-family: Poppins; font-weight: 800; src: url(../../assets/fonts/poppins/poppins-latin-800-normal.woff2) format("woff2"); }
+
+  /* Shop-Look von homedeluxe.de (Navy-Header, weiße eckige Produktkacheln) im Black-Friday-Raum */
+  :root {
+    --navy: #0e2234;
+    --navy-2: #1c3a54;
+    --ink: #111;
+    --muted: #8a9198;
+    --soft: #f4f6f8;
+    --ice: #8fd8ff;
+    --cyan: #19d3ff;
+    --pink: #ff2a6d;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; border-radius: 0; }
+  html, body { width: 1080px; height: 1920px; overflow: hidden; background: #000; }
+  body { font-family: Poppins, sans-serif; color: #fff; -webkit-font-smoothing: antialiased; }
+
+  #stage { position: absolute; inset: 0; width: 1080px; height: 1920px; overflow: hidden;
+           background: radial-gradient(ellipse 90% 60% at 50% 46%, #13304a 0%, #0a1826 45%, #03070c 100%); }
+  .layer { position: absolute; inset: 0; pointer-events: none; }
+
+  /* 3D-Welt: Ursprung in der Bildmitte, die Kamera bewegt #world */
+  #viewport { position: absolute; inset: 0; perspective: 1200px; perspective-origin: 540px 960px; overflow: hidden; }
+  #world { position: absolute; left: 540px; top: 960px; width: 0; height: 0; transform-style: preserve-3d; }
+  .obj { position: absolute; left: 0; top: 0; transform-origin: 50% 50%; backface-visibility: hidden; }
+
+  /* Bodenraster als 2D-Canvas mit derselben Kamera: riesige 3D-Ebenen sprengen Chromiums Tile-Speicher */
+  #floorc { position: absolute; left: 0; top: 0; }
+
+  /* Shopseite (wird zur Bodenfläche) */
+  #page { width: 1080px; height: 3500px; background: #fff; color: var(--ink); transform-origin: 50% 0; }
+  #page .chips { position: absolute; left: 32px; top: 34px; display: flex; gap: 18px; }
+  #page .chips span { font-weight: 500; font-size: 30px; line-height: 1; padding: 22px 26px; background: var(--soft); }
+  #page .chips span.sale { background: #000; color: #fff; font-weight: 700; }
+  #page .banner { position: absolute; left: 0; top: 140px; width: 1080px; height: 700px; background: #000; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #fff; }
+  #page .banner .bf { font-weight: 800; font-size: 150px; line-height: 1; letter-spacing: -.02em; text-shadow: -6px 0 rgba(255, 42, 109, .8), 6px 0 rgba(25, 211, 255, .8); }
+  #page .banner .bs { margin-top: 26px; font-weight: 400; font-size: 72px; line-height: 1; }
+  #page h2 { position: absolute; left: 32px; top: 900px; font-weight: 400; font-size: 54px; line-height: 1; color: var(--ink); }
+  #page h2 b { font-weight: 700; }
+  #page .slot { position: absolute; width: 492px; height: 790px; background: var(--soft); }
+
+  /* Produktkachel wie im Shop */
+  .card { width: 492px; height: 790px; background: #fff; color: var(--ink); overflow: hidden; box-shadow: 0 30px 80px rgba(0, 0, 0, .45); }
+  .card .img { position: relative; width: 492px; height: 492px; overflow: hidden; background: var(--soft); }
+  .card .img img { display: block; width: 100%; height: 100%; object-fit: cover; }
+  .card .badge { position: absolute; left: 0; top: 24px; background: #000; color: #fff; font-weight: 800; font-size: 40px; line-height: 1; padding: 14px 20px 12px; transform-origin: 0 50%; }
+  .card .badge i { font-style: normal; color: var(--cyan); }
+  .card .txt { padding: 22px 24px 0; }
+  .card .line { font-weight: 700; font-size: 28px; line-height: 1.1; text-transform: uppercase; letter-spacing: .01em; }
+  .card .ttl { margin-top: 6px; font-weight: 400; font-size: 27px; line-height: 1.3; height: 70px; overflow: hidden; color: #333; }
+  .card .pr { position: relative; margin-top: 22px; display: flex; align-items: baseline; gap: 16px; white-space: nowrap; }
+  .card .now { position: relative; font-weight: 700; font-size: 50px; line-height: 1; font-variant-numeric: tabular-nums; }
+  .card .now::after { content: ""; position: absolute; left: -8px; right: -8px; bottom: -8px; height: 6px; background: var(--cyan); transform: scaleX(var(--ul, 0)); transform-origin: 0 50%; }
+  .card .was { font-weight: 400; font-size: 30px; line-height: 1; color: var(--muted); text-decoration: line-through; }
+  .card .shine { position: absolute; inset: 0; background: linear-gradient(115deg, transparent 35%, rgba(255, 255, 255, .55) 50%, transparent 65%); background-size: 300% 100%; mix-blend-mode: soft-light; }
+
+  /* Hero-Stationen */
+  .prod img { display: block; width: 100%; height: 100%; }
+  .podium { width: 1100px; height: 1100px; border-radius: 50%; transform-origin: 50% 50%;
+            background: radial-gradient(circle, rgba(25, 211, 255, .28) 0%, rgba(25, 211, 255, .08) 45%, transparent 62%);
+            box-shadow: inset 0 0 0 4px rgba(143, 216, 255, .55); }
+  .sign { white-space: nowrap; font-weight: 800; font-size: 300px; line-height: 1; letter-spacing: -.02em; color: transparent; -webkit-text-stroke: 4px rgba(143, 216, 255, .5); }
+
+  .panel { width: 840px; padding: 40px 46px 44px; background: #0e2234; border: 2px solid rgba(143, 216, 255, .55);
+           box-shadow: 0 0 60px rgba(25, 211, 255, .25), 0 40px 90px rgba(0, 0, 0, .55); }
+  .panel .kick { font-weight: 700; font-size: 36px; line-height: 1; letter-spacing: .12em; text-transform: uppercase; color: var(--ice); }
+  .panel .pt { margin-top: 12px; font-weight: 400; font-size: 34px; line-height: 1.25; color: rgba(255, 255, 255, .82); max-width: 560px; }
+  .panel .old { position: relative; display: inline-block; margin-top: 26px; font-weight: 600; font-size: 64px; line-height: 1; color: rgba(255, 255, 255, .55); transform-origin: 0 100%; white-space: nowrap; }
+  .panel .old::after { content: ""; position: absolute; left: -6px; right: -6px; top: 52%; height: 7px; background: var(--pink); transform: scaleX(var(--strike, 0)); transform-origin: 0 50%; }
+  .panel .new { display: block; margin-top: 4px; font-weight: 800; font-size: 150px; line-height: 1; letter-spacing: -.02em; white-space: nowrap; transform-origin: 0 80%; font-variant-numeric: tabular-nums; }
+  .panel .save { display: inline-block; margin-top: 22px; background: var(--cyan); color: var(--navy); font-weight: 700; font-size: 40px; line-height: 1; padding: 18px 24px 16px; white-space: nowrap; }
+  .panel .pbadge { position: absolute; right: -34px; top: -46px; background: #fff; color: #000; font-weight: 800; font-size: 92px; line-height: 1; padding: 18px 26px 14px; box-shadow: 0 0 0 6px #000, 0 20px 50px rgba(0, 0, 0, .5); }
+
+  .tag { font-weight: 800; font-size: 58px; line-height: 1; padding: 18px 24px 16px; background: #000; color: #fff; border: 3px solid var(--cyan); white-space: nowrap; box-shadow: 0 0 30px rgba(25, 211, 255, .35); }
+  .tag.w { background: #fff; color: #000; border-color: #fff; box-shadow: 0 0 30px rgba(255, 255, 255, .25); }
+
+  /* Speed-Streaks (2D) */
+  .streak { position: absolute; left: 540px; top: 960px; height: 3px; width: 420px; transform-origin: 0 50%;
+            background: linear-gradient(90deg, transparent, rgba(220, 245, 255, .9)); }
+
+  /* Sticky Shop-Header (2D) */
+  #hud { position: absolute; left: 0; top: 0; width: 1080px; height: 220px; }
+  #promo { position: absolute; left: 0; top: 0; width: 1080px; height: 64px; background: #000; overflow: hidden; }
+  #ticker { position: absolute; left: 0; top: 0; height: 64px; white-space: nowrap; font-weight: 700; font-size: 28px; line-height: 64px; letter-spacing: .14em; }
+  #ticker span { display: inline-block; padding-right: 60px; }
+  #ticker b { color: var(--cyan); font-weight: 800; }
+  #bar { position: absolute; left: 0; top: 64px; width: 1080px; height: 156px; background: var(--navy); display: flex; align-items: center; padding: 0 40px; box-shadow: 0 10px 40px rgba(0, 0, 0, .35); }
+  #bar .burger { width: 54px; display: grid; gap: 11px; margin-right: 34px; }
+  #bar .burger i { display: block; height: 5px; background: #fff; }
+  #bar .logo { width: 330px; height: auto; display: block; }
+  #bar .icons { margin-left: auto; display: flex; gap: 46px; align-items: center; }
+  #bar svg { display: block; }
+  #cart { position: relative; }
+  #cartn { position: absolute; right: -22px; top: -18px; min-width: 42px; height: 42px; padding: 0 8px; border-radius: 21px; background: var(--cyan); color: var(--navy); font-weight: 800; font-size: 26px; line-height: 42px; text-align: center; }
+
+  /* Endcard */
+  #shade { background: linear-gradient(to bottom, rgba(3, 7, 12, 0) 0%, rgba(3, 7, 12, .72) 32%, rgba(3, 7, 12, .9) 60%, rgba(3, 7, 12, .95) 100%); }
+  #end { position: absolute; left: 0; top: 640px; width: 1080px; text-align: center; }
+  #end .bf { font-weight: 800; font-size: 178px; line-height: .92; letter-spacing: -.02em; }
+  #end .bf span { display: block; }
+  #end .bs { margin-top: 34px; font-weight: 400; font-size: 84px; line-height: 1; }
+  #end .bs b { font-weight: 800; }
+  #end .cta { display: inline-flex; align-items: center; gap: 22px; margin-top: 90px; background: #fff; color: var(--navy); font-weight: 700; font-size: 46px; line-height: 1; padding: 34px 50px 32px; }
+  #end .url { margin-top: 34px; font-weight: 500; font-size: 40px; line-height: 1; letter-spacing: .04em; color: var(--ice); }
+  .rgb { text-shadow: -7px 0 rgba(255, 42, 109, .85), 7px 0 rgba(25, 211, 255, .85); }
+
+  #vignette { background: radial-gradient(ellipse 80% 62% at 50% 50%, transparent 60%, rgba(0, 0, 0, .55) 100%); }
+  #flash { background: #fff; }
+</style>
+</head>
+<body>
+<div id="stage">
+  <canvas id="floorc" width="1080" height="1920"></canvas>
+  <div id="viewport"><div id="world"></div></div>
+  <div class="layer" id="streaks"></div>
+  <div class="layer" id="vignette"></div>
+
+  <div class="layer" id="shade"></div>
+  <div id="end">
+    <div class="bf rgb"><span>BLACK</span><span>FRIDAY</span></div>
+    <div class="bs"><b>-25%</b> auf alles</div>
+    <div class="cta">Jetzt shoppen
+      <svg width="44" height="26" viewBox="0 0 44 26"><path d="M0 13h40M29 2l11 11-11 11" fill="none" stroke="#0e2234" stroke-width="3.6"/></svg></div>
+    <div class="url">homedeluxe.de</div>
+  </div>
+
+  <div id="hud">
+    <div id="promo"><div id="ticker"></div></div>
+    <div id="bar">
+      <div class="burger"><i></i><i></i><i></i></div>
+      <img class="logo" src="../../assets/logo/homedeluxe-logo-white.svg" alt="Home Deluxe">
+      <div class="icons">
+        <svg width="50" height="50" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="7" fill="none" stroke="#fff" stroke-width="2.2"/><path d="M15.8 15.8L22 22" stroke="#fff" stroke-width="2.4"/></svg>
+        <svg width="52" height="46" viewBox="0 0 24 21"><path d="M12 20s-9-5.6-9-12A5 5 0 0 1 12 5a5 5 0 0 1 9 3c0 6.4-9 12-9 12z" fill="none" stroke="#fff" stroke-width="2"/></svg>
+        <div id="cart"><svg width="54" height="50" viewBox="0 0 26 24"><path d="M1 2h4l3 13h13l3-9H7" fill="none" stroke="#fff" stroke-width="2.2"/><circle cx="10" cy="20.5" r="2" fill="#fff"/><circle cx="19" cy="20.5" r="2" fill="#fff"/></svg><div id="cartn">0</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="layer" id="flash"></div>
+</div>
+
+<template id="card-tpl">
+  <div class="obj card">
+    <div class="img"><img alt=""><div class="badge">-25<i>%</i></div></div>
+    <div class="txt">
+      <div class="line"></div>
+      <div class="ttl"></div>
+      <div class="pr"><span class="now"></span><span class="was"></span></div>
+    </div>
+    <div class="shine"></div>
+  </div>
+</template>
+<template id="panel-tpl">
+  <div class="obj panel">
+    <div class="kick"></div>
+    <div class="pt"></div>
+    <div class="old"></div>
+    <div class="new"></div>
+    <div class="save"></div>
+    <div class="pbadge">-25%</div>
+  </div>
+</template>
+<script src="products.js"></script>
+<script src="composition.js"></script>
+</body>
+</html>

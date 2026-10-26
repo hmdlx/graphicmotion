@@ -8,7 +8,9 @@
     "laguna-m:render": "node scripts/render.js projects/laguna-m/composition.html projects/laguna-m/output/HomeDeluxe_Laguna-M_Reel_9x16.mp4 --plates build/laguna-m/plates",
     "laguna-m:stills": "node scripts/render.js projects/laguna-m/composition.html build/laguna-m/stills --plates build/laguna-m/plates --stills 1,2,4,5,7,10,11,13,14.5,16,17.6,18,19,21",
     "black-friday:render": "node scripts/render.js projects/black-friday/composition.html projects/black-friday/output/HomeDeluxe_Black-Friday_Story_9x16.mp4",
-    "black-friday:stills": "node scripts/render.js projects/black-friday/composition.html build/black-friday/stills --stills 0.6,1,1.5,3,3.95,6.05,7.1,7.5"
+    "black-friday:stills": "node scripts/render.js projects/black-friday/composition.html build/black-friday/stills --stills 0.6,1,1.5,3,3.95,6.05,7.1,7.5",
+    "shop-3d:render": "node scripts/render.js projects/shop-3d/composition.html projects/shop-3d/output/HomeDeluxe_Shop-3D_Black-Friday_9x16.mp4",
+    "shop-3d:stills": "node scripts/render.js projects/shop-3d/composition.html build/shop-3d/stills --stills 0,1,1.6,2.1,2.8,4.6,7.3,10.2,12.9,14.2,15.2,17.5"
   },
   "devDependencies": {
     "playwright": "1.56.1"
