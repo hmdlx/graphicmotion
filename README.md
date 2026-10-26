@@ -85,8 +85,8 @@ npm run laguna-m:stills     # Kontrollbilder nach build/laguna-m/stills
 npm run sauna-guide:upscale        # nur bei neuen Quellbildern: Real-ESRGAN x4 -> source-hq/ (s. u.)
 npm run sauna-guide:plates         # source-hq -> 2160 px hohe, leicht gegradete JPG-Plates (build/)
 npm run sauna-guide:sound          # Soundtrack -> build/sauna-guide/sound.wav
-npm run sauna-guide:render         # -> output/HomeDeluxe_Sauna-Guide_MetaAd_9x16.mp4 (mit Ton)
-npm run sauna-guide:silent         # gleiche Bildspur mit stummer Tonspur -> …_ohne-Ton.mp4
+npm run sauna-guide:render         # Master mit Bewegungsunschärfe + Ton -> build/sauna-guide/master.mp4 (~25 Min.)
+npm run sauna-guide:deliver        # Master -> output/: MP4 mit Ton (~27 MB), MP4 ohne Ton, Titelbild
 npm run sauna-guide:stills         # Kontrollbilder nach build/sauna-guide/stills
 ```
 
