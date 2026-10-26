@@ -80,8 +80,14 @@ def load(path):
     return a.reshape(-1, ch).mean(axis=1), sr
 
 
-def split_points(a, sr, n):
-    """Centres of the n longest pauses (10 ms frames below -42 dBFS)."""
+def split_points(a, sr, weights):
+    """Cut points between len(weights) segments.
+
+    Candidates are the pauses (10 ms frames below -42 dBFS). Each boundary should sit
+    near where the text proportions put it and prefers long pauses; a small dynamic
+    programme picks the best increasing set (a dash inside a sentence can pause as
+    long as a sentence break, so "the n longest pauses" is not enough).
+    """
     hop = sr // 100
     rms = np.sqrt(np.convolve(a ** 2, np.ones(hop) / hop, mode='same')[::hop])
     quiet = 20 * np.log10(rms + 1e-9) < -42
@@ -90,13 +96,33 @@ def split_points(a, sr, n):
         if q and start is None:
             start = i
         elif not q and start is not None:
-            if start > 0 and i < len(quiet):  # ignore leading/trailing silence
-                pauses.append((i - start, (start + i) // 2))
+            if start > 0 and i < len(quiet) and i - start >= 8:   # ignore leading/trailing silence
+                pauses.append(((start + i) / 2 / 100, (i - start) / 100))
             start = None
-    pauses.sort(reverse=True)
-    if len(pauses) < n:
-        raise SystemExit(f'only {len(pauses)} pauses found, need {n}')
-    return sorted(c * hop for _, c in pauses[:n])
+    total = len(a) / sr
+    cum = np.cumsum(weights)[:-1] / np.sum(weights) * total
+    n, m = len(cum), len(pauses)
+    if m < n:
+        raise SystemExit(f'only {m} pauses found, need {n}')
+    cost = lambda k, j: ((pauses[j][0] - cum[k]) / 1.5) ** 2 - 2.0 * np.log(pauses[j][1] / 0.1)
+    best = np.full((n, m), np.inf)
+    back = np.zeros((n, m), dtype=int)
+    for j in range(m):
+        best[0, j] = cost(0, j)
+    for k in range(1, n):
+        run, arg = np.inf, -1
+        for j in range(m):
+            if j > 0 and best[k - 1, j - 1] < run:
+                run, arg = best[k - 1, j - 1], j - 1
+            if arg >= 0:
+                best[k, j] = run + cost(k, j)
+                back[k, j] = arg
+    j = int(np.argmin(best[n - 1]))
+    picks = [j]
+    for k in range(n - 1, 0, -1):
+        j = back[k, j]
+        picks.append(j)
+    return [int(pauses[j][0] * sr) for j in reversed(picks)]
 
 
 def finish(src, dst):
@@ -121,7 +147,7 @@ def main():
     a, sr = load(take)
     print(f'take: {len(a) / sr:.2f} s')
 
-    cuts = [0] + split_points(a, sr, len(segs) - 1) + [len(a)]
+    cuts = [0] + split_points(a, sr, [len(seg['say']) for seg in segs]) + [len(a)]
     durations = {}
     for seg, lo, hi in zip(segs, cuts, cuts[1:]):
         part = os.path.join(out_dir, seg['id'] + '.part.wav')

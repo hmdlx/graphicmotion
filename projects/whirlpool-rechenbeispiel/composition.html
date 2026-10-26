@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>Whirlpool-Rechenbeispiel Staffelrabatt – Reel 9:16</title>
+<style>
+  @font-face { font-family: Poppins; font-weight: 400; src: url(../../assets/fonts/poppins/poppins-latin-400-normal.woff2) format("woff2"); }
+  @font-face { font-family: Poppins; font-weight: 500; src: url(../../assets/fonts/poppins/poppins-latin-500-normal.woff2) format("woff2"); }
+  @font-face { font-family: Poppins; font-weight: 600; src: url(../../assets/fonts/poppins/poppins-latin-600-normal.woff2) format("woff2"); }
+  @font-face { font-family: Poppins; font-weight: 700; src: url(../../assets/fonts/poppins/poppins-latin-700-normal.woff2) format("woff2"); }
+  @font-face { font-family: Poppins; font-weight: 800; src: url(../../assets/fonts/poppins/poppins-latin-800-normal.woff2) format("woff2"); }
+
+  /* Briefing: Poppins, Navy #0f2334 + Weiß #fefefe (Grautöne aus der CI), eckige Ecken.
+     Stil: schnelle Pop-ins mit Überschwung, Polaroid-Sticker, Preisschilder, handgezeichnete
+     Pfeile und Kreise, Rechen-Karten, Whip-Pans. */
+  :root { --navy: #0f2334; --white: #fefefe; --muted: #66727d; --line: #e3e7ec; --soft: #f4f6f8; }
+  * { box-sizing: border-box; margin: 0; padding: 0; border-radius: 0; }
+  html, body { width: 1080px; height: 1920px; overflow: hidden; background: var(--white); }
+  body { font-family: Poppins, sans-serif; color: var(--navy); -webkit-font-smoothing: antialiased; }
+  #stage { position: absolute; inset: 0; overflow: hidden; background: var(--white); }
+  #bg { position: absolute; left: -1080px; top: -400px; width: 4320px; height: 2720px;
+    background-image: radial-gradient(circle, #dde2e8 3.2px, transparent 3.6px); background-size: 54px 54px; }
+  #cam { position: absolute; inset: 0; transform-origin: 540px 960px; }
+  .scene { position: absolute; inset: 0; transform-origin: 540px 960px; }
+  .a { position: absolute; left: 0; top: 0; transform-origin: 50% 50%; visibility: hidden; }
+  #logo { position: absolute; left: 420px; top: 92px; width: 240px; }
+
+  .chip { background: var(--navy); color: var(--white); font-weight: 700; font-size: 34px; line-height: 1; letter-spacing: .14em; padding: 18px 28px 15px; white-space: nowrap; }
+  .kt { font-weight: 800; line-height: .98; letter-spacing: -.02em; text-transform: uppercase; white-space: nowrap; }
+  .boxed { background: var(--navy); color: var(--white); padding: 14px 30px 8px; }
+  .sticker { background: #fff; border: 5px solid var(--navy); font-weight: 700; font-size: 36px; line-height: 1; padding: 16px 24px 13px; white-space: nowrap; box-shadow: 0 14px 30px rgba(15, 35, 52, .18); }
+  .round { width: 120px; height: 120px; border-radius: 50%; background: var(--navy); color: var(--white); font-weight: 800; font-size: 74px; line-height: 120px; text-align: center; box-shadow: 0 14px 30px rgba(15, 35, 52, .22); }
+  .round.w { background: #fff; color: var(--navy); border: 6px solid var(--navy); line-height: 108px; }
+
+  .polaroid { background: #fff; padding: 22px 22px 0; box-shadow: 0 34px 70px rgba(15, 35, 52, .22), 0 6px 16px rgba(15, 35, 52, .10); }
+  .polaroid img { display: block; object-fit: cover; }
+  .polaroid .cap { font-weight: 800; font-size: 46px; line-height: 1; padding: 26px 4px 30px; letter-spacing: .02em; display: flex; justify-content: space-between; align-items: baseline; }
+  .polaroid .cap small { font-weight: 500; font-size: 26px; color: var(--muted); letter-spacing: 0; }
+
+  .tag { height: 180px; padding: 0 46px 0 110px; background: var(--navy); color: var(--white); display: flex; align-items: center;
+    clip-path: polygon(70px 0, 100% 0, 100% 100%, 70px 100%, 0 50%); font-weight: 800; font-size: 112px; letter-spacing: -.02em; white-space: nowrap; }
+  .tag::before { content: ""; position: absolute; left: 44px; top: 76px; width: 28px; height: 28px; border-radius: 50%; background: var(--white); }
+
+  .coupon { width: 920px; height: 290px; background: var(--navy); color: var(--white); display: flex; box-shadow: 0 26px 56px rgba(15, 35, 52, .25); }
+  .coupon .l { width: 320px; display: flex; flex-direction: column; justify-content: center; padding-left: 52px; }
+  .coupon .l small { font-weight: 600; font-size: 34px; letter-spacing: .18em; opacity: .7; }
+  .coupon .l b { font-weight: 800; font-size: 82px; line-height: 1.05; white-space: nowrap; }
+  .coupon .r { flex: 1; display: flex; flex-direction: column; justify-content: center; padding-left: 60px; border-left: 5px dashed rgba(254, 254, 254, .45); }
+  .coupon .r b { font-weight: 800; font-size: 150px; line-height: .95; letter-spacing: -.02em; white-space: nowrap; }
+  .coupon .r span { font-weight: 700; font-size: 32px; letter-spacing: .2em; margin-top: 10px; }
+  .coupon .code { position: absolute; right: 34px; top: 30px; border: 3px dashed rgba(254, 254, 254, .7); font-weight: 700; font-size: 28px; letter-spacing: .1em; padding: 10px 16px 8px; }
+  .coupon .notch { position: absolute; left: 298px; width: 48px; height: 48px; border-radius: 50%; background: var(--white); }
+  .coupon .notch.t { top: -24px; } .coupon .notch.b { bottom: -24px; }
+
+  .mini { background: var(--navy); color: var(--white); width: 290px; padding: 26px 0 22px; text-align: center; box-shadow: 0 18px 40px rgba(15, 35, 52, .22); }
+  .mini small { display: block; font-weight: 600; font-size: 26px; opacity: .75; letter-spacing: .06em; }
+  .mini b { display: block; font-weight: 800; font-size: 92px; line-height: 1.05; letter-spacing: -.02em; }
+  .mini span { display: inline-block; border: 3px dashed rgba(254, 254, 254, .7); font-weight: 700; font-size: 24px; letter-spacing: .08em; padding: 8px 12px 6px; margin-top: 8px; }
+
+  .card { width: 960px; background: #fff; box-shadow: 0 34px 80px rgba(15, 35, 52, .2), 0 6px 16px rgba(15, 35, 52, .08); border-top: 12px solid var(--navy); }
+  .calc { height: 850px; }
+  .calc .row { position: absolute; left: 56px; right: 56px; display: flex; justify-content: space-between; align-items: center; }
+  .calc .lbl { font-weight: 600; font-size: 40px; color: var(--muted); }
+  .calc .val { font-weight: 700; font-size: 92px; letter-spacing: -.02em; white-space: nowrap; }
+  .calc .minus { font-weight: 800; }
+  .calc .res .lbl { color: var(--navy); font-weight: 700; font-size: 42px; line-height: 1.15; white-space: nowrap; }
+  .calc .res .val { font-weight: 800; font-size: 190px; line-height: 1; }
+  .calc .cpn { background: var(--navy); color: var(--white); font-weight: 700; font-size: 38px; letter-spacing: .1em; padding: 20px 30px 17px; position: relative; }
+  .calc .cpn::before, .calc .cpn::after { content: ""; position: absolute; top: 50%; width: 26px; height: 26px; margin-top: -13px; border-radius: 50%; background: #fff; }
+  .calc .cpn::before { left: -13px; } .calc .cpn::after { right: -13px; }
+  .calc .cpn small { display: block; font-weight: 500; font-size: 22px; letter-spacing: .04em; opacity: .75; margin-bottom: 6px; }
+
+  .stamp { border: 10px solid var(--navy); color: var(--navy); font-weight: 800; font-size: 64px; line-height: 1; padding: 22px 30px 16px; text-align: center; letter-spacing: .04em; background: rgba(254, 254, 254, .92); white-space: nowrap; }
+  .stamp small { display: block; font-size: 30px; letter-spacing: .2em; margin-top: 8px; }
+
+  svg.ink { position: absolute; left: 0; top: 0; overflow: visible; pointer-events: none; }
+  svg.ink path { fill: none; stroke: var(--navy); stroke-linecap: round; stroke-linejoin: round; }
+
+  /* Cart UI (outro) */
+  .cart { width: 940px; height: 800px; }
+  .cart .bar { position: absolute; left: 0; top: 0; width: 100%; height: 86px; background: var(--soft); display: flex; align-items: center; padding: 0 36px; gap: 14px; }
+  .cart .bar i { width: 18px; height: 18px; border-radius: 50%; background: #c9d0d8; display: block; }
+  .cart .bar span { margin-left: 18px; background: #fff; border: 2px solid var(--line); flex: 1; height: 50px; font-weight: 500; font-size: 24px; color: var(--muted); line-height: 46px; padding-left: 20px; }
+  .cart h3 { position: absolute; left: 48px; top: 126px; font-weight: 800; font-size: 50px; }
+  .cart .item { position: absolute; left: 48px; right: 48px; top: 214px; height: 170px; display: flex; align-items: center; gap: 28px; border-bottom: 3px solid var(--line); }
+  .cart .item img { width: 150px; height: 150px; object-fit: contain; border: 2px solid var(--line); }
+  .cart .item div { flex: 1; font-weight: 600; font-size: 32px; line-height: 1.25; }
+  .cart .item div small { display: block; font-weight: 400; font-size: 24px; color: var(--muted); }
+  .cart .item b { font-weight: 800; font-size: 40px; }
+  .cart .lbl2 { position: absolute; left: 48px; top: 418px; font-weight: 700; font-size: 28px; }
+  .cart .field { position: absolute; left: 48px; top: 462px; width: 560px; height: 100px; border: 3px solid var(--line); font-weight: 700; font-size: 44px; line-height: 94px; padding-left: 28px; letter-spacing: .08em; white-space: nowrap; }
+  .cart .field .ph { color: #a9b1b9; font-weight: 400; font-size: 36px; letter-spacing: 0; }
+  .cart .field .caret { display: inline-block; width: 4px; height: 48px; background: var(--navy); vertical-align: -8px; margin-left: 3px; }
+  .cart .btn { position: absolute; left: 628px; top: 462px; width: 264px; height: 100px; background: var(--navy); color: var(--white); font-weight: 700; font-size: 36px; line-height: 100px; text-align: center; }
+  .cart .gift { position: absolute; left: 48px; right: 48px; top: 600px; font-weight: 700; font-size: 34px; display: flex; justify-content: space-between; }
+  .cart .tot { position: absolute; left: 48px; right: 48px; top: 670px; padding-top: 22px; border-top: 3px solid var(--line); font-weight: 800; font-size: 50px; display: flex; justify-content: space-between; }
+  #cursor { position: absolute; left: 0; top: 0; width: 64px; height: 84px; transform-origin: 0 0; visibility: hidden; }
+
+  .cta { background: var(--navy); color: var(--white); font-weight: 700; font-size: 46px; line-height: 1; padding: 32px 54px 28px; display: flex; align-items: center; gap: 26px; white-space: nowrap; }
+  .url { font-weight: 700; font-size: 44px; line-height: 1; padding-bottom: 12px; white-space: nowrap; }
+</style>
+</head>
+<body>
+<div id="stage">
+  <div id="bg"></div>
+  <svg width="0" height="0" style="position:absolute">
+    <filter id="mblur" x="-20%" y="-20%" width="140%" height="140%" color-interpolation-filters="sRGB">
+      <feGaussianBlur id="mblur-g" stdDeviation="0 0" />
+    </filter>
+  </svg>
+  <div id="cam"></div>
+  <img id="logo" src="../../assets/logo/homedeluxe-logo-navy.svg" alt="Home Deluxe">
+  <svg id="cursor" viewBox="0 0 32 42"><path d="M2 2 L2 34 L10 26 L16 40 L22 37 L16 24 L28 24 Z" fill="#0f2334" stroke="#fefefe" stroke-width="2.4" stroke-linejoin="round" /></svg>
+</div>
+<script src="cues.js"></script>
+<script src="composition.js"></script>
+</body>
+</html>

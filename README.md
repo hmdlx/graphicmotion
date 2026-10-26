@@ -10,6 +10,7 @@ rendert. ffmpeg schreibt die Frames anschließend als MP4.
 |---|---|---|
 | `projects/laguna-m` | 9:16, 1080×1920, 30 fps, 18,5 s | `output/HomeDeluxe_Laguna-M_Reel_9x16.mp4` + Titelbild |
 | `projects/staffelrabatt-black-week` | 9:16, 1080×1920, 30 fps, 38 s, deutsches Voice-over, Musik + Sounds | `output/HomeDeluxe_BlackWeek_Staffelrabatt_9x16.mp4` |
+| `projects/whirlpool-rechenbeispiel` | 9:16, 1080×1920, 30 fps, 57 s, Voice-over, Musik + Sounds | `output/HomeDeluxe_BlackWeek_Whirlpool-Rechenbeispiel_9x16.mp4` |
 
 ### Laguna M – Schnitt und Übergänge
 
@@ -76,6 +77,36 @@ Regieanweisung im Prompt liest das Modell mit vor, deshalb geht nur der reine Te
 der Segmente stehen in `cues.js`; Animation (`composition.js`) und Tonspur (`scripts/mix_audio.js`)
 lesen beide daraus.
 
+### Whirlpool-Rechenbeispiel zum Staffelrabatt
+
+Rechnet den Black-Week-Staffelrabatt an drei Whirlpools aus dem Shop vor (Preise Stand 26.10.2026):
+
+| Stufe | Whirlpool | Preis | Geschenk | Du zahlst |
+|---|---|---|---|---|
+| ab 100 € | SPLASH Beige, aufblasbar, 6 Personen | 349 € | 15 € (`BLACK15`) | 334 € |
+| ab 500 € | DROP inkl. Kissen, Getränkehalter und Sonnendach | 529 € | 75 € (`BLACK75`) | 454 € |
+| ab 1.000 € | HORIZON ohne Treppe und Thermoabdeckung | 2.499 € | 150 € (`BLACK150`) | 2.349 € |
+
+Schneller Erklär-Stil: Kinetic Type mit Überschwung und Slams, Polaroid-Sticker, Coupons, schwingende
+Preisschilder, handgezeichnete Pfeile, Kreise und Unterstreichungen, Rechen-Karten mit Zählern,
+„GESCHENKT“-Stempel, Kamera-Punch-ins und Shakes, Whip-Pans und ein Zoom-Durchflug zwischen den
+Szenen, am Ende Warenkorb mit Cursor, der den Code eintippt. Farben bleiben Navy/Weiß (CI).
+
+| Zeit | Voice-over | Bild |
+|---|---|---|
+| 0,35 s | „Wie viel schenken wir dir in der Black Week beim Whirlpool? Wir rechnen’s vor!“ | Kinetic Type, Polaroid-Collage, Rechen-Sticker |
+| 4,65 s | „Ab 100 € schenken wir dir 15 €, ab 500 € 75 € – und ab 1.000 € sogar 150 €.“ | drei Coupons fliegen ein, Kreis um 150 € |
+| 13,3 s | Beispiel 1: SPLASH für 349 € – mit BLACK15 15 € geschenkt, du zahlst 334 € | Polaroid, Preisschild, Rechen-Karte |
+| 24,7 s | Beispiel 2: DROP für 529 € – mit BLACK75 75 € geschenkt, macht 454 € | Feature-Sticker, Rechen-Karte |
+| 37,6 s | Beispiel 3: HORIZON für 2.499 € – mit BLACK150 150 € geschenkt, du zahlst 2.349 € | Zoom-Durchflug, Rechen-Karte |
+| 50,15 s | „Code im Warenkorb eingeben, fertig. Nur in der Black Week auf homedeluxe.de.“ | Warenkorb mit Cursor, Endcard mit Coupons, CTA, Polaroids |
+
+Die Wortanker (wann welches Element aufpoppt) stehen in `composition.js` (`EX[].T`, `O`) und
+stammen aus den Sprechpausen der Voice-over-Segmente. `scripts/voiceover.py` schneidet die
+TTS-Aufnahme per dynamischer Programmierung an den Pausen, die am besten zu den Textlängen passen
+(Gedankenstriche pausieren oft so lang wie Satzenden). Sounds kommen als Liste aus `COMP.events()`
+(`sfx: [{t, kind}]`, Musik-Abschnitte unter `music`).
+
 ## Rendern
 
 Voraussetzungen: Node 18+, Python 3 mit numpy + Pillow (+ scipy für den Ton), ffmpeg, Chromium für Playwright.
@@ -91,6 +122,10 @@ npm run staffelrabatt:vo      # Voice-over neu erzeugen (nur bei Textänderung; 
 npm run staffelrabatt:render  # Ton (Voice-over + Musik + Sounds) mischen + Video rendern -> projects/staffelrabatt-black-week/output/HomeDeluxe_BlackWeek_Staffelrabatt_9x16.mp4
 npm run staffelrabatt:remux   # nur den Ton neu mischen und ins fertige MP4 legen (ohne Frames neu zu rendern)
 npm run staffelrabatt:stills  # Kontrollbilder nach build/staffelrabatt-black-week/stills
+
+npm run whirlpool:render      # Ton mischen + Video -> projects/whirlpool-rechenbeispiel/output/HomeDeluxe_BlackWeek_Whirlpool-Rechenbeispiel_9x16.mp4
+npm run whirlpool:remux       # nur den Ton neu mischen und ins fertige MP4 legen
+npm run whirlpool:stills      # Kontrollbilder nach build/whirlpool/stills
 ```
 
 Ein einzelnes Frame lässt sich auch im Browser prüfen:

@@ -1,0 +1,15 @@
+{
+  "model": "gemini-3.1-flash-tts-preview",
+  "voice": "Puck",
+  "segments": [
+    { "id": "hook", "text": "Wie viel schenken wir dir in der Black Week beim Whirlpool? Wir rechnen’s vor!", "say": "Wie viel schenken wir dir in der Black Week beim Whirlpool? Wir rechnen's vor!" },
+    { "id": "rule", "text": "Ab 100 € schenken wir dir 15 €, ab 500 € 75 € – und ab 1.000 € sogar 150 €.", "say": "Ab hundert Euro schenken wir dir fünfzehn Euro, ab fünfhundert fünfundsiebzig – und ab tausend Euro sogar hundertfünfzig Euro." },
+    { "id": "ex1a", "text": "Beispiel eins: der aufblasbare Whirlpool SPLASH für 349 €.", "say": "Beispiel eins: der aufblasbare Whirlpool Splash für dreihundertneunundvierzig Euro." },
+    { "id": "ex1b", "text": "Mit BLACK15 schenken wir dir 15 € – du zahlst nur 334 €.", "say": "Mit Black fünfzehn schenken wir dir fünfzehn Euro – du zahlst nur dreihundertvierunddreißig Euro." },
+    { "id": "ex2a", "text": "Beispiel zwei: der DROP mit Kissen, Getränkehalter und Sonnendach für 529 €.", "say": "Beispiel zwei: der Drop mit Kissen, Getränkehalter und Sonnendach für fünfhundertneunundzwanzig Euro." },
+    { "id": "ex2b", "text": "Mit BLACK75 schenken wir dir 75 € – macht nur 454 €.", "say": "Mit Black fünfundsiebzig schenken wir dir fünfundsiebzig Euro – macht nur vierhundertvierundfünfzig Euro." },
+    { "id": "ex3a", "text": "Und der Outdoor-Whirlpool HORIZON für 2.499 €?", "say": "Und der Outdoor-Whirlpool Horizon für zweitausendvierhundertneunundneunzig Euro?" },
+    { "id": "ex3b", "text": "Mit BLACK150 schenken wir dir 150 € – du zahlst nur 2.349 €.", "say": "Mit Black hundertfünfzig schenken wir dir hundertfünfzig Euro – du zahlst nur zweitausenddreihundertneunundvierzig Euro." },
+    { "id": "outro", "text": "Code im Warenkorb eingeben, fertig. Nur in der Black Week auf homedeluxe.de.", "say": "Code im Warenkorb eingeben, fertig. Nur in der Black Week auf homedeluxe punkt de." }
+  ]
+}

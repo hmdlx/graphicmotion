@@ -3,6 +3,12 @@
   "private": true,
   "description": "Home Deluxe motion-graphics pipeline: HTML compositions rendered frame by frame to MP4.",
   "scripts": {
+    "whirlpool:vo": "python3 -I scripts/voiceover.py projects/whirlpool-rechenbeispiel/voiceover.json projects/whirlpool-rechenbeispiel/vo",
+    "whirlpool:audio": "node scripts/mix_audio.js projects/whirlpool-rechenbeispiel/cues.js projects/whirlpool-rechenbeispiel/vo build/whirlpool/voiceover.wav",
+    "whirlpool:sound": "npm run whirlpool:audio && node scripts/dump_events.js projects/whirlpool-rechenbeispiel/composition.html build/whirlpool/events.json && python3 -I scripts/sound_design.py build/whirlpool/events.json build/whirlpool/voiceover.wav build/whirlpool/sound",
+    "whirlpool:render": "npm run whirlpool:sound && node scripts/render.js projects/whirlpool-rechenbeispiel/composition.html projects/whirlpool-rechenbeispiel/output/HomeDeluxe_BlackWeek_Whirlpool-Rechenbeispiel_9x16.mp4 --audio build/whirlpool/sound/mix.wav",
+    "whirlpool:remux": "npm run whirlpool:sound && node scripts/remux_audio.js projects/whirlpool-rechenbeispiel/output/HomeDeluxe_BlackWeek_Whirlpool-Rechenbeispiel_9x16.mp4 build/whirlpool/sound/mix.wav",
+    "whirlpool:stills": "node scripts/render.js projects/whirlpool-rechenbeispiel/composition.html build/whirlpool/stills --stills 1,2.6,3.9,6,10.5,12,15.5,17.5,20.5,23.6,28.4,34,36.6,38.6,41,45,48.4,51.2,56.5",
     "laguna-m:plates": "scripts/prepare_plates.sh projects/laguna-m/source/laguna-m_rohschnitt.mp4 build/laguna-m/plates",
     "laguna-m:track": "python3 -I scripts/track_points.py build/laguna-m/plates projects/laguna-m/tracking.json projects/laguna-m/tracks.js",
     "laguna-m:render": "node scripts/render.js projects/laguna-m/composition.html projects/laguna-m/output/HomeDeluxe_Laguna-M_Reel_9x16.mp4 --plates build/laguna-m/plates",

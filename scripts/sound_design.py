@@ -6,11 +6,15 @@
 events.json comes from scripts/dump_events.js (window.COMP.events()); every sound is
 placed on those cues, so it stays in sync when the timeline changes. Everything is
 synthesised here (no samples, no licences): a 120 BPM electronic bed in A minor
-(Am–F–C–G) whose drop lands when the phone flies in, a breakdown while the code is
-typed and a final hit on the end card, plus whooshes for the camera flights and UI
-sounds for taps, cart drops, tier unlocks, codes and typing. The music is ducked
+(Am–F–C–G) with a drop, a breakdown and a final hit, plus effects. The music is ducked
 under the voice. Writes music.wav, sfx.wav and mix.wav (48 kHz stereo, -14 LUFS).
 Needs numpy, scipy and ffmpeg.
+
+events.json may carry
+  music: {drop, break: [a, b], final, slam}   section times (seconds); the bar grid is
+                                              aligned so the drop lands on a downbeat
+  sfx:   [{t, kind, ...}]                     generic effect list (see sfx_list)
+Without "sfx" the older named cues of the Black-Week explainer are used (see sfx).
 """
 import json, os, subprocess, sys, wave
 
@@ -22,9 +26,11 @@ SR = 48000
 BPM = 120
 BEAT = 60 / BPM
 BAR = 4 * BEAT
-DROP = 6.0          # beat comes in (phone flies in)
-BREAK = (28.0, 30.0)  # breakdown while the code is typed
+# Section times; main() overrides them from events.json "music".
+DROP = 6.0          # beat comes in
+BREAK = (28.0, 30.0)  # breakdown
 FINAL = 33.0        # end-card hit
+GRID = 0.0          # time of a downbeat (bars are GRID + k * BAR)
 
 
 # ------------------------------------------------------------------ basics
@@ -214,9 +220,9 @@ PROG = {  # pad voicing, bass note
 ORDER = ['Am', 'F', 'C', 'G']
 
 
-def chord_at(bar):
-    # Intro bars lead F – C – G into the drop on Am.
-    return ORDER[(bar - int(DROP / BAR)) % 4]
+def chord_at(t0):
+    # Bars before the drop lead F – C – G into it; the drop lands on Am.
+    return ORDER[int(round((t0 - DROP) / BAR)) % 4]
 
 
 def music(total, ev):
@@ -231,10 +237,12 @@ def music(total, ev):
     def in_break(s):
         return BREAK[0] <= s < BREAK[1]
 
-    nbars = int(np.ceil(total / BAR))
-    for b in range(nbars):
-        t0 = b * BAR
-        name = chord_at(b)
+    nbars = int(np.ceil(total / BAR)) + 1
+    for b in range(-1, nbars):
+        t0 = GRID + b * BAR
+        if t0 + BAR <= 0:
+            continue
+        name = chord_at(t0)
         notes, root = PROG[name]
         if t0 >= FINAL - 0.01:
             break
@@ -254,12 +262,12 @@ def music(total, ev):
                 add(drums, s + BEAT / 2, hc_ if beat != 3 else ho_, 0.32, 0.25)
                 add(buf, s + BEAT / 2, bass_note(root, BEAT / 2 - 0.02), 0.55)
                 add(buf, s + 3 * BEAT / 4, bass_note(root + (12 if beat == 3 else 0), BEAT / 4 - 0.02), 0.32)
-            # 16th shaker, from 4 s on in the intro, quieter under the groove.
-            if s >= 4.0 and not in_break(s):
+            # 16th shaker, 2 s before the drop, quieter under the groove.
+            if s >= DROP - 2.0 and not in_break(s):
                 for q in range(4):
                     add(drums, s + q * BEAT / 4, hat(seed=10 + q), 0.07 if q % 2 else 0.04, -0.3)
         # Plucked arpeggio (16ths) over the chord, one octave up.
-        if t0 >= 2.0:
+        if t0 >= DROP - 4.0:
             seq = [0, 2, 1, 3, 2, 1, 3, 2]
             for q in range(16):
                 s = t0 + q * BEAT / 4
@@ -282,15 +290,17 @@ def music(total, ev):
     # Intro: slam on BLACK WEEK, riser + reverse cymbal into the drop.
     t = ts(2.2)
     boom = np.sin(2 * np.pi * np.cumsum(32 + 60 * np.exp(-t * 6)) / SR) * np.exp(-t * 2.2)
-    add(buf, ev['slam'], np.tanh(2 * boom) * 0.75)
-    add(send, ev['slam'], np.tanh(2 * boom) * 0.2)
+    slam_t = ev.get('music', {}).get('slam', ev.get('slam', 0.2))
+    add(buf, slam_t, np.tanh(2 * boom) * 0.75)
+    add(send, slam_t, np.tanh(2 * boom) * 0.2)
     add(buf, DROP - 2.2, pan2(noise_swell(2.2, 300, 6000, 7), 0), 0.20)
     add(drums, DROP - 1.2, crash(1.2, 8)[::-1], 0.6)             # reverse cymbal
     add(drums, DROP, crash(), 0.9)
 
     # Breakdown: riser back into the groove.
-    add(buf, BREAK[1] - 1.6, pan2(noise_swell(1.6, 400, 5000, 12), 0), 0.16)
-    add(drums, BREAK[1], crash(1.8, 14), 0.6)
+    if FINAL - BREAK[1] > 1.0:                  # (a break right before the end rolls into the final hit)
+        add(buf, BREAK[1] - 1.6, pan2(noise_swell(1.6, 400, 5000, 12), 0), 0.16)
+        add(drums, BREAK[1], crash(1.8, 14), 0.6)
 
     # End card: hit on C major, long tail, soft sparkle.
     notes = [48, 55, 60, 64, 67, 72]
@@ -429,6 +439,99 @@ def sfx(total, ev):
     return buf + 0.4 * reverb(send, 1.4, 33)
 
 
+def scribble_fx(dur, seed=0):
+    """Marker on paper: band-limited noise with a fast, uneven stroke rhythm."""
+    t = ts(dur)
+    n = filt(rng(seed).standard_normal(len(t)), 'bandpass', [1800, 6500])
+    strokes = 0.55 + 0.45 * np.sin(2 * np.pi * (11 + 4 * np.sin(t * 7 + seed)) * t) ** 2
+    env = np.minimum(1, t / 0.02) * np.minimum(1, (dur - t) / 0.05)
+    return n * strokes * env * 0.35
+
+
+def slam_fx(seed=0):
+    t = ts(0.7)
+    boom = np.sin(2 * np.pi * np.cumsum(45 + 90 * np.exp(-t * 18)) / SR) * np.exp(-t * 6)
+    hit = filt(rng(seed).standard_normal(len(t)), 'bandpass', [300, 4000]) * np.exp(-t * 30)
+    return np.tanh(1.8 * (boom + 0.6 * hit)) * 0.8
+
+
+def stamp_fx(seed=0):
+    t = ts(0.35)
+    chunk = filt(rng(seed).standard_normal(len(t)), 'lowpass', 1800) * np.exp(-t * 35)
+    return np.tanh(2 * (0.8 * thud(seed) [:len(t)] + chunk)) * 0.8
+
+
+def chaching(seed=0):
+    """Cash register: drawer rattle, two bells, a little coin jingle."""
+    out = np.zeros(int(1.4 * SR))
+    t = ts(0.12)
+    rattle = filt(rng(seed).standard_normal(len(t)), 'bandpass', [2000, 7000]) * np.exp(-t * 30) * 0.4
+    out[:len(t)] += rattle
+    for i, (n, at) in enumerate([(88, 0.04), (93, 0.12)]):
+        b = bell(midi(n), 1.2)
+        out[int(at * SR):int(at * SR) + len(b)] += b[: len(out) - int(at * SR)] * 0.8
+    r = rng(seed + 1)
+    for k in range(6):
+        b = bell(midi(96 + r.integers(0, 6)), 0.25, 1.5) * 0.18
+        at = int((0.2 + 0.05 * k + r.uniform(0, 0.03)) * SR)
+        out[at:at + len(b)] += b[: len(out) - at]
+    return out
+
+
+def sfx_list(total, ev):
+    """Generic effect list: [{t, kind, ...}] from the composition."""
+    buf = np.zeros((2, int(total * SR)))
+    send = np.zeros_like(buf)
+
+    def put(at, sig, gain, p=0.0, wet=0.3):
+        add(buf, at, sig, gain, p)
+        add(send, at, sig, gain * wet, p)
+
+    for k, e in enumerate(ev['sfx']):
+        t, kind = e['t'], e['kind']
+        seed = 1000 + k
+        side = (-1) ** k * 0.25
+        if kind == 'whoosh':
+            put(t, whoosh(e.get('dur', 0.8), e.get('strength', 0.8), seed, f_hi=e.get('hi', 4200), direction=(-1) ** k), 0.5 * e.get('strength', 0.8), wet=0.25)
+        elif kind == 'swish':
+            put(t, whoosh(0.4, 0.4, seed, 1400, 7000, (-1) ** k), 0.16, wet=0.15)
+        elif kind == 'pop':
+            put(t, pop(e.get('f', 700), seed), 0.26, side)
+        elif kind == 'slam':
+            put(t, slam_fx(seed), 0.42, 0, 0.2)
+        elif kind == 'thud':
+            put(t, thud(seed), 0.28, side, 0.1)
+        elif kind == 'scribble':
+            put(t, scribble_fx(e.get('dur', 0.4), seed), 0.22, side, 0.05)
+        elif kind == 'tag':
+            put(t, whoosh(0.3, 0.3, seed, 800, 4000), 0.14)
+            put(t + 0.12, click(seed, 900), 0.2, 0.3)
+        elif kind == 'stamp':
+            put(t, stamp_fx(seed), 0.42, -0.2, 0.15)
+        elif kind == 'chime':
+            notes = [[72, 76, 79], [76, 79, 84], [79, 84, 88, 91]][e.get('tier', 0)]
+            for j, n in enumerate(notes):
+                put(t + j * 0.07, bell(midi(n), 1.3), 0.17, (j - 1) * 0.3, 0.5)
+        elif kind == 'count':
+            dur = e.get('dur', 0.8)
+            for j in range(14):
+                at = t + dur * (1 - (1 - j / 14) ** 2.2)   # ticks slow down with the counter
+                put(at, click(seed + j, 2400), 0.09, 0.1, 0.05)
+        elif kind == 'chaching':
+            put(t, chaching(seed), 0.3, 0.1, 0.35)
+        elif kind == 'click':
+            put(t, click(seed, 1500), 0.36, 0.1, 0.1)
+        elif kind == 'key':
+            put(t, filt(click(seed, 1100 + 90 * (e.get('i', 0) % 3)), 'lowpass', 4000), 0.14, 0.1, 0.05)
+        elif kind == 'ping':
+            put(t, pop(900, seed), 0.16, 0.2)
+            put(t + 0.04, bell(midi(84), 0.9), 0.2, 0.2)
+            put(t + 0.12, bell(midi(91), 1.0), 0.15, 0.2)
+        else:
+            raise SystemExit(f'unknown sfx kind: {kind}')
+    return buf + 0.4 * reverb(send, 1.4, 33)
+
+
 # ------------------------------------------------------------------ mix
 def load_wav(path):
     w = wave.open(path)
@@ -453,6 +556,12 @@ def main():
     ev_path, vo_path, out_dir = sys.argv[1:4]
     ev = json.load(open(ev_path))
     total = ev['total']
+    global DROP, BREAK, FINAL, GRID
+    m = ev.get('music', {})
+    DROP = m.get('drop', DROP)
+    BREAK = tuple(m.get('break', BREAK))
+    FINAL = m.get('final', FINAL)
+    GRID = DROP % BAR
     os.makedirs(out_dir, exist_ok=True)
 
     vo = load_wav(vo_path)
@@ -460,7 +569,7 @@ def main():
     vo = np.pad(vo, ((0, 0), (0, max(0, n - vo.shape[1]))))[:, :n]
 
     mus = music(total, ev)
-    fx = sfx(total, ev)
+    fx = sfx_list(total, ev) if 'sfx' in ev else sfx(total, ev)
     # Levels: music bed ~6 dB under the voice before ducking, effects peaking well below it.
     groove = slice(int(DROP * SR), int(BREAK[0] * SR))
     mus *= 10 ** ((rms_db(vo[:, groove]) - 6 - rms_db(mus[:, groove])) / 20)
