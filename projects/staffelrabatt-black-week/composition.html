@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
 <meta charset="utf-8">
-<title>Black Week Staffelrabatt – Reel 9:16</title>
+<title>Black Week Staffelrabatt – 3D-Reel 9:16</title>
 <style>
   @font-face { font-family: Poppins; font-weight: 400; src: url(../../assets/fonts/poppins/poppins-latin-400-normal.woff2) format("woff2"); }
   @font-face { font-family: Poppins; font-weight: 500; src: url(../../assets/fonts/poppins/poppins-latin-500-normal.woff2) format("woff2"); }
@@ -13,6 +13,8 @@
   /* Briefing: Poppins, Navy #0f2334 auf Weiß #fefefe, viel Weißraum. Grautöne aus der CI. */
   :root {
     --navy: #0f2334;
+    --navy-top: #26425c;
+    --navy-side: #081521;
     --white: #fefefe;
     --muted: #66727d;
     --line: #e3e7ec;
@@ -23,29 +25,75 @@
   body { font-family: Poppins, sans-serif; color: var(--navy); -webkit-font-smoothing: antialiased; }
   #stage { position: absolute; inset: 0; overflow: hidden; background: var(--white); }
 
+  /* 3D world: #cam carries the camera transform, every .o child a world matrix. */
+  /* Separate 3D contexts per layer (back to front), all driven by the same camera:
+     keeps tilted planes of one layer from slicing the others into seams. */
+  #layers { position: absolute; inset: 0; }
+  .vp { position: absolute; inset: 0; perspective: 1600px; perspective-origin: 540px 960px; }
+  .cam { position: absolute; left: 540px; top: 960px; width: 0; height: 0; transform-style: preserve-3d; transform-origin: 0 0; }
+  .o { position: absolute; left: 0; top: 0; transform-origin: 0 0; }
+  .p3 { transform-style: preserve-3d; }
+
   .ln { display: block; overflow: hidden; padding-bottom: .08em; margin-bottom: -.08em; }
-  .ln > span { display: inline-block; will-change: transform; }
-  .center { position: absolute; left: 0; width: 1080px; text-align: center; }
+  .ln > span { display: inline-block; }
   .kicker { font-weight: 600; font-size: 26px; line-height: 1; letter-spacing: .2em; text-transform: uppercase; color: var(--muted); }
   .box { display: inline-block; background: var(--navy); color: var(--white); padding: .02em .2em 0; line-height: 1.06; }
-  .chip { display: inline-block; border: 3px solid var(--navy); font-weight: 600; font-size: 34px; line-height: 1; padding: 18px 26px 15px; letter-spacing: .02em; }
-  .chip b { font-weight: 800; letter-spacing: .06em; }
 
   #logo { position: absolute; left: 400px; top: 96px; width: 280px; }
 
-  /* Intro */
-  #intro-bw { top: 560px; }
-  #intro-bw .blk { display: inline-block; background: var(--navy); color: var(--white); font-weight: 800; font-size: 132px; line-height: 1; letter-spacing: .02em; padding: 30px 46px 22px; }
-  #intro-a { top: 840px; font-weight: 600; font-size: 64px; line-height: 1.1; }
-  #intro-amt { top: 930px; font-weight: 800; font-size: 300px; line-height: 1; letter-spacing: -.03em; font-variant-numeric: tabular-nums; }
-  #intro-gift { position: absolute; left: 489px; top: 430px; }
+  /* Intro (world) */
+  #i-bw { background: var(--navy); color: var(--white); font-weight: 800; font-size: 200px; line-height: 1; letter-spacing: .02em; padding: 46px 70px 34px; white-space: nowrap; }
+  #i-a { font-weight: 600; font-size: 96px; line-height: 1.1; white-space: nowrap; }
+  #i-amt { font-weight: 800; font-size: 440px; line-height: 1; letter-spacing: -.03em; white-space: nowrap; font-variant-numeric: tabular-nums; }
 
-  /* Headlines above the phone */
+  /* Gift cubes */
+  .cube { width: 0; height: 0; }
+  .cube .f { position: absolute; left: 0; top: 0; background: var(--navy);
+    background-image: linear-gradient(90deg, transparent 43%, var(--white) 43%, var(--white) 57%, transparent 57%); }
+  .cube .f.t, .cube .f.b { background-image: linear-gradient(90deg, transparent 43%, var(--white) 43%, var(--white) 57%, transparent 57%),
+    linear-gradient(0deg, transparent 43%, var(--white) 43%, var(--white) 57%, transparent 57%); }
+  .cube .f.t { background-color: var(--navy-top); }
+  .cube .f.s { background-color: var(--navy-side); }
+
+  /* Particles */
+  .pt { width: 40px; height: 40px; border: 4px solid var(--line); }
+  .pt.n { border-color: var(--navy); }
+  .pt.f { background: var(--line); border: 0; }
+
+  /* Stairs */
+  /* Light stairs so the navy type reads in front of them. */
+  .face { background: #eef1f5; }
+  .face.top { background: #f9fafb; }
+  .face.side { background: #dbe1e8; }
+  .face.front { color: var(--navy); padding: 54px 0 0; text-align: center; border-top: 8px solid var(--navy); }
+  .face.front .k { font-weight: 600; font-size: 36px; letter-spacing: .24em; text-transform: uppercase; color: var(--muted); }
+  .face.front .v { font-weight: 800; font-size: 128px; line-height: 1.05; letter-spacing: -.01em; }
+  #shadow { width: 3400px; height: 4600px; background: radial-gradient(closest-side, rgba(15, 35, 52, .16), rgba(15, 35, 52, 0)); }
+  .gnum { text-align: center; white-space: nowrap; }
+  .gnum .a { font-weight: 800; font-size: 280px; line-height: .92; letter-spacing: -.03em; }
+  .gnum .g { font-weight: 700; font-size: 70px; line-height: 1; margin-top: 18px; }
+  .gchip { background: var(--navy); color: var(--white); font-weight: 600; font-size: 72px; line-height: 1; padding: 30px 44px 26px; white-space: nowrap;
+    box-shadow: 0 30px 60px rgba(15, 35, 52, .25); }
+  .gchip b { font-weight: 800; letter-spacing: .06em; }
+  .card { width: 520px; background: #fff; box-shadow: 0 40px 90px rgba(15, 35, 52, .22), 0 6px 18px rgba(15, 35, 52, .10); }
+  .card img { width: 520px; height: 520px; object-fit: contain; display: block; }
+  .card .tag { background: var(--navy); color: #fff; padding: 20px 26px 18px; font-weight: 600; font-size: 28px; line-height: 1.15; white-space: nowrap; }
+  .card .tag b { font-weight: 800; }
+  #minus { background: var(--navy); color: var(--white); font-weight: 800; font-size: 130px; line-height: 1; padding: 34px 50px 26px; white-space: nowrap;
+    box-shadow: 0 40px 80px rgba(15, 35, 52, .3); }
+  #minus small { display: block; font-weight: 600; font-size: 36px; letter-spacing: .06em; margin-bottom: 14px; color: rgba(254, 254, 254, .7); }
+
+  /* Camera-relative headlines */
+  .head { width: 1080px; text-align: center; padding: 70px 0 80px;
+    background: radial-gradient(ellipse 62% 58% at 50% 50%, rgba(254, 254, 254, .97) 55%, rgba(254, 254, 254, 0) 100%); }
   .head .kicker { margin-bottom: 26px; }
-  .head .l { font-weight: 700; font-size: 60px; line-height: 1.12; letter-spacing: -.01em; }
-  .head .l.sm { font-size: 52px; }
-  .head .chipln { margin-top: 30px; padding: 0 0 4px; }
-  .head { top: 222px; }
+  .head .l { font-weight: 700; font-size: 62px; line-height: 1.12; letter-spacing: -.01em; white-space: nowrap; }
+  .head .l.sm { font-size: 54px; }
+  #end-cta { display: flex; flex-direction: column; align-items: center; gap: 28px; width: 1080px; }
+  #end-cta .btn { background: var(--navy); color: #fff; font-weight: 600; font-size: 42px; line-height: 1; padding: 30px 50px 27px; display: flex; align-items: center; gap: 24px; }
+  #end-cta .url { font-weight: 600; font-size: 40px; line-height: 1; position: relative; padding-bottom: 10px; }
+  #end-cta .url i { position: absolute; left: 0; bottom: 0; height: 3px; width: 100%; background: var(--navy); transform-origin: left; }
+  #end-cta .note { font-weight: 500; font-size: 28px; color: var(--muted); }
 
   /* Phone */
   #phone { position: absolute; left: 220px; top: 660px; width: 640px; height: 1340px; border-radius: 100px; background: var(--navy);
@@ -118,190 +166,169 @@
   #sum-total small { display: block; font-weight: 400; font-size: 18px; color: var(--muted); margin-top: 8px; }
   #total-hl { position: absolute; right: -14px; top: -12px; height: 58px; background: var(--navy); }
 
-  /* Product card that flies into the cart */
-  #fly { position: absolute; left: 0; top: 0; width: 440px; transform-origin: 0 0; }
-  #fly .card { width: 440px; height: 440px; background: #fff; box-shadow: 0 40px 90px rgba(15, 35, 52, .22), 0 6px 18px rgba(15, 35, 52, .10); display: flex; align-items: center; justify-content: center; }
-  #fly .card img { width: 400px; height: 400px; object-fit: contain; display: block; }
-  #fly .tag { position: absolute; left: 0; top: 440px; background: var(--navy); color: #fff; padding: 16px 22px 14px; font-weight: 600; font-size: 24px; line-height: 1.1; white-space: nowrap; }
-  #fly .tag b { font-weight: 800; }
+  #phone { left: 0; top: 0; transform-origin: 0 0; box-shadow: inset 0 0 0 3px #26394a; }
+  #phone-back { width: 640px; height: 1340px; border-radius: 100px; background: #07121c; }
+  #phone-shadow { width: 900px; height: 1500px; background: radial-gradient(closest-side, rgba(15, 35, 52, .22), rgba(15, 35, 52, 0)); }
 
   #tap { position: absolute; left: 0; top: 0; width: 0; height: 0; }
   #tap .dot { position: absolute; left: -38px; top: -38px; width: 76px; height: 76px; border-radius: 50%; background: rgba(15, 35, 52, .22); border: 3px solid rgba(255, 255, 255, .9); box-shadow: 0 6px 18px rgba(15, 35, 52, .25); }
   #tap .wave { position: absolute; left: -38px; top: -38px; width: 76px; height: 76px; border-radius: 50%; border: 3px solid var(--navy); }
-
-  /* End card */
-  #end-head { top: 236px; }
-  #end-head .l { font-weight: 700; font-size: 62px; line-height: 1.12; letter-spacing: -.01em; }
-  #end-head .kicker { margin-bottom: 26px; }
-  #tiers { position: absolute; left: 90px; top: 560px; width: 900px; }
-  .trow { position: relative; height: 170px; border-top: 2px solid var(--line); display: flex; align-items: center; }
-  .trow:last-child { border-bottom: 2px solid var(--line); }
-  .trow .from { width: 220px; font-weight: 500; font-size: 32px; color: var(--muted); }
-  .trow .amt { flex: 1; font-weight: 800; font-size: 86px; line-height: 1; letter-spacing: -.02em; }
-  .trow .amt small { font-weight: 600; font-size: 28px; letter-spacing: 0; margin-left: 10px; }
-  .trow .code { background: var(--navy); color: #fff; font-weight: 700; font-size: 32px; letter-spacing: .08em; padding: 20px 26px 17px; }
-  #end-cta { position: absolute; left: 0; top: 1150px; width: 1080px; display: flex; flex-direction: column; align-items: center; gap: 30px; }
-  #end-cta .btn { background: var(--navy); color: #fff; font-weight: 600; font-size: 40px; line-height: 1; padding: 30px 48px 27px; display: flex; align-items: center; gap: 24px; }
-  #end-cta .url { font-weight: 600; font-size: 38px; line-height: 1; position: relative; padding-bottom: 10px; }
-  #end-cta .url i { position: absolute; left: 0; bottom: 0; height: 3px; width: 100%; background: var(--navy); transform-origin: left; }
-  #end-note { top: 1440px; font-weight: 500; font-size: 28px; color: var(--muted); }
-  #end-products { position: absolute; left: 90px; top: 1540px; width: 900px; height: 300px; display: flex; justify-content: space-between; }
-  #end-products img { width: 280px; height: 280px; object-fit: contain; mix-blend-mode: multiply; }
 </style>
 </head>
 <body>
 <div id="stage">
-  <img id="logo" src="../../assets/logo/homedeluxe-logo-navy.svg" alt="Home Deluxe">
+  <div id="layers">
+   <div class="vp"><div class="cam" id="cam-bg"></div></div>
+   <div class="vp"><div class="cam" id="cam">
+      <div class="o" id="shadow"></div>
 
-  <!-- Intro -->
-  <svg id="intro-gift" width="102" height="102" viewBox="0 0 48 48" fill="none" stroke="#0f2334" stroke-width="2.6" stroke-linejoin="miter">
-    <rect x="6" y="17" width="36" height="9" /><rect x="9" y="26" width="30" height="17" /><path d="M24 17v26" />
-    <path d="M24 17c-3-7-11-9-12-4s9 4 12 4zM24 17c3-7 11-9 12-4s-9 4-12 4z" />
-  </svg>
-  <div class="center" id="intro-bw"><span class="blk">BLACK WEEK</span></div>
-  <div class="center" id="intro-a"><span class="ln"><span>Wir schenken dir bis zu</span></span></div>
-  <div class="center" id="intro-amt"><span class="ln"><span><span id="intro-num">150</span> €</span></span></div>
+      <!-- Intro -->
+      <div class="o" id="i-bw">BLACK WEEK</div>
+      <div class="o" id="i-a"><span class="ln"><span>Wir schenken dir bis zu</span></span></div>
+      <div class="o" id="i-amt"><span class="ln"><span><span id="i-num">150</span> €</span></span></div>
 
-  <!-- Headlines above the phone -->
-  <div class="center head" id="h-how">
-    <div class="kicker"><span class="ln"><span>So funktioniert’s</span></span></div>
-    <div class="l sm"><span class="ln"><span>Je voller dein Warenkorb,</span></span></div>
-    <div class="l sm"><span class="ln"><span>desto größer unser Geschenk.</span></span></div>
-  </div>
-  <div class="center head" id="h-tier1">
-    <div class="kicker"><span class="ln"><span>Stufe 1 von 3</span></span></div>
-    <div class="l"><span class="ln"><span>Ab 100 € Bestellwert</span></span></div>
-    <div class="l"><span class="ln"><span>schenken wir dir <span class="box">15 €</span></span></span></div>
-    <div class="ln chipln"><span class="chip">Code: <b>BLACK15</b></span></div>
-  </div>
-  <div class="center head" id="h-tier2">
-    <div class="kicker"><span class="ln"><span>Stufe 2 von 3</span></span></div>
-    <div class="l"><span class="ln"><span>Ab 500 € Bestellwert</span></span></div>
-    <div class="l"><span class="ln"><span>schenken wir dir <span class="box">75 €</span></span></span></div>
-    <div class="ln chipln"><span class="chip">Code: <b>BLACK75</b></span></div>
-  </div>
-  <div class="center head" id="h-tier3">
-    <div class="kicker"><span class="ln"><span>Stufe 3 von 3</span></span></div>
-    <div class="l"><span class="ln"><span>Ab 1.000 € Bestellwert</span></span></div>
-    <div class="l"><span class="ln"><span>schenken wir dir <span class="box">150 €</span></span></span></div>
-    <div class="ln chipln"><span class="chip">Code: <b>BLACK150</b></span></div>
-  </div>
-  <div class="center head" id="h-redeem">
-    <div class="kicker"><span class="ln"><span>So löst du ein</span></span></div>
-    <div class="l sm"><span class="ln"><span>Code im Warenkorb eingeben –</span></span></div>
-    <div class="l sm"><span class="ln"><span>Geschenk wird direkt abgezogen.</span></span></div>
-  </div>
+      <!-- Treppe: Flächen, Geschenkbeträge, Codes und Produkte erzeugt composition.js -->
 
-  <!-- Phone -->
-  <div id="phone">
-    <div class="btn-side" style="left:-7px;top:250px;width:7px;height:64px"></div>
-    <div class="btn-side" style="left:-7px;top:360px;width:7px;height:110px"></div>
-    <div class="btn-side" style="left:-7px;top:490px;width:7px;height:110px"></div>
-    <div class="btn-side" style="right:-7px;top:380px;width:7px;height:170px"></div>
-    <div id="screen">
-      <div id="views">
-        <!-- Produktseite -->
-        <div class="view" id="pdp">
-          <img class="img" src="source/cozy-freisteller.jpg" alt="">
-          <div class="t1">Sitzsack mit Hocker COZY</div>
-          <div class="t2">Farbe: Beige · Cord</div>
-          <div class="price">189,00 €</div>
-          <div class="uvp">UVP 279,00 €</div>
-          <div class="ship">✓ Kostenloser Versand innerhalb Deutschlands</div>
-          <div class="buy">
-            <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M2 3h3l2.6 12.2h11.6L22 7H6.2" /><circle cx="9" cy="20" r="1.6" /><circle cx="18" cy="20" r="1.6" /></svg>
-            <span>In den Warenkorb</span>
-            <div class="done"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6"><path d="M4 12.5l5 5L20 6.5" /></svg><span>Im Warenkorb</span></div>
+   </div></div>
+   <div class="vp"><div class="cam" id="cam-props"></div></div>
+   <div class="vp"><div class="cam" id="cam-phone">
+      <!-- Phone -->
+      <div class="o" id="phone-shadow"></div>
+      <div class="o" id="phone-back"></div>
+   </div></div>
+   <div class="vp"><div class="cam" id="cam-props"></div></div>
+   <div class="vp"><div class="cam" id="cam-phone">
+      <!-- Phone -->
+      <div class="o" id="phone">
+        <div class="btn-side" style="left:-7px;top:250px;width:7px;height:64px"></div>
+        <div class="btn-side" style="left:-7px;top:360px;width:7px;height:110px"></div>
+        <div class="btn-side" style="left:-7px;top:490px;width:7px;height:110px"></div>
+        <div class="btn-side" style="right:-7px;top:380px;width:7px;height:170px"></div>
+        <div id="screen">
+          <div id="views">
+            <!-- Produktseite -->
+            <div class="view" id="pdp">
+              <img class="img" src="source/cozy-freisteller.jpg" alt="">
+              <div class="t1">Sitzsack mit Hocker COZY</div>
+              <div class="t2">Farbe: Beige · Cord</div>
+              <div class="price">189,00 €</div>
+              <div class="uvp">UVP 279,00 €</div>
+              <div class="ship">✓ Kostenloser Versand innerhalb Deutschlands</div>
+              <div class="buy">
+                <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M2 3h3l2.6 12.2h11.6L22 7H6.2" /><circle cx="9" cy="20" r="1.6" /><circle cx="18" cy="20" r="1.6" /></svg>
+                <span>In den Warenkorb</span>
+                <div class="done"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6"><path d="M4 12.5l5 5L20 6.5" /></svg><span>Im Warenkorb</span></div>
+              </div>
+            </div>
+            <!-- Warenkorb -->
+            <div class="view" id="cart">
+              <div class="title">Warenkorb</div>
+              <div class="count" id="cart-count">1 Artikel</div>
+              <div id="gift">
+                <div class="status" id="gift-status"></div>
+                <div class="tier" id="tier-0" style="left:120px"><span>15 €</span><div class="ring"></div></div>
+                <div class="tier" id="tier-1" style="left:300px"><span>75 €</span><div class="ring"></div></div>
+                <div class="tier" id="tier-2" style="left:462px"><span>150 €</span><div class="ring"></div></div>
+                <div id="bar"><i id="bar-fill"></i></div>
+                <div class="mark" id="mark-0" style="left:120px"></div>
+                <div class="mark" id="mark-1" style="left:300px"></div>
+                <div class="mark" id="mark-2" style="left:462px"></div>
+                <div class="mlabel" style="left:120px">ab 100 €</div>
+                <div class="mlabel" style="left:300px">ab 500 €</div>
+                <div class="mlabel" style="left:462px">ab 1.000 €</div>
+              </div>
+              <div class="row" id="row-0" style="top:356px">
+                <div class="thumb"><img src="source/cozy-freisteller.jpg" alt=""></div>
+                <div class="n1">Sitzsack mit Hocker COZY</div><div class="n2">Beige</div>
+                <div class="q">Menge: 1</div><div class="p">189,00 €</div><div class="sep"></div>
+              </div>
+              <div class="row" id="row-1" style="top:520px">
+                <div class="thumb"><img src="source/amiri-freisteller.jpg" alt=""></div>
+                <div class="n1">Couchtisch Marmor AMIRI XXL</div><div class="n2">Schwarz</div>
+                <div class="q">Menge: 1</div><div class="p">399,00 €</div><div class="sep"></div>
+              </div>
+              <div class="row" id="row-2" style="top:684px">
+                <div class="thumb"><img src="source/loma-freisteller.jpg" alt=""></div>
+                <div class="n1">Hängesessel faltbar LOMA</div><div class="n2">2er · Beige</div>
+                <div class="q">Menge: 1</div><div class="p">429,00 €</div><div class="sep"></div>
+              </div>
+              <div id="code">
+                <div class="lbl">Gutscheincode</div>
+                <div class="field" id="code-field"></div>
+                <div class="apply" id="code-apply">Einlösen</div>
+                <div class="ok" id="code-ok"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0f2334" stroke-width="3"><path d="M4 12.5l5 5L20 6.5" /></svg>BLACK150 eingelöst – 150 € geschenkt</div>
+              </div>
+              <div class="sum" id="sum-sub"><span>Zwischensumme</span><span id="sum-sub-v">0,00 €</span></div>
+              <div class="sum" id="sum-gift"><span>Geschenk (BLACK150)</span><span>−150,00 €</span></div>
+              <div id="sum-rule"></div>
+              <div class="sum" id="sum-total"><span>Gesamt<small>inkl. MwSt., Versand kostenlos</small></span><span><span id="total-hl"></span><span id="sum-total-v" style="position:relative"></span></span></div>
+            </div>
           </div>
-        </div>
-        <!-- Warenkorb -->
-        <div class="view" id="cart">
-          <div class="title">Warenkorb</div>
-          <div class="count" id="cart-count">1 Artikel</div>
-          <div id="gift">
-            <div class="status" id="gift-status"></div>
-            <div class="tier" id="tier-0" style="left:120px"><span>15 €</span><div class="ring"></div></div>
-            <div class="tier" id="tier-1" style="left:300px"><span>75 €</span><div class="ring"></div></div>
-            <div class="tier" id="tier-2" style="left:462px"><span>150 €</span><div class="ring"></div></div>
-            <div id="bar"><i id="bar-fill"></i></div>
-            <div class="mark" id="mark-0" style="left:120px"></div>
-            <div class="mark" id="mark-1" style="left:300px"></div>
-            <div class="mark" id="mark-2" style="left:462px"></div>
-            <div class="mlabel" style="left:120px">ab 100 €</div>
-            <div class="mlabel" style="left:300px">ab 500 €</div>
-            <div class="mlabel" style="left:462px">ab 1.000 €</div>
+          <div id="banner">BLACK WEEK · BIS ZU 150 € GESCHENKT</div>
+          <div id="appbar">
+            <svg class="menu" width="34" height="26" viewBox="0 0 34 26"><path d="M0 2h34M0 13h34M0 24h34" stroke="#0f2334" stroke-width="3" /></svg>
+            <img class="applogo" src="../../assets/logo/homedeluxe-logo-navy.svg" alt="">
+            <svg class="cart" width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#0f2334" stroke-width="1.8"><path d="M2 3h3l2.6 12.2h11.6L22 7H6.2" /><circle cx="9" cy="20" r="1.6" /><circle cx="18" cy="20" r="1.6" /></svg>
+            <div id="badge">0</div>
           </div>
-          <div class="row" id="row-0" style="top:356px">
-            <div class="thumb"><img src="source/cozy-freisteller.jpg" alt=""></div>
-            <div class="n1">Sitzsack mit Hocker COZY</div><div class="n2">Beige</div>
-            <div class="q">Menge: 1</div><div class="p">189,00 €</div><div class="sep"></div>
+          <div id="status">
+            <div class="time">9:41</div>
+            <svg width="120" height="22" viewBox="0 0 120 22">
+              <g fill="#0f2334"><rect x="0" y="14" width="5" height="7" /><rect x="8" y="10" width="5" height="11" /><rect x="16" y="6" width="5" height="15" /><rect x="24" y="2" width="5" height="19" /></g>
+              <path d="M40 9.5a15 15 0 0 1 22 0M44 13.5a9 9 0 0 1 14 0M48.5 17.5a3 3 0 0 1 5 0" fill="none" stroke="#0f2334" stroke-width="2.6" stroke-linecap="round" />
+              <rect x="74" y="3" width="38" height="17" rx="4.5" fill="none" stroke="#0f2334" stroke-width="2" opacity=".45" /><rect x="77" y="6" width="30" height="11" rx="2.2" fill="#0f2334" /><rect x="114" y="8.5" width="3" height="6" rx="1.5" fill="#0f2334" opacity=".45" />
+            </svg>
           </div>
-          <div class="row" id="row-1" style="top:520px">
-            <div class="thumb"><img src="source/amiri-freisteller.jpg" alt=""></div>
-            <div class="n1">Couchtisch Marmor AMIRI XXL</div><div class="n2">Schwarz</div>
-            <div class="q">Menge: 1</div><div class="p">399,00 €</div><div class="sep"></div>
-          </div>
-          <div class="row" id="row-2" style="top:684px">
-            <div class="thumb"><img src="source/loma-freisteller.jpg" alt=""></div>
-            <div class="n1">Hängesessel faltbar LOMA</div><div class="n2">2er · Beige</div>
-            <div class="q">Menge: 1</div><div class="p">429,00 €</div><div class="sep"></div>
-          </div>
-          <div id="code">
-            <div class="lbl">Gutscheincode</div>
-            <div class="field" id="code-field"></div>
-            <div class="apply" id="code-apply">Einlösen</div>
-            <div class="ok" id="code-ok"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0f2334" stroke-width="3"><path d="M4 12.5l5 5L20 6.5" /></svg>BLACK150 eingelöst – 150 € geschenkt</div>
-          </div>
-          <div class="sum" id="sum-sub"><span>Zwischensumme</span><span id="sum-sub-v">0,00 €</span></div>
-          <div class="sum" id="sum-gift"><span>Geschenk (BLACK150)</span><span>−150,00 €</span></div>
-          <div id="sum-rule"></div>
-          <div class="sum" id="sum-total"><span>Gesamt<small>inkl. MwSt., Versand kostenlos</small></span><span><span id="total-hl"></span><span id="sum-total-v" style="position:relative"></span></span></div>
+          <div id="island"></div>
         </div>
       </div>
-      <div id="banner">BLACK WEEK · BIS ZU 150 € GESCHENKT</div>
-      <div id="appbar">
-        <svg class="menu" width="34" height="26" viewBox="0 0 34 26"><path d="M0 2h34M0 13h34M0 24h34" stroke="#0f2334" stroke-width="3" /></svg>
-        <img class="applogo" src="../../assets/logo/homedeluxe-logo-navy.svg" alt="">
-        <svg class="cart" width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#0f2334" stroke-width="1.8"><path d="M2 3h3l2.6 12.2h11.6L22 7H6.2" /><circle cx="9" cy="20" r="1.6" /><circle cx="18" cy="20" r="1.6" /></svg>
-        <div id="badge">0</div>
-      </div>
-      <div id="status">
-        <div class="time">9:41</div>
-        <svg width="120" height="22" viewBox="0 0 120 22">
-          <g fill="#0f2334"><rect x="0" y="14" width="5" height="7" /><rect x="8" y="10" width="5" height="11" /><rect x="16" y="6" width="5" height="15" /><rect x="24" y="2" width="5" height="19" /></g>
-          <path d="M40 9.5a15 15 0 0 1 22 0M44 13.5a9 9 0 0 1 14 0M48.5 17.5a3 3 0 0 1 5 0" fill="none" stroke="#0f2334" stroke-width="2.6" stroke-linecap="round" />
-          <rect x="74" y="3" width="38" height="17" rx="4.5" fill="none" stroke="#0f2334" stroke-width="2" opacity=".45" /><rect x="77" y="6" width="30" height="11" rx="2.2" fill="#0f2334" /><rect x="114" y="8.5" width="3" height="6" rx="1.5" fill="#0f2334" opacity=".45" />
-        </svg>
-      </div>
-      <div id="island"></div>
-    </div>
-  </div>
 
-  <div id="fly">
-    <div class="card"><img alt=""></div>
-    <div class="tag"></div>
+      <div class="o card" id="pop"><img src="source/cozy-freisteller.jpg" alt=""></div>
+      <div class="o" id="minus"><small>GESCHENK BLACK150</small>−150 €</div>
+   </div></div>
+   <div class="vp"><div class="cam" id="cam-fx"></div></div>
+   <div class="vp"><div class="cam" id="cam-ui">
+
+      <!-- Headlines (camera-relative) -->
+      <div class="o head" id="h-how">
+        <div class="kicker"><span class="ln"><span>So funktioniert’s</span></span></div>
+        <div class="l sm"><span class="ln"><span>Je voller dein Warenkorb,</span></span></div>
+        <div class="l sm"><span class="ln"><span>desto größer unser Geschenk.</span></span></div>
+      </div>
+      <div class="o head" id="h-tier1">
+        <div class="kicker"><span class="ln"><span>Stufe 1 von 3</span></span></div>
+        <div class="l"><span class="ln"><span>Ab 100 € Bestellwert</span></span></div>
+        <div class="l"><span class="ln"><span>schenken wir dir <span class="box">15 €</span></span></span></div>
+      </div>
+      <div class="o head" id="h-tier2">
+        <div class="kicker"><span class="ln"><span>Stufe 2 von 3</span></span></div>
+        <div class="l"><span class="ln"><span>Ab 500 € Bestellwert</span></span></div>
+        <div class="l"><span class="ln"><span>schenken wir dir <span class="box">75 €</span></span></span></div>
+      </div>
+      <div class="o head" id="h-tier3">
+        <div class="kicker"><span class="ln"><span>Stufe 3 von 3</span></span></div>
+        <div class="l"><span class="ln"><span>Ab 1.000 € Bestellwert</span></span></div>
+        <div class="l"><span class="ln"><span>schenken wir dir <span class="box">150 €</span></span></span></div>
+      </div>
+      <div class="o head" id="h-redeem">
+        <div class="kicker"><span class="ln"><span>So löst du ein</span></span></div>
+        <div class="l sm"><span class="ln"><span>Code im Warenkorb eingeben –</span></span></div>
+        <div class="l sm"><span class="ln"><span>Geschenk wird direkt abgezogen.</span></span></div>
+      </div>
+      <div class="o head" id="h-end">
+        <div class="kicker"><span class="ln"><span>Black Week bei Home Deluxe</span></span></div>
+        <div class="l"><span class="ln"><span>Je mehr du shoppst,</span></span></div>
+        <div class="l"><span class="ln"><span>desto mehr schenken wir dir.</span></span></div>
+      </div>
+      <div class="o" id="end-cta">
+        <div class="btn"><span>Jetzt shoppen</span><svg width="40" height="24" viewBox="0 0 40 24"><path d="M0 12h36M26 2l10 10-10 10" fill="none" stroke="#fefefe" stroke-width="3.2" /></svg></div>
+        <div class="url">homedeluxe.de<i></i></div>
+        <div class="note"><span class="ln"><span>Nur in der Black Week · Code im Warenkorb eingeben</span></span></div>
+      </div>
+   </div></div>
   </div>
   <div id="tap"><div class="wave"></div><div class="dot"></div></div>
-
-  <!-- End card -->
-  <div class="center" id="end-head">
-    <div class="kicker"><span class="ln"><span>Black Week bei Home Deluxe</span></span></div>
-    <div class="l"><span class="ln"><span>Je mehr du shoppst,</span></span></div>
-    <div class="l"><span class="ln"><span>desto mehr schenken wir dir.</span></span></div>
-  </div>
-  <div id="tiers">
-    <div class="trow"><div class="from">ab 100 €</div><div class="amt">15 €<small>geschenkt</small></div><div class="code">BLACK15</div></div>
-    <div class="trow"><div class="from">ab 500 €</div><div class="amt">75 €<small>geschenkt</small></div><div class="code">BLACK75</div></div>
-    <div class="trow"><div class="from">ab 1.000 €</div><div class="amt">150 €<small>geschenkt</small></div><div class="code">BLACK150</div></div>
-  </div>
-  <div id="end-cta">
-    <div class="btn"><span>Jetzt shoppen</span><svg width="40" height="24" viewBox="0 0 40 24"><path d="M0 12h36M26 2l10 10-10 10" fill="none" stroke="#fefefe" stroke-width="3.2" /></svg></div>
-    <div class="url">homedeluxe.de<i></i></div>
-  </div>
-  <div class="center" id="end-note"><span class="ln"><span>Nur in der Black Week · Code im Warenkorb eingeben</span></span></div>
-  <div id="end-products">
-    <img src="source/cozy-freisteller.jpg" alt=""><img src="source/amiri-freisteller.jpg" alt=""><img src="source/loma-freisteller.jpg" alt="">
-  </div>
+  <img id="logo" src="../../assets/logo/homedeluxe-logo-navy.svg" alt="Home Deluxe">
 </div>
 
 <script src="cues.js"></script>

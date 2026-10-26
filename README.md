@@ -30,10 +30,10 @@ läuft nur mit ihren sauberen Frames (Schnittliste `SHOTS` in `composition.js`),
 Die Produktdaten stammen aus den Shop- und Händlerangaben zur LAGUNA M (homedeluxe.de, Hornbach).
 Preise sind bewusst nicht eingebaut, weil sie sich häufig ändern.
 
-### Black Week Staffelrabatt – Erklärvideo
+### Black Week Staffelrabatt – 3D-Erklärvideo
 
-Erklärt am iPhone, wie das Black-Week-Geschenk funktioniert: Je voller der Warenkorb, desto mehr
-schenkt Home Deluxe. Weiß `#fefefe`, Navy `#0f2334`, Poppins, viel Weißraum.
+Eine Kamerafahrt durch eine CSS-3D-Welt erklärt, wie das Black-Week-Geschenk funktioniert: Je voller
+der Warenkorb, desto mehr schenkt Home Deluxe. Weiß `#fefefe`, Navy `#0f2334`, Poppins, viel Weißraum.
 
 | Stufe | Bestellwert | Geschenk | Code |
 |---|---|---|---|
@@ -41,15 +41,21 @@ schenkt Home Deluxe. Weiß `#fefefe`, Navy `#0f2334`, Poppins, viel Weißraum.
 | 2 | ab 500 € | 75 € | `BLACK75` |
 | 3 | ab 1.000 € | 150 € | `BLACK150` |
 
-| Zeit | Voice-over | Bild |
+| Zeit | Voice-over | Kamerafahrt |
 |---|---|---|
-| 0,6 s | „Black Week bei Home Deluxe – und wir schenken dir bis zu 150 €.“ | Geschenk-Icon, „BLACK WEEK“-Block, Zähler 0 → 150 € |
-| 6,2 s | „So funktioniert’s: Je voller dein Warenkorb, desto größer unser Geschenk.“ | iPhone fährt ein, Produktseite COZY, Tap auf „In den Warenkorb“ |
-| 11,2 s | „Ab 100 € Bestellwert schenken wir dir 15 € – mit dem Code BLACK15.“ | Warenkorb, Geschenk-Leiste füllt sich, Stufe 1 schaltet frei |
-| 17,1 s | „Ab 500 € schenken wir dir 75 € – mit BLACK75.“ | AMIRI XXL fliegt in den Warenkorb, 588 €, Stufe 2 |
-| 22,6 s | „Und ab 1.000 € sogar 150 € – mit BLACK150.“ | LOMA fliegt in den Warenkorb, 1.017 €, Stufe 3 |
-| 28,1 s | „Code im Warenkorb eingeben – und dein Geschenk wird direkt abgezogen.“ | BLACK150 tippen, Einlösen, Gesamt 1.017 € → 867 € |
-| 33,0 s | „Nur in der Black Week – auf homedeluxe.de.“ | Endcard: drei Stufen mit Codes, CTA, Produkte |
+| 0,6 s | „Black Week bei Home Deluxe – und wir schenken dir bis zu 150 €.“ | Anflug aus der Ferne durch taumelnde 3D-Geschenkboxen auf „BLACK WEEK / bis zu 150 €“, dann Durchflug durch die Schrift |
+| 6,2 s | „So funktioniert’s: Je voller dein Warenkorb, desto größer unser Geschenk.“ | iPhone dreht ins Bild, COZY springt aus dem Display, Tap, COZY fällt in den Warenkorb |
+| 11,2 s | „Ab 100 € Bestellwert schenken wir dir 15 € – mit dem Code BLACK15.“ | Kranfahrt zur 3D-Treppe, Stufe 1: Geschenk-Leiste füllt sich, „15 €“ klappt hoch, Code fliegt ein |
+| 17,1 s | „Ab 500 € schenken wir dir 75 € – mit BLACK75.“ | Schwung auf Stufe 2, AMIRI XXL fliegt von der Stufe ins iPhone, „75 €“ |
+| 22,6 s | „Und ab 1.000 € sogar 150 € – mit BLACK150.“ | Schwung auf Stufe 3, LOMA fliegt ins iPhone, „150 €“ |
+| 28,1 s | „Code im Warenkorb eingeben – und dein Geschenk wird direkt abgezogen.“ | Kamera steigt über die Treppe, iPhone frontal: BLACK150 tippen, „−150 €“ springt aus dem Display |
+| 33,0 s | „Nur in der Black Week – auf homedeluxe.de.“ | Rückfahrt in die Totale der ganzen Treppe mit Produkten, Beträgen und Codes, CTA |
+
+Aufbau von `composition.js`: eine Orbit-Kamera (Ziel, Abstand, Gier/Neigung/Roll) mit Keyframes `CAM`
+(`swoop` = Ausholbewegung mitten im Flug), Weltobjekte als 3D-Matrizen, iPhone (`PHONE`) und Überschriften
+im Kameraraum mit leichtem Nachziehen, Bewegungsunschärfe aus der Kamerageschwindigkeit. Die Ebenen
+(Partikel, Treppe, Requisiten, iPhone, Flugobjekte, Texte) sind getrennte 3D-Kontexte, damit sich schräge
+Flächen nicht gegenseitig in Nähte zerschneiden.
 
 Produkte, Preise und Freisteller stammen aus dem Shop (Stand 26.10.2026): Sitzsack mit Hocker COZY
 189 €, Couchtisch Marmor AMIRI XXL 399 €, Hängesessel faltbar LOMA (2er, Beige) 429 €. Ändern sich die
