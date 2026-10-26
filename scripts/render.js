@@ -5,11 +5,13 @@
 //   node scripts/render.js <composition.html> <out.mp4> --plates <dir>
 //   node scripts/render.js <composition.html> <out_dir> --plates <dir> --stills 1,4.5,18
 //   node scripts/render.js <composition.html> <out.mp4> --mblur 4
+//   node scripts/render.js <composition.html> <out.mp4> --audio mix.wav
 //
 // The composition must expose window.COMP = { FPS, TOTAL, seek(n), ready } and may
 // set W/H (default 1080×1920). --plates is optional. --mblur N renders N sub-frames
 // per output frame across a 180° shutter and averages them (motion blur); the
-// composition's seek() must then accept fractional frame numbers.
+// composition's seek() must then accept fractional frame numbers. --audio muxes
+// a soundtrack (AAC 256k) instead of the silent track.
 const path = require('path');
 const fs = require('fs');
 const { spawn } = require('child_process');
@@ -20,7 +22,7 @@ function parseArgs(argv) {
   const opts = { comp, out };
   for (let i = 0; i < rest.length; i += 2) opts[rest[i].replace(/^--/, '')] = rest[i + 1];
   if (!comp || !out) {
-    console.error('usage: render.js <composition.html> <out.mp4|out_dir> [--plates <dir>] [--stills t1,t2] [--mblur N]');
+    console.error('usage: render.js <composition.html> <out.mp4|out_dir> [--plates <dir>] [--stills t1,t2] [--mblur N] [--audio file]');
     process.exit(1);
   }
   return opts;
@@ -63,12 +65,12 @@ function writeFrame(stream, buf) {
   const ff = spawn('ffmpeg', [
     '-v', 'error', '-y',
     '-f', 'image2pipe', '-framerate', String(FPS * SUB), '-c:v', 'png', '-i', '-',
-    '-f', 'lavfi', '-t', String(TOTAL / FPS), '-i', 'anullsrc=r=48000:cl=stereo',
+    ...(opts.audio ? ['-i', path.resolve(opts.audio)] : ['-f', 'lavfi', '-t', String(TOTAL / FPS), '-i', 'anullsrc=r=48000:cl=stereo']),
     ...(SUB > 1 ? ['-vf', `tmix=frames=${SUB},select='not(mod(n+1\\,${SUB}))',setpts=N/(${FPS}*TB)`] : []),
     '-map', '0:v', '-map', '1:a',
     '-c:v', 'libx264', '-preset', 'slow', '-crf', '16', '-pix_fmt', 'yuv420p',
     '-profile:v', 'high', '-level', '4.2', '-r', String(FPS),
-    '-c:a', 'aac', '-b:a', '128k', '-shortest', '-movflags', '+faststart',
+    '-c:a', 'aac', '-b:a', opts.audio ? '256k' : '128k', '-shortest', '-movflags', '+faststart',
     opts.out,
   ], { stdio: ['pipe', 'inherit', 'inherit'] });
   const done = new Promise((res, rej) => ff.on('close', c => (c === 0 ? res() : rej(new Error('ffmpeg exit ' + c)))));

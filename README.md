@@ -10,6 +10,7 @@ rendert. ffmpeg schreibt die Frames anschließend als MP4.
 |---|---|---|
 | `projects/laguna-m` | 9:16, 1080×1920, 30 fps, 18,5 s | `output/HomeDeluxe_Laguna-M_Reel_9x16.mp4` + Titelbild |
 | `projects/dfb-pokal-gewinnspiel` | 3:4, 1080×1440, 30 fps, 21 s | `output/HomeDeluxe_DFB-Pokal_Gewinnspiel_3x4.mp4` + Titelbild |
+| `projects/dfb-pokal-cinematic` | 3:4, 1080×1440, 30 fps, 37 s, mit Voice-over + Musik | `output/HomeDeluxe_DFB-Pokal_Gewinnspiel_Cinematic_3x4.mp4` |
 | `projects/dfb-pokal-gewinnspiel` (Post) | 3:4 Standbild, Higgsfield GPT Image 2.5 | `output/HomeDeluxe_DFB-Pokal_Gewinnspiel_Post_*_V1/V2.jpg` |
 
 ### DFB-Pokal Gewinnspiel – Ablauf
@@ -48,6 +49,28 @@ läuft nur mit ihren sauberen Frames (Schnittliste `SHOTS` in `composition.js`),
 Die Produktdaten stammen aus den Shop- und Händlerangaben zur LAGUNA M (homedeluxe.de, Hornbach).
 Preise sind bewusst nicht eingebaut, weil sie sich häufig ändern.
 
+### DFB-Pokal Cinematic – Schnitt auf das Voice-over
+
+Überarbeitete, sportlichere Fassung. Jeder Schnitt und jeder Slam sitzt auf einem Wort des
+Voice-overs (`audio/vo_words.json`, Sprecher „Vlad“, ElevenLabs v4 über Higgsfield, Start bei 0,8 s).
+Zwei Einstellungen sind KI-Plates (Higgsfield Seedance 2.5, 720p): FPV-Flug durchs Stadion
+(`source/ki_stadion.mp4`, inkl. Stadion-Atmo) und Push-in auf den Pokal (`source/ki_pokal.mp4`).
+Spielerfoto, Wappen und Logo bleiben Originale. Die Musik ist synthetisch (`audio/score.py`,
+Trailer-Percussion 120 BPM, Hits auf den Cues) und kann gegen einen lizenzierten Track getauscht werden:
+`audio/music.wav` ersetzen und `audio/mix.sh` laufen lassen.
+
+| Zeit | Voice-over | Bild |
+|---|---|---|
+| 0,0–2,3 s | „Flutlicht.“ | Letterbox öffnet sich aus einer Lichtlinie, KI-Stadionflug, Slam „FLUTLICHT.“ |
+| 2,3–4,5 s | „Pokalnacht.“ | Slash-Wipe, KI-Pokal, „POKAL / NACHT.“ fliegen von beiden Seiten ein |
+| 4,5–8,6 s | „SC Paderborn gegen den VfB Stuttgart.“ | Weißblitz, Versus: Wappen-Panels slammen auf „Paderborn“ / „VfB“, „VS“ auf „gegen“ |
+| 8,6–13,4 s | „Wir verlosen 4 × 2 Tickets …“ | 3D-„4“ und „×2“ auf die Zahlwörter, Tickets fliegen durch die Kamera |
+| 13,4–18,7 s | „Mittwoch, 28. Oktober. Anstoß: 18 Uhr.“ | Datum-Slam, Anzeigetafel-Ziffern rollen auf 18:00 |
+| 18,7–21,1 s | „In der Home Deluxe Arena.“ | Stadion-Push-in, Logo-Slam mit Glanz, „ARENA“ |
+| 21,1–25,2 s | „Like den Beitrag und markiere den Freund …“ | Spielerfoto, Karten slammen auf „Like“ / „markiere“ |
+| 25,2–31,5 s | „Teilnahme bis zum 27. Oktober. Mit etwas Glück …“ | „27.10.“, Nachricht Wort für Wort, Papierflieger |
+| 31,5–37,0 s | „Home Deluxe. Wir machen dein Zuhause.“ | Letterbox-Blink, 3D-Logo, „VIEL GLÜCK!“, Teilnahmeschluss, Instagram-Hinweis |
+
 ## Rendern
 
 Voraussetzungen: Node 18+, Python 3 mit numpy + Pillow, ffmpeg, Chromium für Playwright.
@@ -60,7 +83,12 @@ npm run laguna-m:render     # -> projects/laguna-m/output/HomeDeluxe_Laguna-M_Re
 npm run laguna-m:stills     # Kontrollbilder nach build/laguna-m/stills
 npm run dfb-gewinnspiel:render   # -> projects/dfb-pokal-gewinnspiel/output/HomeDeluxe_DFB-Pokal_Gewinnspiel_3x4.mp4
 npm run dfb-gewinnspiel:stills   # Kontrollbilder nach build/dfb-pokal-gewinnspiel/stills
+npm run dfb-cinematic:plates     # KI-Plates -> build/dfb-pokal-cinematic/plates
+npm run dfb-cinematic:audio      # Score synthetisieren + Endmischung (audio/mix.wav, -14 LUFS)
+npm run dfb-cinematic:render     # -> projects/dfb-pokal-cinematic/output/HomeDeluxe_DFB-Pokal_Gewinnspiel_Cinematic_3x4.mp4
 ```
+
+Für den Score braucht es zusätzlich scipy (`pip install scipy`).
 
 Ein einzelnes Frame lässt sich auch im Browser prüfen:
 `projects/laguna-m/composition.html?t=4.6` (Zeit in Sekunden, Plates müssen unter `build/` liegen).
@@ -72,7 +100,7 @@ assets/fonts/poppins/     Poppins 400–800 (latin, OFL)
 assets/logo/              Home-Deluxe-Logo (weiß, SVG)
 scripts/prepare_plates.sh Hochskalieren + Grading der Quelle
 scripts/track_points.py   Template-Tracking für Marker, die am Bild kleben
-scripts/render.js         Chromium -> PNG-Frames -> ffmpeg (H.264 + stumme AAC-Spur), optional --mblur N
+scripts/render.js         Chromium -> PNG-Frames -> ffmpeg (H.264 + stumme AAC-Spur), optional --mblur N, --audio <datei>
 projects/<name>/          source/, composition.html/.js, tracking.json, tracks.js, output/
 ```
 
