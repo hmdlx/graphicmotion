@@ -16,7 +16,8 @@ rendert. ffmpeg schreibt die Frames anschließend als MP4.
 Instagram-Feedpost (3:4) zum Gewinnspiel 4 × 2 Tickets für SC Paderborn 07 – VfB Stuttgart,
 Mi 28.10.2026, 18:00 Uhr, Home Deluxe Arena. Teilnahme bis 27.10.2026. Alle Objekte sind echte
 CSS-3D-Körper (Tickets, Wappen-Kacheln, Info-Prismen, Schritt-Karten mit Kanten) bzw. extrudierte
-Schrift/Logo aus gestapelten Ebenen; gerendert mit 4 Sub-Frames Motion Blur (`--mblur 4`).
+Schrift/Logo aus gestapelten Ebenen. Bewusst ohne Motion Blur gerendert: bei den schnellen 3D-Übergängen erzeugen
+wenige Sub-Frames sichtbare Stufen statt Unschärfe.
 
 | Zeit | Szene | Übergang danach |
 |---|---|---|
