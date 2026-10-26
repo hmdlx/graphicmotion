@@ -1,0 +1,41 @@
+{
+  "model": "gemini-3.1-flash-tts-preview",
+  "voice": "Puck",
+  "segments": [
+    {
+      "id": "intro",
+      "text": "Black Week bei Home Deluxe – und wir schenken dir bis zu 150 €.",
+      "say": "Black Week bei Home Deluxe – und wir schenken dir bis zu hundertfünfzig Euro!"
+    },
+    {
+      "id": "how",
+      "text": "So funktioniert’s: Je voller dein Warenkorb, desto größer unser Geschenk.",
+      "say": "So funktioniert's: Je voller dein Warenkorb, desto größer unser Geschenk."
+    },
+    {
+      "id": "tier1",
+      "text": "Ab 100 € Bestellwert schenken wir dir 15 € – mit dem Code BLACK15.",
+      "say": "Ab hundert Euro Bestellwert schenken wir dir fünfzehn Euro – mit dem Code Black fünfzehn."
+    },
+    {
+      "id": "tier2",
+      "text": "Ab 500 € schenken wir dir 75 € – mit BLACK75.",
+      "say": "Ab fünfhundert Euro schenken wir dir fünfundsiebzig Euro – mit Black fünfundsiebzig."
+    },
+    {
+      "id": "tier3",
+      "text": "Und ab 1.000 € sogar 150 € – mit BLACK150.",
+      "say": "Und ab tausend Euro sogar hundertfünfzig Euro – mit Black hundertfünfzig."
+    },
+    {
+      "id": "redeem",
+      "text": "Code im Warenkorb eingeben – und dein Geschenk wird direkt abgezogen.",
+      "say": "Code einfach im Warenkorb eingeben – und dein Geschenk wird direkt abgezogen."
+    },
+    {
+      "id": "outro",
+      "text": "Nur in der Black Week – auf homedeluxe.de.",
+      "say": "Nur in der Black Week – auf homedeluxe punkt de."
+    }
+  ]
+}

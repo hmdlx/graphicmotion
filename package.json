@@ -6,6 +6,10 @@
     "laguna-m:plates": "scripts/prepare_plates.sh projects/laguna-m/source/laguna-m_rohschnitt.mp4 build/laguna-m/plates",
     "laguna-m:track": "python3 -I scripts/track_points.py build/laguna-m/plates projects/laguna-m/tracking.json projects/laguna-m/tracks.js",
     "laguna-m:render": "node scripts/render.js projects/laguna-m/composition.html projects/laguna-m/output/HomeDeluxe_Laguna-M_Reel_9x16.mp4 --plates build/laguna-m/plates",
+    "staffelrabatt:vo": "python3 -I scripts/voiceover.py projects/staffelrabatt-black-week/voiceover.json projects/staffelrabatt-black-week/vo",
+    "staffelrabatt:audio": "node scripts/mix_audio.js projects/staffelrabatt-black-week/cues.js projects/staffelrabatt-black-week/vo build/staffelrabatt-black-week/voiceover.wav",
+    "staffelrabatt:render": "npm run staffelrabatt:audio && node scripts/render.js projects/staffelrabatt-black-week/composition.html projects/staffelrabatt-black-week/output/HomeDeluxe_BlackWeek_Staffelrabatt_9x16.mp4 --audio build/staffelrabatt-black-week/voiceover.wav",
+    "staffelrabatt:stills": "node scripts/render.js projects/staffelrabatt-black-week/composition.html build/staffelrabatt-black-week/stills --stills 1.2,3.3,5,6.6,8.4,9.8,10.5,12.8,15,17.8,19.8,23.2,24.9,26.5,28.9,29.7,30.7,31.6,33.6,35.5,37.5",
     "laguna-m:stills": "node scripts/render.js projects/laguna-m/composition.html build/laguna-m/stills --plates build/laguna-m/plates --stills 1,2,4,5,7,10,11,13,14.5,16,17.6,18,19,21"
   },
   "devDependencies": {
