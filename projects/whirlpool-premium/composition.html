@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>Whirlpool Black Week – Premium-Reel 9:16</title>
+<style>
+  @font-face { font-family: Poppins; font-weight: 400; src: url(../../assets/fonts/poppins/poppins-latin-400-normal.woff2) format("woff2"); }
+  @font-face { font-family: Poppins; font-weight: 500; src: url(../../assets/fonts/poppins/poppins-latin-500-normal.woff2) format("woff2"); }
+  @font-face { font-family: Poppins; font-weight: 600; src: url(../../assets/fonts/poppins/poppins-latin-600-normal.woff2) format("woff2"); }
+  @font-face { font-family: Poppins; font-weight: 700; src: url(../../assets/fonts/poppins/poppins-latin-700-normal.woff2) format("woff2"); }
+
+  /* Home Deluxe CI (Navy #0f2334, Weiß #fefefe, Grautöne, Poppins, eckige Ecken) in einer
+     ruhigen, hochwertigen Bildsprache: viel Weißraum, große Typo mit enger Laufweite,
+     weiche Reveals, schwebende Produkte. */
+  :root { --navy: #0f2334; --white: #fefefe; --muted: #66727d; --mist: #9aa4ae; --line: #e3e7ec; --soft: #f4f6f8; }
+  * { box-sizing: border-box; margin: 0; padding: 0; border-radius: 0; }
+  html, body { width: 1080px; height: 1920px; overflow: hidden; background: var(--white); }
+  body { font-family: Poppins, sans-serif; color: var(--navy); -webkit-font-smoothing: antialiased; }
+  #stage { position: absolute; inset: 0; overflow: hidden; background: var(--white); }
+  .scene { position: absolute; inset: 0; transform-origin: 540px 960px; }
+  .a { position: absolute; left: 0; top: 0; visibility: hidden; transform-origin: 50% 50%; white-space: nowrap; }
+  .w { display: inline-block; }
+
+  #logo { position: absolute; left: 0; top: 0; transform-origin: 0 0; }
+
+  .h1 { font-weight: 700; letter-spacing: -.045em; line-height: 1; }
+  .h2 { font-weight: 600; letter-spacing: -.035em; line-height: 1.08; }
+  .sub { font-weight: 500; letter-spacing: -.01em; color: var(--muted); }
+  .kicker { font-weight: 500; font-size: 34px; letter-spacing: .02em; color: var(--muted); }
+  .muted { color: var(--mist); }
+
+  .rule { position: absolute; height: 2px; background: var(--line); transform-origin: 50% 50%; }
+  .tier-l { font-weight: 500; font-size: 52px; letter-spacing: -.02em; color: var(--muted); }
+  .tier-r { text-align: right; }
+  .tier-r b { display: block; font-weight: 600; font-size: 168px; letter-spacing: -.05em; line-height: 1; }
+  .tier-r > span { display: block; font-weight: 500; font-size: 30px; letter-spacing: .08em; color: var(--mist); margin-top: 6px; }
+
+  .full { position: absolute; inset: 0; overflow: hidden; visibility: hidden; }
+  .full img { position: absolute; left: 0; top: 230px; width: 1080px; height: 1190px; object-fit: cover; transform-origin: 50% 50%; }
+  .full .shade { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(15, 35, 52, 0) 45%, rgba(15, 35, 52, .72) 100%); }
+  .full .t { position: absolute; left: 0; width: 1080px; text-align: center; color: var(--white); }
+
+  .prod { width: 840px; height: 840px; object-fit: contain; mix-blend-mode: multiply; }
+  .shadow { width: 700px; height: 120px; background: radial-gradient(ellipse closest-side, rgba(15, 35, 52, .22), rgba(15, 35, 52, 0)); }
+
+  .num { display: inline-flex; align-items: flex-start; font-variant-numeric: tabular-nums; }
+  .num .col { display: inline-block; overflow: hidden; height: 1em; line-height: 1; }
+  .num .strip { display: block; }
+  .num .col i { display: block; font-style: normal; height: 1em; }
+  .num .fix { line-height: 1; }
+  .price { font-weight: 600; font-size: 176px; letter-spacing: -.05em; }
+  .price.old { color: var(--mist); }
+  .strike { position: absolute; height: 5px; background: var(--mist); transform-origin: 0 50%; }
+  .gift { font-weight: 500; font-size: 34px; color: var(--muted); letter-spacing: -.005em; }
+  .gift b { color: var(--navy); font-weight: 600; letter-spacing: .04em; }
+
+  .field { width: 780px; height: 128px; border: 3px solid var(--line); background: #fff; font-weight: 600; font-size: 52px; letter-spacing: .1em; line-height: 122px; padding-left: 40px; }
+  .field .ph { color: #b4bcc4; font-weight: 400; font-size: 44px; letter-spacing: 0; }
+  .field .caret { display: inline-block; width: 4px; height: 56px; background: var(--navy); vertical-align: -8px; margin-left: 4px; }
+  .btn { width: 780px; height: 118px; background: var(--navy); color: var(--white); font-weight: 600; font-size: 42px; line-height: 118px; text-align: center; letter-spacing: -.01em; }
+  .ok { font-weight: 600; font-size: 42px; letter-spacing: -.02em; display: flex; align-items: center; gap: 18px; }
+  .codes { font-weight: 500; font-size: 32px; letter-spacing: .1em; color: var(--mist); }
+  .cta { background: var(--navy); color: var(--white); font-weight: 600; font-size: 42px; line-height: 1; padding: 34px 64px 31px; letter-spacing: -.01em; }
+  .small-prod { width: 330px; height: 330px; object-fit: contain; mix-blend-mode: multiply; }
+</style>
+</head>
+<body>
+<div id="stage">
+  <div id="scenes"></div>
+  <img id="logo" src="../../assets/logo/homedeluxe-logo-navy.svg" alt="Home Deluxe">
+</div>
+<script src="cues.js"></script>
+<script src="composition.js"></script>
+</body>
+</html>

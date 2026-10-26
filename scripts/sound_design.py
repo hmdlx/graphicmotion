@@ -478,17 +478,88 @@ def chaching(seed=0):
     return out
 
 
+# ------------------------------------------------------------------ calm style
+CALM = [  # pad voicing, sub root: Fmaj7 – C/E – Am7 – G, two bars each
+    ([53, 57, 60, 64], 29),
+    ([52, 55, 60, 67], 28),
+    ([57, 60, 64, 67], 33),
+    ([55, 59, 62, 67], 31),
+]
+
+
+def music_calm(total, ev):
+    """Quiet premium bed: warm pad, sparse piano-like motif with echoes, soft pulse."""
+    buf = np.zeros((2, int(total * SR)))
+    send = np.zeros_like(buf)
+    pulse = np.zeros_like(buf)
+    span = 2 * BAR
+    human = rng(5)
+    t0 = GRID - span
+    while t0 < FINAL - 0.01:
+        if t0 + span > 0:
+            idx = int(round((t0 - DROP) / span)) % 4
+            notes, root = CALM[idx]
+            dur = min(span, FINAL - t0)
+            pad = pad_chord(notes, dur + 0.2) * 0.8
+            add(buf, t0, pad, 1.0)
+            add(send, t0, pad, 0.4)
+            t = ts(dur + 0.8)
+            sub = np.sin(2 * np.pi * midi(root + 12) * t) * adsr(len(t), 0.6, 1.0, 0.8, 0.8, gate=dur)
+            add(buf, t0, sub, 0.32)
+            # Motif: five soft notes over the two bars, rising through the chord.
+            for j, (beat, deg) in enumerate([(0, 0), (1.5, 2), (3, 3), (4.5, 1), (6, 2)]):
+                s = t0 + beat * BEAT + human.uniform(-0.006, 0.006)
+                if s >= FINAL - 0.05 or s < 0:
+                    continue
+                n = notes[deg] + 12
+                x = pluck(n, 1.4, 0.55) * human.uniform(0.75, 1.0)
+                for e, (dt, g, p) in enumerate([(0, 1.0, -0.2), (0.75, 0.35, 0.5), (1.5, 0.15, -0.5)]):
+                    add(buf, s + dt, x, 0.16 * g, p)
+                add(send, s, x, 0.14)
+            # Soft half-time pulse once the explaining starts.
+            for beat in (0, 2, 4, 6):
+                s = t0 + beat * BEAT
+                if DROP <= s < FINAL - 0.05 and not (BREAK[0] <= s < BREAK[1]):
+                    tk = ts(0.5)
+                    k = np.sin(2 * np.pi * np.cumsum(42 + 40 * np.exp(-tk * 22)) / SR) * np.exp(-tk * 9)
+                    add(pulse, s, k, 0.5)
+                    for q in range(2):
+                        add(pulse, s + BEAT * (q + 0.5), hat(seed=40 + q), 0.035, 0.3)
+        t0 += span
+    # Final bloom: C add9, long tail.
+    notes = [48, 55, 60, 62, 64, 67, 72]
+    bloom = pad_chord(notes, 5.0) * 1.1
+    add(buf, FINAL, bloom)
+    add(send, FINAL, bloom, 0.7)
+    t = ts(4.0)
+    add(buf, FINAL, np.sin(2 * np.pi * midi(36) * t) * np.exp(-t * 0.8) * 0.5)
+    for i, n in enumerate([72, 76, 79, 84]):
+        x = pluck(n, 1.6, 0.55)
+        add(buf, FINAL + 0.35 + i * 0.42, x, 0.12, (-1) ** i * 0.3)
+        add(send, FINAL + 0.35 + i * 0.42, x, 0.15)
+    for ch in range(2):
+        buf[ch] = filt(buf[ch], 'lowpass', 3800)
+    buf = peaking(buf, 200, -3.5, 0.9)
+    out = buf + pulse + 0.55 * reverb(send, 3.2, 41)
+    tt = np.arange(out.shape[1]) / SR
+    fade = np.sin(np.pi / 2 * np.clip((total - tt) / 3.0, 0, 1)) ** 2 * np.clip(tt / 1.2, 0, 1)
+    return np.tanh(out * 1.1) * fade
+
+
 def sfx_list(total, ev):
     """Generic effect list: [{t, kind, ...}] from the composition."""
     buf = np.zeros((2, int(total * SR)))
     send = np.zeros_like(buf)
 
+    gm = 1.0                                       # per-event gain multiplier ("gain")
+
     def put(at, sig, gain, p=0.0, wet=0.3):
-        add(buf, at, sig, gain, p)
-        add(send, at, sig, gain * wet, p)
+        add(buf, at, sig, gain * gm, p)
+        add(send, at, sig, gain * gm * wet, p)
 
     for k, e in enumerate(ev['sfx']):
         t, kind = e['t'], e['kind']
+        gm = e.get('gain', 1.0)
         seed = 1000 + k
         side = (-1) ** k * 0.25
         if kind == 'whoosh':
@@ -523,6 +594,20 @@ def sfx_list(total, ev):
             put(t, click(seed, 1500), 0.36, 0.1, 0.1)
         elif kind == 'key':
             put(t, filt(click(seed, 1100 + 90 * (e.get('i', 0) % 3)), 'lowpass', 4000), 0.14, 0.1, 0.05)
+        elif kind == 'air':
+            put(t, whoosh(e.get('dur', 1.0), 0.3, seed, 300, 2200, (-1) ** k), 0.16 * e.get('strength', 1.0), wet=0.4)
+        elif kind == 'bloom':
+            d = e.get('dur', 1.4)
+            put(t, pan2(noise_swell(d, 180, 1600, seed, 1.6), 0), 0.16, wet=0.6)
+        elif kind == 'roll':
+            dur = e.get('dur', 1.0)
+            for j in range(10):
+                at = t + dur * (1 - (1 - j / 10) ** 2.0)
+                put(at, filt(click(seed + j, 1800), 'lowpass', 3000), 0.05, 0.1, 0.1)
+        elif kind == 'glass':
+            put(t, bell(midi(e.get('n', 84)), 1.8, 0.7), 0.11, 0.15, 0.7)
+        elif kind == 'softclick':
+            put(t, filt(click(seed, 1200), 'lowpass', 3500), 0.18, 0.1, 0.2)
         elif kind == 'ping':
             put(t, pop(900, seed), 0.16, 0.2)
             put(t + 0.04, bell(midi(84), 0.9), 0.2, 0.2)
@@ -568,18 +653,19 @@ def main():
     n = int(total * SR)
     vo = np.pad(vo, ((0, 0), (0, max(0, n - vo.shape[1]))))[:, :n]
 
-    mus = music(total, ev)
+    calm = m.get('style') == 'calm'
+    mus = music_calm(total, ev) if calm else music(total, ev)
     fx = sfx_list(total, ev) if 'sfx' in ev else sfx(total, ev)
     # Levels: music bed ~6 dB under the voice before ducking, effects peaking well below it.
     groove = slice(int(DROP * SR), int(BREAK[0] * SR))
-    mus *= 10 ** ((rms_db(vo[:, groove]) - 6 - rms_db(mus[:, groove])) / 20)
-    fx *= 10 ** ((-9 - 20 * np.log10(np.abs(fx).max() + 1e-12)) / 20)
+    mus *= 10 ** ((rms_db(vo[:, groove]) - (8 if calm else 6) - rms_db(mus[:, groove])) / 20)
+    fx *= 10 ** (((-14 if calm else -9) - 20 * np.log10(np.abs(fx).max() + 1e-12)) / 20)
 
     # Duck the music under the voice (about -5 dB), with a soft attack and release.
     env = np.abs(vo).max(axis=0)
     env = maximum_filter1d(env, int(0.08 * SR))
     env = uniform_filter1d(env, int(0.25 * SR))
-    duck = 1 - 0.45 * np.clip(env / 0.08, 0, 1)
+    duck = 1 - (0.35 if calm else 0.45) * np.clip(env / 0.08, 0, 1)
     save_wav(os.path.join(out_dir, 'music.wav'), mus)
     save_wav(os.path.join(out_dir, 'sfx.wav'), fx)
 

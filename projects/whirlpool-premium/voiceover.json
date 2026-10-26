@@ -1,0 +1,14 @@
+{
+  "model": "gemini-3.1-flash-tts-preview",
+  "voice": "Algieba",
+  "segments": [
+    { "id": "intro", "text": "Black Week bei Home Deluxe.", "say": "Black Week bei Home Deluxe." },
+    { "id": "claim", "text": "Je mehr du dir gönnst, desto mehr schenken wir dir.", "say": "Je mehr du dir gönnst, desto mehr schenken wir dir." },
+    { "id": "tiers", "text": "Ab 100 € schenken wir dir 15 €. Ab 500 € 75 €. Ab 1.000 € 150 €.", "say": "Ab hundert Euro schenken wir dir fünfzehn Euro. Ab fünfhundert Euro fünfundsiebzig. Ab tausend Euro hundertfünfzig." },
+    { "id": "ex1", "text": "Der Whirlpool SPLASH. 349 €. Mit unserem Geschenk: 334 €.", "say": "Der Whirlpool Splash. Dreihundertneunundvierzig Euro. Mit unserem Geschenk: dreihundertvierunddreißig Euro." },
+    { "id": "ex2", "text": "Der DROP mit Sonnendach. 529 €. Mit unserem Geschenk: 454 €.", "say": "Der Drop mit Sonnendach. Fünfhundertneunundzwanzig Euro. Mit unserem Geschenk: vierhundertvierundfünfzig Euro." },
+    { "id": "ex3", "text": "Der HORIZON. 2.499 €. Mit unserem Geschenk: 2.349 €.", "say": "Der Horizon. Zweitausendvierhundertneunundneunzig Euro. Mit unserem Geschenk: zweitausenddreihundertneunundvierzig Euro." },
+    { "id": "code", "text": "Einfach den Code im Warenkorb eingeben.", "say": "Einfach den Code im Warenkorb eingeben." },
+    { "id": "outro", "text": "Black Week. Nur bei Home Deluxe.", "say": "Black Week. Nur bei Home Deluxe." }
+  ]
+}

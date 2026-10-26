@@ -11,6 +11,7 @@ rendert. ffmpeg schreibt die Frames anschließend als MP4.
 | `projects/laguna-m` | 9:16, 1080×1920, 30 fps, 18,5 s | `output/HomeDeluxe_Laguna-M_Reel_9x16.mp4` + Titelbild |
 | `projects/staffelrabatt-black-week` | 9:16, 1080×1920, 30 fps, 38 s, deutsches Voice-over, Musik + Sounds | `output/HomeDeluxe_BlackWeek_Staffelrabatt_9x16.mp4` |
 | `projects/whirlpool-rechenbeispiel` | 9:16, 1080×1920, 30 fps, 57 s, Voice-over, Musik + Sounds | `output/HomeDeluxe_BlackWeek_Whirlpool-Rechenbeispiel_9x16.mp4` |
+| `projects/whirlpool-premium` | 9:16, 1080×1920, 30 fps, 54 s, ruhiges Voice-over, Musik + Sounds | `output/HomeDeluxe_BlackWeek_Whirlpools_Premium_9x16.mp4` |
 
 ### Laguna M – Schnitt und Übergänge
 
@@ -107,6 +108,27 @@ TTS-Aufnahme per dynamischer Programmierung an den Pausen, die am besten zu den 
 (Gedankenstriche pausieren oft so lang wie Satzenden). Sounds kommen als Liste aus `COMP.events()`
 (`sfx: [{t, kind}]`, Musik-Abschnitte unter `music`).
 
+### Whirlpools Premium (Apple-Stil in der Home-Deluxe-CI)
+
+Gleiches Rechenbeispiel wie oben, aber hochwertig und ruhig: viel Weißraum, große Typo mit enger
+Laufweite (Poppins 600/700), weiche Blur-Reveals Wort für Wort, Haarlinien-Tabelle für die Stufen,
+je Whirlpool erst das Lifestyle-Foto mit maskiertem Reveal, dann das Produkt frei auf Weiß mit
+Schatten. Preise rollen wie ein Zählwerk, der alte Preis tritt zurück und wird durchgestrichen.
+Ruhige Stimme (Gemini TTS „Algieba“), kurzer Text, warme Musik (`style: 'calm'` in
+`scripts/sound_design.py`: Pad, sparsames Piano-Motiv mit Echos, weicher Puls, Bloom am Ende) und sehr
+dezente Sounds (Luft, leises Ticken beim Zählwerk, Glas-Töne).
+
+| Zeit | Voice-over | Bild |
+|---|---|---|
+| 1,2 s | „Black Week bei Home Deluxe.“ | Logo-Reveal, „Black Week.“, Logo wandert nach oben |
+| 4,0 s | „Je mehr du dir gönnst, desto mehr schenken wir dir.“ | zweifarbige Typo (Grau/Navy) |
+| 8,2 s | „Ab 100 € schenken wir dir 15 €. Ab 500 € 75 €. Ab 1.000 € 150 €.“ | Haarlinien-Tabelle, Beträge rollen, Codes |
+| 17,6 s | SPLASH, 349 € → mit unserem Geschenk 334 € | Lifestyle-Foto → Produkt auf Weiß, Zählwerk |
+| 26,3 s | DROP mit Sonnendach, 529 € → 454 € | dto. |
+| 35,0 s | HORIZON, 2.499 € → 2.349 € | dto. |
+| 44,6 s | „Einfach den Code im Warenkorb eingeben.“ | Code-Feld, BLACK150 wird getippt, „150 € geschenkt“ |
+| 48,1 s | „Black Week. Nur bei Home Deluxe.“ | Endcard mit CTA und den drei Whirlpools |
+
 ## Rendern
 
 Voraussetzungen: Node 18+, Python 3 mit numpy + Pillow (+ scipy für den Ton), ffmpeg, Chromium für Playwright.
@@ -126,6 +148,10 @@ npm run staffelrabatt:stills  # Kontrollbilder nach build/staffelrabatt-black-we
 npm run whirlpool:render      # Ton mischen + Video -> projects/whirlpool-rechenbeispiel/output/HomeDeluxe_BlackWeek_Whirlpool-Rechenbeispiel_9x16.mp4
 npm run whirlpool:remux       # nur den Ton neu mischen und ins fertige MP4 legen
 npm run whirlpool:stills      # Kontrollbilder nach build/whirlpool/stills
+
+npm run premium:render        # Ton mischen + Video -> projects/whirlpool-premium/output/HomeDeluxe_BlackWeek_Whirlpools_Premium_9x16.mp4
+npm run premium:remux         # nur den Ton neu mischen und ins fertige MP4 legen
+npm run premium:stills        # Kontrollbilder nach build/premium/stills
 ```
 
 Ein einzelnes Frame lässt sich auch im Browser prüfen:
