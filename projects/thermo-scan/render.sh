@@ -16,7 +16,7 @@ NAME=HomeDeluxe_SPLASH-THERMO_Thermo-Scan
 FORMATS=${*:-9x16 1x1 16x9}
 mkdir -p "$C" "$OUT"
 
-[ -f $B/plates/drop_34.png ] || python3 -I projects/thermo-scan/prepare.py projects/thermo-scan/source $B/plates
+[ -f $B/plates/drop_34.png ] && [ -f $B/plates/intro/001.jpg ] || python3 -I projects/thermo-scan/prepare.py projects/thermo-scan/source $B/plates
 python3 -I projects/thermo-scan/sound.py $B/sound.wav
 python3 -I projects/thermo-scan/sound.py $B/sound_9x16.wav premium
 

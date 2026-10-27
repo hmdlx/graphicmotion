@@ -9,7 +9,7 @@ rendert. ffmpeg schreibt die Frames anschließend als MP4.
 | Projekt | Format | Ergebnis |
 |---|---|---|
 | `projects/laguna-m` | 9:16, 1080×1920, 30 fps, 18,5 s | `output/HomeDeluxe_Laguna-M_Reel_9x16.mp4` + Titelbild |
-| `projects/thermo-scan` | 9:16 Premium-Schnitt mit Foto-Intro + deutschem Voice-over (1080×1920, 38 s), 1:1 (1080×1080) + 16:9 (1920×1080, 26 s), 30 fps, mit Sounddesign | `output/HomeDeluxe_SPLASH-THERMO_Thermo-Scan_9x16.mp4`, `…_1x1.mp4`, `…_16x9.mp4`, `…_1x1.gif` + Titelbilder |
+| `projects/thermo-scan` | 9:16 Premium-Schnitt mit KI-Intro-Clip + deutschem Voice-over (1080×1920, 38 s), 1:1 (1080×1080) + 16:9 (1920×1080, 26 s), 30 fps, mit Sounddesign | `output/HomeDeluxe_SPLASH-THERMO_Thermo-Scan_9x16.mp4`, `…_1x1.mp4`, `…_16x9.mp4`, `…_1x1.gif` + Titelbilder |
 
 ### SPLASH THERMO / DROP THERMO – Thermo-Scan
 
@@ -17,8 +17,11 @@ Hochwertiger Content-Clip zu den aufblasbaren Thermoabdeckungen SPLASH THERMO un
 (nicht für den Newsletter). Basis sind die Ambientebilder und 3/4-Freisteller aus dem Shop; alle weiteren
 Perspektiven entstehen in einer prozedural gebauten three.js-Szene (`scene.js`) nach den
 Produktmaßen: Whirlpool Ø 208 × 70 cm mit Drop-Stitch-Wänden, Abdeckung 162 × 162 × 20 cm mit
-sieben Luftkammern und Ventil. Nur das Intro-Foto des 9:16-Schnitts (`source/intro-familie-ki.jpg`, Nano Banana)
-und das Voice-over (`source/vo/`, ElevenLabs v4 über Higgsfield, Stimme Elena) sind KI-generiert.
+sieben Luftkammern und Ventil. Nur der Intro-Clip des 9:16-Schnitts (`source/intro-drop-ki.mp4`, Kling 3.0 aus dem
+Nano-Banana-Startbild `source/intro-drop-start-ki.jpg`) und das Voice-over (`source/vo/`, ElevenLabs v4 über Higgsfield,
+Stimme Elena) sind KI-generiert. Der Aufdruck, den das Videomodell auf den Pool gesetzt hat, stimmt nicht mit dem Produkt
+überein: `prepare.py` verfolgt ihn Frame für Frame, füllt die Seitenwand neu und legt das echte DROP-Logo
+(`source/drop-logo.png`, aus dem Shop-Freisteller) an dieselbe Stelle.
 
 **1:1 und 16:9** (`composition.html`, 26 s):
 
@@ -40,7 +43,7 @@ Platz hat, laufen Wärmebild und Produkt mit 0,88-facher, das Wetter mit 0,75-fa
 
 | Zeit | Einstellung | Inhalt | Voice-over |
 |---|---|---|---|
-| 0,0–6,0 s | Intro-Foto | Familie auf der Terrasse (Eltern im DROP, Kinder im SPLASH), langsamer Push-in; „Ihr habt einen unserer aufblasbaren Whirlpools?“ / „Dann gibt es etwas Neues für euch.“, Push mit Unschärfe ins Macro | „Ihr habt einen unserer aufblasbaren Whirlpools? Dann gibt's was Neues für euch.“ |
+| 0,0–6,0 s | Intro-Clip | Paar entspannt im DROP auf der Terrasse, Handykamera-Look; „Ihr habt einen unserer aufblasbaren Whirlpools?“ / „Dann gibt es etwas Neues für euch.“, Push mit Unschärfe ins Macro | „Ihr habt einen unserer aufblasbaren Whirlpools? Dann gibt's was Neues für euch.“ |
 | 6,0–9,4 s | Macro | Kamera kreist dicht über der Abdeckung um das Ventil, Tiefenschärfe, Gegenlicht-Kante, Staub-Bokeh; Titel | „Das ist Splash Thermo – die aufblasbare Thermoabdeckung.“ |
 | 9,4–11,4 s | Kranfahrt + Thermo-Scan | hinauf in die Hero-Totale, Scanlinie wandelt das Modell in die Röntgenansicht | – |
 | 11,4–14,7 s | Querschnitt | enge Seitenansicht, Schnittebene, Callouts Luftpolster / PVC | „Das Luftpolster aus wetterfestem PVC isoliert.“ |

@@ -13,6 +13,7 @@ const W = 1080, H = 1920;
 // Intro (family photo + hook) runs before the film. The film then runs on its own
 // clock: where the voice-over needs more room, film time runs slower than output time.
 const INTRO = 6.0;
+const INTRO_CLIP = 180;                   // frames in plates/intro (30 fps), the last one holds
 const FILM_END = 30.0;
 const WARP = [               // [film from, film to, speed]; speed 1 elsewhere
   [10.4, 16.5, 0.88],        // heat result + product: room for two voice lines
@@ -397,6 +398,7 @@ function updateLights(t) {
 }
 
 // Seek ------------------------------------------------------------------------------------
+let introSrc = '', introLoad;
 function seek(n) {
   const tt = n / FPS;                      // output time
   const u = tt - INTRO;                    // output time inside the film
@@ -551,13 +553,15 @@ function seek(n) {
     vis($('#endLogo'), E.out(prog(te, 1.5, 2.0)));
   }
 
-  // ---- Intro: slow push-in on the photo, the hook, then a push through into the macro
+  // ---- Intro: the clip with the hook, then a push through into the macro
   const introOn = tt < INTRO;
   vis($('#intro'), introOn ? 1 - E.inOut(prog(tt, INTRO - 0.55, INTRO)) : 0);
   if (introOn) {
-    const kb = 1 + 0.07 * E.sine(prog(tt, 0, INTRO - 0.55));
+    const kb = 1 + 0.03 * E.sine(prog(tt, 0, INTRO - 0.55));
     const push = E.in(prog(tt, INTRO - 0.55, INTRO));
     const img = $('#introImg');
+    const src = `${PLATES}/intro/${String(Math.min(n, INTRO_CLIP - 1) + 1).padStart(3, '0')}.jpg`;
+    if (src !== introSrc) { introSrc = src; img.src = src; introLoad = img.decode().catch(() => {}); }
     img.style.transform = `scale(${kb + 0.22 * push})`;
     img.style.filter = push > 0 ? `blur(${push * 14}px)` : 'none';
     stackAnim($('#introCap'), tt, [0.3, INTRO - 0.45]);
@@ -569,6 +573,7 @@ function seek(n) {
   }
 
   gctx.putImageData(grainTiles[Math.floor(n) % grainTiles.length], 0, 0);
+  return introOn ? introLoad : undefined;   // the renderer waits until the clip frame is decoded
 }
 
 // Boot --------------------------------------------------------------------------------------
