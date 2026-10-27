@@ -1,4 +1,5 @@
-// SPLASH THERMO / DROP THERMO – Thermo-Scan film, 9:16 and 1:1 from one timeline.
+// SPLASH THERMO / DROP THERMO – Thermo-Scan film, 1:1 and 16:9 from one timeline
+// (9:16 is its own cut: premium.js).
 // window.COMP.seek(n) puts the stage into the exact state of output frame n.
 import * as THREE from 'three';
 import { World, DIM, coverTop, rng } from './scene.js';
@@ -16,7 +17,6 @@ const PLATES = params.get('plates') || '../../build/thermo-scan/plates';
 
 // Timeline, output seconds ----------------------------------------------------------------
 const T = {
-  logo: [0.1, 21.85],
   title: [0.25, 2.45],
   hud: 2.5,
   scan: [2.9, 4.0],
@@ -34,7 +34,7 @@ const T = {
   leaves: 15.45,
   rain: [16.8, 18.9],
   lift3: [19.0, 19.9],
-  cap1: [9.9, 11.9], cap2: [12.9, 14.9], cap3: [15.9, 18.9], cap4: [20.0, 21.85],
+  cap1: [9.9, 11.9], cap2: [12.9, 14.9], cap3: [15.9, 18.9],
   wipe: [21.85, 22.25],
   end: 22.25,
 };
@@ -100,19 +100,19 @@ const L = P ? {
   frame: { l: 36, t: 290, r: W - 36, b: H - 96 },
   capBottom: 150, titleBottom: 118,
   chip: { top: 1090, left: 72 }, legend: { x: W - 72 - 22 - 64, y: 520, h: 360 },
-  end: { logoTop: 140, coverY: 790, coverW: 470, xS: 300, xD: 780, textTop: 1170 },
+  end: { coverY: 790, coverW: 470, xS: 300, xD: 780, textTop: 1170 },
 } : LS ? {
   winTop: 0, winLeft: (W - H) / 2 + SX,
   frame: { l: 28, t: 28, r: W - 28, b: H - 28 },
   capBottom: 72, titleBottom: 72,
   chip: { top: 140, left: 56 }, legend: { x: W - 56 - 22 - 60, y: 420, h: 260 },
-  end: { logoTop: 56, coverY: 500, coverW: 410, xS: 1190, xD: 1650, textTop: 410, textW: 820 },
+  end: { coverY: 500, coverW: 410, xS: 1190, xD: 1650, textTop: 410, textW: 820 },
 } : {
   winTop: 0,
   frame: { l: 28, t: 28, r: W - 28, b: H - 28 },
   capBottom: 56, titleBottom: 56,
   chip: { top: 178, right: 56 }, legend: { x: W - 56 - 22 - 60, y: 420, h: 260 },
-  end: { logoTop: 56, coverY: 320, coverW: 360, xS: 300, xD: 780, textTop: 560 },
+  end: { coverY: 320, coverW: 360, xS: 300, xD: 780, textTop: 560 },
 };
 const WS = Math.min(W, H);               // photo window: full width, or a centred square
 const WIN = { l: L.winLeft || 0, t: L.winTop, r: (L.winLeft || 0) + WS, b: L.winTop + WS };
@@ -123,11 +123,10 @@ $('#xray').src = PLATES + '/photo_xray.png';
 $('#coverImg').src = PLATES + '/cover_34.png';
 $('#dropImg').src = PLATES + '/drop_34.png';
 for (const id of ['#win', '#mask']) Object.assign($(id).style, { left: WIN.l + 'px', top: WIN.t + 'px', width: WS + 'px', height: WS + 'px' });
-for (const id of ['#cap1', '#cap2', '#cap3', '#cap4']) $(id).style.bottom = L.capBottom + 'px';
+for (const id of ['#cap1', '#cap2', '#cap3']) $(id).style.bottom = L.capBottom + 'px';
 $('#title').style.bottom = L.titleBottom + 'px';
 for (const c of $$('.chip')) Object.assign(c.style, { top: L.chip.top + 'px' }, L.chip.right !== undefined ? { left: 'auto', right: L.chip.right + 'px' } : { left: L.chip.left + 'px' });
 Object.assign($('#legend').style, { left: L.legend.x + 'px', top: L.legend.y + 'px', height: L.legend.h + 'px' });
-$('#endLogo').style.top = L.end.logoTop + 'px';
 $('#endText').style.top = L.end.textTop + 'px';
 Object.assign($('#ecS').style, { left: L.end.xS + 'px', top: L.end.coverY + 'px', width: L.end.coverW + 'px' });
 Object.assign($('#ecD').style, { left: L.end.xD + 'px', top: L.end.coverY + 'px', width: L.end.coverW + 'px' });
@@ -445,12 +444,10 @@ function seek(n) {
   vis($('#legend'), win(t, [3.4, 11.7], 0.5, 0.4));
 
   // ---- Logo, title, captions, chips, progress
-  vis($('#logo'), Math.min(E.out(prog(t, T.logo[0], T.logo[0] + 0.4)), 1 - prog(t, T.logo[1] - 0.3, T.logo[1])));
   stackAnim($('#title'), t, T.title);
   stackAnim($('#cap1'), t, T.cap1);
   stackAnim($('#cap2'), t, T.cap2);
   stackAnim($('#cap3'), t, T.cap3);
-  stackAnim($('#cap4'), t, T.cap4);
   for (const [id, w] of [['#chipOff', T.chipOff]]) {
     const k = win(t, w, 0.3, 0.3);
     vis($(id), k);
@@ -545,8 +542,9 @@ function seek(n) {
       lab.style.opacity = kl; lab.style.transform = `translateY(${(1 - kl) * 16}px)`;
     });
     $('#endGlow').style.opacity = E.out(prog(te, 0, 1.2));
-    vis($('#endLogo'), E.out(prog(te, 0.2, 0.7)));
     const et = $('#endText');
+    $('#endLogo').style.top = et.offsetTop + et.offsetHeight + (P ? 70 : 50) + 'px';
+    vis($('#endLogo'), E.out(prog(te, 1.3, 1.8)));
     $$('.ln > span', et).forEach((sp, i) => { const k2 = E.out(prog(te, 0.45 + i * 0.12, 0.95 + i * 0.12)); sp.style.transform = `translateY(${(1 - k2) * 105}%)`; });
     const k4 = E.back(prog(te, 0.95, 1.45)); const cta = et.querySelector('.cta'); cta.style.opacity = clamp(k4); cta.style.transform = `scale(${0.9 + 0.1 * k4})`; cta.style.transformOrigin = '0 50%';
   }

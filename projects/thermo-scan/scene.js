@@ -10,6 +10,7 @@ import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { Pass } from 'three/addons/postprocessing/Pass.js';
 import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
+import { FullScreenQuad } from 'three/addons/postprocessing/Pass.js';
 
 // Dimensions in metres ---------------------------------------------------------
 export const DIM = {
@@ -106,9 +107,9 @@ export function coverBottom(x, z) {
 
 function buildCoverGeometry() {
   const { coverR: r, coverEdge: e } = DIM;
-  const NA = 288;
+  const NA = 560;
   const rows = [];   // each row: function(theta) -> [x, y, z]
-  const NI = 46, NE = 28;
+  const NI = 96, NE = 36;
   // top disc
   for (let i = 0; i <= NI; i++) {
     const rho = (r - e) * Math.pow(i / NI, 0.85);
@@ -429,6 +430,58 @@ class SplitRenderPass extends Pass {
   }
 }
 
+// Depth of field: single-pass gather blur from the scene depth (after Dennis
+// Gustafsson's "bokeh in a single pass"). Off unless aperture > 0.
+class DofPass extends Pass {
+  constructor(camera, W, H) {
+    super();
+    this.camera = camera;
+    this.aperture = 0;           // blur in px for an object at 1/focus = 1 m^-1 off focus
+    this.focus = 1;              // focus distance in metres
+    this.maxBlur = 18;
+    this.material = new THREE.ShaderMaterial({
+      uniforms: {
+        tDiffuse: { value: null }, tDepth: { value: null },
+        uRes: { value: new THREE.Vector2(W, H) }, uNear: { value: 0.05 }, uFar: { value: 60 },
+        uFocus: { value: 1 }, uAperture: { value: 0 }, uMax: { value: 18 },
+      },
+      vertexShader: /* glsl */`varying vec2 vUv; void main(){ vUv = uv; gl_Position = vec4(position.xy, 0., 1.); }`,
+      fragmentShader: /* glsl */`
+        #include <packing>
+        uniform sampler2D tDiffuse, tDepth; uniform vec2 uRes; uniform float uNear, uFar, uFocus, uAperture, uMax;
+        varying vec2 vUv;
+        float dist(vec2 uv){ return -perspectiveDepthToViewZ(texture2D(tDepth, uv).x, uNear, uFar); }
+        float coc(float z){ return clamp(abs(1. / uFocus - 1. / z) * uAperture, 0., uMax); }
+        void main(){
+          vec3 col = texture2D(tDiffuse, vUv).rgb;
+          float z0 = dist(vUv), c0 = coc(z0);
+          float tot = 1.; float rad = 2.;
+          for (float ang = 0.; ang < 400.; ang += 2.39996) {
+            if (rad > uMax) break;
+            vec2 tc = vUv + vec2(cos(ang), sin(ang)) * rad / uRes;
+            vec3 sc = texture2D(tDiffuse, tc).rgb;
+            float z = dist(tc), cs = coc(z);
+            if (z > z0) cs = clamp(cs, 0., c0 * 2.);
+            float m = smoothstep(rad - .5, rad + .5, cs);
+            col += mix(col / tot, sc, m); tot += 1.;
+            rad += 3.2 / rad;
+          }
+          gl_FragColor = vec4(col / tot, 1.);
+        }`,
+      depthTest: false, depthWrite: false,
+    });
+    this.quad = new FullScreenQuad(this.material);
+  }
+  render(renderer, writeBuffer, readBuffer) {
+    const u = this.material.uniforms;
+    u.tDiffuse.value = readBuffer.texture; u.tDepth.value = readBuffer.depthTexture;
+    u.uNear.value = this.camera.near; u.uFar.value = this.camera.far;
+    u.uFocus.value = this.focus; u.uAperture.value = this.aperture; u.uMax.value = this.maxBlur;
+    renderer.setRenderTarget(this.renderToScreen ? null : writeBuffer);
+    this.quad.render(renderer);
+  }
+}
+
 // World -------------------------------------------------------------------------------
 export class World {
   constructor(canvas, W, H) {
@@ -534,10 +587,21 @@ export class World {
       sh.uniforms.uRip = { value: this.ripples };
       sh.uniforms.uRipN = { value: 0 };
       sh.uniforms.uShield = { value: 0 };
+      sh.uniforms.uGrain = { value: 0.035 };
       this.coverShaderU = sh.uniforms;
       sh.vertexShader = sh.vertexShader.replace('#include <common>', '#include <common>\nvarying vec3 vLocal;').replace('#include <begin_vertex>', '#include <begin_vertex>\nvLocal = position;');
       sh.fragmentShader = sh.fragmentShader
-        .replace('#include <common>', '#include <common>\nvarying vec3 vLocal; uniform vec4 uRip[24]; uniform int uRipN; uniform float uShield;')
+        .replace('#include <common>', '#include <common>\nvarying vec3 vLocal; uniform vec4 uRip[24]; uniform int uRipN; uniform float uShield; uniform float uGrain;')
+        .replace('#include <normal_fragment_maps>', `#include <normal_fragment_maps>
+          {
+            // fine matte PVC structure; fades out before it would alias
+            vec2 q = vLocal.xz * 900.;
+            float fw = max(fwidth(q.x), fwidth(q.y));
+            float k = uGrain * clamp(1.6 - fw, 0., 1.);
+            vec2 g = vec2(cos(q.x * .73 + sin(q.y * .41) * 2.3) + .6 * cos((q.x + q.y * .7) * 1.13 + sin(q.y * .21)),
+                          cos(q.y * .79 + sin(q.x * .37) * 2.1) + .6 * cos((q.x * .8 - q.y) * 1.07 + sin(q.x * .23)));
+            normal = normalize(normal + mat3(viewMatrix) * vec3(g.x, 0., g.y) * k);
+          }`)
         .replace('#include <emissivemap_fragment>', `#include <emissivemap_fragment>
           float rip = 0.;
           for (int i = 0; i < 24; i++) { if (i >= uRipN) break; vec4 r = uRip[i];
@@ -552,10 +616,15 @@ export class World {
     // Valve (blue, front right as in the photo)
     const vx = 0.42 * DIM.coverR, vz = 0.41 * DIM.coverR;
     this.valvePos = new THREE.Vector3(vx, coverTop(vx, vz), vz);
-    const valveGeo = new THREE.CylinderGeometry(0.026, 0.028, 0.014, 40); valveGeo.translate(0, 0.004, 0);
-    const valveS = new THREE.Mesh(valveGeo, new THREE.MeshPhysicalMaterial({ color: '#2a54d6', roughness: 0.3, clearcoat: 1, envMap: this.env, clippingPlanes: clip }));
+    const valveGeo = new THREE.CylinderGeometry(0.026, 0.028, 0.014, 64); valveGeo.translate(0, 0.004, 0);
+    const blue = new THREE.MeshPhysicalMaterial({ color: '#2a54d6', roughness: 0.28, clearcoat: 1, clearcoatRoughness: 0.15, envMap: this.env, clippingPlanes: clip });
+    const valveS = new THREE.Mesh(valveGeo, blue);
     valveS.position.copy(this.valvePos); add('solid', valveS, coverInner);
-    const valveRing = new THREE.Mesh(new THREE.TorusGeometry(0.03, 0.006, 12, 40), new THREE.MeshPhysicalMaterial({ color: '#e8ecf0', roughness: 0.35, envMap: this.env, clippingPlanes: clip }));
+    const capGeo = new THREE.CylinderGeometry(0.017, 0.019, 0.006, 64); capGeo.translate(0, 0.0135, 0);
+    const cap = new THREE.Mesh(capGeo, blue); cap.position.copy(this.valvePos); add('solid', cap, coverInner);
+    const dimple = new THREE.Mesh(new THREE.CircleGeometry(0.008, 40), new THREE.MeshPhysicalMaterial({ color: '#173a9e', roughness: 0.5, envMap: this.env, clippingPlanes: clip }));
+    dimple.rotation.x = -Math.PI / 2; dimple.position.copy(this.valvePos); dimple.position.y += 0.0167; add('solid', dimple, coverInner);
+    const valveRing = new THREE.Mesh(new THREE.TorusGeometry(0.03, 0.006, 20, 72), new THREE.MeshPhysicalMaterial({ color: '#e8ecf0', roughness: 0.35, clearcoat: 0.6, envMap: this.env, clippingPlanes: clip }));
     valveRing.rotation.x = Math.PI / 2; valveRing.position.copy(this.valvePos); add('solid', valveRing, coverInner);
     const valveX = new THREE.Mesh(valveGeo, xrayMaterial('#9fb9ff', { power: 1.5, base: 0.3 }));
     valveX.material.clippingPlanes = clip; valveX.position.copy(this.valvePos); add('xray', valveX, coverInner);
@@ -574,6 +643,12 @@ export class World {
     // ---- Particles (heat, air)
     this.particles = this.makeParticles(900);
     scene.add(this.particles.points);
+    // floating dust in the light, drawn as soft bokeh discs (premium cut)
+    this.dust = this.makeParticles(160, true);
+    this.dust.points.visible = false;
+    scene.add(this.dust.points);
+    // atmospheric depth for the studio look; density 0 = off
+    scene.fog = new THREE.FogExp2('#0b1a29', 0);
 
     // ---- Leaves (cover-local, so they ride along when the cover lifts)
     this.leaves = [];
@@ -618,10 +693,14 @@ export class World {
     this.looks.solid.push(key, rim, fill);
 
     // ---- Post
-    const composer = this.composer = new EffectComposer(renderer, new THREE.WebGLRenderTarget(W, H, { type: THREE.HalfFloatType, samples: 4 }));
+    const rt = new THREE.WebGLRenderTarget(W, H, { type: THREE.HalfFloatType, samples: 4, depthTexture: new THREE.DepthTexture(W, H, THREE.UnsignedIntType) });
+    const composer = this.composer = new EffectComposer(renderer, rt);
     composer.setPixelRatio(1); composer.setSize(W, H);
     this.renderPass = new SplitRenderPass(scene, this.camera, this);
     composer.addPass(this.renderPass);
+    this.dof = new DofPass(this.camera, W, H);
+    this.dof.enabled = false;
+    composer.addPass(this.dof);
     this.bloom = new UnrealBloomPass(new THREE.Vector2(W / 2, H / 2), 0.7, 0.55, 0.6);
     composer.addPass(this.bloom);
     composer.addPass(new OutputPass());
@@ -707,7 +786,7 @@ export class World {
     });
   }
 
-  makeParticles(N) {
+  makeParticles(N, bokeh = false) {
     const g = new THREE.BufferGeometry();
     const pos = new Float32Array(N * 3), col = new Float32Array(N * 3), size = new Float32Array(N);
     g.setAttribute('position', new THREE.BufferAttribute(pos, 3));
@@ -721,7 +800,13 @@ export class World {
         void main(){ vC = color; vec4 mv = modelViewMatrix * vec4(position,1.); gl_PointSize = size * uScale / -mv.z; gl_Position = projectionMatrix * mv; }`,
       fragmentShader: /* glsl */`
         varying vec3 vC;
-        void main(){ float d = length(gl_PointCoord - .5); float a = smoothstep(.5, 0., d); a *= a; gl_FragColor = vec4(vC * a, 1.); }`,
+        void main(){
+          float d = length(gl_PointCoord - .5);
+          ${bokeh
+            ? 'float a = smoothstep(.5, .44, d) * (.55 + .45 * smoothstep(.25, .47, d));'
+            : 'float a = smoothstep(.5, 0., d); a *= a;'}
+          gl_FragColor = vec4(vC * a, 1.);
+        }`,
       transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
     });
     const points = new THREE.Points(g, mat);

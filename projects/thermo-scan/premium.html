@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>SPLASH THERMO – Premium 9:16</title>
+<script type="importmap">
+{ "imports": {
+  "three": "../../node_modules/three/build/three.module.js",
+  "three/addons/": "../../node_modules/three/examples/jsm/"
+} }
+</script>
+<style>
+  @font-face { font-family: Poppins; font-weight: 500; src: url(../../assets/fonts/poppins/poppins-latin-500-normal.woff2) format("woff2"); }
+  @font-face { font-family: Poppins; font-weight: 600; src: url(../../assets/fonts/poppins/poppins-latin-600-normal.woff2) format("woff2"); }
+  @font-face { font-family: Poppins; font-weight: 700; src: url(../../assets/fonts/poppins/poppins-latin-700-normal.woff2) format("woff2"); }
+  @font-face { font-family: Poppins; font-weight: 800; src: url(../../assets/fonts/poppins/poppins-latin-800-normal.woff2) format("woff2"); }
+
+  /* Home Deluxe CI: Navy + Weiß + Grautöne, eckige Ecken, Poppins. Scan-Akzent: Eisblau.
+     Texte liegen in der Reels/TikTok-Safe-Zone (oben), unten sitzt die App-Oberfläche. */
+  :root { --navy: #0e2234; --navy-deep: #07131f; --ice: #8fe3ff; --amber: #ffb547; --light: #e9eef4; --m: 72px; --top: 300px; }
+  * { box-sizing: border-box; margin: 0; padding: 0; border-radius: 0; }
+  html, body { width: 1080px; height: 1920px; overflow: hidden; background: var(--navy-deep); }
+  body { font-family: Poppins, sans-serif; color: #fff; -webkit-font-smoothing: antialiased; }
+  #stage { position: absolute; inset: 0; overflow: hidden; background: var(--navy-deep); }
+  #gl { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+  .layer { position: absolute; inset: 0; pointer-events: none; }
+
+  .stack { position: absolute; left: var(--m); top: var(--top); display: flex; flex-direction: column; align-items: flex-start; }
+  .blk { position: relative; background: var(--navy); color: #fff; }
+  .blk.white { background: #fff; color: var(--navy); }
+  .ln { display: block; overflow: hidden; padding-bottom: .06em; margin-bottom: -.06em; }
+  .ln > span { display: inline-block; will-change: transform; }
+
+  #title .big { font-weight: 700; font-size: 112px; line-height: 1.02; letter-spacing: -.02em; padding: 18px 36px 14px; }
+  #title .tag { margin-top: 12px; font-weight: 600; font-size: 34px; letter-spacing: .14em; line-height: 1; padding: 20px 34px 18px; }
+  .cap .hl { font-weight: 700; font-size: 84px; line-height: 1.04; letter-spacing: -.015em; padding: 20px 34px 16px; }
+  .cap .sub { margin-top: 10px; font-weight: 500; font-size: 34px; line-height: 1.25; padding: 18px 34px 16px; background: rgba(14,34,52,.92); }
+
+  .chip { position: absolute; left: var(--m); top: var(--top); display: flex; align-items: center; gap: 16px; padding: 18px 26px 17px; font-weight: 700; font-size: 28px; letter-spacing: .12em; text-transform: uppercase; white-space: nowrap; }
+  .chip i { display: block; width: 15px; height: 15px; }
+  #chipOff { background: rgba(255,181,71,.14); color: var(--amber); border: 2px solid var(--amber); }
+  #chipOff i { background: var(--amber); }
+
+  #legend { position: absolute; left: 922px; top: 600px; height: 340px; width: 22px; }
+  #legend .bar { position: absolute; inset: 0; background: linear-gradient(to top, #0a0d38, #4d0f73, #d92442, #ff730f, #ffcc38, #fff7d1); }
+  #legend span { position: absolute; left: 36px; font-weight: 600; font-size: 19px; letter-spacing: .18em; color: var(--ice); white-space: nowrap; }
+
+  svg#ov { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+  .clab { position: absolute; white-space: nowrap; }
+  .clab .t { font-weight: 700; font-size: 30px; letter-spacing: .02em; color: #fff; background: rgba(7,19,31,.8); padding: 12px 18px 11px; display: inline-block; border-left: 3px solid var(--ice); }
+  .dimlab { position: absolute; font-weight: 700; font-size: 36px; color: var(--navy); background: #fff; padding: 9px 17px 7px; white-space: nowrap; transform: translate(-50%, -50%); font-variant-numeric: tabular-nums; }
+
+  #scanLine { position: absolute; left: 0; right: 0; height: 2px; background: #fff;
+              box-shadow: 0 0 14px 3px rgba(143,227,255,.95), 0 0 70px 20px rgba(143,227,255,.4); }
+
+  /* end card */
+  #end { background: var(--navy); }
+  #endGlow { position: absolute; left: 540px; top: 720px; width: 1500px; height: 1500px; transform: translate(-50%, -50%);
+             background: radial-gradient(closest-side, rgba(70,130,180,.45), rgba(14,34,52,0)); }
+  .ecov { position: absolute; transform: translate(-50%, -50%); }
+  .ecov img { display: block; width: 100%; height: auto; position: relative; }
+  .ecov .esh { position: absolute; left: 8%; right: 8%; bottom: -30px; height: 64px; border-radius: 50% !important;
+               background: radial-gradient(closest-side, rgba(0,0,0,.55), rgba(0,0,0,0)); }
+  .elab { position: absolute; white-space: nowrap; }
+  .elab b { display: block; font-weight: 800; font-size: 38px; letter-spacing: -.01em; }
+  .elab span { display: block; margin-top: 6px; font-weight: 600; font-size: 24px; letter-spacing: .08em; color: var(--ice); font-variant-numeric: tabular-nums; }
+  #endText { position: absolute; left: 0; right: 0; top: 1110px; text-align: center; }
+  #endText .name { font-weight: 800; font-size: 100px; line-height: 1; letter-spacing: -.02em; }
+  #endText .type { font-weight: 500; font-size: 36px; line-height: 1.2; margin-top: 18px; color: var(--light); }
+  #endText .cta { display: inline-flex; align-items: stretch; margin-top: 46px; }
+  #endText .cta .btn { background: #fff; color: var(--navy); font-weight: 700; font-size: 36px; padding: 24px 38px 22px; }
+  #endText .cta .url { font-weight: 600; font-size: 32px; padding: 24px 0 22px 30px; color: var(--light); display: flex; align-items: center; }
+  #endLogo { position: absolute; left: 540px; top: 1500px; transform: translateX(-50%); }
+  #endLogo img { display: block; width: 260px; }
+
+  #wipe { position: absolute; left: 0; right: 0; background: var(--navy); }
+  #flash { position: absolute; inset: 0; background: #e6f8ff; }
+  #grain { position: absolute; inset: 0; mix-blend-mode: overlay; opacity: .07; }
+  #vig { position: absolute; inset: 0; background: radial-gradient(ellipse at 50% 46%, rgba(0,0,0,0) 52%, rgba(0,0,0,.5) 100%); }
+  #bars { position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(4,10,17,.55), rgba(4,10,17,0) 16%, rgba(4,10,17,0) 84%, rgba(4,10,17,.55)); }
+</style>
+</head>
+<body>
+<div id="stage">
+  <canvas id="gl"></canvas>
+  <div id="bars" class="layer"></div>
+  <div id="scanLine"></div>
+  <svg id="ov" class="layer"></svg>
+  <div id="labels" class="layer"></div>
+
+  <div id="legend" class="layer"><div class="bar"></div><span style="top:-6px">WARM</span><span style="bottom:-8px">KALT</span></div>
+  <div id="chipOff" class="chip"><i></i>Ohne Abdeckung · Wärme entweicht</div>
+
+  <div id="title" class="stack">
+    <div class="blk white big"><span class="ln"><span>Wärme</span></span><span class="ln"><span>bleibt drin.</span></span></div>
+    <div class="blk tag"><span class="ln"><span>SPLASH THERMO</span></span></div>
+  </div>
+  <div id="cap1" class="stack cap">
+    <div class="blk white hl"><span class="ln"><span>Die Wärme bleibt</span></span><span class="ln"><span>im Wasser.</span></span></div>
+    <div class="blk sub"><span class="ln"><span>Für mehr Energieeffizienz.</span></span></div>
+  </div>
+  <div id="cap2" class="stack cap">
+    <div class="blk white hl"><span class="ln"><span>Aufblasbar</span></span><span class="ln"><span>&amp; leicht.</span></span></div>
+  </div>
+  <div id="cap3" class="stack cap">
+    <div class="blk white hl"><span class="ln"><span>Laub &amp; Schmutz</span></span><span class="ln"><span>bleiben draußen.</span></span></div>
+    <div class="blk sub"><span class="ln"><span>Wetterfest bei Regen, Schnee und UV.</span></span></div>
+  </div>
+
+  <div id="wipe"></div>
+  <div id="end" class="layer">
+    <div id="endGlow"></div>
+    <div class="ecov" id="ecS"><div class="esh"></div><img id="coverImg" alt=""></div>
+    <div class="ecov" id="ecD"><div class="esh"></div><img id="dropImg" alt=""></div>
+    <div class="elab" id="elS"><b>SPLASH THERMO</b><span>162 × 162 × 20 cm</span></div>
+    <div class="elab" id="elD" style="text-align:right"><b>DROP THERMO</b><span>155 × 155 × 20 cm</span></div>
+    <div id="endText">
+      <div class="name"><span class="ln"><span>Wärme bleibt drin.</span></span></div>
+      <div class="type"><span class="ln"><span>Für die Whirlpools SPLASH und DROP</span></span></div>
+      <div class="cta"><div class="btn">Jetzt entdecken</div><div class="url">homedeluxe.de</div></div>
+    </div>
+    <div id="endLogo"><img src="../../assets/logo/homedeluxe-logo-white.svg" alt="Home Deluxe"></div>
+  </div>
+
+  <div id="flash" class="layer"></div>
+  <div id="vig" class="layer"></div>
+  <canvas id="grain" class="layer"></canvas>
+</div>
+<script type="module" src="premium.js"></script>
+</body>
+</html>
