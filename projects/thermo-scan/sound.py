@@ -323,23 +323,23 @@ if CUT == 'premium':
 # --- voice-over (9:16): German lines, cleaned and placed; music and effects duck under it --
 VO_DIR = Path(__file__).resolve().parent / 'source' / 'vo'
 VO = [  # file, start in output time inside the film (seconds after the intro); intro line absolute
-    ('vo1_intro.wav', 0.3 - INTRO),
-    ('vo2_titel.wav', 0.5),
-    ('vo3_luftpolster.wav', 5.5),
-    ('vo4_waerme.wav', 10.55),
-    ('vo5_leicht.wav', 14.9),
-    ('vo6_laub.wav', 17.45),
-    ('vo7_end.wav', 26.5),
+    ('vo1_intro.mp3', 0.3 - INTRO),       # 2nd sentence lands with the sub line at 3.4 s
+    ('vo2_titel.mp3', 0.5),
+    ('vo3_luftpolster.mp3', 5.5),
+    ('vo4_waerme.mp3', 10.55),
+    ('vo5_leicht.mp3', 14.9),
+    ('vo6_laub.mp3', 17.45),
+    ('vo7_end.mp3', 25.9),
 ]
 
 
 def load_vo(path):
-    # tighten long pauses, a touch faster, clean low end, gentle compression
+    # natural pacing: trim only the silence at both ends, clean low end, gentle compression
+    trim = 'silenceremove=start_periods=1:start_threshold=-45dB:start_silence=0.02'
     with tempfile.TemporaryDirectory() as td:
         out = Path(td) / 'vo.wav'
         subprocess.run(['ffmpeg', '-v', 'error', '-y', '-i', str(path), '-af',
-                        'silenceremove=start_periods=1:start_threshold=-42dB:stop_periods=-1:'
-                        'stop_threshold=-42dB:stop_duration=0.3:stop_silence=0.32,atempo=1.12,'
+                        f'{trim},areverse,{trim},areverse,'
                         'highpass=f=70,acompressor=threshold=-20dB:ratio=2.5:attack=8:release=120:makeup=2',
                         '-ar', str(SR), '-ac', '1', str(out)], check=True)
         with wave.open(str(out)) as w:
@@ -374,7 +374,7 @@ if CUT == 'premium':
     mix *= 0.45 / (np.abs(mix).max() + 1e-9)
 mix = np.tanh(mix * 1.4) / np.tanh(1.4)
 mix *= 0.89 / (np.abs(mix).max() + 1e-9)
-fade = np.clip((DUR - t) / 0.8, 0, 1)[:, None]
+fade = np.clip((DUR - t) / (0.6 if CUT == 'premium' else 0.8), 0, 1)[:, None]   # short fade: the CTA line ends late
 mix *= fade
 pcm = (mix * 32767).astype('<i2')
 out = Path(sys.argv[1])

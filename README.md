@@ -18,7 +18,7 @@ Hochwertiger Content-Clip zu den aufblasbaren Thermoabdeckungen SPLASH THERMO un
 Perspektiven entstehen in einer prozedural gebauten three.js-Szene (`scene.js`) nach den
 Produktmaßen: Whirlpool Ø 208 × 70 cm mit Drop-Stitch-Wänden, Abdeckung 162 × 162 × 20 cm mit
 sieben Luftkammern und Ventil. Nur das Intro-Foto des 9:16-Schnitts (`source/intro-familie-ki.jpg`, Nano Banana)
-und das Voice-over (`source/vo/`, Higgsfield TTS) sind KI-generiert.
+und das Voice-over (`source/vo/`, ElevenLabs v4 über Higgsfield, Stimme Elena) sind KI-generiert.
 
 **1:1 und 16:9** (`composition.html`, 26 s):
 
@@ -40,21 +40,21 @@ Platz hat, laufen Wärmebild und Produkt mit 0,88-facher, das Wetter mit 0,75-fa
 
 | Zeit | Einstellung | Inhalt | Voice-over |
 |---|---|---|---|
-| 0,0–6,0 s | Intro-Foto | Familie auf der Terrasse (Eltern im DROP, Kinder im SPLASH), langsamer Push-in; „Ihr habt einen unserer aufblasbaren Whirlpools?“ / „Dann gibt es etwas Neues für euch.“, Push mit Unschärfe ins Macro | Hook wie Text |
-| 6,0–9,4 s | Macro | Kamera kreist dicht über der Abdeckung um das Ventil, Tiefenschärfe, Gegenlicht-Kante, Staub-Bokeh; Titel | „Splash Thermo – die aufblasbare Thermoabdeckung.“ |
+| 0,0–6,0 s | Intro-Foto | Familie auf der Terrasse (Eltern im DROP, Kinder im SPLASH), langsamer Push-in; „Ihr habt einen unserer aufblasbaren Whirlpools?“ / „Dann gibt es etwas Neues für euch.“, Push mit Unschärfe ins Macro | „Ihr habt einen unserer aufblasbaren Whirlpools? Dann gibt's was Neues für euch.“ |
+| 6,0–9,4 s | Macro | Kamera kreist dicht über der Abdeckung um das Ventil, Tiefenschärfe, Gegenlicht-Kante, Staub-Bokeh; Titel | „Das ist Splash Thermo – die aufblasbare Thermoabdeckung.“ |
 | 9,4–11,4 s | Kranfahrt + Thermo-Scan | hinauf in die Hero-Totale, Scanlinie wandelt das Modell in die Röntgenansicht | – |
-| 11,4–14,7 s | Querschnitt | enge Seitenansicht, Schnittebene, Callouts Luftpolster / PVC | „Mit isolierendem Luftpolster aus wetterfestem PVC.“ |
-| 14,8–18,8 s | Wärmebild | Abdeckung hebt ab, Wärmefahne steigt, Abdeckung sitzt wieder; „Die Wärme bleibt im Wasser.“ | „So bleibt die Wärme im Wasser – für mehr Energieeffizienz.“ |
+| 11,4–14,7 s | Querschnitt | enge Seitenansicht, Schnittebene, Callouts Luftpolster / PVC | „Das Luftpolster aus wetterfestem PVC isoliert.“ |
+| 14,8–18,8 s | Wärmebild | Abdeckung hebt ab, Wärmefahne steigt, Abdeckung sitzt wieder; „Die Wärme bleibt im Wasser.“ | „So bleibt die Wärme im Wasser – und ihr spart Energie.“ |
 | 18,7–23,2 s | Produkt | Scan zurück in den Studio-Look, Abdeckung schwebt mit Maßlinien; „Aufblasbar & leicht.“ | „Aufblasbar und leicht.“ |
-| 23,3–28,8 s | Wetter | harter Schnitt ins Close-up, Laub und Regen; „Laub & Schmutz bleiben draußen.“ | „Laub und Schmutz bleiben draußen – wetterfest bei Regen, Schnee und UV.“ |
+| 23,3–28,8 s | Wetter | harter Schnitt ins Close-up, Laub und Regen; „Laub & Schmutz bleiben draußen.“ | „Laub und Schmutz bleiben draußen. Und Regen, Schnee oder Sonne? Kein Problem.“ |
 | 28,8–31,8 s | Wasser | Abdeckung fliegt mit dem Laub davon, Draufsicht aufs Wasser – ohne Text | – |
-| 32,2–38,2 s | Endcard | beide Freisteller als versetztes Paar, „Wärme bleibt drin.“, CTA, Logo zentriert unten | „Die Thermoabdeckung für Splash und Drop. Jetzt auf homedeluxe.de.“ |
+| 32,2–38,2 s | Endcard | beide Freisteller als versetztes Paar, „Wärme bleibt drin.“, CTA, Logo zentriert unten | „Die passende Abdeckung für euren Splash oder Drop – jetzt auf homedeluxe.de.“ |
 
 Die Aussagen stützen sich auf die Produktseite (Luftpolster, energieeffizienter, wetterfestes PVC
 gegen Regen, Schnee und UV, Schutz vor Blättern, Insekten und Schmutz). Der Ton (`sound.py`, für
 9:16 mit eigenem Cue-Satz `premium`) ist synthetisch. Im 9:16-Schnitt kommt das Voice-over dazu:
-`sound.py` kürzt die Pausen, beschleunigt um den Faktor 1,12 und legt die Musik unter die Stimme
-(Ducking). Beim Zusammenfügen wird auf −16 LUFS normalisiert.
+`sound.py` schneidet nur die Stille am Anfang und Ende jeder Zeile weg (Tempo und Pausen bleiben
+natürlich) und legt die Musik unter die Stimme (Ducking). Beim Zusammenfügen wird auf −16 LUFS normalisiert.
 
 ### Laguna M – Schnitt und Übergänge
 
