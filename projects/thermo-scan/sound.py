@@ -6,7 +6,9 @@
 
 Cue times follow the timeline T in composition.js / premium.js (seconds).
 """
+import subprocess
 import sys
+import tempfile
 import wave
 from pathlib import Path
 
@@ -16,10 +18,29 @@ SR = 48000
 CUT = sys.argv[2] if len(sys.argv) > 2 else 'base'
 # Shared moments per cut: leaves, rain, cover fly-off, water, wipe, end card, CTA
 AT = {
-    'base': dict(dur=26.0, leaves=15.45, rain=16.75, flyoff=18.95, water=19.5, wipe=21.8, end=22.25, cta=23.2),
-    'premium': dict(dur=28.0, leaves=16.75, rain=18.15, flyoff=20.55, water=21.1, wipe=23.55, end=24.0, cta=25.25),
+    'base': dict(leaves=15.45, rain=16.75, flyoff=18.95, water=19.5, wipe=21.8, end=22.25, cta=23.2),
+    'premium': dict(leaves=16.75, rain=18.15, flyoff=20.55, water=21.1, wipe=23.55, end=24.0, cta=25.25),
 }[CUT]
-DUR = AT['dur']
+
+# 9:16 premium: intro before the film and a film clock that runs slower where the
+# voice-over needs room – the same mapping as premium.js. Cue times are film times.
+INTRO, FILM_END = (6.0, 30.0) if CUT == 'premium' else (0.0, 26.0)
+WARP = [(10.4, 16.5, 0.88), (16.5, 20.6, 0.75)] if CUT == 'premium' else []
+
+
+def film_to_out(f):
+    u = f
+    for a, b, sp in WARP:
+        u += (min(max(f, a), b) - a) * (1 / sp - 1)
+    return u
+
+
+def TM(f):
+    """film time -> output time"""
+    return INTRO + film_to_out(f)
+
+
+DUR = TM(FILM_END)
 N = int(SR * DUR)
 rng = np.random.default_rng(3)
 L = np.zeros(N)
@@ -30,8 +51,9 @@ def t_arr(d):
     return np.arange(int(SR * d)) / SR
 
 
-def place(sig, at, gain=1.0, pan=0.0):
-    i = int(at * SR)
+def place(sig, at, gain=1.0, pan=0.0, raw=False):
+    # `at` is film time; raw=True places at output time (intro, voice-over)
+    i = int((at if raw else TM(at)) * SR)
     if i >= N:
         return
     sig = sig[: N - i] * gain
@@ -159,8 +181,8 @@ chord2 = [55.0, 82.41, 110.0, 138.59, 164.81, 220.0]   # A major colour at the e
 for f in chord1:
     pad += np.sin(2 * np.pi * f * t + rng.random() * 6) * (1 + 0.3 * np.sin(2 * np.pi * 0.07 * t + f))
 for f in chord2:
-    pad += np.sin(2 * np.pi * (f * 1.002) * t) * np.clip((t - AT['wipe']) / 1.5, 0, 1) * 0.6
-pad = lp(pad, 900 + 500 * np.clip((t - 4.5) / 2, 0, 1) + 600 * np.clip((t - AT['wipe']) / 2, 0, 1), 2)
+    pad += np.sin(2 * np.pi * (f * 1.002) * t) * np.clip((t - TM(AT['wipe'])) / 1.5, 0, 1) * 0.6
+pad = lp(pad, 900 + 500 * np.clip((t - TM(4.5)) / 2, 0, 1) + 600 * np.clip((t - TM(AT['wipe'])) / 2, 0, 1), 2)
 pad_env = np.clip(t / 2.0, 0, 1) * (1 - np.clip((t - (DUR - 1.4)) / 1.4, 0, 1))
 pad *= pad_env * 0.02
 L += pad
@@ -259,7 +281,7 @@ for i in range(12):
     place(tap / (np.abs(tap).max() + 1e-9) * 0.08, AT['leaves'] + land, pan=(i % 5 - 2) * 0.2)
 
 # rain
-rd = 2.6
+rd = TM(AT['rain'] + 2.6) - TM(AT['rain'])
 rain = hp(noise(rd), 1200) * 0.6 + lp(noise(rd), 600) * 0.4
 rk = np.linspace(0, 1, int(SR * rd))
 rain *= np.clip(rk / 0.15, 0, 1) * np.clip((1 - rk) / 0.25, 0, 1) * 0.035
@@ -285,8 +307,71 @@ place(thud(40, 2.0, 0.7), AT['end'])                                   # end car
 place(tonal_hit([220, 277.18, 329.63, 440], 3.5, 0.32, 0.5), AT['end'])
 place(blip(1320, 0.06, 0.10), AT['cta'])                               # CTA
 
+# --- intro (9:16): bubbling hot tubs, soft shimmer, push into the film ------------------------
+if CUT == 'premium':
+    bd = INTRO + 0.4
+    bub = lp(noise(bd), 900) * (0.55 + 0.45 * np.abs(np.sin(np.linspace(0, 95, int(SR * bd)))) ** 3)
+    bub += bp(noise(bd), 2400, 1) * 0.25
+    bk = np.linspace(0, 1, len(bub))
+    bub *= np.clip(bk / 0.08, 0, 1) * np.clip((1 - bk) / 0.18, 0, 1)
+    place(bub / (np.abs(bub).max() + 1e-9) * 0.06, 0.0, raw=True)
+    place(tonal_hit([440, 660, 880], 1.8, 0.1, 0.6), 0.3, raw=True)
+    place(tonal_hit([495, 742, 990], 1.8, 0.09, 0.6), 3.2, raw=True)
+    place(whoosh(0.7, 300, 5000, 0.3), INTRO - 0.6, raw=True)
+
+
+# --- voice-over (9:16): German lines, cleaned and placed; music and effects duck under it --
+VO_DIR = Path(__file__).resolve().parent / 'source' / 'vo'
+VO = [  # file, start in output time inside the film (seconds after the intro); intro line absolute
+    ('vo1_intro.wav', 0.3 - INTRO),
+    ('vo2_titel.wav', 0.5),
+    ('vo3_luftpolster.wav', 5.5),
+    ('vo4_waerme.wav', 10.55),
+    ('vo5_leicht.wav', 14.9),
+    ('vo6_laub.wav', 17.45),
+    ('vo7_end.wav', 26.5),
+]
+
+
+def load_vo(path):
+    # tighten long pauses, a touch faster, clean low end, gentle compression
+    with tempfile.TemporaryDirectory() as td:
+        out = Path(td) / 'vo.wav'
+        subprocess.run(['ffmpeg', '-v', 'error', '-y', '-i', str(path), '-af',
+                        'silenceremove=start_periods=1:start_threshold=-42dB:stop_periods=-1:'
+                        'stop_threshold=-42dB:stop_duration=0.3:stop_silence=0.32,atempo=1.12,'
+                        'highpass=f=70,acompressor=threshold=-20dB:ratio=2.5:attack=8:release=120:makeup=2',
+                        '-ar', str(SR), '-ac', '1', str(out)], check=True)
+        with wave.open(str(out)) as w:
+            x = np.frombuffer(w.readframes(w.getnframes()), '<i2').astype(np.float64) / 32768
+    return x / (np.abs(x).max() + 1e-9)
+
+
+if CUT == 'premium':
+    vo = np.zeros(N)
+    for name, u in VO:
+        x = load_vo(VO_DIR / name)
+        i = int((INTRO + u) * SR)
+        vo[i:i + len(x)] += x[: N - i]
+    # ducking envelope: follows the voice with 40 ms attack, 350 ms release
+    e = np.abs(vo)
+    env = np.zeros(N); acc = 0.0
+    a_att, a_rel = np.exp(-1 / (0.04 * SR)), np.exp(-1 / (0.35 * SR))
+    for i in range(N):
+        v = e[i]
+        acc = a_att * acc + (1 - a_att) * v if v > acc else a_rel * acc + (1 - a_rel) * v
+        env[i] = acc
+    duck = 1 - 0.45 * np.clip(env / 0.12, 0, 1)
+    L *= duck; R *= duck
+    # each line is peak-normalised; the voice sits clearly above the ducked bed
+    peak_bed = np.abs(np.stack([L, R])).max()
+    L += vo * peak_bed * 0.62; R += vo * peak_bed * 0.62
+
 # --- master ---------------------------------------------------------------------------------
 mix = np.stack([L, R], -1)
+if CUT == 'premium':
+    # with the voice on top, keep the soft clipper in its near-linear range (no grit on the voice)
+    mix *= 0.45 / (np.abs(mix).max() + 1e-9)
 mix = np.tanh(mix * 1.4) / np.tanh(1.4)
 mix *= 0.89 / (np.abs(mix).max() + 1e-9)
 fade = np.clip((DUR - t) / 0.8, 0, 1)[:, None]

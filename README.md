@@ -9,7 +9,7 @@ rendert. ffmpeg schreibt die Frames anschließend als MP4.
 | Projekt | Format | Ergebnis |
 |---|---|---|
 | `projects/laguna-m` | 9:16, 1080×1920, 30 fps, 18,5 s | `output/HomeDeluxe_Laguna-M_Reel_9x16.mp4` + Titelbild |
-| `projects/thermo-scan` | 9:16 Premium-Schnitt (1080×1920, 28 s), 1:1 (1080×1080) + 16:9 (1920×1080, 26 s), 30 fps, mit Sounddesign | `output/HomeDeluxe_SPLASH-THERMO_Thermo-Scan_9x16.mp4`, `…_1x1.mp4`, `…_16x9.mp4`, `…_1x1.gif` + Titelbilder |
+| `projects/thermo-scan` | 9:16 Premium-Schnitt mit Foto-Intro + deutschem Voice-over (1080×1920, 38 s), 1:1 (1080×1080) + 16:9 (1920×1080, 26 s), 30 fps, mit Sounddesign | `output/HomeDeluxe_SPLASH-THERMO_Thermo-Scan_9x16.mp4`, `…_1x1.mp4`, `…_16x9.mp4`, `…_1x1.gif` + Titelbilder |
 
 ### SPLASH THERMO / DROP THERMO – Thermo-Scan
 
@@ -17,7 +17,8 @@ Hochwertiger Content-Clip zu den aufblasbaren Thermoabdeckungen SPLASH THERMO un
 (nicht für den Newsletter). Basis sind die Ambientebilder und 3/4-Freisteller aus dem Shop; alle weiteren
 Perspektiven entstehen in einer prozedural gebauten three.js-Szene (`scene.js`) nach den
 Produktmaßen: Whirlpool Ø 208 × 70 cm mit Drop-Stitch-Wänden, Abdeckung 162 × 162 × 20 cm mit
-sieben Luftkammern und Ventil. Keine KI-Generierung, keine Credits.
+sieben Luftkammern und Ventil. Nur das Intro-Foto des 9:16-Schnitts (`source/intro-familie-ki.jpg`, Nano Banana)
+und das Voice-over (`source/vo/`, Higgsfield TTS) sind KI-generiert.
 
 **1:1 und 16:9** (`composition.html`, 26 s):
 
@@ -32,25 +33,28 @@ sieben Luftkammern und Ventil. Keine KI-Generierung, keine Credits.
 | 19,0–21,9 s | Wasser | Abdeckung fliegt davon, Draufsicht auf klares Wasser – ohne Text |
 | 22,2–26,0 s | Endcard | Beide Freisteller mit Maßen, „Wärme bleibt drin.“, CTA, Logo unter dem CTA |
 
-**9:16 Premium-Schnitt** (`premium.html` / `premium.js`, 28 s) – eigene Shot-Liste fürs Hochformat,
-Texte in der Reels/TikTok-Safe-Zone oben, kein laufendes Logo:
+**9:16 Premium-Schnitt** (`premium.html` / `premium.js`, 38 s) – eigene Shot-Liste fürs Hochformat,
+Texte in der Reels/TikTok-Safe-Zone oben, kein laufendes Logo, deutsches Voice-over. Damit der Sprecher
+Platz hat, laufen Wärmebild und Produkt mit 0,88-facher, das Wetter mit 0,75-facher Geschwindigkeit
+(`WARP` in `premium.js` und `sound.py`):
 
-| Zeit | Einstellung | Inhalt |
-|---|---|---|
-| 0,0–3,4 s | Macro | Kamera kreist dicht über der Abdeckung um das Ventil, Tiefenschärfe, Gegenlicht-Kante wandert über die Luftkammern, Staub-Bokeh; Titel |
-| 3,4–5,0 s | Kranfahrt | über die Abdeckung hinauf in die Hero-Totale |
-| 4,5–5,4 s | Thermo-Scan | Scanlinie wandelt das 3D-Modell in die Röntgenansicht |
-| 5,4–8,7 s | Querschnitt | enge Seitenansicht, Schnittebene, Callouts Luftpolster / PVC |
-| 8,8–12,5 s | Wärmebild | Abdeckung hebt hoch ab, Wärmefahne steigt, Abdeckung sitzt wieder; „Die Wärme bleibt im Wasser.“ |
-| 12,4–16,4 s | Produkt | Scan zurück in den Studio-Look, Abdeckung schwebt über dem Pool mit Maßlinien; „Aufblasbar & leicht.“ |
-| 16,5–20,6 s | Wetter | harter Schnitt ins Close-up, Laub und Regen mit Tiefenschärfe; „Laub & Schmutz bleiben draußen.“ |
-| 20,6–23,6 s | Wasser | Abdeckung fliegt mit dem Laub davon, Draufsicht auf klares Wasser – ohne Text |
-| 24,0–28,0 s | Endcard | beide Freisteller als versetztes Paar, „Wärme bleibt drin.“, CTA, Logo zentriert unten |
+| Zeit | Einstellung | Inhalt | Voice-over |
+|---|---|---|---|
+| 0,0–6,0 s | Intro-Foto | Familie auf der Terrasse (Eltern im DROP, Kinder im SPLASH), langsamer Push-in; „Ihr habt einen unserer aufblasbaren Whirlpools?“ / „Dann gibt es etwas Neues für euch.“, Push mit Unschärfe ins Macro | Hook wie Text |
+| 6,0–9,4 s | Macro | Kamera kreist dicht über der Abdeckung um das Ventil, Tiefenschärfe, Gegenlicht-Kante, Staub-Bokeh; Titel | „Splash Thermo – die aufblasbare Thermoabdeckung.“ |
+| 9,4–11,4 s | Kranfahrt + Thermo-Scan | hinauf in die Hero-Totale, Scanlinie wandelt das Modell in die Röntgenansicht | – |
+| 11,4–14,7 s | Querschnitt | enge Seitenansicht, Schnittebene, Callouts Luftpolster / PVC | „Mit isolierendem Luftpolster aus wetterfestem PVC.“ |
+| 14,8–18,8 s | Wärmebild | Abdeckung hebt ab, Wärmefahne steigt, Abdeckung sitzt wieder; „Die Wärme bleibt im Wasser.“ | „So bleibt die Wärme im Wasser – für mehr Energieeffizienz.“ |
+| 18,7–23,2 s | Produkt | Scan zurück in den Studio-Look, Abdeckung schwebt mit Maßlinien; „Aufblasbar & leicht.“ | „Aufblasbar und leicht.“ |
+| 23,3–28,8 s | Wetter | harter Schnitt ins Close-up, Laub und Regen; „Laub & Schmutz bleiben draußen.“ | „Laub und Schmutz bleiben draußen – wetterfest bei Regen, Schnee und UV.“ |
+| 28,8–31,8 s | Wasser | Abdeckung fliegt mit dem Laub davon, Draufsicht aufs Wasser – ohne Text | – |
+| 32,2–38,2 s | Endcard | beide Freisteller als versetztes Paar, „Wärme bleibt drin.“, CTA, Logo zentriert unten | „Die Thermoabdeckung für Splash und Drop. Jetzt auf homedeluxe.de.“ |
 
 Die Aussagen stützen sich auf die Produktseite (Luftpolster, energieeffizienter, wetterfestes PVC
 gegen Regen, Schnee und UV, Schutz vor Blättern, Insekten und Schmutz). Der Ton (`sound.py`, für
-9:16 mit eigenem Cue-Satz `premium`) ist komplett synthetisch und wird beim Zusammenfügen auf
-−16 LUFS normalisiert.
+9:16 mit eigenem Cue-Satz `premium`) ist synthetisch. Im 9:16-Schnitt kommt das Voice-over dazu:
+`sound.py` kürzt die Pausen, beschleunigt um den Faktor 1,12 und legt die Musik unter die Stimme
+(Ducking). Beim Zusammenfügen wird auf −16 LUFS normalisiert.
 
 ### Laguna M – Schnitt und Übergänge
 

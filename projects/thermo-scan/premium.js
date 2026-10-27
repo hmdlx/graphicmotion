@@ -2,20 +2,40 @@
 // macro opening with depth of field and a light sweep, crane into the hero shot,
 // thermo scan on the 3D model, close cross-section, heat demo, product hover,
 // weather close-up, clear water (no text), end card with both covers.
+// It opens with the family photo (KI-Bild) and a hook, and carries a German voice-over.
 // window.COMP.seek(n) puts the stage into the exact state of output frame n.
 import * as THREE from 'three';
 import { World, DIM, coverTop, rng } from './scene.js';
 
 const FPS = 30;
-const TOTAL = 840;                       // 28 s
 const W = 1080, H = 1920;
+
+// Intro (family photo + hook) runs before the film. The film then runs on its own
+// clock: where the voice-over needs more room, film time runs slower than output time.
+const INTRO = 6.0;
+const FILM_END = 30.0;
+const WARP = [               // [film from, film to, speed]; speed 1 elsewhere
+  [10.4, 16.5, 0.88],        // heat result + product: room for two voice lines
+  [16.5, 20.6, 0.75],        // weather close-up: the longest line
+];
+function filmToOut(f) {
+  let u = f;
+  for (const [a, b, sp] of WARP) u += (Math.min(Math.max(f, a), b) - a) * (1 / sp - 1);
+  return u;
+}
+function outToFilm(u) {
+  let f = u;
+  for (let i = 0; i < 30; i++) f -= filmToOut(f) - u;   // monotone, converges fast
+  return f;
+}
+const TOTAL = Math.round((INTRO + filmToOut(FILM_END)) * FPS);
 const params = new URLSearchParams(location.search);
 const PLATES = params.get('plates') || '../../build/thermo-scan/plates';
 
 // Timeline, output seconds ----------------------------------------------------------------
 const T = {
   macro: [0, 4.6],                       // studio look, DOF, light sweep, dust
-  title: [0.7, 3.4],
+  title: [0.6, 4.4],
   scanIn: [4.5, 5.4],                    // studio -> x-ray, line runs down
   legend: [5.3, 12.3],
   cutOpen: [5.9, 7.1],
@@ -23,16 +43,16 @@ const T = {
   lift1: [8.8, 9.45], drop1: [10.25, 10.8],
   heatLoss: [9.0, 10.4], heatBack: [10.85, 12.0],
   chipOff: [9.05, 10.3],
-  cap1: [10.7, 12.5],
+  cap1: [10.6, 13.7],
   cutClose: [12.0, 12.6],
   scanOut: [12.4, 13.2],                 // x-ray -> studio, line runs up
   lift2: [13.0, 14.0], drop2: [15.7, 16.4],
   dims: [14.0, 15.7],
-  cap2: [13.7, 15.8],
+  cap2: [14.2, 16.2],
   cut: 16.5,                             // hard cut into the weather close-up
   leaves: 16.75,
   rain: [18.2, 20.4],
-  cap3: [17.1, 19.9],
+  cap3: [16.75, 20.5],
   lift3: [20.6, 21.5],                   // cover flies off, clear water – no text
   wipe: [23.6, 24.0],
   end: 24.0,
@@ -108,6 +128,7 @@ const cam = t => {
 
 // DOM setup -------------------------------------------------------------------------------
 $('#coverImg').src = PLATES + '/cover_34.png';
+$('#introImg').src = PLATES + '/intro.jpg';
 $('#dropImg').src = PLATES + '/drop_34.png';
 // End card: the two covers as a staggered pair, labels beside them
 const EC = { S: { x: 420, y: 560, w: 680 }, D: { x: 680, y: 830, w: 620 } };
@@ -377,8 +398,10 @@ function updateLights(t) {
 
 // Seek ------------------------------------------------------------------------------------
 function seek(n) {
-  const t = n / FPS;
-  const need3D = t < T.wipe[1];
+  const tt = n / FPS;                      // output time
+  const u = tt - INTRO;                    // output time inside the film
+  const t = u < 0 ? u : outToFilm(u);      // film time (negative during the intro)
+  const need3D = t > -0.65 && t < T.wipe[1];
 
   const cs = coverState(t);
   world.cover.position.set(0, DIM.coverRest + cs.lift, 0);
@@ -528,6 +551,23 @@ function seek(n) {
     vis($('#endLogo'), E.out(prog(te, 1.5, 2.0)));
   }
 
+  // ---- Intro: slow push-in on the photo, the hook, then a push through into the macro
+  const introOn = tt < INTRO;
+  vis($('#intro'), introOn ? 1 - E.inOut(prog(tt, INTRO - 0.55, INTRO)) : 0);
+  if (introOn) {
+    const kb = 1 + 0.07 * E.sine(prog(tt, 0, INTRO - 0.55));
+    const push = E.in(prog(tt, INTRO - 0.55, INTRO));
+    const img = $('#introImg');
+    img.style.transform = `scale(${kb + 0.22 * push})`;
+    img.style.filter = push > 0 ? `blur(${push * 14}px)` : 'none';
+    stackAnim($('#introCap'), tt, [0.3, INTRO - 0.45]);
+    // second line enters with the second half of the voice line
+    const sub = $('#introCap .sub');
+    const ks = E.out5(prog(tt, 3.2, 3.62));
+    sub.style.clipPath = `inset(0 ${(1 - ks) * 100}% 0 0)`;
+    $$('.ln > span', sub).forEach(sp => { sp.style.transform = `translateY(${(1 - E.out(prog(tt, 3.28, 3.75))) * 105}%)`; });
+  }
+
   gctx.putImageData(grainTiles[Math.floor(n) % grainTiles.length], 0, 0);
 }
 
@@ -536,7 +576,7 @@ const imgs = [...document.images];
 const ready = Promise.all([
   document.fonts.ready,
   ...imgs.map(i => (i.complete && i.naturalWidth ? Promise.resolve() : new Promise((res, rej) => { i.onload = res; i.onerror = () => rej(new Error('image ' + i.src)); }))),
-]).then(() => { seek(Math.round(7 * FPS)); seek(Math.round(17 * FPS)); seek(0); });
+]).then(() => { seek(Math.round((INTRO + 7) * FPS)); seek(Math.round((INTRO + 18) * FPS)); seek(0); });
 
 window.COMP = { FPS, TOTAL, seek, ready };
 const tq = params.get('t');

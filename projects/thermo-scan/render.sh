@@ -5,7 +5,7 @@
 #   projects/thermo-scan/render.sh 1x1 16x9        # any subset
 #   FINISH=1 projects/thermo-scan/render.sh 9x16   # only join existing chunks + soundtrack
 #
-# 9:16 is its own cut (premium.html, 28 s); 1:1 and 16:9 share composition.html (26 s).
+# 9:16 is its own cut (premium.html, 38 s with the photo intro + VO); 1:1 and 16:9 share composition.html (26 s).
 set -euo pipefail
 cd "$(dirname "$0")/../.."
 
@@ -23,7 +23,7 @@ python3 -I projects/thermo-scan/sound.py $B/sound_9x16.wav premium
 # format -> page, size, chunk prefix, chunk ranges (balanced by render cost), soundtrack
 spec() {
   case $1 in
-    9x16) echo "premium.html 1080x1920 p 0:200,200:430,430:620,620:840 sound_9x16.wav" ;;
+    9x16) echo "premium.html 1080x1920 p 0:340,340:640,640:880,880:1146 sound_9x16.wav" ;;
     1x1)  echo "composition.html 1080x1080 s 0:435,435:780 sound.wav" ;;
     16x9) echo "composition.html 1920x1080 l 0:300,300:540,540:780 sound.wav" ;;
     *) echo "unknown format $1" >&2; exit 1 ;;

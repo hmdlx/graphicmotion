@@ -12,7 +12,7 @@
     "thermo-scan:render": "projects/thermo-scan/render.sh",
     "thermo-scan:stills": "node scripts/render.js projects/thermo-scan/composition.html build/thermo-scan/stills --plates build/thermo-scan/plates --serve 1 --size 1080x1080 --stills 1,3.5,4.7,6.4,7.5,9,10.8,12,13.6,16.6,18,19.6,21,23.5,25.5",
     "thermo-scan:render:9x16": "projects/thermo-scan/render.sh 9x16",
-    "thermo-scan:stills:9x16": "node scripts/render.js projects/thermo-scan/premium.html build/thermo-scan/stills_9x16 --plates build/thermo-scan/plates --serve 1 --size 1080x1920 --stills 0.3,1.8,3.3,4.9,6.6,7.8,9.6,11.5,12.8,14.5,17.0,18.8,21.0,22.8,26.5"
+    "thermo-scan:stills:9x16": "node scripts/render.js projects/thermo-scan/premium.html build/thermo-scan/stills_9x16 --plates build/thermo-scan/plates --serve 1 --size 1080x1920 --stills 1.2,3.0,4.6,5.6,7.0,9.0,10.8,12.8,16.0,17.6,20.5,22.0,25.0,27.0,30.0,34.0,37.5"
   },
   "devDependencies": {
     "playwright": "1.56.1",

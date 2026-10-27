@@ -8,6 +8,7 @@ photo_xray.png  the same frame as an x-ray: glowing contours, warm thermal water
 cover_top.png   cut-out of the cover (top view), RGBA
 cover_34.png    cut-out of the cover (3/4 view), RGBA
 drop.jpg, drop_xray.png, drop_34.png   the same for DROP THERMO
+intro.jpg       family photo for the intro of the 9:16 cut
 """
 import sys
 from pathlib import Path
@@ -163,4 +164,7 @@ def cutout(stem, name, size):
 cutout(COVER_TOP, 'cover_top.png', 1400)
 cutout(COVER_34, 'cover_34.png', 1400)
 cutout(DROP_34, 'drop_34.png', 1400)
+# Intro of the 9:16 cut: family photo (KI-Bild, generated with the shop photos of SPLASH and
+# DROP as references), already cropped to 9:16 and graded; copied at full size for the push-in.
+Image.open(SRC / 'intro-familie-ki.jpg').convert('RGB').save(OUT / 'intro.jpg', quality=95)
 print('plates ->', OUT)
