@@ -250,6 +250,8 @@ function xrayMaterial(color, opts = {}) {
       void main(){
         #include <clipping_planes_fragment>
         float f = pow(1. - abs(dot(normalize(vN), normalize(vV))), uPower);
+        // the flat pool floor glows at grazing angles and floods the section: keep it dim
+        f *= 1. - .85 * step(vW.y, .07) * smoothstep(.85, .98, abs(normalize(vN).y));
         float bands = .75 + .25 * smoothstep(.2,.8, sin(vW.y * 160. - uTime * 6.) * .5 + .5);
         float scan = exp(-pow((vW.y - uScanY) * 14., 2.));
         float a = (uBase + f * (1. + uGlow)) * bands + scan * .9;

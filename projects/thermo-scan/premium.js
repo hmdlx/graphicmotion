@@ -83,7 +83,7 @@ const shotA = track([
   [0.0,  K(84, 12, 0.72, 0.30, 0.645, 0.30, 26, 34)],
   [1.8,  K(66, 14, 0.6, 0.34, 0.645, 0.332, 26, 34)],
   [3.3,  K(48, 16, 0.56, 0.34, 0.645, 0.332, 26, 30)],
-  [4.0,  K(36, 18, 1.3, 0.22, 0.6, 0.2, 30, 6)],
+  [4.0,  K(38, 34, 1.6, 0.18, 0.6, 0.18, 30, 4)],
   [5.0,  K(26, 22, 4.0, 0.0, 0.42, 0.0, 34, 0, -60)],
   [6.7,  K(-4, 11, 2.7, 0.36, 0.42, 0.0, 34, 0, -40)],
   [8.6,  K(2, 13, 2.55, 0.30, 0.46, 0.0, 34, 0, -40)],
@@ -93,9 +93,9 @@ const shotA = track([
   [16.5, K(46, 22, 4.25, 0.0, 0.86, 0.0, 34, 0, -40)],
 ]);
 const shotB = track([
-  [16.5, K(-26, 16, 2.15, 0.05, 0.6, 0.12, 34, 22)],
-  [18.2, K(-34, 21, 2.3, 0.04, 0.6, 0.10, 34, 18)],
-  [20.4, K(-40, 28, 2.4, 0.0, 0.6, 0.05, 34, 10)],
+  [16.5, K(-24, 33, 2.35, 0.04, 0.62, 0.08, 34, 18, 70)],
+  [18.2, K(-32, 37, 2.45, 0.03, 0.62, 0.06, 34, 15, 70)],
+  [20.4, K(-38, 42, 2.5, 0.0, 0.6, 0.04, 34, 8, 40)],
   [21.7, K(-36, 86, 2.2, 0.0, 0.47, 0.0, 34, 0)],
   [24.2, K(-30, 88, 1.6, 0.0, 0.47, 0.0, 34, 0)],
 ]);
@@ -120,6 +120,9 @@ const canvas = $('#gl');
 canvas.width = W; canvas.height = H;
 const world = new World(canvas, W, H);
 world.dof.maxBlur = 16;
+// a slightly deeper grey for the pool reads more like the real PVC under studio light
+world.poolS.color.set('#cbd2d8');
+world.poolS.envMapIntensity = 0.34;
 
 // Film grain: a few fixed noise tiles, one per frame
 const grain = $('#grain'); grain.width = W / 2; grain.height = H / 2;
@@ -421,7 +424,9 @@ function seek(n) {
   world.bloom.strength = lerp(0.22, 0.4, xr);
   world.bloom.threshold = lerp(0.86, 0.5, xr);
   world.bloom.radius = 0.45;
-  world.renderer.toneMappingExposure = lerp(lerp(0.78, 0.92, lightBack), 1.0, xr);
+  // studio exposure: darker macro, a touch lower in the weather shot so the white pool keeps its shape
+  const weather = win(t, [T.cut, T.lift3[1] + 0.4], 0.01, 0.6);
+  world.renderer.toneMappingExposure = lerp(lerp(0.78, 0.92, lightBack) - 0.07 * weather, 1.0, xr);
   if (need3D) world.render();
 
   vis($('#legend'), win(t, T.legend, 0.5, 0.4));
