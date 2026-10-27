@@ -9,7 +9,7 @@ rendert. ffmpeg schreibt die Frames anschließend als MP4.
 | Projekt | Format | Ergebnis |
 |---|---|---|
 | `projects/laguna-m` | 9:16, 1080×1920, 30 fps, 18,5 s | `output/HomeDeluxe_Laguna-M_Reel_9x16.mp4` + Titelbild |
-| `projects/thermo-scan` | 9:16 (1080×1920), 1:1 (1080×1080), 16:9 (1920×1080), 30 fps, 26 s, mit Sounddesign | `output/HomeDeluxe_SPLASH-THERMO_Thermo-Scan_9x16.mp4`, `…_1x1.mp4`, `…_16x9.mp4`, `…_1x1.gif` + Titelbilder |
+| `projects/thermo-scan` | 9:16 Premium-Schnitt (1080×1920, 28 s), 1:1 (1080×1080) + 16:9 (1920×1080, 26 s), 30 fps, mit Sounddesign | `output/HomeDeluxe_SPLASH-THERMO_Thermo-Scan_9x16.mp4`, `…_1x1.mp4`, `…_16x9.mp4`, `…_1x1.gif` + Titelbilder |
 
 ### SPLASH THERMO / DROP THERMO – Thermo-Scan
 
@@ -19,23 +19,38 @@ Perspektiven entstehen in einer prozedural gebauten three.js-Szene (`scene.js`) 
 Produktmaßen: Whirlpool Ø 208 × 70 cm mit Drop-Stitch-Wänden, Abdeckung 162 × 162 × 20 cm mit
 sieben Luftkammern und Ventil. Keine KI-Generierung, keine Credits.
 
+**1:1 und 16:9** (`composition.html`, 26 s):
+
 | Zeit | Einstellung | Inhalt |
 |---|---|---|
 | 0,0–2,9 s | Foto | Ambientebild mit Push-in, Titel „Wärme bleibt drin.“ |
 | 2,9–4,9 s | Thermo-Scan | Scanlinie legt die Röntgenansicht frei (Konturen + Wärmebild), Match-Cut in die 3D-Szene |
-| 4,9–8,2 s | Querschnitt | Kamerafahrt in die Seitenansicht, Schnittebene teilt Pool und Abdeckung; Callouts Luftpolster / PVC / Badewasser |
-| 8,2–11,9 s | Wärmebild | Abdeckung hebt ab → Wärme entweicht, Wasser kühlt aus; Abdeckung sitzt wieder → Wärme bleibt. 01 Wärmeschutz |
-| 11,6–15,2 s | Produkt | Scan-Wipe vom Röntgen- in den Studio-Look, Abdeckung schwebt mit Maßlinien Ø 162 cm / 20 cm. 02 Handling |
-| 15,2–19,0 s | Wetter | Herbstlaub fällt auf die Abdeckung, Regen mit Aufprallringen auf dem PVC. 03 Schutz |
-| 19,0–21,9 s | Wasser | Abdeckung fliegt mit dem Laub davon, Draufsicht auf klares Wasser mit Kaustiken. 04 Wasserqualität |
-| 22,2–25,0 s | DROP | Ambientebild DROP, Scan zur Röntgenansicht mit Wärmebild unter der achteckigen Abdeckung, „DROP THERMO · 155 × 155 × 20 cm“ |
-| 25,0–29,0 s | Endcard | Beide Freisteller mit Maßen, „Wärme bleibt drin.“, CTA „Jetzt entdecken“ + homedeluxe.de |
+| 4,9–8,2 s | Querschnitt | Kamerafahrt in die Seitenansicht, Schnittebene teilt Pool und Abdeckung; Callouts Luftpolster / PVC |
+| 8,2–11,9 s | Wärmebild | Abdeckung hebt ab → Wärme entweicht; Abdeckung sitzt wieder → „Die Wärme bleibt im Wasser.“ |
+| 11,6–15,2 s | Produkt | Scan-Wipe in den Studio-Look, Abdeckung schwebt mit Maßlinien Ø 162 cm / 20 cm |
+| 15,2–19,0 s | Wetter | Herbstlaub und Regen auf der Abdeckung |
+| 19,0–21,9 s | Wasser | Abdeckung fliegt davon, Draufsicht auf klares Wasser – ohne Text |
+| 22,2–26,0 s | Endcard | Beide Freisteller mit Maßen, „Wärme bleibt drin.“, CTA, Logo unter dem CTA |
+
+**9:16 Premium-Schnitt** (`premium.html` / `premium.js`, 28 s) – eigene Shot-Liste fürs Hochformat,
+Texte in der Reels/TikTok-Safe-Zone oben, kein laufendes Logo:
+
+| Zeit | Einstellung | Inhalt |
+|---|---|---|
+| 0,0–3,4 s | Macro | Kamera kreist dicht über der Abdeckung um das Ventil, Tiefenschärfe, Gegenlicht-Kante wandert über die Luftkammern, Staub-Bokeh; Titel |
+| 3,4–5,0 s | Kranfahrt | über die Abdeckung hinauf in die Hero-Totale |
+| 4,5–5,4 s | Thermo-Scan | Scanlinie wandelt das 3D-Modell in die Röntgenansicht |
+| 5,4–8,7 s | Querschnitt | enge Seitenansicht, Schnittebene, Callouts Luftpolster / PVC |
+| 8,8–12,5 s | Wärmebild | Abdeckung hebt hoch ab, Wärmefahne steigt, Abdeckung sitzt wieder; „Die Wärme bleibt im Wasser.“ |
+| 12,4–16,4 s | Produkt | Scan zurück in den Studio-Look, Abdeckung schwebt über dem Pool mit Maßlinien; „Aufblasbar & leicht.“ |
+| 16,5–20,6 s | Wetter | harter Schnitt ins Close-up, Laub und Regen mit Tiefenschärfe; „Laub & Schmutz bleiben draußen.“ |
+| 20,6–23,6 s | Wasser | Abdeckung fliegt mit dem Laub davon, Draufsicht auf klares Wasser – ohne Text |
+| 24,0–28,0 s | Endcard | beide Freisteller als versetztes Paar, „Wärme bleibt drin.“, CTA, Logo zentriert unten |
 
 Die Aussagen stützen sich auf die Produktseite (Luftpolster, energieeffizienter, wetterfestes PVC
-gegen Regen, Schnee und UV, Schutz vor Blättern, Insekten und Schmutz, kristallklarer Badespaß).
-Beide Formate kommen aus derselben Timeline; die horizontale Brennweite ist fest, 9:16 bekommt
-dadurch Luft über und unter dem Produkt für Texte. Der Ton (`sound.py`) ist komplett synthetisch
-und wird beim Zusammenfügen auf −16 LUFS normalisiert.
+gegen Regen, Schnee und UV, Schutz vor Blättern, Insekten und Schmutz). Der Ton (`sound.py`, für
+9:16 mit eigenem Cue-Satz `premium`) ist komplett synthetisch und wird beim Zusammenfügen auf
+−16 LUFS normalisiert.
 
 ### Laguna M – Schnitt und Übergänge
 
@@ -70,8 +85,10 @@ npm run laguna-m:stills     # Kontrollbilder nach build/laguna-m/stills
 
 ```bash
 npm run thermo-scan:plates  # Foto, Röntgenfassung, Freisteller (build/thermo-scan/plates)
-npm run thermo-scan:stills  # Kontrollbilder 9:16
-npm run thermo-scan:render  # beide Formate parallel in Teilstücken + Ton -> projects/thermo-scan/output/
+npm run thermo-scan:stills       # Kontrollbilder 1:1
+npm run thermo-scan:stills:9x16  # Kontrollbilder Premium 9:16
+npm run thermo-scan:render       # alle Formate parallel in Teilstücken + Ton -> projects/thermo-scan/output/
+npm run thermo-scan:render:9x16  # nur den 9:16-Schnitt
 ```
 
 `render.js` kennt dafür zusätzlich `--serve 1` (lokaler HTTP-Server für ES-Module), `--size WxH`,
