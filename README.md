@@ -9,6 +9,7 @@ rendert. ffmpeg schreibt die Frames anschließend als MP4.
 | Projekt | Format | Ergebnis |
 |---|---|---|
 | `projects/laguna-m` | 9:16, 1080×1920, 30 fps, 18,5 s | `output/HomeDeluxe_Laguna-M_Reel_9x16.mp4` + Titelbild |
+| `projects/lamesa` | 9:16, 1080×1920, 24 fps, 17,75 s | `output/HomeDeluxe_LAMESA_Reel_9x16.mp4` |
 
 ### Laguna M – Schnitt und Übergänge
 
@@ -29,6 +30,23 @@ läuft nur mit ihren sauberen Frames (Schnittliste `SHOTS` in `composition.js`),
 Die Produktdaten stammen aus den Shop- und Händlerangaben zur LAGUNA M (homedeluxe.de, Hornbach).
 Preise sind bewusst nicht eingebaut, weil sie sich häufig ändern.
 
+### LAMESA – Endsequenz
+
+Der fertige Clip (`source/lamesa_video.mp4`, 24 fps) läuft unverändert mit Originalton
+(nur auf 1080×1920 hochskaliert, kein Grading). Daran hängt eine ruhige Endsequenz auf `#fefefe`,
+Schrift und Logo in `#0f2334`:
+
+| Zeit | Inhalt | Bewegung |
+|---|---|---|
+| 0,0–9,45 s | Clip | – |
+| 9,45–10,5 s | Übergang | Papierfläche `#fefefe` fährt von unten hoch, die Totale gleitet darunter nach oben und wird leicht abgedunkelt |
+| 10,3–14,2 s | „Erhältlich in / zwei Farben“ + beide Freisteller (hell oben, schwarz unten) | Zeilen steigen aus einer Maske, Linie zieht auf, Tische wachsen mit weicher Maske von unten ins Bild und schweben leicht; Abgang weich nach oben |
+| 14,3–17,75 s | Home-Deluxe-Logo | Haus-Icon blendet mittig ein, gleitet an seinen Platz, „OME“ und „DELUXE“ werden mit weicher Kante von links nach rechts aufgedeckt |
+
+Die Freisteller (`source/lamesa_freisteller_*.jpg`) werden im Browser auf reines Weiß gehoben
+(`brightness(1.02)`) und per `multiply` auf die Fläche gelegt, so bleibt der Hintergrund exakt
+`#fefefe` und die Schatten bleiben erhalten. Nach dem Clip ist die Tonspur still.
+
 ## Rendern
 
 Voraussetzungen: Node 18+, Python 3 mit numpy + Pillow, ffmpeg, Chromium für Playwright.
@@ -39,6 +57,10 @@ npm run laguna-m:plates     # Rohschnitt -> hochskalierte, leicht gegradete JPG-
 npm run laguna-m:track      # Punkt-Tracking -> projects/laguna-m/tracks.js (nur nötig, wenn tracking.json geändert wurde)
 npm run laguna-m:render     # -> projects/laguna-m/output/HomeDeluxe_Laguna-M_Reel_9x16.mp4
 npm run laguna-m:stills     # Kontrollbilder nach build/laguna-m/stills
+
+npm run lamesa:plates       # Clip -> hochskalierte JPG-Plates ohne Grading (build/lamesa/plates)
+npm run lamesa:render       # -> projects/lamesa/output/HomeDeluxe_LAMESA_Reel_9x16.mp4 (mit Originalton)
+npm run lamesa:stills       # Kontrollbilder nach build/lamesa/stills
 ```
 
 Ein einzelnes Frame lässt sich auch im Browser prüfen:
@@ -49,9 +71,9 @@ Ein einzelnes Frame lässt sich auch im Browser prüfen:
 ```
 assets/fonts/poppins/     Poppins 400–800 (latin, OFL)
 assets/logo/              Home-Deluxe-Logo (weiß, SVG)
-scripts/prepare_plates.sh Hochskalieren + Grading der Quelle
+scripts/prepare_plates.sh Hochskalieren + Grading der Quelle (--neutral: nur hochskalieren)
 scripts/track_points.py   Template-Tracking für Marker, die am Bild kleben
-scripts/render.js         Chromium -> PNG-Frames -> ffmpeg (H.264 + stumme AAC-Spur)
+scripts/render.js         Chromium -> PNG-Frames -> ffmpeg (H.264 + stumme AAC-Spur, mit --audio der Ton eines Clips)
 projects/<name>/          source/, composition.html/.js, tracking.json, tracks.js, output/
 ```
 

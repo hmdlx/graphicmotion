@@ -2,8 +2,11 @@
 // Render an HTML composition frame by frame (Chromium via Playwright) and
 // pipe the PNG frames into ffmpeg.
 //
-//   node scripts/render.js <composition.html> <out.mp4> --plates <dir>
+//   node scripts/render.js <composition.html> <out.mp4> --plates <dir> [--audio <clip.mp4>]
 //   node scripts/render.js <composition.html> <out_dir> --plates <dir> --stills 1,4.5,18
+//
+// --audio takes the clip's sound and pads it with silence to the video length;
+// without it the MP4 gets a silent AAC track.
 //
 // The composition must expose window.COMP = { FPS, TOTAL, seek(n), ready }.
 const path = require('path');
@@ -16,7 +19,7 @@ function parseArgs(argv) {
   const opts = { comp, out };
   for (let i = 0; i < rest.length; i += 2) opts[rest[i].replace(/^--/, '')] = rest[i + 1];
   if (!comp || !out || !opts.plates) {
-    console.error('usage: render.js <composition.html> <out.mp4|out_dir> --plates <dir> [--stills t1,t2]');
+    console.error('usage: render.js <composition.html> <out.mp4|out_dir> --plates <dir> [--audio <clip>] [--stills t1,t2]');
     process.exit(1);
   }
   return opts;
@@ -51,11 +54,13 @@ function writeFrame(stream, buf) {
   }
 
   fs.mkdirSync(path.dirname(opts.out), { recursive: true });
+  const audio = opts.audio
+    ? ['-i', opts.audio, '-map', '0:v', '-map', '1:a:0', '-af', 'apad', '-ar', '48000']
+    : ['-f', 'lavfi', '-t', String(TOTAL / FPS), '-i', 'anullsrc=r=48000:cl=stereo', '-map', '0:v', '-map', '1:a'];
   const ff = spawn('ffmpeg', [
     '-v', 'error', '-y',
     '-f', 'image2pipe', '-framerate', String(FPS), '-c:v', 'png', '-i', '-',
-    '-f', 'lavfi', '-t', String(TOTAL / FPS), '-i', 'anullsrc=r=48000:cl=stereo',
-    '-map', '0:v', '-map', '1:a',
+    ...audio,
     '-c:v', 'libx264', '-preset', 'slow', '-crf', '16', '-pix_fmt', 'yuv420p',
     '-profile:v', 'high', '-level', '4.2', '-r', String(FPS),
     '-c:a', 'aac', '-b:a', '128k', '-shortest', '-movflags', '+faststart',
