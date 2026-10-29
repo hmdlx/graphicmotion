@@ -195,33 +195,18 @@ export async function buildScene(renderer) {
   nut.position.copy(NUT_POS);
   scene.add(nut);
 
-  // CALLANUT hero: the pair from the product photo, floating in its own corner of the studio
-  // (out of every other shot) with its own key and rim light. Tongue and groove face the camera;
-  // the groove shows the grey WPC core at its bottom.
+  // CALLANUT hero: one profile (the left one from the product photo, with the tongue), floating
+  // in its own corner of the studio (out of every other shot) with its own key and rim light.
+  // The lower end with the tongue faces the camera.
   const hero = new THREE.Group(), tilt = new THREE.Group();
   hero.add(tilt);
-  tilt.rotation.x = HERO_Y[2];                      // lean back: the lower ends point at the camera
-  const heroLen = HERO_Y[1];
-  const heroProf = (tongue) => {
-    const g = new THREE.ExtrudeGeometry(section(tongue), { depth: heroLen, bevelEnabled: true, bevelSize: 0.0012, bevelThickness: 0.0012, bevelSegments: 2 });
-    g.rotateX(-Math.PI / 2);                        // length along y, tongue towards +z, groove towards -z
-    boxUV(g, 0.45, 0.06, 0, true);
-    const p = new THREE.Group();
-    const m = new THREE.Mesh(g, [M.nutEnd, M.nutSide]);
-    m.castShadow = m.receiveShadow = true;
-    p.add(m);
-    if (!tongue) {
-      const core = new THREE.Mesh(new THREE.BoxGeometry(0.0176, heroLen, 0.0008), M.nutEnd);
-      core.position.set(0, heroLen / 2, -0.0054);
-      p.add(core);
-    }
-    tilt.add(p);
-    return { p, tongue };
-  };
-  const heroA = heroProf(true), heroB = heroProf(false);
-  heroA.p.position.set(-0.036, 0, 0);
-  heroB.p.position.set(0.036, 0, 0);
-  heroB.p.rotation.y = Math.PI;                     // groove to the front
+  tilt.rotation.x = HERO_Y[2];                      // lean back: the lower end points at the camera
+  const heroG = new THREE.ExtrudeGeometry(section(true), { depth: HERO_Y[1], bevelEnabled: true, bevelSize: 0.0012, bevelThickness: 0.0012, bevelSegments: 2 });
+  heroG.rotateX(-Math.PI / 2);                      // length along y, tongue towards +z
+  boxUV(heroG, 0.45, 0.06, 0, true);
+  const heroProf = new THREE.Mesh(heroG, [M.nutEnd, M.nutSide]);
+  heroProf.castShadow = heroProf.receiveShadow = true;
+  tilt.add(heroProf);
   hero.position.set(HERO.x, HERO_Y[0], HERO.z);
   scene.add(hero);
   const heroKey = new THREE.SpotLight(0xffffff, 0, 0, 0.5, 0.9, 1.2);
@@ -234,12 +219,12 @@ export async function buildScene(renderer) {
   heroRim.position.set(HERO.x + 1.3, 2.3, HERO.z - 1.6);
   heroRim.target.position.copy(heroKey.target.position);
   scene.add(heroKey, heroKey.target, heroRim, heroRim.target);
-  const sectionPts = [section(true), section(false)].map(sh => sh.getPoints());
+  const sectionPts = section(true).getPoints();
 
-  // Outlines of the two lower profile ends in world space (for the drawn-on overlay).
-  function heroEnds() {
+  // Outline of the profile's lower end in world space (for the drawn-on overlay).
+  function heroEnd() {
     hero.updateMatrixWorld(true);
-    return [heroA, heroB].map((h, i) => sectionPts[i].map(q => new THREE.Vector3(q.x, -0.0012, -q.y).applyMatrix4(h.p.matrixWorld)));
+    return sectionPts.map(q => new THREE.Vector3(q.x, -0.0012, -q.y).applyMatrix4(heroProf.matrixWorld));
   }
 
   // Studio lights (switched by update()).
@@ -337,5 +322,5 @@ export async function buildScene(renderer) {
     dg.attributes.alpha.needsUpdate = true;
   }
 
-  return { scene, update, stripes, bands, nut, heroEnds };
+  return { scene, update, stripes, bands, nut, heroEnd };
 }

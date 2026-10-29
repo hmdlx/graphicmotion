@@ -44,7 +44,7 @@ const TAKES = [
   { t: [16.4, 16.95], ease: 'whip', pos: [V(3.3, 1.55, 5.4), V(-2.6, 1.3, 6.2), AT(0.05, 1.0, 0.34)],
     tgt: [V(0.0, 1.42, 0), V(-5.0, 1.0, 3.5), AT(0, 0.97, 0)], fov: [35, 30], ap: [0.0008, 0.007] },
   { t: [16.95, 21.9], ease: 'drift', pos: [AT(0.05, 1.0, 0.34), AT(-0.32, 1.1, 0.6), AT(-0.52, 1.2, 0.84)],
-    tgt: [AT(0, 0.97, 0), AT(0.0, 1.0, -0.15), AT(-0.04, 1.02, -0.27)], fov: [30, 29], ap: [0.007, 0.003] },
+    tgt: [AT(0, 0.97, 0), AT(-0.065, 1.0, -0.18), AT(-0.04, 1.02, -0.27)], fov: [30, 29], ap: [0.007, 0.003] },
   { t: [21.9, 22.45], ease: 'whip', pos: [AT(-0.52, 1.2, 0.84), V(-2.5, 1.5, 6.0), V(1.0, 1.55, 4.9)],
     tgt: [AT(-0.04, 1.02, -0.27), V(0.0, 1.0, 0), V(1.85, 0.66, 0)], fov: [29, 33], ap: [0.003, 0.001] },
   { t: [22.45, 25.9], ease: 'drift', pos: [V(1.0, 1.55, 4.9), V(2.4, 1.52, 5.0), V(3.5, 1.5, 4.9)],
@@ -281,26 +281,25 @@ function slopeLine(t, ink) {
   for (const e of Object.values(slopeEls)) { e.setAttribute('stroke', ink); e.style.opacity = (1 - out).toFixed(3); }
 }
 
-// Technical draw-on of the two CALLANUT profile ends, pinned to the 3D outlines.
-const nutEls = [0, 1].map(() => mk('polyline', { fill: 'none', 'stroke-width': 2.2, 'stroke-linejoin': 'round' }));
+// Technical draw-on of the CALLANUT profile end, pinned to its 3D outline (drawn a little outside
+// the real edge so it reads against the black shell).
+const nutEl = mk('polyline', { fill: 'none', 'stroke-width': 2.2, 'stroke-linejoin': 'round' });
 function nutLine(t, ink) {
   const [t0, t1] = NUT_LINE.t;
   const out = prog(t, t1, 0.35), on = t >= t0 && out < 1;
-  nutEls.forEach(e => { e.style.display = on ? '' : 'none'; });
+  nutEl.style.display = on ? '' : 'none';
   if (!on) return;
-  set.heroEnds().forEach((pts, i) => {
-    const raw = [...pts, pts[0]].map(p => project(p));
-    const cx = raw.reduce((a, q) => a + q.x, 0) / raw.length, cy = raw.reduce((a, q) => a + q.y, 0) / raw.length;
-    const sp = raw.map(q => ({ x: cx + (q.x - cx) * 1.16, y: cy + (q.y - cy) * 1.16 }));
-    let len = 0;
-    for (let j = 1; j < sp.length; j++) len += Math.hypot(sp[j].x - sp[j - 1].x, sp[j].y - sp[j - 1].y);
-    const e = nutEls[i];
-    e.setAttribute('points', sp.map(q => `${q.x.toFixed(1)},${q.y.toFixed(1)}`).join(' '));
-    e.setAttribute('stroke', ink);
-    e.setAttribute('stroke-dasharray', len.toFixed(1));
-    e.setAttribute('stroke-dashoffset', (len * (1 - E.inOutCubic(prog(t, t0 + i * 0.2, 1.0)))).toFixed(1));
-    e.style.opacity = (1 - out).toFixed(3);
-  });
+  const pts = set.heroEnd();
+  const raw = [...pts, pts[0]].map(p => project(p));
+  const cx = raw.reduce((a, q) => a + q.x, 0) / raw.length, cy = raw.reduce((a, q) => a + q.y, 0) / raw.length;
+  const sp = raw.map(q => ({ x: cx + (q.x - cx) * 1.16, y: cy + (q.y - cy) * 1.16 }));
+  let len = 0;
+  for (let j = 1; j < sp.length; j++) len += Math.hypot(sp[j].x - sp[j - 1].x, sp[j].y - sp[j - 1].y);
+  nutEl.setAttribute('points', sp.map(q => `${q.x.toFixed(1)},${q.y.toFixed(1)}`).join(' '));
+  nutEl.setAttribute('stroke', ink);
+  nutEl.setAttribute('stroke-dasharray', len.toFixed(1));
+  nutEl.setAttribute('stroke-dashoffset', (len * (1 - E.inOutCubic(prog(t, t0, 1.0)))).toFixed(1));
+  nutEl.style.opacity = (1 - out).toFixed(3);
 }
 
 // ------------------------------------------------------------------ render one frame
