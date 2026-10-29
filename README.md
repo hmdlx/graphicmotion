@@ -9,6 +9,7 @@ rendert. ffmpeg schreibt die Frames anschließend als MP4.
 | Projekt | Format | Ergebnis |
 |---|---|---|
 | `projects/laguna-m` | 9:16, 1080×1920, 30 fps, 18,5 s | `output/HomeDeluxe_Laguna-M_Reel_9x16.mp4` + Titelbild |
+| `projects/callado-zubehoer` | 16:9, 1920×1080, 30 fps, 32,9 s | `output/HomeDeluxe_CALLADO-Zubehoer_16x9_Intro.mp4` |
 
 ### Laguna M – Schnitt und Übergänge
 
@@ -29,6 +30,28 @@ läuft nur mit ihren sauberen Frames (Schnittliste `SHOTS` in `composition.js`),
 Die Produktdaten stammen aus den Shop- und Händlerangaben zur LAGUNA M (homedeluxe.de, Hornbach).
 Preise sind bewusst nicht eingebaut, weil sie sich häufig ändern.
 
+### CALLADO Zubehör – Intro
+
+Der fertige Zubehör-Film (`source/HomeDeluxe_CALLADO-Zubehoer_16x9.mp4`) begann mit 6 s fast
+schwarzem Bild, in dem langsam ein Lichtstreifen aufglimmt – dass es um Zubehör geht, stand erst
+nach 13 s im Bild. Davor sitzt jetzt ein Intro (5,7 s), das die vier Zubehörteile sofort benennt
+und dann ohne sichtbaren Schnitt in den Film übergeht.
+
+| Zeit | Inhalt |
+|---|---|
+| 0,0–1,1 s | Aufblende aus Schwarz, Kicker „CALLADO —— WPC-Sichtschutzzaun“, Titel „PASSENDES ZUBEHÖR“ |
+| 1,1–2,3 s | Vier Kacheln mit Szenen aus dem Film öffnen sich, darunter je Nummer, Name und Kurztext: 01 CALLUX STRIPE, 02 CALLUX COVER, 03 CALLANUT, 04 Schrägelement |
+| 2,3–4,2 s | Übersicht steht, die Kacheln laufen (Pfostenkappe leuchtet auf, Leisten-Bündel, Schrägelement) |
+| 4,2–5,0 s | Texte steigen aus, Kacheln 02–04 schließen sich |
+| 4,7–5,7 s | Kachel 01 (Lichtstreifen) zieht zum Vollbild auf und landet exakt auf Frame 159 des Films |
+| ab 5,7 s | Film ab Frame 160 (5,33 s): „01 Nutleiste – CALLUX STRIPE“ baut sich wie gehabt auf |
+
+Die ersten 5,3 s des Films (Schwarz + Lichtstreifen) laufen nicht mehr im Vollbild, sondern in
+Kachel 01 mit; der Rest des Films ist unverändert. Gesamtlänge 32,9 s statt 32,6 s.
+Kachel 01 wird beim Aufziehen ohne das eingebrannte Logo gezeigt; darüber liegt eine
+Logo-Maske aus dem Film selbst (`scripts/logo_matte.py`), sodass das Logo die ganze Zeit an
+derselben Stelle steht und beim Übergang nicht doppelt erscheint.
+
 ## Rendern
 
 Voraussetzungen: Node 18+, Python 3 mit numpy + Pillow, ffmpeg, Chromium für Playwright.
@@ -44,17 +67,37 @@ npm run laguna-m:stills     # Kontrollbilder nach build/laguna-m/stills
 Ein einzelnes Frame lässt sich auch im Browser prüfen:
 `projects/laguna-m/composition.html?t=4.6` (Zeit in Sekunden, Plates müssen unter `build/` liegen).
 
+CALLADO-Intro:
+
+```bash
+npm run callado:frames      # Film -> JPG-Plates in Originalgröße (build/)
+npm run callado:logo        # Logo-Maske + logofreie Plates für Kachel 01
+npm run callado:intro       # Intro verlustfrei -> build/callado-zubehoer/intro.mp4
+npm run callado:join        # Intro + Film ab Frame 160 -> projects/callado-zubehoer/output/…_Intro.mp4
+npm run callado:stills      # Kontrollbilder nach build/callado-zubehoer/stills
+```
+
+Der Anschluss-Frame steht zweimal: `JOIN` in `composition.js` und die `160` in `callado:join`
+(dazu der `--clean`-Bereich in `callado:logo`, der bei `JOIN − 1` endet).
+
 ## Struktur
 
 ```
 assets/fonts/poppins/     Poppins 400–800 (latin, OFL)
 assets/logo/              Home-Deluxe-Logo (weiß, SVG)
 scripts/prepare_plates.sh Hochskalieren + Grading der Quelle
+scripts/extract_frames.sh Fertigen Film in Originalgröße als Plates ablegen
 scripts/track_points.py   Template-Tracking für Marker, die am Bild kleben
-scripts/render.js         Chromium -> PNG-Frames -> ffmpeg (H.264 + stumme AAC-Spur)
+scripts/logo_matte.py     Eingebranntes Logo als Maske herauslösen und aus Plates entfernen
+scripts/render.js         Chromium -> PNG-Frames -> ffmpeg (H.264 + stumme AAC-Spur, --crf 0 = verlustfrei)
+scripts/join_intro.sh     Intro vor einen fertigen Film setzen, Film läuft ab Frame N weiter
 projects/<name>/          source/, composition.html/.js, tracking.json, tracks.js, output/
 ```
 
 Texte und Timings ändern: Texte stehen in `projects/laguna-m/composition.html`. In
 `composition.js` stehen die Schnittliste `SHOTS` (Quell-Frames je Einstellung), die Übergänge `X`
 (Output-Frames) und die Einblendzeiten der Grafiken `T` (Output-Sekunden).
+
+CALLADO: Texte stehen in `projects/callado-zubehoer/composition.html`. In `composition.js` stehen
+die Kachel-Footage `TILES` (Quell-Frames, Ausschnitt und Kamerapfad je Kachel) und die Zeitleiste
+`T` (Output-Frames).

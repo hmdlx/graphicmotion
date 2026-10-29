@@ -4,8 +4,10 @@
 //
 //   node scripts/render.js <composition.html> <out.mp4> --plates <dir>
 //   node scripts/render.js <composition.html> <out_dir> --plates <dir> --stills 1,4.5,18
+//   node scripts/render.js <composition.html> <out.mp4> --plates <dir> --crf 0   (lossless intermediate)
 //
-// The composition must expose window.COMP = { FPS, TOTAL, seek(n), ready }.
+// The composition must expose window.COMP = { FPS, TOTAL, seek(n), ready } and may set
+// W/H (stage size, default 1080x1920).
 const path = require('path');
 const fs = require('fs');
 const { spawn } = require('child_process');
@@ -16,7 +18,7 @@ function parseArgs(argv) {
   const opts = { comp, out };
   for (let i = 0; i < rest.length; i += 2) opts[rest[i].replace(/^--/, '')] = rest[i + 1];
   if (!comp || !out || !opts.plates) {
-    console.error('usage: render.js <composition.html> <out.mp4|out_dir> --plates <dir> [--stills t1,t2]');
+    console.error('usage: render.js <composition.html> <out.mp4|out_dir> --plates <dir> [--stills t1,t2] [--crf n]');
     process.exit(1);
   }
   return opts;
@@ -35,7 +37,8 @@ function writeFrame(stream, buf) {
   page.on('pageerror', e => { console.error('page error:', e.message); process.exitCode = 1; });
   await page.goto(url);
   await page.evaluate(() => window.COMP.ready);
-  const { FPS, TOTAL } = await page.evaluate(() => ({ FPS: window.COMP.FPS, TOTAL: window.COMP.TOTAL }));
+  const { FPS, TOTAL, W, H } = await page.evaluate(() => ({ FPS: window.COMP.FPS, TOTAL: window.COMP.TOTAL, W: window.COMP.W, H: window.COMP.H }));
+  if (W && H) await page.setViewportSize({ width: W, height: H });
 
   if (opts.stills) {
     fs.mkdirSync(opts.out, { recursive: true });
@@ -51,13 +54,14 @@ function writeFrame(stream, buf) {
   }
 
   fs.mkdirSync(path.dirname(opts.out), { recursive: true });
+  const crf = opts.crf == null ? 16 : Number(opts.crf);
   const ff = spawn('ffmpeg', [
     '-v', 'error', '-y',
     '-f', 'image2pipe', '-framerate', String(FPS), '-c:v', 'png', '-i', '-',
     '-f', 'lavfi', '-t', String(TOTAL / FPS), '-i', 'anullsrc=r=48000:cl=stereo',
     '-map', '0:v', '-map', '1:a',
-    '-c:v', 'libx264', '-preset', 'slow', '-crf', '16', '-pix_fmt', 'yuv420p',
-    '-profile:v', 'high', '-level', '4.2', '-r', String(FPS),
+    '-c:v', 'libx264', '-preset', 'slow', '-crf', String(crf), '-pix_fmt', 'yuv420p',
+    ...(crf > 0 ? ['-profile:v', 'high', '-level', '4.2'] : []), '-r', String(FPS),
     '-c:a', 'aac', '-b:a', '128k', '-shortest', '-movflags', '+faststart',
     opts.out,
   ], { stdio: ['pipe', 'inherit', 'inherit'] });
