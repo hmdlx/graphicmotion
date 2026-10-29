@@ -46,7 +46,7 @@ Dunkeln), an 3D-Punkte geheftete Callouts und kinetische Typo. Keine KI-generier
 | 4,2–8,4 s | Kamera zieht auf, die anderen Pfosten zünden nacheinander, Titel „CALLUX STRIPE“, Callout „Solar-LED“ |
 | 8,4–12,4 s | Kran hoch zu den Kappen, die Lichtbänder zünden aus der Mitte, Lens Flares, Titel „CALLUX COVER“ |
 | 12,4–16,4 s | Studiolicht flackert an, Kinobalken öffnen sich, Reißschwenk auf die Totale, Titel „CALLADO – Passendes Zubehör“ |
-| 16,4–21,9 s | Reißschwenk zu CALLANUT: die beiden Profile schweben wie auf dem Produktfoto, Stirnseiten (Feder, Nut mit grauem WPC-Kern) zur Kamera, Kontur wird nachgezeichnet, Kamera kreist zur Dreiviertelansicht, „in verschiedenen Mengen“ |
+| 16,4–21,9 s | Reißschwenk zu CALLANUT: das Profil (links auf dem Produktfoto, mit Feder) schwebt im Studio, Stirnseite mit grauem WPC-Kern zur Kamera, Kontur wird nachgezeichnet, Kamera kreist zur Dreiviertelansicht, „in verschiedenen Mengen“ |
 | 21,9–25,9 s | Reißschwenk zum Zaunende: Schrägelement, Maßlinie zeichnet die Schräge nach |
 | 25,9–30,1 s | Schnitt in den Abend: LEDs und Kappen leuchten, „Alles für deinen CALLADO.“ |
 | 30,1–34,1 s | Endcard über dem unscharfen Set: Logo mit Lichtkante und Slogan |
