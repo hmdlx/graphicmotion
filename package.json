@@ -7,8 +7,11 @@
     "laguna-m:track": "python3 -I scripts/track_points.py build/laguna-m/plates projects/laguna-m/tracking.json projects/laguna-m/tracks.js",
     "laguna-m:render": "node scripts/render.js projects/laguna-m/composition.html projects/laguna-m/output/HomeDeluxe_Laguna-M_Reel_9x16.mp4 --plates build/laguna-m/plates",
     "laguna-m:stills": "node scripts/render.js projects/laguna-m/composition.html build/laguna-m/stills --plates build/laguna-m/plates --stills 1,2,4,5,7,10,11,13,14.5,16,17.6,18,19,21",
-    "callado-zubehoer:render": "node scripts/render.js projects/callado-zubehoer/composition.html projects/callado-zubehoer/output/HomeDeluxe_CALLADO-Zubehoer_16x9.mp4",
-    "callado-zubehoer:stills": "node scripts/render.js projects/callado-zubehoer/composition.html build/callado-zubehoer/stills --stills 0.8,2,3.5,5.0,5.8,7,8.5,9.8,11,12.5,13.8,15,16.5,17.8,19,20.5,21.8,23,24.5,25.8,27,29.5"
+    "callado-zubehoer:plates": "scripts/clip_plates.sh projects/callado-zubehoer/source/transitions build/callado-zubehoer/plates",
+    "callado-zubehoer:match": "python3 -I scripts/match_frame.py projects/callado-zubehoer/transitions.js t1 build/callado-zubehoer/plates/t1 projects/callado-zubehoer/source/callux-stripe.jpg projects/callado-zubehoer/source/callux-cover.jpg t2 build/callado-zubehoer/plates/t2 projects/callado-zubehoer/source/callux-cover.jpg projects/callado-zubehoer/source/callanut.jpg t3 build/callado-zubehoer/plates/t3 projects/callado-zubehoer/source/callanut.jpg projects/callado-zubehoer/source/schraegelement-callado.jpg",
+    "callado-zubehoer:led": "python3 -I scripts/led_mask.py projects/callado-zubehoer/source/callux-stripe.jpg projects/callado-zubehoer/source/led/callux-stripe-led.png --axis x && python3 -I scripts/led_mask.py projects/callado-zubehoer/source/callux-cover.jpg projects/callado-zubehoer/source/led/callux-cover-led.png --axis y --near 14 --far 26 && python3 -I scripts/led_mask.py projects/callado-zubehoer/source/callado-hero.jpg projects/callado-zubehoer/source/led/callado-hero-led.png --axis x --near 10 --far 20 --bright 185 --dark 120",
+    "callado-zubehoer:render": "node scripts/render.js projects/callado-zubehoer/composition.html projects/callado-zubehoer/output/HomeDeluxe_CALLADO-Zubehoer_16x9.mp4 --plates build/callado-zubehoer/plates",
+    "callado-zubehoer:stills": "node scripts/render.js projects/callado-zubehoer/composition.html build/callado-zubehoer/stills --plates build/callado-zubehoer/plates --stills 2,3.9,4.4,5.0,5.3,6.0,6.6,7.35,8.5,10.9,11.8,12.8,13.4,14.2,14.8,15.5,16.05,18.0,19.2,20.5,22.8,23.8,25.5,27.8,29.5,32.2,34.5"
   },
   "devDependencies": {
     "playwright": "1.56.1"
