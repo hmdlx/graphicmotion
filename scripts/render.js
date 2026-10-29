@@ -2,10 +2,11 @@
 // Render an HTML composition frame by frame (Chromium via Playwright) and
 // pipe the PNG frames into ffmpeg.
 //
-//   node scripts/render.js <composition.html> <out.mp4> --plates <dir>
-//   node scripts/render.js <composition.html> <out_dir> --plates <dir> --stills 1,4.5,18
+//   node scripts/render.js <composition.html> <out.mp4> [--plates <dir>]
+//   node scripts/render.js <composition.html> <out_dir> [--plates <dir>] --stills 1,4.5,18
 //
-// The composition must expose window.COMP = { FPS, TOTAL, seek(n), ready }.
+// The composition must expose window.COMP = { FPS, TOTAL, seek(n), ready } and
+// may set W/H for its stage size (default 1080x1920).
 const path = require('path');
 const fs = require('fs');
 const { spawn } = require('child_process');
@@ -15,8 +16,8 @@ function parseArgs(argv) {
   const [comp, out, ...rest] = argv;
   const opts = { comp, out };
   for (let i = 0; i < rest.length; i += 2) opts[rest[i].replace(/^--/, '')] = rest[i + 1];
-  if (!comp || !out || !opts.plates) {
-    console.error('usage: render.js <composition.html> <out.mp4|out_dir> --plates <dir> [--stills t1,t2]');
+  if (!comp || !out) {
+    console.error('usage: render.js <composition.html> <out.mp4|out_dir> [--plates <dir>] [--stills t1,t2]');
     process.exit(1);
   }
   return opts;
@@ -28,14 +29,19 @@ function writeFrame(stream, buf) {
 
 (async () => {
   const opts = parseArgs(process.argv.slice(2));
-  const url = 'file://' + path.resolve(opts.comp) + '?plates=' + encodeURIComponent('file://' + path.resolve(opts.plates));
+  const url = 'file://' + path.resolve(opts.comp) +
+    (opts.plates ? '?plates=' + encodeURIComponent('file://' + path.resolve(opts.plates)) : '');
 
-  const browser = await chromium.launch();
+  // CHROMIUM_PATH: use an already installed Chromium instead of Playwright's own download.
+  const browser = await chromium.launch(process.env.CHROMIUM_PATH ? { executablePath: process.env.CHROMIUM_PATH } : {});
   const page = await browser.newPage({ viewport: { width: 1080, height: 1920 }, deviceScaleFactor: 1 });
   page.on('pageerror', e => { console.error('page error:', e.message); process.exitCode = 1; });
   await page.goto(url);
   await page.evaluate(() => window.COMP.ready);
-  const { FPS, TOTAL } = await page.evaluate(() => ({ FPS: window.COMP.FPS, TOTAL: window.COMP.TOTAL }));
+  const { FPS, TOTAL, W, H } = await page.evaluate(() => ({
+    FPS: window.COMP.FPS, TOTAL: window.COMP.TOTAL, W: window.COMP.W || 1080, H: window.COMP.H || 1920,
+  }));
+  await page.setViewportSize({ width: W, height: H });
 
   if (opts.stills) {
     fs.mkdirSync(opts.out, { recursive: true });

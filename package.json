@@ -6,7 +6,9 @@
     "laguna-m:plates": "scripts/prepare_plates.sh projects/laguna-m/source/laguna-m_rohschnitt.mp4 build/laguna-m/plates",
     "laguna-m:track": "python3 -I scripts/track_points.py build/laguna-m/plates projects/laguna-m/tracking.json projects/laguna-m/tracks.js",
     "laguna-m:render": "node scripts/render.js projects/laguna-m/composition.html projects/laguna-m/output/HomeDeluxe_Laguna-M_Reel_9x16.mp4 --plates build/laguna-m/plates",
-    "laguna-m:stills": "node scripts/render.js projects/laguna-m/composition.html build/laguna-m/stills --plates build/laguna-m/plates --stills 1,2,4,5,7,10,11,13,14.5,16,17.6,18,19,21"
+    "laguna-m:stills": "node scripts/render.js projects/laguna-m/composition.html build/laguna-m/stills --plates build/laguna-m/plates --stills 1,2,4,5,7,10,11,13,14.5,16,17.6,18,19,21",
+    "callado-zubehoer:render": "node scripts/render.js projects/callado-zubehoer/composition.html projects/callado-zubehoer/output/HomeDeluxe_CALLADO-Zubehoer_16x9.mp4",
+    "callado-zubehoer:stills": "node scripts/render.js projects/callado-zubehoer/composition.html build/callado-zubehoer/stills --stills 0.8,2,3.5,5.0,5.8,7,8.5,9.8,11,12.5,13.8,15,16.5,17.8,19,20.5,21.8,23,24.5,25.8,27,29.5"
   },
   "devDependencies": {
     "playwright": "1.56.1"

@@ -9,6 +9,7 @@ rendert. ffmpeg schreibt die Frames anschließend als MP4.
 | Projekt | Format | Ergebnis |
 |---|---|---|
 | `projects/laguna-m` | 9:16, 1080×1920, 30 fps, 18,5 s | `output/HomeDeluxe_Laguna-M_Reel_9x16.mp4` + Titelbild |
+| `projects/callado-zubehoer` | 16:9, 1920×1080, 30 fps, 30 s | `output/HomeDeluxe_CALLADO-Zubehoer_16x9.mp4` + Titelbild |
 
 ### Laguna M – Schnitt und Übergänge
 
@@ -29,6 +30,27 @@ läuft nur mit ihren sauberen Frames (Schnittliste `SHOTS` in `composition.js`),
 Die Produktdaten stammen aus den Shop- und Händlerangaben zur LAGUNA M (homedeluxe.de, Hornbach).
 Preise sind bewusst nicht eingebaut, weil sie sich häufig ändern.
 
+### CALLADO Zubehör – ruhiges Werbevideo mit viel Weißraum
+
+Weißer Hintergrund, rechts eine feste Bildfläche (840 × 840 px) mit dünnem Versatzrahmen, links
+die Texte. Es bewegt sich immer nur eine Sache, mit langen, weichen Kurven. Bilder wechseln mit
+einem Wipe von unten (Navy-Kante), Texte steigen aus Masken auf.
+
+| Zeit | Inhalt | Grafik |
+|---|---|---|
+| 0,0–5,2 s | Stimmungsbild CALLADO (Katalog S. 4, KI-Bild, mit „AI“ gekennzeichnet) | „WPC-Sichtschutzzaun / CALLADO / Passendes Zubehör / Details, die deinen Zaun vollenden.“ |
+| 5,2–9,2 s | 01 Nutleiste CALLUX STRIPE, mit Solar-LED | Callout „Solar-LED“ auf der LED-Nut |
+| 9,2–13,2 s | 02 Pfostenabdeckung CALLUX COVER, mit Solar-LED | Callout „Solar-LED“ am Lichtband der Kappe |
+| 13,2–17,2 s | 03 WPC-Nutleiste CALLANUT, in verschiedenen Mengen | – |
+| 17,2–21,2 s | 04 Schrägelement CALLADO, Abschluss für Zaunenden | Maßlinie zeichnet die Schräge nach |
+| 21,2–25,4 s | Übersicht „Alles für deinen CALLADO.“ | Bildfläche schrumpft zur vierten Kachel, die anderen drei öffnen sich |
+| 25,4–30,0 s | Endcard | Logo, „Wir machen dein Zuhause“, „Jetzt entdecken“ + homedeluxe.de |
+
+Unten links zeigt ein Fortschrittsbalken (4 Segmente), welches Zubehörteil gerade läuft.
+Die Produktdaten stammen aus dem Katalog „Bauen – OBI Hausmesse 2026“, Seite 5. Preise sind
+bewusst nicht eingebaut. Aufschraubhülse CALMAR und Bodenbefestigung CALTERRA fehlen, weil dafür
+keine Bilder vorlagen.
+
 ## Rendern
 
 Voraussetzungen: Node 18+, Python 3 mit numpy + Pillow, ffmpeg, Chromium für Playwright.
@@ -39,22 +61,33 @@ npm run laguna-m:plates     # Rohschnitt -> hochskalierte, leicht gegradete JPG-
 npm run laguna-m:track      # Punkt-Tracking -> projects/laguna-m/tracks.js (nur nötig, wenn tracking.json geändert wurde)
 npm run laguna-m:render     # -> projects/laguna-m/output/HomeDeluxe_Laguna-M_Reel_9x16.mp4
 npm run laguna-m:stills     # Kontrollbilder nach build/laguna-m/stills
+
+npm run callado-zubehoer:render   # -> projects/callado-zubehoer/output/HomeDeluxe_CALLADO-Zubehoer_16x9.mp4
+npm run callado-zubehoer:stills   # Kontrollbilder nach build/callado-zubehoer/stills
 ```
 
+Ist Chromium schon installiert (passt nicht zur Playwright-Version), den Pfad mitgeben:
+`CHROMIUM_PATH=/pfad/zu/chrome npm run callado-zubehoer:render`.
+
 Ein einzelnes Frame lässt sich auch im Browser prüfen:
-`projects/laguna-m/composition.html?t=4.6` (Zeit in Sekunden, Plates müssen unter `build/` liegen).
+`projects/laguna-m/composition.html?t=4.6` (Zeit in Sekunden, Plates müssen unter `build/` liegen)
+oder `projects/callado-zubehoer/composition.html?t=12` (braucht keine Plates).
 
 ## Struktur
 
 ```
 assets/fonts/poppins/     Poppins 400–800 (latin, OFL)
-assets/logo/              Home-Deluxe-Logo (weiß, SVG)
+assets/logo/              Home-Deluxe-Logo (weiß und navy, SVG)
 scripts/prepare_plates.sh Hochskalieren + Grading der Quelle
 scripts/track_points.py   Template-Tracking für Marker, die am Bild kleben
-scripts/render.js         Chromium -> PNG-Frames -> ffmpeg (H.264 + stumme AAC-Spur)
+scripts/render.js         Chromium -> PNG-Frames -> ffmpeg (H.264 + stumme AAC-Spur), Bühnengröße aus COMP.W/H
 projects/<name>/          source/, composition.html/.js, tracking.json, tracks.js, output/
 ```
 
 Texte und Timings ändern: Texte stehen in `projects/laguna-m/composition.html`. In
 `composition.js` stehen die Schnittliste `SHOTS` (Quell-Frames je Einstellung), die Übergänge `X`
 (Output-Frames) und die Einblendzeiten der Grafiken `T` (Output-Sekunden).
+
+Bei CALLADO Zubehör stehen die Texte in `projects/callado-zubehoer/composition.html`, die Zeitleiste
+`T` (Sekunden), die Callout-Punkte (Pixel im 1000er-Produktfoto) und der Zoom je Bild in
+`composition.js`.

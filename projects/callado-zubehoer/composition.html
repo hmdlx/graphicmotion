@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>CALLADO Zubehör – Werbevideo 16:9</title>
+<style>
+  @font-face { font-family: Poppins; font-weight: 400; src: url(../../assets/fonts/poppins/poppins-latin-400-normal.woff2) format("woff2"); }
+  @font-face { font-family: Poppins; font-weight: 500; src: url(../../assets/fonts/poppins/poppins-latin-500-normal.woff2) format("woff2"); }
+  @font-face { font-family: Poppins; font-weight: 600; src: url(../../assets/fonts/poppins/poppins-latin-600-normal.woff2) format("woff2"); }
+  @font-face { font-family: Poppins; font-weight: 700; src: url(../../assets/fonts/poppins/poppins-latin-700-normal.woff2) format("woff2"); }
+  @font-face { font-family: Poppins; font-weight: 800; src: url(../../assets/fonts/poppins/poppins-latin-800-normal.woff2) format("woff2"); }
+
+  /* Home Deluxe CI: Navy + Weiß + Grautöne, eckige Ecken, Poppins. Hier hell und ruhig. */
+  :root {
+    --navy: #0e2234;
+    --muted: #66727d;
+    --line: #dfe4ea;
+    --tile: #f2f2f2;          /* Hintergrund der Produktfotos */
+    --margin: 160px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; border-radius: 0; }
+  html, body { width: 1920px; height: 1080px; overflow: hidden; background: #fff; }
+  body { font-family: Poppins, sans-serif; color: var(--navy); -webkit-font-smoothing: antialiased; }
+  #stage { position: absolute; inset: 0; width: 1920px; height: 1080px; overflow: hidden; background: #fff; }
+
+  .ln { display: block; overflow: hidden; padding-bottom: .08em; margin-bottom: -.08em; }
+  .ln > span { display: inline-block; will-change: transform; }
+
+  #logo { position: absolute; left: var(--margin); top: 112px; }
+  #logo img { display: block; width: 210px; height: auto; }
+
+  /* Bildfläche rechts */
+  #frame { position: absolute; left: 0; top: 0; }
+  #panel { position: absolute; overflow: hidden; background: var(--tile); }
+  #panel .pic { position: absolute; inset: 0; overflow: hidden; }
+  #panel .pic img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
+  #panel .pic.hero img { object-position: 50% 58%; }
+  #edge { position: absolute; left: 0; width: 100%; height: 4px; margin-top: -2px; background: var(--navy); }
+  #ai { position: absolute; right: 18px; bottom: 18px; background: #fff; color: var(--navy); font-weight: 700; font-size: 15px; line-height: 1; padding: 6px 7px 5px; }
+
+  /* Texte links */
+  .copy { position: absolute; left: var(--margin); top: 540px; transform: translateY(-50%); display: flex; flex-direction: column; align-items: flex-start; }
+  .kicker { display: flex; align-items: center; gap: 18px; font-weight: 600; font-size: 21px; line-height: 1; letter-spacing: .22em; text-transform: uppercase; color: var(--muted); }
+  .kicker b { font-weight: 700; color: var(--navy); letter-spacing: .08em; }
+  .kicker i { display: block; width: 40px; height: 2px; background: var(--line); transform-origin: left; }
+  .rule { width: 72px; height: 3px; background: var(--navy); transform-origin: left; }
+
+  #intro .kicker { margin-bottom: 26px; }
+  #intro .title { font-weight: 800; font-size: 132px; line-height: 1; letter-spacing: -.012em; }
+  #intro .rule { margin: 38px 0 34px; }
+  #intro .sub { font-weight: 600; font-size: 46px; line-height: 1.1; }
+  #intro .tag { margin-top: 16px; font-weight: 400; font-size: 28px; line-height: 1.3; color: var(--muted); }
+
+  .product .kicker { margin-bottom: 30px; }
+  .product .name { font-weight: 800; font-size: 108px; line-height: 1.02; letter-spacing: -.012em; }
+  .product .rule { margin: 40px 0 30px; }
+  .product .detail { font-weight: 500; font-size: 34px; line-height: 1.2; color: var(--muted); }
+
+  #pager { position: absolute; left: var(--margin); top: 956px; display: flex; gap: 10px; }
+  #pager .seg { width: 56px; height: 3px; background: var(--line); }
+  #pager .seg i { display: block; height: 100%; width: 100%; background: var(--navy); transform-origin: left; }
+
+  /* Callouts auf den Produktfotos */
+  #callouts { position: absolute; inset: 0; pointer-events: none; }
+  .label { position: absolute; left: 0; top: 0; background: #fff; color: var(--navy); font-weight: 600; font-size: 22px; line-height: 1; padding: 13px 18px 11px; white-space: nowrap; box-shadow: 0 10px 30px rgba(14, 34, 52, .22); }
+
+  /* Übersicht */
+  #grid-head { position: absolute; left: var(--margin); top: 228px; }
+  #grid-head .kicker { margin-bottom: 18px; }
+  #grid-head .hl { font-weight: 700; font-size: 56px; line-height: 1.05; }
+  .tile { position: absolute; width: 340px; height: 340px; overflow: hidden; background: var(--tile); }
+  .tile img { width: 100%; height: 100%; display: block; }
+  .cap { position: absolute; width: 340px; }
+  .cap .cat { font-weight: 600; font-size: 16px; line-height: 1; letter-spacing: .2em; text-transform: uppercase; color: var(--muted); margin-bottom: 12px; }
+  .cap .nm { font-weight: 700; font-size: 30px; line-height: 1.05; }
+
+  /* Endcard */
+  #end { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+  #end-logo { width: 600px; }
+  #end-logo img { display: block; width: 600px; height: auto; }
+  #end .slogan { margin-top: 30px; font-weight: 500; font-size: 20px; line-height: 1; letter-spacing: .42em; text-transform: uppercase; color: var(--muted); padding-left: .42em; }
+  #cta { margin-top: 84px; display: flex; align-items: center; gap: 40px; }
+  #cta .btn { background: var(--navy); color: #fff; font-weight: 600; font-size: 30px; line-height: 1; padding: 24px 34px 22px; display: flex; align-items: center; gap: 20px; }
+  #cta .btn svg { display: block; }
+  #cta .url { font-weight: 600; font-size: 30px; line-height: 1; position: relative; padding-bottom: 10px; }
+  #cta .url i { position: absolute; left: 0; bottom: 0; height: 2px; width: 100%; background: var(--navy); transform-origin: left; }
+</style>
+</head>
+<body>
+<div id="stage">
+  <svg id="frame" width="1920" height="1080" viewBox="0 0 1920 1080">
+    <rect id="frame-rect" x="948" y="148" width="840" height="840" fill="none" stroke="#dfe4ea" stroke-width="2" />
+  </svg>
+
+  <div id="panel">
+    <div class="pic hero"><img src="source/callado-hero.jpg" alt=""></div>
+    <div class="pic"><img src="source/callux-stripe.jpg" alt=""></div>
+    <div class="pic"><img src="source/callux-cover.jpg" alt=""></div>
+    <div class="pic"><img src="source/callanut.jpg" alt=""></div>
+    <div class="pic"><img src="source/schraegelement-callado.jpg" alt=""></div>
+    <div id="edge"></div>
+    <div id="ai">AI</div>
+  </div>
+
+  <div class="tile"><img src="source/callux-stripe.jpg" alt=""></div>
+  <div class="tile"><img src="source/callux-cover.jpg" alt=""></div>
+  <div class="tile"><img src="source/callanut.jpg" alt=""></div>
+
+  <svg id="callouts" width="1920" height="1080" viewBox="0 0 1920 1080">
+    <g id="co-stripe">
+      <line stroke="#fff" stroke-width="2" />
+      <circle class="ring" r="15" fill="none" stroke="#fff" stroke-width="2" />
+      <circle class="core" r="6" fill="#fff" />
+    </g>
+    <g id="co-cover">
+      <line stroke="#fff" stroke-width="2" />
+      <circle class="ring" r="15" fill="none" stroke="#fff" stroke-width="2" />
+      <circle class="core" r="6" fill="#fff" />
+    </g>
+    <g id="co-slope">
+      <line class="main" stroke="#0e2234" stroke-width="2" />
+      <line class="tick-a" stroke="#0e2234" stroke-width="2" />
+      <line class="tick-b" stroke="#0e2234" stroke-width="2" />
+    </g>
+  </svg>
+  <div class="label" id="lb-stripe">Solar-LED</div>
+  <div class="label" id="lb-cover">Solar-LED</div>
+
+  <!-- Intro -->
+  <div class="copy" id="intro">
+    <div class="kicker"><span class="ln"><span>WPC-Sichtschutzzaun</span></span></div>
+    <div class="title"><span class="ln"><span>CALLADO</span></span></div>
+    <div class="rule"></div>
+    <div class="sub"><span class="ln"><span>Passendes Zubehör</span></span></div>
+    <div class="tag"><span class="ln"><span>Details, die deinen Zaun vollenden.</span></span></div>
+  </div>
+
+  <!-- Produkte -->
+  <div class="copy product">
+    <div class="kicker"><span class="ln"><span><b>01</b></span></span><i></i><span class="ln"><span>Nutleiste</span></span></div>
+    <div class="name"><span class="ln"><span>CALLUX</span></span><span class="ln"><span>STRIPE</span></span></div>
+    <div class="rule"></div>
+    <div class="detail"><span class="ln"><span>mit Solar-LED</span></span></div>
+  </div>
+  <div class="copy product">
+    <div class="kicker"><span class="ln"><span><b>02</b></span></span><i></i><span class="ln"><span>Pfostenabdeckung</span></span></div>
+    <div class="name"><span class="ln"><span>CALLUX</span></span><span class="ln"><span>COVER</span></span></div>
+    <div class="rule"></div>
+    <div class="detail"><span class="ln"><span>mit Solar-LED</span></span></div>
+  </div>
+  <div class="copy product">
+    <div class="kicker"><span class="ln"><span><b>03</b></span></span><i></i><span class="ln"><span>WPC-Nutleiste</span></span></div>
+    <div class="name"><span class="ln"><span>CALLANUT</span></span></div>
+    <div class="rule"></div>
+    <div class="detail"><span class="ln"><span>in verschiedenen Mengen</span></span></div>
+  </div>
+  <div class="copy product">
+    <div class="kicker"><span class="ln"><span><b>04</b></span></span><i></i><span class="ln"><span>Schrägelement</span></span></div>
+    <div class="name"><span class="ln"><span>CALLADO</span></span></div>
+    <div class="rule"></div>
+    <div class="detail"><span class="ln"><span>Abschluss für Zaunenden</span></span></div>
+  </div>
+
+  <div id="pager"><div class="seg"><i></i></div><div class="seg"><i></i></div><div class="seg"><i></i></div><div class="seg"><i></i></div></div>
+
+  <!-- Übersicht -->
+  <div id="grid-head">
+    <div class="kicker"><span class="ln"><span>Passendes Zubehör</span></span></div>
+    <div class="hl"><span class="ln"><span>Alles für deinen CALLADO.</span></span></div>
+  </div>
+  <div class="cap"><div class="cat"><span class="ln"><span>Nutleiste</span></span></div><div class="nm"><span class="ln"><span>CALLUX STRIPE</span></span></div></div>
+  <div class="cap"><div class="cat"><span class="ln"><span>Pfostenabdeckung</span></span></div><div class="nm"><span class="ln"><span>CALLUX COVER</span></span></div></div>
+  <div class="cap"><div class="cat"><span class="ln"><span>WPC-Nutleiste</span></span></div><div class="nm"><span class="ln"><span>CALLANUT</span></span></div></div>
+  <div class="cap"><div class="cat"><span class="ln"><span>Schrägelement</span></span></div><div class="nm"><span class="ln"><span>CALLADO</span></span></div></div>
+
+  <!-- Endcard -->
+  <div id="end">
+    <div id="end-logo"><img src="../../assets/logo/homedeluxe-logo-navy.svg" alt="Home Deluxe"></div>
+    <div class="slogan"><span class="ln"><span>Wir machen dein Zuhause</span></span></div>
+    <div id="cta">
+      <div class="btn"><span>Jetzt entdecken</span>
+        <svg width="34" height="20" viewBox="0 0 34 20"><path d="M0 10h31M22 1.5l9 8.5-9 8.5" fill="none" stroke="#fff" stroke-width="2.6"/></svg>
+      </div>
+      <div class="url">homedeluxe.de<i></i></div>
+    </div>
+  </div>
+
+  <div id="logo"><img src="../../assets/logo/homedeluxe-logo-navy.svg" alt="Home Deluxe"></div>
+</div>
+
+<script src="composition.js"></script>
+</body>
+</html>
