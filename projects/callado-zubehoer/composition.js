@@ -1,422 +1,404 @@
-// CALLADO Zubehör – Werbevideo 16:9. Deterministic, frame-addressed motion graphics:
-// window.COMP.seek(n) puts the stage into the exact state of output frame n.
-// The image card hangs in 3D and the camera orbits it; the room goes dark for the LEDs
-// (light runs through the grooves in slow motion) and the lights flicker back on.
-// Product changes are AI camera moves (Seedance 2.5 clips, see transitions.js).
-(() => {
-  const FPS = 30;
-  const W = 1920, H = 1080;
-  const params = new URLSearchParams(location.search);
-  const PLATE_DIR = params.get('plates') || '../../build/callado-zubehoer/plates';
+// CALLADO Zubehör – cinematic 16:9. A real 3D set (scene.js) filmed with a virtual camera,
+// finished like an After Effects comp: bloom, depth of field, motion blur on whips, film grain,
+// anamorphic flares, letterbox, tracked callouts and kinetic type on top.
+// Deterministic and frame-addressed: window.COMP.seek(n) renders output frame n.
+import * as THREE from 'three';
+import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+import { BokehPass } from 'three/addons/postprocessing/BokehPass.js';
+import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
+import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
+import { buildScene, POSTS, POST_H, LED_Y, SLOPE } from './scene.js';
 
-  const CARD = { x: 920, y: 120, s: 840 };
-  const TILE = { y: 400, s: 340, xs: [160, 580, 1000, 1420] };
-  const ZOOM = [1, 1, 1, 1, 1.25];          // per picture; the Schrägelement sits small in its photo
+const FPS = 30, W = 1920, H = 1080;
+const params = new URLSearchParams(location.search);
 
-  // Timeline, output seconds.
-  const T = {
-    logo: 0.3,
-    intro: [0.5, 4.4],                      // copy in / out
-    dark1: [3.6, 0.7],                      // room goes dark (start, duration)
-    flip: [4.7, 1.2],                       // card turns from the mood image to CALLUX STRIPE, in the dark
-    run: [5.5, 1.8],                        // light runs up the LED grooves (slow motion)
-    on1: 7.3,                               // lights flicker back on
-    clips: [[10.3, 2.8], [17.2, 2.4], [22.2, 2.4]],   // AI transitions: start, duration
-    dark2: [13.9, 0.5, 0.92],               // CALLUX COVER: room dims (start, duration, depth)
-    ignite: [14.3, 1.4],                    // light band ignites from the centre
-    on2: 16.0,
-    grid: 27.2,                             // card shrinks into the overview
-    end: 31.0,                              // overview leaves, end card
-  };
-  const TOTAL = Math.round((T.end + 4.2) * FPS);   // 35.2 s
-  const LAND = 0.9;                         // photo eases from the clip's last framing back to its own
+// ------------------------------------------------------------------ timeline (seconds)
+const T = {
+  fadeIn: [0, 1.0],
+  stripe: [[4.6, 2.2], [0.8, 3.0], [5.0, 2.2]],        // per post: LED run start, duration (slow motion)
+  cap: [[9.9, 1.3], [9.4, 1.3], [9.65, 1.3]],          // per post: light band ignites
+  lightsOn: 12.55,                                      // studio flickers on
+  dusk: 24.4,                                           // cut to evening
+  end: 28.6,                                            // end card
+  total: 32.6,
+};
+const TOTAL = Math.round(T.total * FPS);
 
-  // Clips: product `from` → `to`; frames and alignments from transitions.js (match_frame.py).
-  const CLIPS = [
-    { name: 't1', from: 1, to: 2 },
-    { name: 't2', from: 2, to: 3 },
-    { name: 't3', from: 3, to: 4 },
-  ].map((c, i) => ({ ...c, at: T.clips[i][0], dur: T.clips[i][1], ...((window.CLIP_INFO || {})[c.name] || {}) }));
-  const flipMid = T.flip[0] + T.flip[1] / 2;
-  // Picture j is on screen in [SHOW[j][0], SHOW[j][1]).
-  const SHOW = [
-    [0, flipMid],
-    [flipMid, CLIPS[0].at + 0.1],
-    [CLIPS[0].at + CLIPS[0].dur - 0.05, CLIPS[1].at + 0.1],
-    [CLIPS[1].at + CLIPS[1].dur - 0.05, CLIPS[2].at + 0.1],
-    [CLIPS[2].at + CLIPS[2].dur - 0.05, Infinity],
-  ];
-  const COPY = [                            // product copy in / out
-    [T.on1 + 0.25, CLIPS[0].at - 0.25],
-    [CLIPS[0].at + CLIPS[0].dur + 0.1, CLIPS[1].at - 0.25],
-    [CLIPS[1].at + CLIPS[1].dur + 0.1, CLIPS[2].at - 0.25],
-    [CLIPS[2].at + CLIPS[2].dur + 0.1, T.grid - 0.2],
-  ];
+// Camera takes: position + target curves, fov, depth of field. u is eased over the take.
+const V = (x, y, z) => new THREE.Vector3(x, y, z);
+const TAKES = [
+  { t: [0, 4.2], ease: 'drift', pos: [V(0.36, 0.24, 0.78), V(0.4, 0.66, 0.84), V(0.44, 1.06, 0.9)],
+    tgt: [V(0.1, 0.42, 0.05), V(0.1, 0.84, 0.05), V(0.1, 1.24, 0.05)], fov: [30, 28], ap: 0.006 },
+  { t: [4.2, 8.4], ease: 'drift', pos: [V(0.44, 1.06, 0.9), V(0.65, 1.06, 1.55), V(-0.6, 1.1, 3.0), V(-2.4, 1.15, 4.3)],
+    tgt: [V(0.1, 1.24, 0.05), V(0, 1.1, 0), V(0.1, 1.0, 0), V(0.3, 0.95, 0)], fov: [28, 34], ap: [0.0045, 0.0012] },
+  { t: [8.4, 12.4], ease: 'drift', pos: [V(-2.4, 1.15, 4.3), V(-0.6, 1.62, 3.0), V(1.05, 2.06, 1.3), V(2.32, 2.02, 0.72)],
+    tgt: [V(0.3, 0.95, 0), V(0.9, 1.5, 0), V(1.6, 1.85, 0), V(1.74, 1.88, 0)], fov: [34, 26], ap: [0.0012, 0.0045] },
+  { t: [12.4, 13.4], ease: 'whip', pos: [V(2.32, 2.02, 0.72), V(3.4, 1.8, 2.7), V(3.9, 1.65, 5.0)],
+    tgt: [V(1.74, 1.88, 0), V(1.0, 1.55, 0), V(0.3, 1.45, 0)], fov: [26, 36], ap: [0.0045, 0.0008] },
+  { t: [13.4, 16.4], ease: 'drift', pos: [V(3.9, 1.65, 5.0), V(3.3, 1.55, 5.4)],
+    tgt: [V(0.3, 1.45, 0), V(0.0, 1.42, 0)], fov: [36, 35], ap: 0.0008 },
+  { t: [16.4, 16.95], ease: 'whip', pos: [V(3.3, 1.55, 5.4), V(-0.8, 0.8, 3.4), V(-2.84, 0.16, 1.78)],
+    tgt: [V(0.0, 1.42, 0), V(-2.2, 0.5, 0.9), V(-3.24, 0.07, 1.27)], fov: [35, 30], ap: [0.0008, 0.007] },
+  { t: [16.95, 20.4], ease: 'drift', pos: [V(-2.84, 0.16, 1.78), V(-2.7, 0.5, 2.1), V(-2.62, 1.0, 2.3)],
+    tgt: [V(-3.24, 0.07, 1.27), V(-3.36, 0.42, 0.9), V(-3.42, 0.62, 0.7)], fov: [30, 33], ap: [0.007, 0.003] },
+  { t: [20.4, 20.95], ease: 'whip', pos: [V(-2.62, 1.0, 2.3), V(-0.4, 1.4, 4.2), V(1.0, 1.55, 4.9)],
+    tgt: [V(-3.42, 0.62, 0.7), V(0.2, 0.8, 0), V(1.85, 0.66, 0)], fov: [33, 33], ap: [0.003, 0.001] },
+  { t: [20.95, 24.4], ease: 'drift', pos: [V(1.0, 1.55, 4.9), V(2.4, 1.52, 5.0), V(3.5, 1.5, 4.9)],
+    tgt: [V(1.85, 0.66, 0), V(2.15, 0.64, 0), V(2.4, 0.62, 0)], fov: [33, 33], ap: 0.001 },
+  { t: [24.4, 32.6], ease: 'drift', pos: [V(-1.6, 1.25, 6.6), V(-1.0, 1.2, 5.6), V(-0.6, 1.15, 5.0)],
+    tgt: [V(0.4, 1.0, 0), V(0.3, 1.0, 0), V(0.25, 1.0, 0)], fov: [38, 36], ap: [0.0007, 0.0007] },
+];
 
-  // Camera on the card: [t, rotateY, rotateX, z]. Swings across each scene, eased key to key.
-  const ORBIT = [
-    [0, 24, 5, -90], [4.6, -4, 0, 30],
-    [5.9, 18, 3, -20], [10.3, -12, -2, 50],
-    [13.1, 14, 2, -10], [17.2, -12, -2, 50],
-    [19.6, 13, 2, -10], [22.2, -12, -2, 50],
-    [24.6, 12, 2, -10], [T.grid, -6, -1, 30], [T.grid + 1.2, 0, 0, 0],
-  ];
+// Type: [element id, in, out]
+const TITLES = [['t-stripe', 5.7, 8.15], ['t-cover', 10.3, 12.3], ['t-callado', 13.5, 16.15],
+  ['t-nut', 17.4, 20.2], ['t-schraeg', 21.5, 24.2], ['t-hero', 25.1, T.end - 0.1]];
+const CALLOUTS = [
+  { at: V(0, 1.0, 0.052), t: [6.4, 8.15], dx: 150, dy: -110, text: 'Solar-LED' },
+  { at: V(1.8, POST_H + 0.038, 0.062), t: [10.9, 12.3], dx: -230, dy: -150, text: 'Solar-LED' },
+];
+const SLOPE_LINE = { t: [21.8, 24.2] };
 
-  // Callouts, in product-photo px (1000 × 1000).
-  const STRIPE_LED = [368, 640];
-  const COVER_LED = [612, 221];
-  const SLOPE = { a: [353, 216], b: [619, 460], off: 26, len: 0.93 };
+// ------------------------------------------------------------------ helpers
+const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
+const prog = (t, s, d) => clamp((t - s) / d);
+const lerp = (a, b, k) => a + (b - a) * k;
+const E = {
+  outExpo: k => (k >= 1 ? 1 : 1 - Math.pow(2, -10 * k)),
+  inExpo: k => (k <= 0 ? 0 : Math.pow(2, 10 * k - 10)),
+  outCubic: k => 1 - Math.pow(1 - k, 3),
+  inCubic: k => k * k * k,
+  inOutCubic: k => (k < 0.5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2),
+  inOutSine: k => -(Math.cos(Math.PI * k) - 1) / 2,
+  inOutQuint: k => (k < 0.5 ? 16 * k ** 5 : 1 - Math.pow(-2 * k + 2, 5) / 2),
+};
+const EASE = { drift: k => 0.35 * k + 0.65 * E.inOutSine(k), whip: E.inOutQuint };
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
 
-  const $ = (s, root = document) => root.querySelector(s);
-  const $$ = (s, root = document) => [...root.querySelectorAll(s)];
-  const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
-  const prog = (t, start, dur) => clamp((t - start) / dur);
-  const lerp = (a, b, k) => a + (b - a) * k;
-  const E = {
-    outExpo: k => (k >= 1 ? 1 : 1 - Math.pow(2, -10 * k)),
-    inExpo: k => (k <= 0 ? 0 : Math.pow(2, 10 * k - 10)),
-    outQuart: k => 1 - Math.pow(1 - k, 4),
-    outCubic: k => 1 - Math.pow(1 - k, 3),
-    inCubic: k => k * k * k,
-    inOutCubic: k => (k < 0.5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2),
-    inOutSine: k => -(Math.cos(Math.PI * k) - 1) / 2,
-    outBack: k => { const c1 = 1.6, c3 = c1 + 1; return 1 + c3 * Math.pow(k - 1, 3) + c1 * Math.pow(k - 1, 2); },
-  };
-  const show = (node, on) => { node.style.visibility = on ? 'visible' : 'hidden'; };
-  const showBox = (node, on) => { node.style.display = on ? '' : 'none'; };
-  const mix = (a, b, k) => {
-    const p = c => [1, 3, 5].map(i => parseInt(c.slice(i, i + 2), 16));
-    const [x, y] = [p(a), p(b)];
-    return `rgb(${x.map((v, i) => Math.round(lerp(v, y[i], k))).join(',')})`;
-  };
+// Studio light: off → fluorescent flicker → on; evening after the dusk cut.
+function lightLevel(t) {
+  if (t >= T.dusk) return 0;
+  const x = t - T.lightsOn;
+  if (x < 0) return 0;
+  const steps = [[0, 0.7], [0.06, 0.05], [0.12, 0.9], [0.18, 0.2], [0.24, 1.0], [0.3, 0.55], [0.36, 1.0]];
+  return steps.filter(s => x >= s[0]).pop()[1];
+}
 
-  // Masked line: rises in from below, leaves upwards.
-  function rise(span, t, tin, tout = null, din = 0.75, dout = 0.4) {
-    const a = E.outExpo(prog(t, tin, din));
-    const b = tout == null ? 0 : E.inExpo(prog(t, tout, dout));
-    span.style.transform = `translateY(${(1 - a - b) * 110}%)`;
+// ------------------------------------------------------------------ renderer + passes
+const renderer = new THREE.WebGLRenderer({ antialias: false, preserveDrawingBuffer: true });
+renderer.setSize(W, H);
+renderer.setPixelRatio(1);
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+$('#gl').appendChild(renderer.domElement);
+
+const camera = new THREE.PerspectiveCamera(32, W / H, 0.02, 120);
+const prevCam = new THREE.PerspectiveCamera(32, W / H, 0.02, 120);
+
+let set;   // filled in init()
+const rt = new THREE.WebGLRenderTarget(W, H, { type: THREE.HalfFloatType, samples: 4 });
+const composer = new EffectComposer(renderer, rt);
+
+const MotionBlur = {
+  uniforms: { tDiffuse: { value: null }, uDir: { value: new THREE.Vector2() } },
+  vertexShader: 'varying vec2 vUv; void main(){ vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.); }',
+  fragmentShader: `uniform sampler2D tDiffuse; uniform vec2 uDir; varying vec2 vUv;
+    float hash(vec2 p){ return fract(sin(dot(p, vec2(12.9898, 78.233))) * 43758.5453); }
+    void main(){ vec4 c = vec4(0.); float j = hash(gl_FragCoord.xy);
+      for (int i = 0; i < 24; i++) { float k = (float(i) + j) / 24. - .5; c += texture2D(tDiffuse, vUv + uDir * k); }
+      gl_FragColor = c / 24.; }`,
+};
+// Caps HDR highlights before bloom/DOF, so a single specular spark can't flood the frame.
+const Clamp = {
+  uniforms: { tDiffuse: { value: null }, uMax: { value: 6.0 } },
+  vertexShader: 'varying vec2 vUv; void main(){ vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.); }',
+  fragmentShader: `uniform sampler2D tDiffuse; uniform float uMax; varying vec2 vUv;
+    void main(){ vec4 c = texture2D(tDiffuse, vUv); float m = max(c.r, max(c.g, c.b)); gl_FragColor = vec4(c.rgb * min(1., uMax / max(m, 1e-4)), c.a); }`,
+};
+const Film = {
+  uniforms: { tDiffuse: { value: null }, uTime: { value: 0 }, uGrain: { value: 0.05 }, uVig: { value: 0.35 }, uCA: { value: 0.006 } },
+  vertexShader: MotionBlur.vertexShader,
+  fragmentShader: `uniform sampler2D tDiffuse; uniform float uTime, uGrain, uVig, uCA; varying vec2 vUv;
+    float hash(vec2 p){ p = fract(p * vec2(443.897, 441.423) + uTime); p += dot(p, p.yx + 19.19); return fract((p.x + p.y) * p.x); }
+    void main(){
+      vec2 d = vUv - .5; float r2 = dot(d, d);
+      vec2 o = d * uCA * r2 * 4.;
+      vec3 c = vec3(texture2D(tDiffuse, vUv + o).r, texture2D(tDiffuse, vUv).g, texture2D(tDiffuse, vUv - o).b);
+      float l = dot(c, vec3(.299, .587, .114));
+      c += vec3(-.012, -.002, .018) * (1. - l) * (1. - l) + vec3(.02, .01, -.012) * l * l;   // cool shadows, warm highlights
+      c *= 1. - uVig * smoothstep(.12, .62, r2 * 2.);
+      c += (hash(vUv * vec2(1920., 1080.)) - .5) * uGrain * (1.2 - l);
+      gl_FragColor = vec4(c, 1.);
+    }`,
+};
+
+let bokeh, blur, bloom, film;
+
+// ------------------------------------------------------------------ camera
+function curve(pts) { return pts.length > 2 ? new THREE.CatmullRomCurve3(pts, false, 'centripetal') : new THREE.LineCurve3(pts[0], pts[1]); }
+TAKES.forEach(tk => { tk.pc = curve(tk.pos); tk.tc = curve(tk.tgt); });
+const pair = v => (Array.isArray(v) ? v : [v, v]);
+
+function shot(t) {
+  const tk = TAKES.find(k => t < k.t[1]) || TAKES[TAKES.length - 1];
+  const u = EASE[tk.ease](prog(t, tk.t[0], tk.t[1] - tk.t[0]));
+  const [f0, f1] = pair(tk.fov), [a0, a1] = pair(tk.ap);
+  return { pos: tk.pc.getPoint(u), tgt: tk.tc.getPoint(u), fov: lerp(f0, f1, u), ap: lerp(a0, a1, u) };
+}
+function place(cam, s) {
+  cam.position.copy(s.pos);
+  cam.fov = s.fov;
+  cam.updateProjectionMatrix();
+  cam.lookAt(s.tgt);
+  cam.updateMatrixWorld();
+}
+
+// ------------------------------------------------------------------ type
+function splitBig(el) {
+  const big = $('.big', el);
+  const words = big.textContent.split(' ');
+  big.innerHTML = words.map(w => `<span class="w">${[...w].map(c => `<span class="c">${c}</span>`).join('')}</span>`).join(' ');
+}
+// Kinetic title: letters rise out of their mask with blur and tracking, kicker line draws, sub wipes.
+function title(el, t, tin, tout) {
+  const on = t >= tin - 0.05 && t < tout + 0.9;
+  el.style.display = on ? '' : 'none';
+  if (!on) return;
+  const cs = $$('.c', el);
+  cs.forEach((c, i) => {
+    const a = E.outExpo(prog(t, tin + 0.12 + i * 0.028, 0.9));
+    const b = E.inExpo(prog(t, tout + i * 0.012, 0.5));
+    const y = (1 - a) * 105 - b * 105;
+    c.style.transform = `translateY(${y}%)`;
+    c.style.filter = `blur(${((1 - a) * 10 + b * 8).toFixed(2)}px)`;
+    c.style.opacity = (Math.min(a * 1.4, 1) * (1 - b)).toFixed(3);
+  });
+  const big = $('.big', el);
+  const track = E.outExpo(prog(t, tin + 0.1, 1.6));
+  big.style.letterSpacing = `${lerp(0.22, el.id === 't-callado' ? 0.02 : -0.01, track)}em`;
+  const kick = $('.kick', el);
+  const ka = E.outExpo(prog(t, tin, 0.8)), kb = E.inExpo(prog(t, tout, 0.4));
+  kick.style.opacity = (ka * (1 - kb)).toFixed(3);
+  kick.style.transform = `translateX(${(1 - ka) * -30}px)`;
+  const line = $('.kick i', el);
+  if (line) line.style.transform = `scaleX(${E.inOutCubic(prog(t, tin + 0.05, 0.6)) * (1 - kb)})`;
+  const sub = $('.sub span', el);
+  if (sub) {
+    const sa = E.outExpo(prog(t, tin + 0.55, 0.8)), sb = E.inExpo(prog(t, tout + 0.05, 0.4));
+    sub.style.transform = `translateY(${(1 - sa) * 110 - sb * 110}%)`;
   }
-  // Hairline: grows from the left, retracts to the right.
-  function draw(node, t, tin, tout = null, din = 0.7, dout = 0.4) {
-    const a = E.inOutCubic(prog(t, tin, din));
-    const b = tout == null ? 0 : E.inOutCubic(prog(t, tout, dout));
-    node.style.transformOrigin = b > 0 ? 'right' : 'left';
-    node.style.transform = `scaleX(${b > 0 ? 1 - b : a})`;
+}
+
+// ------------------------------------------------------------------ overlays tracked to 3D
+const flareEls = [], v3 = new THREE.Vector3();
+function project(p) {
+  v3.copy(p).project(camera);
+  return { x: (v3.x * 0.5 + 0.5) * W, y: (-v3.y * 0.5 + 0.5) * H, front: v3.z < 1 };
+}
+function makeFlare() {
+  const f = document.createElement('div');
+  f.className = 'flare';
+  f.innerHTML = '<div class="halo"></div><div class="streak"></div><div class="ghost"></div><div class="ghost"></div>';
+  $('#flares').appendChild(f);
+  return f;
+}
+function flare(f, p, k, facing) {
+  const s = project(p);
+  const vis = s.front && s.x > -300 && s.x < W + 300 && s.y > -200 && s.y < H + 200 ? k * facing : 0;
+  f.style.display = vis > 0.01 ? '' : 'none';
+  if (vis <= 0.01) return;
+  f.style.transform = `translate(${s.x}px, ${s.y}px)`;
+  f.style.opacity = Math.min(1, vis).toFixed(3);
+  const [halo, streak, g1, g2] = f.children;
+  streak.style.transform = `scaleX(${(0.6 + 0.6 * vis).toFixed(3)})`;
+  halo.style.transform = `scale(${(0.6 + 0.8 * vis).toFixed(3)})`;
+  // Ghosts sit on the line through the screen centre, like lens reflections.
+  const gx = (W / 2 - s.x), gy = (H / 2 - s.y);
+  g1.style.transform = `translate(${gx * 1.3}px, ${gy * 1.3}px) scale(1.4)`;
+  g2.style.transform = `translate(${gx * 1.8}px, ${gy * 1.8}px) scale(0.7)`;
+}
+
+const svg = $('#callouts'), NS = 'http://www.w3.org/2000/svg';
+const mk = (tag, attrs) => { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); svg.appendChild(e); return e; };
+CALLOUTS.forEach(c => {
+  c.ring = mk('circle', { r: 16, fill: 'none', 'stroke-width': 2 });
+  c.dot = mk('circle', { r: 5 });
+  c.line = mk('polyline', { fill: 'none', 'stroke-width': 2 });
+  c.label = document.createElement('div');
+  c.label.className = 'cl-label';
+  c.label.textContent = c.text;
+  $('#labels').appendChild(c.label);
+});
+const slopeEls = { main: mk('line', { 'stroke-width': 2.5 }), a: mk('line', { 'stroke-width': 2.5 }), b: mk('line', { 'stroke-width': 2.5 }) };
+
+function callout(c, t, ink) {
+  const a = prog(t, c.t[0], 0.35), out = prog(t, c.t[1], 0.3);
+  const on = a > 0 && out < 1;
+  for (const e of [c.ring, c.dot, c.line, c.label]) e.style.display = on ? '' : 'none';
+  if (!on) return;
+  const s = project(c.at);
+  const k = E.inOutCubic(prog(t, c.t[0] + 0.15, 0.5));
+  const ex = s.x + c.dx, ey = s.y + c.dy, mx = s.x + c.dx * 0.35;
+  const pts = [[s.x, s.y], [mx, ey], [ex, ey]];
+  const seg1 = Math.hypot(mx - s.x, ey - s.y), seg2 = Math.abs(ex - mx), L = seg1 * k * (seg1 + seg2) / seg1;
+  const along = (seg1 + seg2) * k;
+  const p2 = along <= seg1 ? [lerp(s.x, mx, along / seg1), lerp(s.y, ey, along / seg1)] : [lerp(mx, ex, (along - seg1) / seg2), ey];
+  c.line.setAttribute('points', (along <= seg1 ? [pts[0], p2] : [pts[0], pts[1], p2]).map(p => p.join(',')).join(' '));
+  c.dot.setAttribute('cx', s.x); c.dot.setAttribute('cy', s.y);
+  c.ring.setAttribute('cx', s.x); c.ring.setAttribute('cy', s.y);
+  c.ring.setAttribute('r', (16 * E.outCubic(prog(t, c.t[0], 0.5)) * (1 + 0.15 * Math.sin((t - c.t[0]) * 5))).toFixed(2));
+  for (const e of [c.ring, c.line]) e.setAttribute('stroke', ink);
+  c.dot.setAttribute('fill', ink);
+  const lo = E.outExpo(prog(t, c.t[0] + 0.55, 0.6));
+  c.label.style.transform = `translate(${c.dx > 0 ? ex + 12 : ex - 12 - c.label.offsetWidth}px, ${ey - c.label.offsetHeight / 2}px)`;
+  c.label.style.clipPath = c.dx > 0 ? `inset(0 ${(1 - lo) * 100}% 0 0)` : `inset(0 0 0 ${(1 - lo) * 100}%)`;
+  const op = (1 - out).toFixed(3);
+  for (const e of [c.ring, c.dot, c.line, c.label]) e.style.opacity = op;
+}
+
+function slopeLine(t, ink) {
+  const [t0, t1] = SLOPE_LINE.t;
+  const out = prog(t, t1, 0.3), on = t >= t0 && out < 1;
+  for (const e of Object.values(slopeEls)) e.style.display = on ? '' : 'none';
+  if (!on) return;
+  const off = V(0.035, 0.04, 0.03);
+  const A = V(SLOPE.x0, SLOPE.yHigh, 0).add(off), B = V(SLOPE.x1 - 0.05, SLOPE.yLow + 0.04, 0).add(off);
+  const a = project(A), b = project(B);
+  const k = E.inOutCubic(prog(t, t0 + 0.2, 1.0));
+  const ex = lerp(a.x, b.x, k), ey = lerp(a.y, b.y, k);
+  const set = (e, x1, y1, x2, y2) => { e.setAttribute('x1', x1); e.setAttribute('y1', y1); e.setAttribute('x2', x2); e.setAttribute('y2', y2); };
+  set(slopeEls.main, a.x, a.y, ex, ey);
+  const dx = b.x - a.x, dy = b.y - a.y, len = Math.hypot(dx, dy) || 1, nx = -dy / len * 14, ny = dx / len * 14;
+  const ta = E.outCubic(prog(t, t0, 0.3)), tb = E.outCubic(prog(t, t0 + 1.2, 0.3));
+  set(slopeEls.a, a.x - nx * ta, a.y - ny * ta, a.x + nx * ta, a.y + ny * ta);
+  set(slopeEls.b, b.x - nx * tb, b.y - ny * tb, b.x + nx * tb, b.y + ny * tb);
+  for (const e of Object.values(slopeEls)) { e.setAttribute('stroke', ink); e.style.opacity = (1 - out).toFixed(3); }
+}
+
+// ------------------------------------------------------------------ render one frame
+const ledState = t => ({
+  stripe: T.stripe.map(([s, d]) => ({ level: t >= s ? 1 : 0, head: E.inOutSine(prog(t, s, d)) })),
+  cap: T.cap.map(([s, d]) => ({ level: t >= s ? 1 : 0, head: E.outCubic(prog(t, s, d)) })),
+});
+
+function frame(n) {
+  const t = n / FPS;
+  const L = lightLevel(t);
+  const dusk = t >= T.dusk ? 1 : 0;
+  const led = ledState(t);
+  set.update({ light: L, dusk, t, ...led });
+
+  // Camera and its motion for the whip blur.
+  const s = shot(t);
+  place(camera, s);
+  place(prevCam, shot(t - 1 / FPS));
+  const ahead = new THREE.Vector3(0, 0, -4).applyMatrix4(camera.matrixWorld);
+  const now = ahead.clone().project(camera), was = ahead.clone().project(prevCam);
+  const mv = new THREE.Vector2((now.x - was.x) * 0.5, (now.y - was.y) * 0.5);
+  blur.uniforms.uDir.value.copy(mv.length() > 0.004 ? mv.multiplyScalar(-1.2) : mv.set(0, 0));
+  blur.enabled = blur.uniforms.uDir.value.lengthSq() > 0;
+
+  bokeh.uniforms.focus.value = s.pos.distanceTo(s.tgt);
+  bokeh.uniforms.aperture.value = t >= T.end ? lerp(s.ap, 0.02, E.inOutCubic(prog(t, T.end, 1.4))) : s.ap;
+  bokeh.uniforms.maxblur.value = 0.012;
+  const dark = 1 - Math.max(L, dusk * 0.4);
+  bloom.strength = 0.3 + 0.45 * dark + (L > 0 && t < T.lightsOn + 0.5 ? 0.5 : 0);
+  bloom.radius = lerp(0.5, 0.35, dark);
+  bloom.threshold = lerp(1.6, 0.9, dark);
+  renderer.toneMappingExposure = 1.0 + 0.12 * dark;
+  film.uniforms.uTime.value = (n * 0.6180339) % 1;
+  film.uniforms.uVig.value = lerp(0.18, 0.4, dark);
+  if (params.has('nobloom')) bloom.enabled = false;
+  if (params.has('nobokeh')) bokeh.enabled = false;
+  composer.render();
+
+  // ---- AE layer
+  const ink = L > 0.5 && t < T.dusk ? '#0e2234' : '#ffffff';
+  const st = $('#stage').style;
+  st.setProperty('--ink', ink);
+  st.setProperty('--ink-soft', L > 0.5 && t < T.dusk ? 'rgba(14,34,52,.72)' : 'rgba(255,255,255,.78)');
+  st.setProperty('--ink-line', L > 0.5 && t < T.dusk ? 'rgba(14,34,52,.45)' : 'rgba(255,255,255,.55)');
+
+  // Letterbox: 2.39:1 in the dark, opens with the light, closes again for the evening.
+  const bar = t < T.dusk ? 138 * (1 - E.inOutCubic(prog(t, T.lightsOn + 0.15, 0.9))) : 112 * E.inOutCubic(prog(t, T.dusk, 0.8));
+  $('#bar-top').style.height = $('#bar-bot').style.height = `${bar.toFixed(1)}px`;
+  st.setProperty('--title-bottom', `${(bar + 96).toFixed(0)}px`);
+  st.setProperty('--logo-top', `${(bar + 56).toFixed(0)}px`);
+  $('#fade').style.opacity = (1 - E.inOutSine(prog(t, T.fadeIn[0], T.fadeIn[1]))).toFixed(3);
+
+  // Logo in the corner (white in the dark, navy in the light), gone for the end card.
+  const lg = prog(t, 1.2, 0.8) * (1 - prog(t, T.end, 0.4));
+  $('#logo').style.opacity = lg.toFixed(3);
+  $('#logo-navy').style.opacity = ink === '#0e2234' ? 1 : 0;
+  $('#logo-white').style.opacity = ink === '#0e2234' ? 0 : 1;
+
+  // Flares on the cap bands (and the running LED head in the opening).
+  const fwd = new THREE.Vector3();
+  camera.getWorldDirection(fwd);
+  POSTS.forEach((x, k) => {
+    const c = led.cap[k];
+    const facing = clamp(-fwd.z * 1.4);
+    flare(flareEls[k], V(x, POST_H + 0.038, 0.062), c.level * Math.min(1, c.head * 1.3) * (1 - 0.85 * L) * (t < T.dusk ? 1 : 0.6), facing);
+  });
+  const h = led.stripe[1];
+  flare(flareEls[3], V(0, LED_Y[0] + h.head * (LED_Y[1] - LED_Y[0]), 0.05), h.head > 0 && h.head < 1 ? 0.7 : 0, 1);
+
+  CALLOUTS.forEach(c => callout(c, t, ink));
+  slopeLine(t, ink);
+  TITLES.forEach(([id, a, b]) => title(document.getElementById(id), t, a, b));
+
+  const list = $$('#hero-list span');
+  list.forEach((e, i) => {
+    const a = E.outExpo(prog(t, 25.9 + i * 0.12, 0.8)), b = E.inExpo(prog(t, T.end - 0.1 + i * 0.05, 0.4));
+    e.style.opacity = (a * (1 - b)).toFixed(3);
+    e.style.transform = `translateY(${((1 - a) * 24 - b * 16).toFixed(1)}px)`;
+  });
+  $('#hero-list').style.color = '#fff';
+  $('#hero-list').style.bottom = `${(bar + 70).toFixed(0)}px`;
+
+  // End card over the defocused, darkened set.
+  const ec = t >= T.end;
+  $('#end').style.display = ec ? '' : 'none';
+  if (ec) {
+    const lgA = E.outExpo(prog(t, T.end + 0.5, 1.2));
+    $('#end-logo').style.opacity = lgA.toFixed(3);
+    $('#end-logo').style.transform = `scale(${lerp(1.08, 1, lgA).toFixed(4)})`;
+    $('#end-logo').style.filter = `blur(${((1 - lgA) * 12).toFixed(2)}px)`;
+    $('#end-logo .shine').style.backgroundPosition = `${lerp(110, -10, E.inOutCubic(prog(t, T.end + 1.4, 1.1)))}% 0`;
+    const sl = E.outExpo(prog(t, T.end + 1.0, 0.9));
+    $('#end .slogan span').style.transform = `translateY(${(1 - sl) * 110}%)`;
+    const cta = E.outExpo(prog(t, T.end + 1.5, 0.8));
+    $('#cta').style.opacity = cta.toFixed(3);
+    $('#cta').style.transform = `translateY(${(1 - cta) * 26}px)`;
+    $('#cta .url i').style.transform = `scaleX(${E.inOutCubic(prog(t, T.end + 1.9, 0.7))})`;
+    const nudge = t > T.end + 2.4 ? Math.pow(Math.sin(Math.PI * (((t - T.end - 2.4) % 1.6) / 1.6)), 2) : 0;
+    $('#cta .btn svg').style.transform = `translateX(${nudge * 8}px)`;
   }
-  // Block wipe left → right (in), cleared from the left (out). Shadow bleed stays visible.
-  const BLEED = 40;
-  function wipe(node, t, tin, tout = null, din = 0.7, dout = 0.5) {
-    const a = E.outQuart(prog(t, tin, din));
-    const b = tout == null ? 0 : E.inCubic(prog(t, tout, dout));
-    if (a <= 0 || b >= 1) { show(node, false); return; }
-    const w = node.offsetWidth + BLEED;
-    show(node, true);
-    node.style.clipPath = `inset(-${BLEED}px ${(1 - a) * w - BLEED}px -${BLEED}px ${b * w - BLEED}px)`;
-  }
-  // Copy block: lines rise staggered, hairlines draw, the block drifts against the camera.
-  function copy(root, t, tin, tout, drift, gap = 0.06) {
-    const on = t >= tin - 0.1 && (tout == null || t < tout + 1.0);
-    showBox(root, on);
-    if (!on) return;
-    root.style.transform = `translate(${drift}px, -50%)`;
-    $$('.ln > span', root).forEach((s, i) => rise(s, t, tin + i * gap, tout == null ? null : tout + i * 0.03));
-    $$('.kicker i', root).forEach(n => draw(n, t, tin + 0.1, tout, 0.5));
-    $$('.rule', root).forEach(n => draw(n, t, tin + 0.35, tout, 0.7));
-  }
+}
 
-  // ---------------------------------------------------------------- light
-  // Lights coming back on: a short fluorescent flicker, then a soft settle.
-  function flicker(t, t0) {
-    const x = t - t0;
-    if (x < 0) return 1;
-    const steps = [[0, 0.3], [0.05, 0.85], [0.11, 0.18], [0.17, 0.7], [0.22, 0.1]];
-    if (x < 0.27) return steps.filter(s => x >= s[0]).pop()[1];
-    return 0.1 * (1 - E.outCubic(prog(x, 0.27, 0.45)));
-  }
-  const dark1 = t => E.inOutCubic(prog(t, T.dark1[0], T.dark1[1])) * flicker(t, T.on1);
-  const dark2 = t => T.dark2[2] * E.inOutCubic(prog(t, T.dark2[0], T.dark2[1])) * flicker(t, T.on2);
-  const darkness = t => Math.max(dark1(t), dark2(t));
+async function init() {
+  await Promise.all([400, 500, 600, 700, 800].map(w => document.fonts.load(`${w} 40px Poppins`)));
+  await document.fonts.ready;
+  set = await buildScene(renderer);
+  composer.addPass(new RenderPass(set.scene, camera));
+  composer.addPass(new ShaderPass(Clamp));
+  bokeh = new BokehPass(set.scene, camera, { focus: 1, aperture: 0.001, maxblur: 0.012 });
+  composer.addPass(bokeh);
+  blur = new ShaderPass(MotionBlur);
+  composer.addPass(blur);
+  bloom = new UnrealBloomPass(new THREE.Vector2(W, H), 0.8, 0.55, 0.82);
+  composer.addPass(bloom);
+  composer.addPass(new OutputPass());
+  film = new ShaderPass(Film);
+  composer.addPass(film);
+  for (let i = 0; i < 4; i++) flareEls.push(makeFlare());
+  ['t-stripe', 't-cover', 't-callado', 't-nut', 't-schraeg', 't-hero'].forEach(id => splitBig(document.getElementById(id)));
+  await Promise.all($$('img').map(i => i.decode()));
+  const t0 = params.get('t');
+  frame(t0 ? Math.round(parseFloat(t0) * FPS) : 0);
+}
 
-  // ---------------------------------------------------------------- elements
-  const el = {
-    stage: $('#stage'), logoNavy: $('#logo-navy'), logoWhite: $('#logo-white'), logo: $('#logo'),
-    shadow: $('#shadow'), rig: $('#rig'), plate: $('#plate'), card: $('#card'),
-    pics: $$('#card .pic:not(#clip)'), clip: $('#clip'), clipImg: $('#clip img'), sheen: $('#sheen'), ai: $('#ai'),
-    dust: $('#dust'), intro: $('#intro'), products: $$('.product'), pager: $('#pager'), segs: $$('#pager .seg i'),
-    stripe: $('#co-stripe'), cover: $('#co-cover'), slope: $('#co-slope'), lbStripe: $('#lb-stripe'), lbCover: $('#lb-cover'),
-    gridHead: $('#grid-head'), tiles: $$('.tile'), caps: $$('.cap'),
-    end: $('#end'), endLogo: $('#end-logo'), shine: $('#end-logo .shine'), slogan: $('#end .slogan .ln > span'),
-    btn: $('#cta .btn'), arrow: $('#cta .btn svg'), url: $('#cta .url'), urlLine: $('#cta .url i'),
-  };
-  const dustCtx = el.dust.getContext('2d');
-
-  // Deterministic dust motes for the dark moments.
-  let seed = 7;
-  const rnd = () => ((seed = (seed * 16807) % 2147483647) / 2147483647);
-  const MOTES = Array.from({ length: 70 }, () => ({
-    x: 880 + rnd() * 960, y: rnd() * 1080, r: 0.8 + rnd() * 2.6, v: 8 + rnd() * 16,
-    amp: 6 + rnd() * 22, ph: rnd() * 6.28, tw: 0.6 + rnd() * 1.4,
-  }));
-
-  // ---------------------------------------------------------------- camera
-  function orbit(t) {
-    let i = 0;
-    while (i < ORBIT.length - 2 && t >= ORBIT[i + 1][0]) i++;
-    const [t0, ...a] = ORBIT[i], [t1, ...b] = ORBIT[i + 1];
-    const k = E.inOutSine(prog(t, t0, t1 - t0));
-    let [ry, rx, z] = a.map((v, j) => lerp(v, b[j], k));
-    // Flip: turn edge-on, swap the picture, turn back in.
-    const f = prog(t, T.flip[0], T.flip[1]);
-    if (f > 0 && f < 1) {
-      ry += f < 0.5 ? 90 * E.inCubic(f * 2) : -90 * (1 - E.outCubic((f - 0.5) * 2));
-      z -= 160 * Math.sin(Math.PI * f);
-    }
-    // Overview exit: the last tile turns away with the others.
-    ry += 90 * E.inCubic(prog(t, T.end + 0.24, 0.6));
-    return { ry, rx, z };
-  }
-  function cardRect(t) {
-    const g = E.inOutCubic(prog(t, T.grid, 1.1));
-    return { x: lerp(CARD.x, TILE.xs[3], g), y: lerp(CARD.y, TILE.y, g), s: lerp(CARD.s, TILE.s, g), g };
-  }
-
-  // Transform of picture j's inner layer: slow settle zoom, plus the zoom-match into / out of a clip.
-  function picTransform(j, t, L) {
-    let z = ZOOM[j] * (1 + 0.05 * (1 - E.outCubic(prog(t, SHOW[j][0], 4.5))));
-    let s = 1, tx = 0, ty = 0;
-    const out = CLIPS.find(c => c.from === j), inn = CLIPS.find(c => c.to === j);
-    if (inn && inn.land) {                  // land: start on the clip's last framing, ease back
-      const k = E.inOutCubic(prog(t, inn.at + inn.dur, LAND));
-      s = lerp(inn.land.s, 1, k); tx = lerp(inn.land.tx, 0, k); ty = lerp(inn.land.ty, 0, k);
-      z = lerp(1, z, k);
-    }
-    if (out && out.start && t >= out.at - 0.5) {   // push into the clip's first framing
-      const k = E.inOutCubic(prog(t, out.at - 0.5, 0.5));
-      s = lerp(1, out.start.s, k); tx = lerp(0, out.start.tx, k); ty = lerp(0, out.start.ty, k);
-      z = lerp(z, 1, k);
-    }
-    // p' = (c + (p - c) z) s + t  →  origin 0 0: translate(c (1 - z) s + t) scale(z s)
-    const c = L / 2;
-    return `translate(${c * (1 - z) * s + tx * L}px, ${c * (1 - z) * s + ty * L}px) scale(${z * s})`;
-  }
-
-  // Clip frame for time t (null outside the clip).
-  function clipFrame(t) {
-    for (const c of CLIPS) {
-      if (!c.frames || t < c.at || t >= c.at + c.dur + 0.3) continue;
-      const u = prog(t, c.at, c.dur);
-      const e = 0.5 * u + 0.5 * E.inOutSine(u);      // slower at both ends: slow-motion arrivals
-      return { c, idx: 1 + Math.round(e * (c.frames - 1)), fade: 1 - prog(t, c.at + c.dur, 0.25) };
-    }
-    return null;
-  }
-
-  // ---------------------------------------------------------------- glow
-  function glow(pic, j, t, D) {
-    const g = $('.glows', pic);
-    if (!g) return;
-    let G = 0, mask = 'none';
-    if (j === 0) {
-      G = 0.3 + 1.1 * dark1(t);
-    } else if (j === 1) {
-      const r = E.inOutSine(prog(t, T.run[0], T.run[1]));
-      const p = -15 + 135 * r;
-      if (r < 1) mask = `linear-gradient(to top, #000 0%, #000 ${p - 14}%, rgba(0,0,0,.35) ${p - 4}%, transparent ${p}%)`;
-      G = 0.35 + 0.95 * D + 0.06 * Math.sin(t * 5.2);
-    } else if (j === 2) {
-      const k = t < T.dark2[0] ? 1 : E.outCubic(prog(t, T.ignite[0], T.ignite[1]));
-      const c = 51.6, w = 62 * k;
-      if (k < 1) mask = `linear-gradient(to right, transparent ${c - w}%, #000 ${c - w + 5}%, #000 ${c + w - 5}%, transparent ${c + w}%)`;
-      G = 0.3 + 1.0 * D + 0.25 * D * Math.sin(Math.PI * prog(t, T.ignite[0], T.ignite[1]));
-    }
-    g.style.webkitMaskImage = mask;
-    const [b3, b2, b1, b0] = g.children;
-    b0.style.opacity = Math.min(1, G).toFixed(3);
-    b1.style.opacity = Math.min(1, G).toFixed(3);
-    b2.style.opacity = Math.min(1, G * 0.9).toFixed(3);
-    b3.style.opacity = Math.min(1, G * 0.75).toFixed(3);
-  }
-
-  // ---------------------------------------------------------------- callouts (inside the card, in photo px)
-  function pin(svg, label, t, tin, tout, dir) {
-    const fade = 1 - prog(t, tout, 0.25);
-    const on = t >= tin && fade > 0;
-    show(svg, on); show(label, on);
-    if (!on) return;
-    const [x, y] = dir === 'right' ? STRIPE_LED : COVER_LED;
-    const len = dir === 'right' ? [140, 0] : [0, 300];
-    const k = E.inOutCubic(prog(t, tin + 0.2, 0.5));
-    const [line, ring, core] = svg.children;
-    line.setAttribute('x1', x); line.setAttribute('y1', y);
-    line.setAttribute('x2', x + len[0] * k); line.setAttribute('y2', y + len[1] * k);
-    for (const c of [ring, core]) { c.setAttribute('cx', x); c.setAttribute('cy', y); }
-    core.setAttribute('r', (7 * E.outBack(prog(t, tin, 0.4))).toFixed(2));
-    ring.setAttribute('r', (18 * E.outBack(prog(t, tin + 0.08, 0.5)) * (1 + 0.25 * Math.sin(Math.max(0, t - tin) * 4))).toFixed(2));
-    svg.style.opacity = fade.toFixed(3);
-    const ex = (x + len[0]) / 10, ey = (y + len[1]) / 10;
-    Object.assign(label.style, { left: `${ex}%`, top: `${ey}%`, transform: dir === 'right' ? 'translateY(-50%)' : 'translateX(-50%)' });
-    label.style.opacity = fade.toFixed(3);
-    wipe(label, t, tin + 0.6, null, 0.5);
-  }
-
-  function slope(t, tin, tout) {
-    const fade = 1 - prog(t, tout, 0.25);
-    const on = t >= tin && fade > 0;
-    show(el.slope, on);
-    if (!on) return;
-    const { a, b, off, len } = SLOPE;
-    const d = [b[0] - a[0], b[1] - a[1]], L = Math.hypot(d[0], d[1]);
-    const n = [d[1] / L, -d[0] / L];
-    const A = [a[0] + n[0] * off, a[1] + n[1] * off];
-    const B = [A[0] + d[0] * len, A[1] + d[1] * len];
-    const k = E.inOutCubic(prog(t, tin + 0.2, 0.9));
-    const [main, tickA, tickB] = el.slope.children;
-    const set = (ln, p, q) => { ln.setAttribute('x1', p[0]); ln.setAttribute('y1', p[1]); ln.setAttribute('x2', q[0]); ln.setAttribute('y2', q[1]); };
-    set(main, A, [lerp(A[0], B[0], k), lerp(A[1], B[1], k)]);
-    const tick = (p, kk) => [[p[0] - n[0] * 13 * kk, p[1] - n[1] * 13 * kk], [p[0] + n[0] * 13 * kk, p[1] + n[1] * 13 * kk]];
-    set(tickA, ...tick(A, E.outQuart(prog(t, tin, 0.35))));
-    set(tickB, ...tick(B, E.outQuart(prog(t, tin + 1.1, 0.35))));
-    tickB.style.opacity = k >= 1 ? 1 : 0;
-    el.slope.style.opacity = fade.toFixed(3);
-  }
-
-  // ---------------------------------------------------------------- render
-  function render(n, cf) {
-    const t = n / FPS;
-    const D = darkness(t);
-
-    // Room: background, type colours and logo follow the light.
-    const st = el.stage.style;
-    // Type flips to white early, so it never sits grey on grey while the room fades.
-    const F = E.inOutSine(prog(D, 0.15, 0.3));
-    st.setProperty('--bg', mix('#ffffff', '#05090d', D));
-    st.setProperty('--fg', mix('#0e2234', '#ffffff', F));
-    st.setProperty('--fg-muted', mix('#66727d', '#a3b1be', F));
-    st.setProperty('--hair', mix('#dfe4ea', '#25313c', F));
-    wipe(el.logo, t, T.logo, T.end, 0.8, 0.5);
-    el.logoWhite.style.opacity = F.toFixed(3);
-    el.logoNavy.style.opacity = (1 - F).toFixed(3);
-
-    // Camera + card.
-    const cam = orbit(t), r = cardRect(t);
-    Object.assign(el.rig.style, { left: `${r.x}px`, top: `${r.y}px`, width: `${r.s}px`, height: `${r.s}px` });
-    el.rig.style.transform = `translateZ(${cam.z}px) rotateY(${cam.ry}deg) rotateX(${cam.rx}deg)`;
-    showBox(el.rig, t < T.end + 0.85);
-    el.plate.style.opacity = (prog(t, 0.2, 0.6) * (1 - prog(t, T.grid - 0.3, 0.5))).toFixed(3);
-    el.card.style.opacity = prog(t, 0, 0.35).toFixed(3);
-
-    el.pics.forEach((pic, j) => {
-      const on = t >= SHOW[j][0] && t < SHOW[j][1];
-      show(pic, on);
-      if (!on) return;
-      const inner = $('.inner', pic);
-      inner.style.transformOrigin = '0 0';
-      inner.style.transform = picTransform(j, t, r.s);
-      $('.shade', pic).style.opacity = (D * (j === 0 ? 0.7 : 0.9)).toFixed(3);
-      glow(pic, j, t, D);
-    });
-    show(el.clip, !!cf);
-    if (cf) {
-      el.clip.style.opacity = Math.min(prog(t, cf.c.at, 0.2), cf.fade).toFixed(3);
-      $('.shade', el.clip).style.opacity = (D * 0.9).toFixed(3);
-    }
-    el.sheen.style.transform = `translateX(${cam.ry * 16}px)`;
-    el.sheen.style.opacity = ((1 - D) * 0.9 * (1 - r.g)).toFixed(3);
-    const aiOn = Math.max(1 - prog(t, flipMid - 0.3, 0.3), cf ? cf.fade * prog(t, cf.c.at, 0.2) : 0);
-    el.ai.style.opacity = aiOn.toFixed(3);
-
-    // Floor shadow follows the card.
-    const cos = Math.cos((cam.ry * Math.PI) / 180);
-    Object.assign(el.shadow.style, { left: `${r.x + r.s * 0.05}px`, top: `${r.y + r.s * 1.02}px`, width: `${r.s * 0.9}px` });
-    el.shadow.style.transform = `translateX(${-cam.ry * 3}px) scaleX(${Math.max(0.05, Math.abs(cos))})`;
-    el.shadow.style.opacity = ((1 - D) * (1 - r.g) * prog(t, 0.2, 0.6)).toFixed(3);
-
-    // Dust in the dark.
-    dustCtx.clearRect(0, 0, W, H);
-    if (D > 0.01) {
-      for (const m of MOTES) {
-        const y = ((m.y - m.v * t) % H + H) % H;
-        const x = m.x + m.amp * Math.sin(m.ph + t * 0.6);
-        const a = D * (0.25 + 0.55 * Math.abs(Math.sin(m.ph + t * m.tw)));
-        const g = dustCtx.createRadialGradient(x, y, 0, x, y, m.r * 3);
-        g.addColorStop(0, `rgba(255,240,215,${a.toFixed(3)})`);
-        g.addColorStop(1, 'rgba(255,240,215,0)');
-        dustCtx.fillStyle = g;
-        dustCtx.fillRect(x - m.r * 3, y - m.r * 3, m.r * 6, m.r * 6);
-      }
-    }
-
-    // Copy.
-    const drift = -cam.ry * 1.6;
-    copy(el.intro, t, T.intro[0], T.intro[1], drift);
-    el.products.forEach((p, i) => copy(p, t, COPY[i][0], COPY[i][1], drift));
-
-    const pg = prog(t, COPY[0][0], 0.4) * (1 - prog(t, COPY[3][1], 0.4));
-    show(el.pager, pg > 0);
-    el.pager.style.opacity = pg.toFixed(3);
-    const segStart = [COPY[0][0], ...CLIPS.map(c => c.at)];
-    const segEnd = [...CLIPS.map(c => c.at), T.grid];
-    el.segs.forEach((s, i) => { s.style.transform = `scaleX(${prog(t, segStart[i], segEnd[i] - segStart[i])})`; });
-
-    pin(el.stripe, el.lbStripe, t, COPY[0][0] + 0.6, COPY[0][1], 'right');
-    pin(el.cover, el.lbCover, t, T.ignite[0] + 0.5, COPY[1][1], 'down');
-    slope(t, COPY[3][0] + 0.5, COPY[3][1]);
-
-    // Overview: card lands as the fourth tile, the other three turn in.
-    copy(el.gridHead, t, T.grid + 0.6, T.end, 0);
-    el.tiles.forEach((tile, i) => {
-      const k = E.outCubic(prog(t, T.grid + 0.45 + i * 0.12, 0.8));
-      const ke = E.inCubic(prog(t, T.end + i * 0.08, 0.6));
-      show(tile, k > 0.02 && ke < 0.98);
-      Object.assign(tile.style, { left: `${TILE.xs[i]}px`, top: `${TILE.y}px` });
-      tile.style.transform = `perspective(1200px) rotateY(${-90 * (1 - k) + 90 * ke}deg)`;
-    });
-    el.caps.forEach((cap, i) => {
-      const tin = T.grid + 1.1 + i * 0.08;
-      const on = t >= tin - 0.1 && t < T.end + 1.0;
-      showBox(cap, on);
-      if (!on) return;
-      Object.assign(cap.style, { left: `${TILE.xs[i]}px`, top: `${TILE.y + TILE.s + 30}px` });
-      $$('.ln > span', cap).forEach((s, j) => rise(s, t, tin + j * 0.06, T.end + i * 0.04));
-    });
-
-    // End card.
-    const endOn = t >= T.end + 0.8;
-    showBox(el.end, endOn);
-    if (endOn) {
-      wipe(el.endLogo, t, T.end + 0.9, null, 0.9);
-      el.shine.style.backgroundPosition = `${lerp(110, -10, E.inOutCubic(prog(t, T.end + 1.9, 1.0)))}% 0`;
-      rise(el.slogan, t, T.end + 1.3);
-      wipe(el.btn, t, T.end + 1.6, null, 0.7);
-      const ku = E.outQuart(prog(t, T.end + 1.8, 0.7));
-      el.url.style.opacity = ku.toFixed(3);
-      el.url.style.transform = `translateX(${(1 - ku) * -20}px)`;
-      el.urlLine.style.transform = `scaleX(${E.inOutCubic(prog(t, T.end + 2.0, 0.7))})`;
-      const nudge = t > T.end + 2.6 ? Math.pow(Math.sin(Math.PI * (((t - T.end - 2.6) % 1.6) / 1.6)), 2) : 0;
-      el.arrow.style.transform = `translateX(${nudge * 8}px)`;
-    }
-  }
-
-  async function seek(n) {
-    const cf = clipFrame(n / FPS);
-    if (cf) {
-      const src = `${PLATE_DIR}/${cf.c.name}/f${String(cf.idx).padStart(4, '0')}.jpg`;
-      if (el.clipImg.dataset.src !== src) {
-        el.clipImg.src = src;
-        await el.clipImg.decode();
-        el.clipImg.dataset.src = src;
-      }
-    }
-    render(n, cf);
-  }
-
-  async function init() {
-    await Promise.all([400, 500, 600, 700, 800].map(w => document.fonts.load(`${w} 40px Poppins`)));
-    await document.fonts.ready;
-    await Promise.all($$('img').filter(img => img.getAttribute('src')).map(img => img.decode()));
-    const t0 = params.get('t');
-    await seek(t0 ? Math.round(parseFloat(t0) * FPS) : 0);
-  }
-
-  window.COMP = { FPS, TOTAL, W, H, seek, ready: init() };
-})();
+window.COMP = { FPS, TOTAL, W, H, seek: async n => frame(n), ready: init() };
