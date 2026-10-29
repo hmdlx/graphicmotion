@@ -9,7 +9,7 @@ rendert. ffmpeg schreibt die Frames anschließend als MP4.
 | Projekt | Format | Ergebnis |
 |---|---|---|
 | `projects/laguna-m` | 9:16, 1080×1920, 30 fps, 18,5 s | `output/HomeDeluxe_Laguna-M_Reel_9x16.mp4` + Titelbild |
-| `projects/callado-zubehoer` | 16:9, 1920×1080, 30 fps, 32,9 s | `output/HomeDeluxe_CALLADO-Zubehoer_16x9_Intro.mp4` |
+| `projects/callado-zubehoer` | 16:9, 1920×1080, 30 fps, 35,1 s | `output/HomeDeluxe_CALLADO-Zubehoer_16x9_Intro.mp4` |
 
 ### Laguna M – Schnitt und Übergänge
 
@@ -30,27 +30,33 @@ läuft nur mit ihren sauberen Frames (Schnittliste `SHOTS` in `composition.js`),
 Die Produktdaten stammen aus den Shop- und Händlerangaben zur LAGUNA M (homedeluxe.de, Hornbach).
 Preise sind bewusst nicht eingebaut, weil sie sich häufig ändern.
 
-### CALLADO Zubehör – Intro
+### CALLADO Zubehör – Cliffhanger-Intro
 
-Der fertige Zubehör-Film (`source/HomeDeluxe_CALLADO-Zubehoer_16x9.mp4`) begann mit 6 s fast
-schwarzem Bild, in dem langsam ein Lichtstreifen aufglimmt – dass es um Zubehör geht, stand erst
-nach 13 s im Bild. Davor sitzt jetzt ein Intro (5,7 s), das die vier Zubehörteile sofort benennt
-und dann ohne sichtbaren Schnitt in den Film übergeht.
+Der fertige Zubehör-Film (`source/HomeDeluxe_CALLADO-Zubehoer_16x9.mp4`) begann mit 2 s Schwarz
+und einem langsam aufglimmenden Lichtstreifen – dass es um Zubehör geht, stand erst nach 13 s im
+Bild. Davor sitzt jetzt ein 4-s-Intro im Look des Films (Nacht, Anthrazit, warmes LED-Licht,
+Staubpartikel, Letterbox 2,39:1), das als Cliffhanger auf das Licht hinarbeitet und im Schwarz
+abbricht. Die Auflösung liefert der Film selbst: Aus dem Schwarz zündet sein Lichtstreifen.
 
-| Zeit | Inhalt |
-|---|---|
-| 0,0–1,1 s | Aufblende aus Schwarz, Kicker „CALLADO —— WPC-Sichtschutzzaun“, Titel „PASSENDES ZUBEHÖR“ |
-| 1,1–2,3 s | Vier Kacheln mit Szenen aus dem Film öffnen sich, darunter je Nummer, Name und Kurztext: 01 CALLUX STRIPE, 02 CALLUX COVER, 03 CALLANUT, 04 Schrägelement |
-| 2,3–4,2 s | Übersicht steht, die Kacheln laufen (Pfostenkappe leuchtet auf, Leisten-Bündel, Schrägelement) |
-| 4,2–5,0 s | Texte steigen aus, Kacheln 02–04 schließen sich |
-| 4,7–5,7 s | Kachel 01 (Lichtstreifen) zieht zum Vollbild auf und landet exakt auf Frame 159 des Films |
-| ab 5,7 s | Film ab Frame 160 (5,33 s): „01 Nutleiste – CALLUX STRIPE“ baut sich wie gehabt auf |
+| Zeit | Bild | Text |
+|---|---|---|
+| 0,0–2,1 s | KI-Totale: der CALLADO-Zaun bei Nacht, Kamera fährt heran, die Pfostenkappen zünden nacheinander | „WPC-Sichtschutzzaun CALLADO“ – **Dein Zaun steht.** |
+| 2,1 s | Belichtungsblitz, Schnitt | – |
+| 2,1–3,8 s | KI-Makro: Holzmaserung im Mondlicht, unten in der Pfostennut erwacht ein warmes Licht | „Passendes Zubehör“ – **Doch das Beste kommt noch …** |
+| 3,8–4,0 s | harter Schnitt auf Schwarz (Cliffhanger) | – |
+| ab 4,0 s | Film ab Frame 44: Schwarz, dann zündet der Lichtstreifen; ab Frame 62 läuft die Quelle direkt weiter | – |
 
-Die ersten 5,3 s des Films (Schwarz + Lichtstreifen) laufen nicht mehr im Vollbild, sondern in
-Kachel 01 mit; der Rest des Films ist unverändert. Gesamtlänge 32,9 s statt 32,6 s.
-Kachel 01 wird beim Aufziehen ohne das eingebrannte Logo gezeigt; darüber liegt eine
-Logo-Maske aus dem Film selbst (`scripts/logo_matte.py`), sodass das Logo die ganze Zeit an
-derselben Stelle steht und beim Übergang nicht doppelt erscheint.
+Gesamtlänge 35,1 s (Film ohne seine ersten 1,5 s Schwarz). Texte in Poppins wie im Film: Kicker in
+gesperrten Versalien, Zeile in Poppins Bold wie der Claim der End-Szene, auf der Position der
+Kapiteltitel. Das Logo steht die ganze Zeit an seiner Stelle: Der Film blendet es erst zwischen
+Frame 36 und 60 ein, deshalb laufen die Frames 44–61 noch durch die Komposition – ohne das
+eingebrannte Logo und mit der Logo-Maske aus dem Film selbst darüber (`scripts/logo_matte.py`).
+
+KI-Material (Higgsfield, Quellen unter `source/ai/`): je Einstellung ein Start- und ein Endbild aus
+Nano Banana Pro (21:9, 2K), erzeugt mit Standbildern aus dem Film als Referenz, damit Zaun,
+Pfosten, Kappen und Licht dem echten CALLADO entsprechen (`keyframes/`). Die Endbilder sind für
+die Kamerafahrt enger beschnitten. Daraus hat Kling 4.0 (Bild-zu-Video, 1080p, 21:9, 4 s) die
+Clips `shot_B_totale.mp4` und `shot_A_makro.mp4` animiert. Kosten: 8 Credits Bilder + 26 Credits Video.
 
 ## Rendern
 
@@ -70,15 +76,16 @@ Ein einzelnes Frame lässt sich auch im Browser prüfen:
 CALLADO-Intro:
 
 ```bash
-npm run callado:frames      # Film -> JPG-Plates in Originalgröße (build/)
-npm run callado:logo        # Logo-Maske + logofreie Plates für Kachel 01
+npm run callado:frames      # Film-Frames 0–160 -> JPG-Plates (Logo-Referenz + Frames 44–61)
+npm run callado:ai          # KI-Clips -> JPG-Plates (build/callado-zubehoer/ai/)
+npm run callado:logo        # Logo-Maske + logofreie Film-Frames 44–61
 npm run callado:intro       # Intro verlustfrei -> build/callado-zubehoer/intro.mp4
-npm run callado:join        # Intro + Film ab Frame 160 -> projects/callado-zubehoer/output/…_Intro.mp4
+npm run callado:join        # Intro + Film ab Frame 62 -> projects/callado-zubehoer/output/…_Intro.mp4
 npm run callado:stills      # Kontrollbilder nach build/callado-zubehoer/stills
 ```
 
-Der Anschluss-Frame steht zweimal: `JOIN` in `composition.js` und die `160` in `callado:join`
-(dazu der `--clean`-Bereich in `callado:logo`, der bei `JOIN − 1` endet).
+Der Anschluss-Frame steht zweimal: `JOIN` in `composition.js` und die `62` in `callado:join`
+(dazu der `--clean`-Bereich `44-61` in `callado:logo`, der bei `JOIN − 1` endet).
 
 ## Struktur
 
@@ -99,5 +106,5 @@ Texte und Timings ändern: Texte stehen in `projects/laguna-m/composition.html`.
 (Output-Frames) und die Einblendzeiten der Grafiken `T` (Output-Sekunden).
 
 CALLADO: Texte stehen in `projects/callado-zubehoer/composition.html`. In `composition.js` stehen
-die Kachel-Footage `TILES` (Quell-Frames, Ausschnitt und Kamerapfad je Kachel) und die Zeitleiste
-`T` (Output-Frames).
+die Schnittliste `SHOTS` (Quell-Frames der KI-Clips je Einstellung) und die Zeitleiste `T`
+(Output-Frames).

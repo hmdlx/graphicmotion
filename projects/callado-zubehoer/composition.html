@@ -5,98 +5,51 @@
 <title>CALLADO Zubehör – Intro 16:9</title>
 <style>
   @font-face { font-family: Poppins; font-weight: 400; src: url(../../assets/fonts/poppins/poppins-latin-400-normal.woff2) format("woff2"); }
-  @font-face { font-family: Poppins; font-weight: 500; src: url(../../assets/fonts/poppins/poppins-latin-500-normal.woff2) format("woff2"); }
   @font-face { font-family: Poppins; font-weight: 600; src: url(../../assets/fonts/poppins/poppins-latin-600-normal.woff2) format("woff2"); }
   @font-face { font-family: Poppins; font-weight: 700; src: url(../../assets/fonts/poppins/poppins-latin-700-normal.woff2) format("woff2"); }
-  @font-face { font-family: Poppins; font-weight: 800; src: url(../../assets/fonts/poppins/poppins-latin-800-normal.woff2) format("woff2"); }
 
-  /* Home Deluxe CI: Navy + Weiß + Grautöne, eckige Ecken, Poppins.
-     Abstände und Schriftgrade folgen den Kapitel-Titeln des CALLADO-Films (Rand 150 px). */
-  :root {
-    --navy: #0e2234;
-    --light: #e9eef4;
-    --margin: 150px;
-  }
+  /* Typografie wie im CALLADO-Film: Kicker in gesperrten Versalien, Zeile in Poppins Bold wie der
+     Claim der End-Szene („Alles für deinen CALLADO.“), Position der Kapiteltitel (Rand 150 px,
+     Kicker auf 600 px) über dem dunklen Zaun. Bild im Letterbox-Format der Nachtszenen (138–941 px). */
+  :root { --margin: 150px; }
   * { box-sizing: border-box; margin: 0; padding: 0; border-radius: 0; }
   html, body { width: 1920px; height: 1080px; overflow: hidden; background: #000; }
   body { font-family: Poppins, sans-serif; color: #fff; -webkit-font-smoothing: antialiased; }
 
-  #stage {
-    position: absolute; inset: 0; width: 1920px; height: 1080px; overflow: hidden;
-    background: radial-gradient(ellipse 80% 78% at 46% 40%, #17324b 0%, #0e2234 42%, #070f18 100%);
-  }
-  #particles { position: absolute; inset: 0; }
-
-  /* Footage tiles: full-stage layers, clipped to their rectangle. */
-  .tile { position: absolute; inset: 0; overflow: hidden; background: #000; }
-  .tile img { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; display: block; transform-origin: 0 0; }
-  .tframe { position: absolute; border: 1px solid rgba(233, 238, 244, .2); }
-  .tedge { position: absolute; height: 3px; background: #fff; box-shadow: 0 0 18px rgba(255, 255, 255, .55); }
+  #stage { position: absolute; inset: 0; overflow: hidden; background: #000; }
+  #footage { position: absolute; left: 0; top: 138px; width: 1920px; height: 804px; overflow: hidden; }
+  #footage img { position: absolute; left: 0; top: 50%; width: 1920px; height: auto; display: block; transform-origin: 50% 50%; }
+  /* Leichte Abdunklung unten links, damit die Zeilen auch über dem hellen Boden stehen. */
+  #grade { position: absolute; inset: 0; background: radial-gradient(ellipse 60% 70% at 0% 92%, rgba(0, 0, 0, .5) 0%, rgba(0, 0, 0, 0) 100%); }
 
   .ln { display: block; overflow: hidden; padding-bottom: .08em; margin-bottom: -.08em; }
   .ln > span { display: inline-block; will-change: transform; }
+  .beat { position: absolute; left: var(--margin); top: 598px; }
+  .kicker { font-weight: 600; font-size: 22px; line-height: 1; letter-spacing: .32em; text-transform: uppercase; color: rgba(233, 238, 244, .82); white-space: nowrap; }
+  .claim { margin-top: 22px; font-weight: 700; font-size: 104px; line-height: 1.02; letter-spacing: -.012em; white-space: nowrap; }
 
-  .kicker { display: flex; align-items: center; gap: 18px; font-weight: 600; letter-spacing: .32em; text-transform: uppercase; color: rgba(233, 238, 244, .78); line-height: 1; white-space: nowrap; }
-  .kicker b { font-weight: 700; color: #fff; letter-spacing: .06em; }
-  .kicker i { display: block; height: 2px; background: rgba(233, 238, 244, .6); transform-origin: left; }
-
-  #kicker { position: absolute; left: var(--margin); top: 194px; font-size: 21px; }
-  #kicker i { width: 46px; }
-  #title { position: absolute; left: calc(var(--margin) - 6px); top: 226px; display: flex; gap: .26em;
-    font-weight: 800; font-size: 124px; line-height: 1; letter-spacing: -.005em; white-space: nowrap; }
-
-  .label { position: absolute; top: 774px; width: 390px; }
-  .label .kicker { font-size: 16px; letter-spacing: .3em; gap: 12px; }
-  .label .kicker i { width: 30px; }
-  .label .name { margin-top: 14px; font-weight: 800; font-size: 36px; line-height: 1; letter-spacing: .005em; white-space: nowrap; }
-  .label .sub { margin-top: 10px; font-weight: 400; font-size: 21px; line-height: 1.2; color: rgba(233, 238, 244, .72); white-space: nowrap; }
-
-  .hero { z-index: 1; }
-  #logo { position: absolute; left: 1560px; top: 186px; display: block; z-index: 2; }
-  #black { position: absolute; inset: 0; background: #000; z-index: 2; }
+  #logo { position: absolute; left: 1560px; top: 186px; display: block; }
+  #film { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; display: block; }
+  #black { position: absolute; inset: 0; background: #000; }
 </style>
 </head>
 <body>
 <div id="stage">
-  <canvas id="particles" width="1920" height="1080"></canvas>
+  <div id="footage"><img alt=""><img alt=""><div id="grade"></div></div>
 
-  <div id="kicker" class="kicker">
-    <span class="ln"><span><b>CALLADO</b></span></span><i></i><span class="ln"><span>WPC-Sichtschutzzaun</span></span>
+  <div class="beat">
+    <div class="kicker"><span class="ln"><span>WPC-Sichtschutzzaun CALLADO</span></span></div>
+    <div class="claim"><span class="ln"><span>Dein Zaun steht.</span></span></div>
   </div>
-  <h1 id="title"><span class="ln"><span>PASSENDES</span></span><span class="ln"><span>ZUBEHÖR</span></span></h1>
-
-  <div class="label">
-    <div class="kicker"><span class="ln"><span><b>01</b></span></span><i></i><span class="ln"><span>Nutleiste</span></span></div>
-    <div class="name"><span class="ln"><span>CALLUX STRIPE</span></span></div>
-    <div class="sub"><span class="ln"><span>mit Solar-LED</span></span></div>
-  </div>
-  <div class="label">
-    <div class="kicker"><span class="ln"><span><b>02</b></span></span><i></i><span class="ln"><span>Pfostenabdeckung</span></span></div>
-    <div class="name"><span class="ln"><span>CALLUX COVER</span></span></div>
-    <div class="sub"><span class="ln"><span>mit Solar-LED</span></span></div>
-  </div>
-  <div class="label">
-    <div class="kicker"><span class="ln"><span><b>03</b></span></span><i></i><span class="ln"><span>WPC-Nutleiste</span></span></div>
-    <div class="name"><span class="ln"><span>CALLANUT</span></span></div>
-    <div class="sub"><span class="ln"><span>in verschiedenen Mengen</span></span></div>
-  </div>
-  <div class="label">
-    <div class="kicker"><span class="ln"><span><b>04</b></span></span><i></i><span class="ln"><span>CALLADO</span></span></div>
-    <div class="name"><span class="ln"><span>SCHRÄGELEMENT</span></span></div>
-    <div class="sub"><span class="ln"><span>Abschluss für Zaunenden</span></span></div>
+  <div class="beat">
+    <div class="kicker"><span class="ln"><span>Passendes Zubehör</span></span></div>
+    <div class="claim"><span class="ln"><span>Doch das Beste</span></span><span class="ln"><span>kommt noch …</span></span></div>
   </div>
 
-  <!-- Tile 01 (.hero) opens up over everything into the film. -->
-  <div class="tile hero"><img alt=""><img alt=""></div>
-  <div class="tile"><img alt=""><img alt=""></div>
-  <div class="tile"><img alt=""><img alt=""></div>
-  <div class="tile"><img alt=""><img alt=""></div>
-  <div class="tframe hero"></div><div class="tframe"></div><div class="tframe"></div><div class="tframe"></div>
-  <div class="tedge hero"></div><div class="tedge"></div><div class="tedge"></div><div class="tedge"></div>
-
+  <img id="film" alt="">
+  <div id="black"></div>
   <!-- Logo matte pulled from the film itself (scripts/logo_matte.py), so it sits exactly on the burned-in one. -->
   <img id="logo" alt="Home Deluxe">
-  <div id="black"></div>
 </div>
 
 <script src="composition.js"></script>
