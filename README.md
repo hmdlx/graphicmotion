@@ -9,7 +9,7 @@ rendert. ffmpeg schreibt die Frames anschließend als MP4.
 | Projekt | Format | Ergebnis |
 |---|---|---|
 | `projects/laguna-m` | 9:16, 1080×1920, 30 fps, 18,5 s | `output/HomeDeluxe_Laguna-M_Reel_9x16.mp4` + Titelbild |
-| `projects/callado-zubehoer` | 16:9, 1920×1080, 30 fps, 35,1 s | `output/HomeDeluxe_CALLADO-Zubehoer_16x9_Intro.mp4` |
+| `projects/callado-zubehoer` | 16:9, 1920×1080, 30 fps, 36,6 s | `output/HomeDeluxe_CALLADO-Zubehoer_16x9_Intro.mp4` |
 
 ### Laguna M – Schnitt und Übergänge
 
@@ -46,7 +46,14 @@ abbricht. Die Auflösung liefert der Film selbst: Aus dem Schwarz zündet sein L
 | 3,8–4,0 s | harter Schnitt auf Schwarz (Cliffhanger) | – |
 | ab 4,0 s | Film ab Frame 44: Schwarz, dann zündet der Lichtstreifen; ab Frame 62 läuft die Quelle direkt weiter | – |
 
-Gesamtlänge 35,1 s (Film ohne seine ersten 1,5 s Schwarz). Texte in Poppins wie im Film: Kicker in
+Der CALLANUT-Teil (03 WPC-Nutleiste) stammt aus der überarbeiteten Fassung
+`source/HomeDeluxe_CALLADO-Zubehoer_16x9_v2.mp4`: Dort schwebt eine einzelne Nutleiste ins Bild
+(6,3 s statt 4,8 s). Die Fassung ist bis Frame 494 und ab Frame 672 (= Original 627) mit dem
+Original identisch; geschnitten wird mit etwas Luft in diesen Bereichen – v2 Frame 490–679
+ersetzt Original Frame 490–634. Die Endkarte bleibt die des Originals (mit „Jetzt entdecken“ und
+homedeluxe.de, die in v2 fehlen).
+
+Gesamtlänge 36,6 s (Film ohne seine ersten 1,5 s Schwarz). Texte in Poppins wie im Film: Kicker in
 gesperrten Versalien, Zeile in Poppins Bold wie der Claim der End-Szene, auf der Position der
 Kapiteltitel. Das Logo steht die ganze Zeit an seiner Stelle: Der Film blendet es erst zwischen
 Frame 36 und 60 ein, deshalb laufen die Frames 44–61 noch durch die Komposition – ohne das
@@ -80,12 +87,13 @@ npm run callado:frames      # Film-Frames 0–160 -> JPG-Plates (Logo-Referenz +
 npm run callado:ai          # KI-Clips -> JPG-Plates (build/callado-zubehoer/ai/)
 npm run callado:logo        # Logo-Maske + logofreie Film-Frames 44–61
 npm run callado:intro       # Intro verlustfrei -> build/callado-zubehoer/intro.mp4
-npm run callado:join        # Intro + Film ab Frame 62 -> projects/callado-zubehoer/output/…_Intro.mp4
+npm run callado:join        # Schnittliste: Intro, Film 62–489, v2 490–679 (CALLANUT), Film ab 635 -> output/…_Intro.mp4
 npm run callado:stills      # Kontrollbilder nach build/callado-zubehoer/stills
 ```
 
 Der Anschluss-Frame steht zweimal: `JOIN` in `composition.js` und die `62` in `callado:join`
-(dazu der `--clean`-Bereich `44-61` in `callado:logo`, der bei `JOIN − 1` endet).
+(dazu der `--clean`-Bereich `44-61` in `callado:logo`, der bei `JOIN − 1` endet). Die Schnittliste
+in `callado:join` nimmt Bildbereiche als `datei@von-bis` (inklusive, `von-` = bis zum Ende).
 
 ## Struktur
 
@@ -97,7 +105,7 @@ scripts/extract_frames.sh Fertigen Film in Originalgröße als Plates ablegen
 scripts/track_points.py   Template-Tracking für Marker, die am Bild kleben
 scripts/logo_matte.py     Eingebranntes Logo als Maske herauslösen und aus Plates entfernen
 scripts/render.js         Chromium -> PNG-Frames -> ffmpeg (H.264 + stumme AAC-Spur, --crf 0 = verlustfrei)
-scripts/join_intro.sh     Intro vor einen fertigen Film setzen, Film läuft ab Frame N weiter
+scripts/cutlist.sh        Bildbereiche aus fertigen Clips aneinanderschneiden (ein Encode)
 projects/<name>/          source/, composition.html/.js, tracking.json, tracks.js, output/
 ```
 

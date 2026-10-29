@@ -4,7 +4,7 @@
 // Two AI shots (Higgsfield: Nano Banana Pro keyframes → Kling 4.0) build up to the moment the
 // light comes on, then the picture cuts to black. Out of the black the film's own opening takes
 // over (its LED stripe flares up) under the logo matte, because the film only fades its logo in
-// there; the finished film continues the source at JOIN (scripts/join_intro.sh, package.json).
+// there; the finished film continues the source at JOIN (scripts/cutlist.sh, package.json).
 (() => {
   const FPS = 30;
   const W = 1920, H = 1080;
