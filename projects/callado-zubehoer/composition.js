@@ -9,7 +9,7 @@ import { BokehPass } from 'three/addons/postprocessing/BokehPass.js';
 import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
 import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
-import { buildScene, POSTS, POST_H, LED_Y, SLOPE } from './scene.js';
+import { buildScene, POSTS, POST_H, LED_Y, SLOPE, HERO } from './scene.js';
 
 const FPS = 30, W = 1920, H = 1080;
 const params = new URLSearchParams(location.search);
@@ -20,14 +20,16 @@ const T = {
   stripe: [[4.6, 2.2], [0.8, 3.0], [5.0, 2.2]],        // per post: LED run start, duration (slow motion)
   cap: [[9.9, 1.3], [9.4, 1.3], [9.65, 1.3]],          // per post: light band ignites
   lightsOn: 12.55,                                      // studio flickers on
-  dusk: 24.4,                                           // cut to evening
-  end: 28.6,                                            // end card
-  total: 32.6,
+  hero: [16.4, 21.95],                                  // CALLANUT hero set lit
+  dusk: 25.9,                                           // cut to evening
+  end: 30.1,                                            // end card
+  total: 34.1,
 };
 const TOTAL = Math.round(T.total * FPS);
 
 // Camera takes: position + target curves, fov, depth of field. u is eased over the take.
 const V = (x, y, z) => new THREE.Vector3(x, y, z);
+const AT = (x, y, z) => HERO.clone().add(V(x, y, z));   // relative to the CALLANUT hero set
 const TAKES = [
   { t: [0, 4.2], ease: 'drift', pos: [V(0.36, 0.24, 0.78), V(0.4, 0.66, 0.84), V(0.44, 1.06, 0.9)],
     tgt: [V(0.1, 0.42, 0.05), V(0.1, 0.84, 0.05), V(0.1, 1.24, 0.05)], fov: [30, 28], ap: 0.006 },
@@ -39,26 +41,27 @@ const TAKES = [
     tgt: [V(1.74, 1.88, 0), V(1.0, 1.55, 0), V(0.3, 1.45, 0)], fov: [26, 36], ap: [0.0045, 0.0008] },
   { t: [13.4, 16.4], ease: 'drift', pos: [V(3.9, 1.65, 5.0), V(3.3, 1.55, 5.4)],
     tgt: [V(0.3, 1.45, 0), V(0.0, 1.42, 0)], fov: [36, 35], ap: 0.0008 },
-  { t: [16.4, 16.95], ease: 'whip', pos: [V(3.3, 1.55, 5.4), V(-0.8, 0.8, 3.4), V(-2.84, 0.16, 1.78)],
-    tgt: [V(0.0, 1.42, 0), V(-2.2, 0.5, 0.9), V(-3.24, 0.07, 1.27)], fov: [35, 30], ap: [0.0008, 0.007] },
-  { t: [16.95, 20.4], ease: 'drift', pos: [V(-2.84, 0.16, 1.78), V(-2.7, 0.5, 2.1), V(-2.62, 1.0, 2.3)],
-    tgt: [V(-3.24, 0.07, 1.27), V(-3.36, 0.42, 0.9), V(-3.42, 0.62, 0.7)], fov: [30, 33], ap: [0.007, 0.003] },
-  { t: [20.4, 20.95], ease: 'whip', pos: [V(-2.62, 1.0, 2.3), V(-0.4, 1.4, 4.2), V(1.0, 1.55, 4.9)],
-    tgt: [V(-3.42, 0.62, 0.7), V(0.2, 0.8, 0), V(1.85, 0.66, 0)], fov: [33, 33], ap: [0.003, 0.001] },
-  { t: [20.95, 24.4], ease: 'drift', pos: [V(1.0, 1.55, 4.9), V(2.4, 1.52, 5.0), V(3.5, 1.5, 4.9)],
+  { t: [16.4, 16.95], ease: 'whip', pos: [V(3.3, 1.55, 5.4), V(-2.6, 1.3, 6.2), AT(0.05, 1.0, 0.34)],
+    tgt: [V(0.0, 1.42, 0), V(-5.0, 1.0, 3.5), AT(0, 0.97, 0)], fov: [35, 30], ap: [0.0008, 0.007] },
+  { t: [16.95, 21.9], ease: 'drift', pos: [AT(0.05, 1.0, 0.34), AT(-0.32, 1.1, 0.6), AT(-0.52, 1.2, 0.84)],
+    tgt: [AT(0, 0.97, 0), AT(0.0, 1.0, -0.15), AT(-0.04, 1.02, -0.27)], fov: [30, 29], ap: [0.007, 0.003] },
+  { t: [21.9, 22.45], ease: 'whip', pos: [AT(-0.52, 1.2, 0.84), V(-2.5, 1.5, 6.0), V(1.0, 1.55, 4.9)],
+    tgt: [AT(-0.04, 1.02, -0.27), V(0.0, 1.0, 0), V(1.85, 0.66, 0)], fov: [29, 33], ap: [0.003, 0.001] },
+  { t: [22.45, 25.9], ease: 'drift', pos: [V(1.0, 1.55, 4.9), V(2.4, 1.52, 5.0), V(3.5, 1.5, 4.9)],
     tgt: [V(1.85, 0.66, 0), V(2.15, 0.64, 0), V(2.4, 0.62, 0)], fov: [33, 33], ap: 0.001 },
-  { t: [24.4, 32.6], ease: 'drift', pos: [V(-1.6, 1.25, 6.6), V(-1.0, 1.2, 5.6), V(-0.6, 1.15, 5.0)],
+  { t: [25.9, 34.1], ease: 'drift', pos: [V(-1.6, 1.25, 6.6), V(-1.0, 1.2, 5.6), V(-0.6, 1.15, 5.0)],
     tgt: [V(0.4, 1.0, 0), V(0.3, 1.0, 0), V(0.25, 1.0, 0)], fov: [38, 36], ap: [0.0007, 0.0007] },
 ];
 
 // Type: [element id, in, out]
 const TITLES = [['t-stripe', 5.7, 8.15], ['t-cover', 10.3, 12.3], ['t-callado', 13.5, 16.15],
-  ['t-nut', 17.4, 20.2], ['t-schraeg', 21.5, 24.2], ['t-hero', 25.1, T.end - 0.1]];
+  ['t-nut', 17.7, 21.65], ['t-schraeg', 23.0, 25.7], ['t-hero', 26.6, T.end - 0.1]];
 const CALLOUTS = [
   { at: V(0, 1.0, 0.052), t: [6.4, 8.15], dx: 150, dy: -110, text: 'Solar-LED' },
   { at: V(1.8, POST_H + 0.038, 0.062), t: [10.9, 12.3], dx: -230, dy: -150, text: 'Solar-LED' },
 ];
-const SLOPE_LINE = { t: [21.8, 24.2] };
+const SLOPE_LINE = { t: [23.3, 25.7] };
+const NUT_LINE = { t: [17.25, 19.5] };              // profile ends drawn on
 
 // ------------------------------------------------------------------ helpers
 const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
@@ -278,6 +281,28 @@ function slopeLine(t, ink) {
   for (const e of Object.values(slopeEls)) { e.setAttribute('stroke', ink); e.style.opacity = (1 - out).toFixed(3); }
 }
 
+// Technical draw-on of the two CALLANUT profile ends, pinned to the 3D outlines.
+const nutEls = [0, 1].map(() => mk('polyline', { fill: 'none', 'stroke-width': 2.2, 'stroke-linejoin': 'round' }));
+function nutLine(t, ink) {
+  const [t0, t1] = NUT_LINE.t;
+  const out = prog(t, t1, 0.35), on = t >= t0 && out < 1;
+  nutEls.forEach(e => { e.style.display = on ? '' : 'none'; });
+  if (!on) return;
+  set.heroEnds().forEach((pts, i) => {
+    const raw = [...pts, pts[0]].map(p => project(p));
+    const cx = raw.reduce((a, q) => a + q.x, 0) / raw.length, cy = raw.reduce((a, q) => a + q.y, 0) / raw.length;
+    const sp = raw.map(q => ({ x: cx + (q.x - cx) * 1.16, y: cy + (q.y - cy) * 1.16 }));
+    let len = 0;
+    for (let j = 1; j < sp.length; j++) len += Math.hypot(sp[j].x - sp[j - 1].x, sp[j].y - sp[j - 1].y);
+    const e = nutEls[i];
+    e.setAttribute('points', sp.map(q => `${q.x.toFixed(1)},${q.y.toFixed(1)}`).join(' '));
+    e.setAttribute('stroke', ink);
+    e.setAttribute('stroke-dasharray', len.toFixed(1));
+    e.setAttribute('stroke-dashoffset', (len * (1 - E.inOutCubic(prog(t, t0 + i * 0.2, 1.0)))).toFixed(1));
+    e.style.opacity = (1 - out).toFixed(3);
+  });
+}
+
 // ------------------------------------------------------------------ render one frame
 const ledState = t => ({
   stripe: T.stripe.map(([s, d]) => ({ level: t >= s ? 1 : 0, head: E.inOutSine(prog(t, s, d)) })),
@@ -289,7 +314,9 @@ function frame(n) {
   const L = lightLevel(t);
   const dusk = t >= T.dusk ? 1 : 0;
   const led = ledState(t);
-  set.update({ light: L, dusk, t, ...led });
+  const hero = t >= T.hero[0] && t < T.hero[1] ? 1 : 0;
+  const heroSpin = lerp(0.15, -0.38, E.inOutSine(prog(t, T.hero[0] + 0.55, T.hero[1] - T.hero[0] - 0.55)));
+  set.update({ light: L, dusk, t, hero, heroSpin, ...led });
 
   // Camera and its motion for the whip blur.
   const s = shot(t);
@@ -348,11 +375,12 @@ function frame(n) {
 
   CALLOUTS.forEach(c => callout(c, t, ink));
   slopeLine(t, ink);
+  nutLine(t, ink);
   TITLES.forEach(([id, a, b]) => title(document.getElementById(id), t, a, b));
 
   const list = $$('#hero-list span');
   list.forEach((e, i) => {
-    const a = E.outExpo(prog(t, 25.9 + i * 0.12, 0.8)), b = E.inExpo(prog(t, T.end - 0.1 + i * 0.05, 0.4));
+    const a = E.outExpo(prog(t, 27.4 + i * 0.12, 0.8)), b = E.inExpo(prog(t, T.end - 0.1 + i * 0.05, 0.4));
     e.style.opacity = (a * (1 - b)).toFixed(3);
     e.style.transform = `translateY(${((1 - a) * 24 - b * 16).toFixed(1)}px)`;
   });
@@ -371,12 +399,6 @@ function frame(n) {
     $('#end-logo .shine').style.backgroundPosition = `${lerp(110, -10, E.inOutCubic(prog(t, T.end + 1.4, 1.1)))}% 0`;
     const sl = E.outExpo(prog(t, T.end + 1.0, 0.9));
     $('#end .slogan span').style.transform = `translateY(${(1 - sl) * 110}%)`;
-    const cta = E.outExpo(prog(t, T.end + 1.5, 0.8));
-    $('#cta').style.opacity = cta.toFixed(3);
-    $('#cta').style.transform = `translateY(${(1 - cta) * 26}px)`;
-    $('#cta .url i').style.transform = `scaleX(${E.inOutCubic(prog(t, T.end + 1.9, 0.7))})`;
-    const nudge = t > T.end + 2.4 ? Math.pow(Math.sin(Math.PI * (((t - T.end - 2.4) % 1.6) / 1.6)), 2) : 0;
-    $('#cta .btn svg').style.transform = `translateX(${nudge * 8}px)`;
   }
 }
 

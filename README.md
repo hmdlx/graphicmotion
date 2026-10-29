@@ -9,7 +9,7 @@ rendert. ffmpeg schreibt die Frames anschließend als MP4.
 | Projekt | Format | Ergebnis |
 |---|---|---|
 | `projects/laguna-m` | 9:16, 1080×1920, 30 fps, 18,5 s | `output/HomeDeluxe_Laguna-M_Reel_9x16.mp4` + Titelbild |
-| `projects/callado-zubehoer` | 16:9, 1920×1080, 30 fps, 32,6 s | `output/HomeDeluxe_CALLADO-Zubehoer_16x9.mp4` + Titelbild |
+| `projects/callado-zubehoer` | 16:9, 1920×1080, 30 fps, 34,1 s | `output/HomeDeluxe_CALLADO-Zubehoer_16x9.mp4` + Titelbild |
 
 ### Laguna M – Schnitt und Übergänge
 
@@ -46,10 +46,10 @@ Dunkeln), an 3D-Punkte geheftete Callouts und kinetische Typo. Keine KI-generier
 | 4,2–8,4 s | Kamera zieht auf, die anderen Pfosten zünden nacheinander, Titel „CALLUX STRIPE“, Callout „Solar-LED“ |
 | 8,4–12,4 s | Kran hoch zu den Kappen, die Lichtbänder zünden aus der Mitte, Lens Flares, Titel „CALLUX COVER“ |
 | 12,4–16,4 s | Studiolicht flackert an, Kinobalken öffnen sich, Reißschwenk auf die Totale, Titel „CALLADO – Passendes Zubehör“ |
-| 16,4–20,4 s | Reißschwenk zu CALLANUT: Makro auf die Profil-Enden (Nut und Feder), Kran hoch, „in verschiedenen Mengen“ |
-| 20,4–24,4 s | Reißschwenk zum Zaunende: Schrägelement, Maßlinie zeichnet die Schräge nach |
-| 24,4–28,6 s | Schnitt in den Abend: LEDs und Kappen leuchten, „Alles für deinen CALLADO.“ |
-| 28,6–32,6 s | Endcard über dem unscharfen Set: Logo mit Lichtkante, Slogan, „Jetzt entdecken“ + homedeluxe.de |
+| 16,4–21,9 s | Reißschwenk zu CALLANUT: die beiden Profile schweben wie auf dem Produktfoto, Stirnseiten (Feder, Nut mit grauem WPC-Kern) zur Kamera, Kontur wird nachgezeichnet, Kamera kreist zur Dreiviertelansicht, „in verschiedenen Mengen“ |
+| 21,9–25,9 s | Reißschwenk zum Zaunende: Schrägelement, Maßlinie zeichnet die Schräge nach |
+| 25,9–30,1 s | Schnitt in den Abend: LEDs und Kappen leuchten, „Alles für deinen CALLADO.“ |
+| 30,1–34,1 s | Endcard über dem unscharfen Set: Logo mit Lichtkante und Slogan |
 
 Die Produktdaten stammen aus dem Katalog „Bauen – OBI Hausmesse 2026“, Seite 5. Maße der Modelle:
 Element 170 × 180 cm, Pfosten 10 × 10 × 185 cm (Katalog); Kappe, Lichtband, Schrägelement und
@@ -103,4 +103,5 @@ Texte und Timings ändern: Texte stehen in `projects/laguna-m/composition.html`.
 Bei CALLADO Zubehör stehen die Texte in `projects/callado-zubehoer/composition.html`. In
 `composition.js` stehen die Zeitleiste `T` (LED-Zündzeiten, Licht an, Abend, Endcard), die Kamera-
 einstellungen `TAKES` (Positionen, Blickpunkte, Brennweite, Blende), die Titel `TITLES` und die
-Callouts. Das 3D-Set mit Maßen, Materialien und Licht steht in `scene.js`.
+Callouts. Das 3D-Set mit Maßen, Materialien und Licht steht in `scene.js`; das CALLANUT-Set für die
+Profilansicht steht abseits (`HERO`), damit es in keiner anderen Einstellung zu sehen ist.

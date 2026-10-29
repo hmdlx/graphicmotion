@@ -11,6 +11,8 @@ export const PANEL_H = 1.8;
 export const LED_Y = [0.16, 1.72];                 // CALLUX STRIPE runs between these heights
 export const SLOPE = { x0: 1.85, x1: 2.7, yHigh: 1.8, yLow: 1.12, post: 2.76 };
 export const NUT_POS = new THREE.Vector3(-3.05, 0, 0.95);   // CALLANUT pair on the floor
+export const HERO = new THREE.Vector3(-7.0, 0, 2.6);        // CALLANUT hero set (floor point below it)
+export const HERO_Y = [0.95, 0.9, -1.1];                    // front ends' height, profile length, tilt (rad)
 
 const WARM = new THREE.Color(1.0, 0.78, 0.52);      // CALLUX STRIPE, warm white
 const COOL = new THREE.Color(0.92, 0.96, 1.0);      // CALLUX COVER band
@@ -81,7 +83,7 @@ export async function buildScene(renderer) {
     cap: new THREE.MeshStandardMaterial({ color: 0x0d0e10, roughness: 0.32 }),
     alu: new THREE.MeshStandardMaterial({ color: 0xc4c7cc, metalness: 0.75, roughness: 0.48 }),
     floor: new THREE.MeshStandardMaterial({ color: 0xdfe1e4, roughness: 0.42 }),
-    nutSide: new THREE.MeshStandardMaterial({ color: 0x111215, roughness: 0.45 }),
+    nutSide: new THREE.MeshStandardMaterial({ color: 0x060607, roughness: 0.9, bumpMap: postBump, bumpScale: 0.4, envMapIntensity: 0.0 }),
     nutEnd: new THREE.MeshStandardMaterial({ color: 0x9d9e98, bumpMap: boardBump, bumpScale: 3, roughness: 0.9 }),
   };
   const add = (geo, mat, x, y, z, shadow = true) => {
@@ -193,6 +195,53 @@ export async function buildScene(renderer) {
   nut.position.copy(NUT_POS);
   scene.add(nut);
 
+  // CALLANUT hero: the pair from the product photo, floating in its own corner of the studio
+  // (out of every other shot) with its own key and rim light. Tongue and groove face the camera;
+  // the groove shows the grey WPC core at its bottom.
+  const hero = new THREE.Group(), tilt = new THREE.Group();
+  hero.add(tilt);
+  tilt.rotation.x = HERO_Y[2];                      // lean back: the lower ends point at the camera
+  const heroLen = HERO_Y[1];
+  const heroProf = (tongue) => {
+    const g = new THREE.ExtrudeGeometry(section(tongue), { depth: heroLen, bevelEnabled: true, bevelSize: 0.0012, bevelThickness: 0.0012, bevelSegments: 2 });
+    g.rotateX(-Math.PI / 2);                        // length along y, tongue towards +z, groove towards -z
+    boxUV(g, 0.45, 0.06, 0, true);
+    const p = new THREE.Group();
+    const m = new THREE.Mesh(g, [M.nutEnd, M.nutSide]);
+    m.castShadow = m.receiveShadow = true;
+    p.add(m);
+    if (!tongue) {
+      const core = new THREE.Mesh(new THREE.BoxGeometry(0.0176, heroLen, 0.0008), M.nutEnd);
+      core.position.set(0, heroLen / 2, -0.0054);
+      p.add(core);
+    }
+    tilt.add(p);
+    return { p, tongue };
+  };
+  const heroA = heroProf(true), heroB = heroProf(false);
+  heroA.p.position.set(-0.036, 0, 0);
+  heroB.p.position.set(0.036, 0, 0);
+  heroB.p.rotation.y = Math.PI;                     // groove to the front
+  hero.position.set(HERO.x, HERO_Y[0], HERO.z);
+  scene.add(hero);
+  const heroKey = new THREE.SpotLight(0xffffff, 0, 0, 0.5, 0.9, 1.2);
+  heroKey.position.set(HERO.x - 0.9, 1.25, HERO.z + 2.2);   // low and in front: lights the profile ends
+  heroKey.target.position.set(HERO.x, 1.0, HERO.z - 0.2);
+  heroKey.shadow.mapSize.set(1024, 1024);
+  heroKey.shadow.bias = -0.0004;
+  heroKey.shadow.radius = 6;
+  const heroRim = new THREE.SpotLight(0xe8f0ff, 0, 0, 0.6, 0.9, 1.2);
+  heroRim.position.set(HERO.x + 1.3, 2.3, HERO.z - 1.6);
+  heroRim.target.position.copy(heroKey.target.position);
+  scene.add(heroKey, heroKey.target, heroRim, heroRim.target);
+  const sectionPts = [section(true), section(false)].map(sh => sh.getPoints());
+
+  // Outlines of the two lower profile ends in world space (for the drawn-on overlay).
+  function heroEnds() {
+    hero.updateMatrixWorld(true);
+    return [heroA, heroB].map((h, i) => sectionPts[i].map(q => new THREE.Vector3(q.x, -0.0012, -q.y).applyMatrix4(h.p.matrixWorld)));
+  }
+
   // Studio lights (switched by update()).
   const studio = {
     hemi: new THREE.HemisphereLight(0xffffff, 0xd6d9de, 0),
@@ -237,6 +286,11 @@ export async function buildScene(renderer) {
   // state: { light 0..1 studio, dusk 0..1, stripe[k] {level, head}, cap[k] {level, head}, t }
   function update(st) {
     const L = st.light, dk = st.dusk;
+    heroKey.intensity = 32 * (st.hero || 0);
+    heroRim.intensity = 30 * (st.hero || 0);
+    heroKey.castShadow = (st.hero || 0) > 0;
+    hero.rotation.y = st.heroSpin || 0;
+    hero.position.y = HERO_Y[0] + 0.006 * Math.sin(st.t * 1.4);
     studio.hemi.intensity = 0.4 * L + 0.3 * dk;
     studio.hemi.color.setRGB(1, 1, 1).lerp(new THREE.Color(0.55, 0.66, 0.85), dk);
     studio.key.intensity = 120 * L + 30 * dk;
@@ -283,5 +337,5 @@ export async function buildScene(renderer) {
     dg.attributes.alpha.needsUpdate = true;
   }
 
-  return { scene, update, stripes, bands, nut };
+  return { scene, update, stripes, bands, nut, heroEnds };
 }
