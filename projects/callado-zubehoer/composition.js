@@ -303,7 +303,7 @@ function frame(n) {
 
   bokeh.uniforms.focus.value = s.pos.distanceTo(s.tgt);
   bokeh.uniforms.aperture.value = t >= T.end ? lerp(s.ap, 0.02, E.inOutCubic(prog(t, T.end, 1.4))) : s.ap;
-  bokeh.uniforms.maxblur.value = 0.012;
+  bokeh.uniforms.maxblur.value = t >= T.end ? lerp(0.012, 0.03, E.inOutCubic(prog(t, T.end, 1.4))) : 0.012;
   const dark = 1 - Math.max(L, dusk * 0.4);
   bloom.strength = 0.3 + 0.45 * dark + (L > 0 && t < T.lightsOn + 0.5 ? 0.5 : 0);
   bloom.radius = lerp(0.5, 0.35, dark);
@@ -363,6 +363,7 @@ function frame(n) {
   const ec = t >= T.end;
   $('#end').style.display = ec ? '' : 'none';
   if (ec) {
+    $('#end-dim').style.opacity = E.inOutSine(prog(t, T.end, 1.2)).toFixed(3);
     const lgA = E.outExpo(prog(t, T.end + 0.5, 1.2));
     $('#end-logo').style.opacity = lgA.toFixed(3);
     $('#end-logo').style.transform = `scale(${lerp(1.08, 1, lgA).toFixed(4)})`;

@@ -2,7 +2,7 @@
 // Render an HTML composition frame by frame (Chromium via Playwright) and
 // pipe the PNG frames into ffmpeg.
 //
-//   node scripts/render.js <composition.html> <out.mp4> [--plates <dir>] [--audio <file>] [--range t0,t1]
+//   node scripts/render.js <composition.html> <out.mp4> [--plates <dir>] [--audio <file>] [--range t0,t1] [--crf 16]
 //   node scripts/render.js <composition.html> <out_dir> [--plates <dir>] --stills 1,4.5,18
 //
 // --webgl serves the repo over http://127.0.0.1 (ES modules and WebGL textures need an
@@ -100,7 +100,7 @@ function writeFrame(stream, buf) {
     '-f', 'image2pipe', '-framerate', String(FPS), '-c:v', 'png', '-i', '-',
     ...audio,
     '-map', '0:v', '-map', '1:a',
-    '-c:v', 'libx264', '-preset', 'slow', '-crf', '16', '-pix_fmt', 'yuv420p',
+    '-c:v', 'libx264', '-preset', 'slow', '-crf', String(opts.crf || 16), '-pix_fmt', 'yuv420p',
     '-profile:v', 'high', '-level', '4.2', '-r', String(FPS),
     '-c:a', 'aac', '-b:a', opts.audio ? '192k' : '128k', '-shortest', '-movflags', '+faststart',
     opts.out,

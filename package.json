@@ -8,7 +8,7 @@
     "laguna-m:render": "node scripts/render.js projects/laguna-m/composition.html projects/laguna-m/output/HomeDeluxe_Laguna-M_Reel_9x16.mp4 --plates build/laguna-m/plates",
     "laguna-m:stills": "node scripts/render.js projects/laguna-m/composition.html build/laguna-m/stills --plates build/laguna-m/plates --stills 1,2,4,5,7,10,11,13,14.5,16,17.6,18,19,21",
     "callado-zubehoer:textures": "python3 -I scripts/wood_texture.py projects/callado-zubehoer/source/callux-cover.jpg \"0,478,380,722;668,478,1000,722;0,762,380,995;668,762,1000,995\" projects/callado-zubehoer/source/tex/board.jpg projects/callado-zubehoer/source/tex/board-bump.jpg --tone 62,62,66 && python3 -I scripts/wood_texture.py projects/callado-zubehoer/source/callux-cover.jpg \"0,478,380,722;668,478,1000,722;0,762,380,995;668,762,1000,995\" projects/callado-zubehoer/source/tex/post.jpg projects/callado-zubehoer/source/tex/post-bump.jpg --size 1024x256 --tone 50,50,54 --contrast 0.35",
-    "callado-zubehoer:render": "node scripts/render.js projects/callado-zubehoer/composition.html projects/callado-zubehoer/output/HomeDeluxe_CALLADO-Zubehoer_16x9.mp4 --webgl",
+    "callado-zubehoer:render": "node scripts/render.js projects/callado-zubehoer/composition.html projects/callado-zubehoer/output/HomeDeluxe_CALLADO-Zubehoer_16x9.mp4 --webgl --crf 21",
     "callado-zubehoer:stills": "node scripts/render.js projects/callado-zubehoer/composition.html build/callado-zubehoer/stills --webgl --stills 2.5,6.5,10.8,13.0,14.5,17.6,19.5,22.8,26.0,30.5"
   },
   "devDependencies": {
