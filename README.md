@@ -48,6 +48,22 @@ CMS-Block (Plenty) passt. Kopiert wird alles zwischen `CMS-BLOCK START` und `CMS
   Bedingungen eintragen.
 - Produktbilder kommen direkt aus dem Shop-CDN (`cdn02.plentyone.com`), Preise sind bewusst nicht
   eingebaut.
+- Der Block bricht aus schmalen Inhaltsspalten aus (bis 1340 px, inline per `width:min(…)` und
+  negativem `margin-left`), damit er auch in Shopify-Themes mit „schmaler“ Seitenbreite voll wirkt.
+
+### Shopify
+
+Die LP liegt im Shopify-Shop als Seite `winter-suchspiel` (Standard-Seiten-Template, SEO-ausgeblendet
+über das Metafeld `seo.hidden = 1`). Den Seiteninhalt erzeugt:
+
+```bash
+python3 -I landingpages/winter-clown/build_shopify_body.py   # -> landingpages/winter-clown/shopify-body.html
+```
+
+Das Script nimmt den CMS-Block aus `index.html`, entfernt Kommentare und Zeilenumbrüche und stellt
+Attribute auf einfache Anführungszeichen um, damit der Inhalt als JSON-String an `pageUpdate` (Feld
+`body`) gehen kann. Shopify schreibt SVG-Attribute beim Speichern klein (`viewbox`, `attributename` …);
+der HTML-Parser des Browsers korrigiert das wieder, Schnee und Clown-Animation laufen weiter.
 
 ## Rendern
 
