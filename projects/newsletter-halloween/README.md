@@ -55,6 +55,21 @@ dann Text und Button „ZUM CLOWN“. Kürbisse, Fledermäuse und Netz kommen au
    der Hintergrund eingefroren (`motion_mask`, weiche Kante); das GIF speichert pro Bild nur noch
    den Clown-Ausschnitt. Stellschrauben oben im Skript: `GIF_FPS`, `GIF_COLORS`, `GIF_MOTION_X`.
 
+## Hero-Video für Shop und Social
+
+`npm run halloween:videos` baut den Clown als MP4 (H.264, 24 fps, 8,1 s, ohne Ton, Endlosschleife
+wie das GIF: sitzt → verblasst → leeres Sofa → kommt hervor → setzt sich) nach `output/hero-video/`:
+
+| Datei | Ausschnitt |
+|---|---|
+| `hero_clown_1440x1440.mp4` | Quadrat, Clown im rechten Drittel |
+| `hero_clown_1600x560.mp4` | Banner 20:7 über die ganze Breite |
+| `hero_clown_3200x1120.mp4` | dasselbe Banner in doppelter Auflösung |
+
+Dazu je ein Standbild `_poster.jpg` (Clown sitzt). Ohne Text und ohne Navy-Verlauf. Der Hintergrund
+kommt aus dem Standbild (1774 × 887), nur der Clown aus dem KI-Video (1344 × 672) – im 3200er ist er
+deshalb rund 2,4-fach hochskaliert und bei 100 % etwas weicher als der Raum.
+
 ## Klick → Halloween-Seite
 
 - Hero-Kopf, Hero-GIF, Gutschein-Teaser und die beiden Buttons „ZUM CLOWN“ verlinken auf
@@ -127,3 +142,4 @@ npm run halloween:build     # alles: Grafiken -> Bilder/GIF -> HTML + Text -> Vo
 | `halloween:html` | Newsletter-HTML + Textversion; Kopf und Footer unverändert aus `source/newsletter-new-ins-kw43.html` |
 | `halloween:preview` | Ganzseiten-Vorschau Desktop/Mobil, Pop-up-Vorschau; prüft die Clown-Links (5, Hero → Halloween-Seite) und das Pop-up mit/ohne `?halloween=clown` |
 | `halloween:vorschau` | eigenständige Vorschau-HTMLs mit eingebetteten Bildern -> `output/vorschau/` (nicht für den Versand) |
+| `halloween:videos` | Hero-Video in 1440×1440, 1600×560, 3200×1120 -> `output/hero-video/` (nicht Teil von `halloween:build`) |
