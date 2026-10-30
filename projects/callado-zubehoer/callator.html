@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>CALLADO Zubehör – Kapitel 05 CALLATOR 16:9</title>
+<style>
+  @font-face { font-family: Poppins; font-weight: 400; src: url(../../assets/fonts/poppins/poppins-latin-400-normal.woff2) format("woff2"); }
+  @font-face { font-family: Poppins; font-weight: 500; src: url(../../assets/fonts/poppins/poppins-latin-500-normal.woff2) format("woff2"); }
+  @font-face { font-family: Poppins; font-weight: 600; src: url(../../assets/fonts/poppins/poppins-latin-600-normal.woff2) format("woff2"); }
+  @font-face { font-family: Poppins; font-weight: 700; src: url(../../assets/fonts/poppins/poppins-latin-700-normal.woff2) format("woff2"); }
+  @font-face { font-family: Poppins; font-weight: 800; src: url(../../assets/fonts/poppins/poppins-latin-800-normal.woff2) format("woff2"); }
+
+  /* Kapiteltitel wie „04 —— SCHRÄGELEMENT / CALLADO“ im Film (an dessen Tinte vermessen):
+     Nummer navy, Linie, Bezeichnung gesperrt in Schiefergrau, Titel Poppins ExtraBold navy,
+     Unterzeile grau. Listeneintrag wie „▪ CALLUX STRIPE … ▪ SCHRÄGELEMENT“ der Schlussszene. */
+  * { box-sizing: border-box; margin: 0; padding: 0; border-radius: 0; }
+  html, body { width: 1920px; height: 1080px; overflow: hidden; background: #000; }
+  body { font-family: Poppins, sans-serif; -webkit-font-smoothing: antialiased; }
+
+  #stage { position: absolute; inset: 0; overflow: hidden; background: #000; }
+  .layer { position: absolute; inset: 0; overflow: hidden; }
+  .layer img { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; display: block; }
+  #ai img { left: -7.5px; width: 1935px; }   /* Kling delivers 1928 × 1076: fill the frame, trim the sides */
+
+  .ln { display: block; overflow: hidden; padding-bottom: .1em; margin-bottom: -.1em; }
+  .ln > span { display: inline-block; will-change: transform; }
+
+  #kicker { position: absolute; left: 150px; top: 766px; display: flex; align-items: center; height: 22px; white-space: nowrap; }
+  #kicker .num { font-weight: 700; font-size: 21.5px; line-height: 1; letter-spacing: .15em; color: #0f1e2d; }
+  #kicker i { position: absolute; left: 52px; top: 11px; width: 46px; height: 2px; background: #16202a; transform-origin: left; }
+  #kicker .label { position: absolute; left: 116px; top: 0; font-weight: 600; font-size: 21.5px; line-height: 1; letter-spacing: .32em; color: #4d5358; }
+  #title { position: absolute; left: 150px; top: 805px; font-weight: 800; font-size: 120px; line-height: 1; letter-spacing: -.01em; color: #0f1e2d; white-space: nowrap; }
+  #sub { position: absolute; left: 150px; top: 948.5px; font-weight: 400; font-size: 34.5px; line-height: 1; color: #474e55; white-space: nowrap; }
+
+  #item { position: absolute; left: 1257px; top: 868px; height: 30px; white-space: nowrap; color: #fff; }
+  #item i { position: absolute; left: 0; top: 10px; width: 8px; height: 8px; background: #fff; }
+  #item span { position: absolute; left: 22px; top: 0; font-weight: 500; font-size: 25px; line-height: 1; letter-spacing: .12em; }
+
+  #logo { position: absolute; left: 1560px; top: 46px; display: block; }
+</style>
+</head>
+<body>
+<div id="stage">
+  <div class="layer" id="ai"><img alt=""><img alt=""></div>
+  <div class="layer" id="film"><img alt=""></div>
+
+  <div id="kicker">
+    <span class="ln num"><span>05</span></span><i></i><span class="ln label"><span>GARTENTOR</span></span>
+  </div>
+  <div id="title"><span class="ln"><span>CALLATOR</span></span></div>
+  <div id="sub"><span class="ln"><span>Abschließbar, passend zum CALLADO</span></span></div>
+
+  <div id="item"><i></i><span>CALLATOR</span></div>
+
+  <!-- Navy logo matte pulled from the film's light scenes (scripts/logo_matte.py --dark). -->
+  <img id="logo" alt="Home Deluxe">
+
+  <svg width="0" height="0" style="position:absolute">
+    <filter id="hblur" x="-20%" y="0" width="140%" height="100%" color-interpolation-filters="sRGB">
+      <feGaussianBlur id="hblur-g" stdDeviation="0 0" />
+    </filter>
+  </svg>
+</div>
+
+<script src="callator.js"></script>
+</body>
+</html>

@@ -9,7 +9,7 @@ rendert. ffmpeg schreibt die Frames anschließend als MP4.
 | Projekt | Format | Ergebnis |
 |---|---|---|
 | `projects/laguna-m` | 9:16, 1080×1920, 30 fps, 18,5 s | `output/HomeDeluxe_Laguna-M_Reel_9x16.mp4` + Titelbild |
-| `projects/callado-zubehoer` | 16:9, 1920×1080, 30 fps, 36,6 s | `output/HomeDeluxe_CALLADO-Zubehoer_16x9_Intro.mp4` |
+| `projects/callado-zubehoer` | 16:9, 1920×1080, 30 fps, 39,8 s | `output/HomeDeluxe_CALLADO-Zubehoer_16x9_Intro.mp4` |
 
 ### Laguna M – Schnitt und Übergänge
 
@@ -53,7 +53,25 @@ Original identisch; geschnitten wird mit etwas Luft in diesen Bereichen – v2 F
 ersetzt Original Frame 490–634. Die Endkarte bleibt die des Originals (mit „Jetzt entdecken“ und
 homedeluxe.de, die in v2 fehlen).
 
-Gesamtlänge 36,6 s (Film ohne seine ersten 1,5 s Schwarz). Texte in Poppins wie im Film: Kicker in
+Kapitel 05 – Gartentor CALLATOR (fehlte im Film; laut homedeluxe.de „hervorragend an den
+WPC-Sichtschutzzaun CALLADO angepasst“: 180 × 90 cm, WPC in Anthrazit im silbernen
+Aluminiumrahmen, abschließbar). Es sitzt zwischen „04 Schrägelement“ und der Nachtszene
+(`callator.html/.js`):
+
+| Film-/Output-Frames | Inhalt |
+|---|---|
+| Film bis 717 | 04 Schrägelement (0,45 s kürzer als im Original) |
+| Output 0–13 | Reißschwenk wie zwischen den anderen Kapiteln: 04 (Film 718–724, ohne eingebranntes Logo) wischt nach links raus, das Tor schiebt sich von rechts herein |
+| Output 0–119 | KI-Einstellung: das Tor zwischen zwei CALLADO-Pfosten im hellen Studio, es schwingt auf, Kamera fährt leicht heran; Titel „05 —— GARTENTOR / CALLATOR / Abschließbar, passend zum CALLADO“ |
+| Output 120 | Belichtungsblitz, Schnitt in die Nachtszene des Films ab Frame 743 (dort ist der 04-Titel schon weg) |
+| Film 743–875 | Nachtszene; in der Liste „▪ CALLUX STRIPE ▪ CALLUX COVER ▪ CALLANUT ▪ SCHRÄGELEMENT“ kommt „▪ CALLATOR“ als fünfter Eintrag dazu, im selben Takt (ein ab Film 793,5, aus ab 868) |
+| Film ab 876 | Rest des Films unverändert |
+
+Kapiteltitel und Listeneintrag sind an der Tinte der Originale vermessen (Position, Größe,
+Sperrung, Farbe von „04 —— SCHRÄGELEMENT / CALLADO“ bzw. der Liste). In hellen Szenen steht das
+Logo navy; dafür zieht `scripts/logo_matte.py --dark` die zweite Logo-Maske.
+
+Gesamtlänge 39,8 s (Film ohne seine ersten 1,5 s Schwarz, mit Kapitel 05). Texte in Poppins wie im Film: Kicker in
 gesperrten Versalien, Zeile in Poppins Bold wie der Claim der End-Szene, auf der Position der
 Kapiteltitel. Das Logo steht die ganze Zeit an seiner Stelle: Der Film blendet es erst zwischen
 Frame 36 und 60 ein, deshalb laufen die Frames 44–61 noch durch die Komposition – ohne das
@@ -64,6 +82,10 @@ Nano Banana Pro (21:9, 2K), erzeugt mit Standbildern aus dem Film als Referenz, 
 Pfosten, Kappen und Licht dem echten CALLADO entsprechen (`keyframes/`). Die Endbilder sind für
 die Kamerafahrt enger beschnitten. Daraus hat Kling 4.0 (Bild-zu-Video, 1080p, 21:9, 4 s) die
 Clips `shot_B_totale.mp4` und `shot_A_makro.mp4` animiert. Kosten: 8 Credits Bilder + 26 Credits Video.
+CALLATOR genauso, aber im hellen Studio-Look und 16:9: Referenzen waren zwei Studio-Standbilder
+aus dem Film und die Produktfotos von homedeluxe.de; Start (`C1_tor_start.jpg`) Tor geschlossen,
+Ende (`C2_tor_offen.jpg`) Tor um ~35° geöffnet, für die Kamerafahrt 8 % enger beschnitten;
+Kling 4.0 (1080p, 16:9, 4 s) → `shot_C_callator.mp4`. Kosten: 6 Credits Bilder + 13 Credits Video.
 
 ## Rendern
 
@@ -83,17 +105,21 @@ Ein einzelnes Frame lässt sich auch im Browser prüfen:
 CALLADO-Intro:
 
 ```bash
-npm run callado:frames      # Film-Frames 0–160 -> JPG-Plates (Logo-Referenz + Frames 44–61)
+npm run callado:frames      # Film-Frames 0–880 -> JPG-Plates (Logo-Referenzen, Intro- und Kapitel-05-Frames)
 npm run callado:ai          # KI-Clips -> JPG-Plates (build/callado-zubehoer/ai/)
-npm run callado:logo        # Logo-Maske + logofreie Film-Frames 44–61
+npm run callado:logo        # Logo-Masken (weiß + navy) und logofreie Film-Frames 44–61 und 718–724
 npm run callado:intro       # Intro verlustfrei -> build/callado-zubehoer/intro.mp4
-npm run callado:join        # Schnittliste: Intro, Film 62–489, v2 490–679 (CALLANUT), Film ab 635 -> output/…_Intro.mp4
+npm run callado:callator    # Kapitel 05 verlustfrei -> build/callado-zubehoer/callator.mp4
+npm run callado:join        # Schnittliste: Intro, Film 62–489, v2 490–679 (CALLANUT), Film 635–717, Kapitel 05, Film ab 876 -> output/…_Intro.mp4
 npm run callado:stills      # Kontrollbilder nach build/callado-zubehoer/stills
+npm run callado:stills-callator   # Kontrollbilder Kapitel 05 nach build/callado-zubehoer/stills-callator
 ```
 
 Der Anschluss-Frame steht zweimal: `JOIN` in `composition.js` und die `62` in `callado:join`
-(dazu der `--clean`-Bereich `44-61` in `callado:logo`, der bei `JOIN − 1` endet). Die Schnittliste
-in `callado:join` nimmt Bildbereiche als `datei@von-bis` (inklusive, `von-` = bis zum Ende).
+(dazu der `--clean`-Bereich `44-61` in `callado:logo`, der bei `JOIN − 1` endet). Für Kapitel 05
+gilt dasselbe mit `FILM` in `callator.js`: `717`/`876` in `callado:join`, `--clean 718-724` in
+`callado:logo`. Die Schnittliste in `callado:join` nimmt Bildbereiche als `datei@von-bis`
+(inklusive, `von-` = bis zum Ende).
 
 ## Struktur
 
@@ -103,7 +129,7 @@ assets/logo/              Home-Deluxe-Logo (weiß, SVG)
 scripts/prepare_plates.sh Hochskalieren + Grading der Quelle
 scripts/extract_frames.sh Fertigen Film in Originalgröße als Plates ablegen
 scripts/track_points.py   Template-Tracking für Marker, die am Bild kleben
-scripts/logo_matte.py     Eingebranntes Logo als Maske herauslösen und aus Plates entfernen
+scripts/logo_matte.py     Eingebranntes Logo als Maske herauslösen und aus Plates entfernen (--dark: dunkles Logo auf hellem Grund)
 scripts/render.js         Chromium -> PNG-Frames -> ffmpeg (H.264 + stumme AAC-Spur, --crf 0 = verlustfrei)
 scripts/cutlist.sh        Bildbereiche aus fertigen Clips aneinanderschneiden (ein Encode)
 projects/<name>/          source/, composition.html/.js, tracking.json, tracks.js, output/
@@ -115,4 +141,5 @@ Texte und Timings ändern: Texte stehen in `projects/laguna-m/composition.html`.
 
 CALLADO: Texte stehen in `projects/callado-zubehoer/composition.html`. In `composition.js` stehen
 die Schnittliste `SHOTS` (Quell-Frames der KI-Clips je Einstellung) und die Zeitleiste `T`
-(Output-Frames).
+(Output-Frames). Kapitel 05: Texte in `callator.html`, in `callator.js` die Film-Frames `FILM`,
+der Schnitt `CUT`, die Zeitleiste `T` (Output-Frames) und der Listeneintrag `ITEM` (Film-Frames).

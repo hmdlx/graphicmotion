@@ -7,12 +7,14 @@
     "laguna-m:track": "python3 -I scripts/track_points.py build/laguna-m/plates projects/laguna-m/tracking.json projects/laguna-m/tracks.js",
     "laguna-m:render": "node scripts/render.js projects/laguna-m/composition.html projects/laguna-m/output/HomeDeluxe_Laguna-M_Reel_9x16.mp4 --plates build/laguna-m/plates",
     "laguna-m:stills": "node scripts/render.js projects/laguna-m/composition.html build/laguna-m/stills --plates build/laguna-m/plates --stills 1,2,4,5,7,10,11,13,14.5,16,17.6,18,19,21",
-    "callado:frames": "scripts/extract_frames.sh projects/callado-zubehoer/source/HomeDeluxe_CALLADO-Zubehoer_16x9.mp4 build/callado-zubehoer/plates 160",
-    "callado:ai": "scripts/extract_frames.sh projects/callado-zubehoer/source/ai/shot_B_totale.mp4 build/callado-zubehoer/ai/B && scripts/extract_frames.sh projects/callado-zubehoer/source/ai/shot_A_makro.mp4 build/callado-zubehoer/ai/A",
-    "callado:logo": "python3 -I scripts/logo_matte.py build/callado-zubehoer/plates build/callado-zubehoer/logo.png --box 1560,186,1780,224 --ref 100-160 --clean 44-61",
+    "callado:frames": "scripts/extract_frames.sh projects/callado-zubehoer/source/HomeDeluxe_CALLADO-Zubehoer_16x9.mp4 build/callado-zubehoer/plates 880",
+    "callado:ai": "scripts/extract_frames.sh projects/callado-zubehoer/source/ai/shot_B_totale.mp4 build/callado-zubehoer/ai/B && scripts/extract_frames.sh projects/callado-zubehoer/source/ai/shot_A_makro.mp4 build/callado-zubehoer/ai/A && scripts/extract_frames.sh projects/callado-zubehoer/source/ai/shot_C_callator.mp4 build/callado-zubehoer/ai/C",
+    "callado:logo": "python3 -I scripts/logo_matte.py build/callado-zubehoer/plates build/callado-zubehoer/logo.png --box 1560,186,1780,224 --ref 100-160 --clean 44-61 && python3 -I scripts/logo_matte.py build/callado-zubehoer/plates build/callado-zubehoer/logo_light.png --box 1560,46,1780,86 --ref 680-725 --clean 718-724 --dark",
     "callado:intro": "node scripts/render.js projects/callado-zubehoer/composition.html build/callado-zubehoer/intro.mp4 --plates build/callado-zubehoer/plates --crf 0",
-    "callado:join": "scripts/cutlist.sh projects/callado-zubehoer/output/HomeDeluxe_CALLADO-Zubehoer_16x9_Intro.mp4 build/callado-zubehoer/intro.mp4 projects/callado-zubehoer/source/HomeDeluxe_CALLADO-Zubehoer_16x9.mp4@62-489 projects/callado-zubehoer/source/HomeDeluxe_CALLADO-Zubehoer_16x9_v2.mp4@490-679 projects/callado-zubehoer/source/HomeDeluxe_CALLADO-Zubehoer_16x9.mp4@635-",
-    "callado:stills": "node scripts/render.js projects/callado-zubehoer/composition.html build/callado-zubehoer/stills --plates build/callado-zubehoer/plates --stills 0.5,1,1.9,2.2,3,3.75,3.9,4.3"
+    "callado:callator": "node scripts/render.js projects/callado-zubehoer/callator.html build/callado-zubehoer/callator.mp4 --plates build/callado-zubehoer/plates --crf 0",
+    "callado:join": "scripts/cutlist.sh projects/callado-zubehoer/output/HomeDeluxe_CALLADO-Zubehoer_16x9_Intro.mp4 build/callado-zubehoer/intro.mp4 projects/callado-zubehoer/source/HomeDeluxe_CALLADO-Zubehoer_16x9.mp4@62-489 projects/callado-zubehoer/source/HomeDeluxe_CALLADO-Zubehoer_16x9_v2.mp4@490-679 projects/callado-zubehoer/source/HomeDeluxe_CALLADO-Zubehoer_16x9.mp4@635-717 build/callado-zubehoer/callator.mp4 projects/callado-zubehoer/source/HomeDeluxe_CALLADO-Zubehoer_16x9.mp4@876-",
+    "callado:stills": "node scripts/render.js projects/callado-zubehoer/composition.html build/callado-zubehoer/stills --plates build/callado-zubehoer/plates --stills 0.5,1,1.9,2.2,3,3.75,3.9,4.3",
+    "callado:stills-callator": "node scripts/render.js projects/callado-zubehoer/callator.html build/callado-zubehoer/stills-callator --plates build/callado-zubehoer/plates --stills 0.1,0.25,0.5,1,2,3.6,4,6.5"
   },
   "devDependencies": {
     "playwright": "1.56.1"
