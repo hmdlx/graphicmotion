@@ -9,12 +9,11 @@ Zum Ansehen und Weitergeben: `output/vorschau/newsletter-halloween-kw44_vorschau
 `output/vorschau/clown-popup_vorschau.html` – alle Bilder eingebettet, das Pop-up ist sofort offen.
 Screenshots: `output/preview/`.
 
-Die Versand-Datei `output/newsletter-halloween-kw44.html` (rund 75 KB) bindet Produktfotos, GIF, Logo
-und Social-Icons von CDNs ein, die eigenen Grafiken (Hero-Kopf, Gutschein-Teaser, Übergänge,
-Kürbisreihe) aber relativ (`images/…`), solange sie nicht in `source/cdn-urls.json` stehen. Einzeln
-geöffnet fehlen ihr deshalb diese 7 Bilder. Zum Prüfen der echten Datei:
-`output/newsletter-halloween-kw44_mit-bildern.zip` entpacken und die HTML darin öffnen (HTML +
-Bilderordner). Vollständig auch einzeln erst, wenn die Grafiken in JUNE liegen (siehe unten).
+Die Versand-Datei `output/newsletter-halloween-kw44.html` (rund 75 KB) bindet alle Bilder von CDNs
+ein (Produktfotos vom Shop, alles andere von JUNE) und zeigt sie deshalb auch einzeln geöffnet.
+Ändert sich eine eigene Grafik, wird sie wieder relativ (`images/…`) eingebunden, bis die neue
+Adresse in `source/cdn-urls.json` steht; solange baut `halloween:vorschau` zusätzlich
+`output/newsletter-halloween-kw44_mit-bildern.zip` (HTML + Bilderordner) zum Prüfen.
 
 ## Gestaltung (CI von homedeluxe.de)
 
@@ -118,10 +117,11 @@ Woher die Bilder kommen:
 |---|---|
 | Produktfotos | Shop-CDN, direkt verlinkt |
 | Hero-GIF, Logo, Social-Icons, Trusted-Shops-Siegel | JUNE-CDN (`homedeluxe-bf09.kxcdn.com`) |
-| eigene Grafiken (Hero-Kopf, Gutschein-Teaser, Übergänge, Kürbisreihe) | `output/fuer-june-hochladen.zip` – in JUNE hochladen |
+| eigene Grafiken (Hero-Kopf, Gutschein-Teaser, Übergänge, Kürbisreihe) | JUNE-CDN, Adressen in `source/cdn-urls.json` (JUNE speichert die PNG-Übergänge als JPG; Kanten geprüft) |
 
-Nach dem Hochladen die CDN-Adressen in `source/cdn-urls.json` eintragen (Dateiname → URL) und
-`npm run halloween:build` ausführen. Das ZIP enthält immer nur die Grafiken, die dort noch fehlen.
+Wird eine eigene Grafik geändert: `npm run halloween:build` legt sie in `output/fuer-june-hochladen.zip`
+(nur Grafiken ohne Eintrag in `source/cdn-urls.json` – den alten Eintrag dafür löschen), in JUNE
+hochladen, neue Adresse eintragen und noch einmal bauen.
 `hero_clown.jpg` ist nur das Standbild zum GIF und muss nicht hochgeladen werden. Poppins wird per
 Google-Fonts-Link geladen (wie schon Montserrat im KW43-Export); Gmail zeigt stattdessen
 Helvetica/Arial.

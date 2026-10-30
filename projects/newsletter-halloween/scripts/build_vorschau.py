@@ -66,6 +66,9 @@ def package(path, out):
     local = sorted({s for s in re.findall(r'<img\b[^>]*?\ssrc="([^"]+)"', html) if not s.startswith(("https://", "data:"))})
     if os.path.exists(out):
         os.remove(out)
+    if not local:
+        print(out, "nicht nötig – alle Bilder liegen auf CDNs")
+        return
     with zipfile.ZipFile(out, "w", zipfile.ZIP_DEFLATED) as z:
         z.write(path, os.path.basename(path))
         for src in local:
