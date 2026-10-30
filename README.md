@@ -51,8 +51,8 @@ Der Block lädt nichts mehr von Shopify; Bilder kommen aus dem plenty-CDN.
   keine Media Queries.
 - Aufbau, kurz und direkt aufs Ziel: 1 Hero (Navy, nur Text und Buttons) mit „Finde den Clown.“
   (Überschrift Ebene 1), „Er versteckt sich unten in einem unserer Produktbilder. Deine 50 € auch.“,
-  Gutschein „50 € ab 500 € Einkaufswert*“ und den Buttons „Jetzt Clown suchen“ (scrollt zu den
-  Produkten) und „Gutscheinbedingungen“ (scrollt zur Fußnote). 2 direkt danach die 6 Produkte,
+  Gutschein „50 € ab 500 € Einkaufswert*“ und dem Button „Jetzt Clown suchen“ (scrollt zu den
+  Produkten). 2 direkt danach die 6 Produkte,
   3 dunkle Karte „Noch nicht gefunden?“ mit Tipp, 4 Service-Leiste (0 % Finanzierung, versandfrei,
   Stores) und Fußnote.
 - Ein Video gibt es nicht mehr. `media/hdx-halloween-hero.mp4` und das Standbild liegen nur noch als
