@@ -6,7 +6,7 @@ Suchspiel, kein Pop-up – alle Empfänger bekommen direkt den Code **SPUK10 = 1
 
 Aufbau wie die Clown-Edition (Hero mit Kopfband und Clown-GIF, direkt darunter der
 Navy-Gutscheinblock, Intro, zwei große Produkte, Made-in-Germany-Block mit USPs und Karten,
-drittes großes Produkt, zwei 2er-Raster, Navy-Band, Footer aus dem JUNE-Export). Neu sind die
+drittes großes Produkt, vier 2er-Raster, Navy-Band, Footer aus dem JUNE-Export). Neu sind die
 Produkte, die Texte, Orange als Akzent und die Halloween-Motive (Kürbisse, Fledermäuse, Spinne,
 Spinnennetz, Mond).
 
@@ -23,8 +23,10 @@ Das GIF beginnt und endet in Navy. Das Kopfband endet deshalb unten in reinem Na
 Kürbisschein hört vorher auf), und der Navy-Gutscheinblock steht direkt unter dem GIF – so gibt es
 oben und unten keine Kante.
 
-Zum Ansehen und Weitergeben: `output/vorschau/newsletter-halloween-spuk10_vorschau.html` (alle
-Bilder eingebettet). Screenshots: `output/preview/`.
+Zum Ansehen und Weitergeben: `output/vorschau/newsletter-halloween-spuk10_vorschau.html` (eigene
+Grafiken eingebettet, Shopfotos und GIF laden online vom CDN; rund 0,5 MB – die frühere Fassung
+mit allen Bildern eingebettet war 2,5 MB groß und wurde im Viewer vor den unteren Produkten und dem
+Footer abgeschnitten). Screenshots: `output/preview/`.
 
 ## Inhalt
 
@@ -42,14 +44,17 @@ Bilder eingebettet). Screenshots: `output/preview/`.
 | Kürbis-Trenner | – | Grafik | – |
 | Raster | Massagesessel ELVORA Schwarz · Hängesessel CIELO Schwarz | Shopfotos | 1.849 € · 199 € |
 | Raster | Schaukelstuhl NARA · Home Deluxe Bademantel | Shopfotos | 129 € · 39 € |
+| Raster | Infrarotkabine NERO · Dampfdusche BLACK PEARL 90 × 90 cm | Shopfotos | ab 1.199 € · 1.049 € |
+| Raster | Sitzsack COZY Anthrazit mit Hocker · LED-Solarlampe CLARA (Stehlampe) | Shopfotos | 189 € · 49 € |
 | Navy-Band | Kürbisreihe, „Happy Halloween! Nicht vergessen: Mit dem Code SPUK10 …“ | Grafik + Text | – |
 
 Kein Produkt aus der Clown-Edition (LAHTI XL, SKANDI M, FRANK, SWING, CASARA, CALOR, DUNES, DUBI,
 RUBY) und keins aus KW43 (EVEREST, SUNSHINE, MONOS …). Namen, Links, Preise und Merkmale stammen
 von den Produktseiten auf homedeluxe.de (Stand 30.10.2026, alle lieferbar) und stehen gesammelt
-oben in `scripts/build_newsletter.py` (`P`). Preise vor dem Versand gegenprüfen. Bei ORLENA steht
-der günstigste Variantenpreis („ab“). Die Produktfotos sind unverändert; Kürbisse und andere
-Motive sind eigene Grafiken ohne KI. Das Hero-GIF stammt aus der Clown-Edition (dort per KI-Video
+oben in `scripts/build_newsletter.py` (`P`). Preise vor dem Versand gegenprüfen. Bei ORLENA und
+NERO steht der günstigste Variantenpreis („ab“), bei CLARA der Preis der Stehlampe im Foto (die
+Tischlampe kostet 29 €). Die Produktfotos kommen unverändert direkt vom Shop-CDN
+(`cdn02.plentyone.com`, `SHOP_IMG` im Skript); Kürbisse und andere Motive sind eigene Grafiken ohne KI. Das Hero-GIF stammt aus der Clown-Edition (dort per KI-Video
 aus dem vorgegebenen Clown-Bild erstellt).
 
 Farben: CI-Navy `#0e2234`, Weiß, Grautöne. Akzent ist das Orange der Shop-Badges `#FF9800`
@@ -83,9 +88,10 @@ durch den personalisierten Link ersetzt wird (im Export steht `…/newsletter/un
 
 ## In JUNE übernehmen
 
-Der Newsletter bindet die übrigen Inhaltsbilder relativ ein (`images/…`). Die Dateien aus
-`output/images/` in JUNE hochladen und die Pfade durch die CDN-URLs ersetzen. Hero-GIF, Logo,
-Social-Icons und Trusted-Shops-Siegel kommen bereits vom CDN.
+Hochzuladen sind nur noch die sechs eigenen Bilder aus `output/images/` (Kopfband, Gutschein-
+Teaser, Kürbis-Trenner, Kürbisreihe, die beiden Kartenbilder); danach die relativen Pfade
+(`images/…`) durch die CDN-URLs ersetzen. Produktfotos, Hero-GIF, Logo, Social-Icons und
+Trusted-Shops-Siegel kommen bereits vom CDN.
 
 ## Bauen
 
@@ -98,7 +104,7 @@ Playwright muss auffindbar sein (`npm install` oder `NODE_PATH=$(npm root -g)`).
 | Skript | macht |
 |---|---|
 | `spuk10:graphics` | `graphics/*.html` per Chromium -> `build/newsletter-halloween-spuk10/graphics/*.png` (Kopfband, Gutschein-Teaser, Kürbis-Trenner, Kürbisreihe); Motive aus `graphics/halloween.js` |
-| `spuk10:images` | Grafiken (Kopfband, Teaser, Deko) als JPG, Produktfotos -> `output/images/` |
+| `spuk10:images` | Grafiken (Kopfband, Teaser, Deko) als JPG, Kartenbilder ANTARES/NANGA zugeschnitten -> `output/images/` |
 | `spuk10:html` | Kopf, Navigation und Footer aus `source/newsletter-new-ins-kw43.html`, Inhaltsblöcke neu -> `output/newsletter-halloween-spuk10.html` + Textversion `.txt` |
 | `spuk10:preview` | Ganzseiten-Vorschau Desktop/Mobil; prüft: kein Clown-/Pop-up-Link, alle Bilder da (auch das GIF vom CDN), Code als Text, alle Shop-Links mit Kampagne, Kopfband und GIF → Shop, Gutscheingrafik → Shop, kein horizontales Scrollen |
-| `spuk10:vorschau` | eigenständige Vorschau mit eingebetteten Bildern -> `output/vorschau/` (nicht für den Versand: Gmail zeigt eingebettete Bilder nicht) |
+| `spuk10:vorschau` | Vorschau mit eingebetteten eigenen Grafiken -> `output/vorschau/` (nicht für den Versand: Gmail zeigt eingebettete Bilder nicht) |

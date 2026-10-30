@@ -9,13 +9,13 @@ Hero:     Kopfband „HALLOWEEN – 10 % Rabatt mit Code SPUK10“ (Kürbisse, S
           Newsletter das Clown-GIF, das direkt vom CDN kommt (HERO_GIF in build_newsletter.py).
 Teaser:   Gutschein „10 % – SPUK10“ mit Kürbissen, Mond und Fledermäusen.
 Deko:     Kürbis-Trenner (weiß) und Kürbisreihe über dem Navy-Band.
-Alle Produktbilder sind unveränderte Shopfotos (source/shop/).
+Karten:   Holzlege ANTARES und Holzlager NANGA, Shopfotos mit Holz auf 520 × 400 zugeschnitten.
+Alle übrigen Produktfotos bindet der Newsletter direkt vom Shop-CDN ein (SHOP_IMG).
 """
 import os
 import sys
 
 from PIL import Image
-
 
 
 def save(img, path, quality=86):
@@ -43,11 +43,6 @@ def main():
     save(Image.open(os.path.join(gfx, "kuerbis-trenner.png")), os.path.join(out, "kuerbis-trenner.jpg"), 88)
     save(Image.open(os.path.join(gfx, "band-kuerbisse.png")), os.path.join(out, "band-kuerbisse.jpg"), 88)
 
-    # große Stimmungsbilder (640 breit im Newsletter) und das 2er-Raster (320 breit)
-    for name in ("lagom_ambiente", "codo_ambiente", "antares-set_ambiente", "orlena_ambiente"):
-        save(Image.open(os.path.join(shop, f"{name}.jpg")), os.path.join(out, f"{name}.jpg"))
-    for name in ("elvora_ambiente", "cielo_ambiente", "nara_ambiente", "bademantel_ambiente"):
-        save(Image.open(os.path.join(shop, f"{name}.jpg")).resize((640, 640), Image.LANCZOS), os.path.join(out, f"{name}.jpg"))
     # Produktkarten: Shopfotos mit gestapeltem Holz (die Freisteller zeigen nur leere Rahmen)
     for name, focus_y in (("antares", 0.5), ("nanga", 0.55)):
         save(cover(os.path.join(shop, f"{name}_holz.jpg"), (520, 400), focus_y), os.path.join(out, f"{name}_karte.jpg"))

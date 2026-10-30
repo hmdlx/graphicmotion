@@ -6,7 +6,7 @@ Fallback zur Clown-Edition (projects/newsletter-halloween), falls Landingpage/Po
 rechtzeitig laufen: kein Suchspiel, kein Pop-up – alle bekommen direkt den Code SPUK10 (10 %).
 Aufbau wie die Clown-Edition: Hero (Kopfband + Clown-GIF) mit direkt anschließendem Navy-
 Gutscheinblock (das GIF läuft unten in Navy aus), Intro, zwei große Produkte, Made-in-Germany-Block
-mit USPs und Produktkarten, drittes großes Produkt, zwei 2er-Raster, Navy-Band.
+mit USPs und Produktkarten, drittes großes Produkt, vier 2er-Raster, Navy-Band.
 Neue, saisonale Produkte; Orange (#FF9800, Shop-Badge) als Halloween-Akzent.
 
 Aus source/newsletter-new-ins-kw43.html (JUNE-Export) bleiben Kopf, Navigation, Social-Leiste,
@@ -15,8 +15,9 @@ im selben Markup wie der Export (640 px, MSO-Ghost-Tables, VML-Buttons). Ergebni
 output/newsletter-halloween-spuk10.html und die Textversion output/newsletter-halloween-spuk10.txt.
 Beide bauen auf denselben Texten unten auf (Abschnitt „Texte“).
 
-Bilder werden relativ eingebunden (images/…). Vor dem Versand in JUNE hochladen, dann
-ersetzt JUNE die Pfade durch CDN-URLs. Das Hero-GIF liegt schon auf dem CDN (HERO_GIF).
+Produktfotos kommen unverändert direkt vom Shop-CDN (SHOP_IMG), das Hero-GIF vom JUNE-CDN
+(HERO_GIF). Nur die eigenen Grafiken und die zugeschnittenen Kartenbilder werden relativ
+eingebunden (images/…): vor dem Versand in JUNE hochladen, dann ersetzt JUNE die Pfade.
 """
 import html as htmllib
 import os
@@ -45,7 +46,27 @@ P = {
     "cielo": ("Hängesessel CIELO", "https://www.homedeluxe.de/polyrattan-haengesessel-cielo-schwarz_21362_50923/", "199"),
     "nara": ("Schaukelstuhl NARA", "https://www.homedeluxe.de/schaukelstuhl-inkl-hocker-nara_24852_60178/", "129"),
     "bademantel": ("Home Deluxe Bademantel", "https://www.homedeluxe.de/home-deluxe-bademantel_22013_56031/", "39"),
+    "nero": ("Infrarotkabine NERO", "https://www.homedeluxe.de/saunen-infrarotkabinen/infrarotkabinen/infrarotkabine-nero_29878_75373/", "ab 1.199"),
+    "blackpearl": ("Dampfdusche BLACK PEARL", "https://www.homedeluxe.de/dampfdusche-black-pearl-90-x-90-cm_7751_5934/", "1.049"),
+    "cozy": ("Sitzsack COZY Anthrazit", "https://www.homedeluxe.de/sitzsack-mit-hocker-cozy-anthrazit_21948_55332/", "189"),
+    "clara": ("LED-Solarlampe CLARA", "https://www.homedeluxe.de/led-solarlampe-clara_25546_61117/", "49"),
 }
+# Produktfotos direkt vom Shop-CDN (unverändert, 1000 × 1000 px)
+_CDN = "https://cdn02.plentyone.com/emoguafh21bo/item/images/"
+SHOP_IMG = {k: _CDN + v for k, v in {
+    "lagom": "27593/full/71815-home-deluxe-fasssauna-lagom-deluxe-ambiente-01-1.jpg",
+    "codo": "15233/full/24171-Home-Deluxe-Badewanne-Codo-Schwarz-Ambiente02.jpg",
+    "antares3": "21253/full/18186-Home-Deluxe-Holzlege-ANTARES-Ambiente01-1.jpg",
+    "orlena": "25142/full/60526-home-deluxe-sofa-orlena-anthrazit-l-links-ambiente-01.jpg",
+    "elvora": "21965/full/55544-home-deluxe-massagesessel-elvora-schwarz-ambiente-01.jpg",
+    "cielo": "21362/full/Cielo-01-Schwarz-Home-Deluxe-1000x1000-Ambiente01.jpg",
+    "nara": "24852/full/60177-Home-Deluxe-Schaukelstuhl-mit-Hocker-NARA-ambiente-01.jpg",
+    "bademantel": "22013/full/6777-Home-Deluxe-Wellnessartikel-Bademantel-L-Ambiente-01.jpg",
+    "nero": "29878/full/49212-Home-Deluxe-Infrarotkanine-nero-M-Ambiente-01.jpg",
+    "blackpearl": "7751/full/5934-home-deluxe-dampfdusche-BLACK-PEARL-90x90x-ambiente-01.jpg",
+    "cozy": "21948/full/55332-home-deluxe-sitzsack-cozy-anthrazit-ambiente-001.jpg",
+    "clara": "25546/full/61117-home-deluxe-led-solar-stehlampe-weiss-ambiente-01-neu.jpg",
+}.items()}
 SAUNEN_URL = "https://www.homedeluxe.de/saunen-infrarotkabinen/"
 # Clown kommt hinter dem Sofa hervor und setzt sich (640 × 320, 8,1 s, Endlosschleife; oben/unten Navy-Verlauf).
 # Das erste Bild zeigt den sitzenden Clown – Outlook für Windows zeigt nur dieses.
@@ -66,10 +87,10 @@ CODE_TEXT = ("Gib den Code einfach bei deiner Bestellung ein –<br />"
 CODE_LABEL = "DEIN GUTSCHEINCODE"
 CODE_CTA = "JETZT 10 % SPAREN"
 CODE_NOTE = f"**Nur bis {VALID_UNTIL}, 23:59 Uhr. Alle Aktionsbedingungen findest du ganz unten."
-LAGOM = dict(key="lagom", src="lagom_ambiente.jpg", title="HIER KNISTERT’S – ABER NUR IM OFEN.",
+LAGOM = dict(key="lagom", src=SHOP_IMG["lagom"], title="HIER KNISTERT’S – ABER NUR IM OFEN.",
              text="Fasssauna mit Holzofen LAGOM DELUXE –<br />Ø 210 × 240 cm, ideal für 4–6 Personen.",
              cta="FASSSAUNA LAGOM ANSEHEN", title_style="font-size:17px;line-height:26px;")
-CODO = dict(key="codo", src="codo_ambiente.jpg", title="SCHWARZ WIE EIN HEXENKESSEL:<br />BADEWANNE CODO",
+CODO = dict(key="codo", src=SHOP_IMG["codo"], title="SCHWARZ WIE EIN HEXENKESSEL:<br />BADEWANNE CODO",
             text="Freistehend, 170 × 80 cm – der einzige Kessel,<br />in den du freiwillig steigst.",
             cta="BADEWANNE CODO ANSEHEN")
 WOOD = dict(label="MADE IN GERMANY · HOLZ &amp; EDELROST", heading="Holzvorrat für lange Gruselnächte.",
@@ -78,13 +99,17 @@ USPS = [("HANDARBEIT", "Hergestellt<br />in Deutschland"), ("EDELROST", "Individ
         ("ERWEITERBAR", "In beliebiger<br />Stückzahl")]
 CARDS = [("antares", "antares_karte.jpg", "sechseckig, kombinierbar", "Edelrost-Optik · Made in Germany"),
          ("nanga", "nanga_karte.jpg", "großes Holzlager", "wetterbeständig · Made in Germany")]
-ORLENA = dict(key="orlena", src="orlena_ambiente.jpg", title="GRUSELFILM-ABEND?<br />SOFA ORLENA",
+ORLENA = dict(key="orlena", src=SHOP_IMG["orlena"], title="GRUSELFILM-ABEND?<br />SOFA ORLENA",
               text="Modular und in Samt Anthrazit –<br />zum Verkriechen, wenn’s spannend wird.",
               cta="SOFA ORLENA ANSEHEN")
-GRIDS = [(("elvora", "elvora_ambiente.jpg", "MASSAGESESSEL<br />ELVORA", "Gänsehaut, aber die gute:<br />10 Programme, mit Heizfunktion"),
-          ("cielo", "cielo_ambiente.jpg", "HÄNGESESSEL<br />CIELO", "Abhängen wie eine<br />Fledermaus – inkl. Kissen")),
-         (("nara", "nara_ambiente.jpg", "SCHAUKELSTUHL<br />NARA", "Schaukelt ganz von allein …<br />sobald du drinsitzt"),
-          ("bademantel", "bademantel_ambiente.jpg", "BADEMANTEL<br />HOME DELUXE", "Das gemütlichste Gespenster-<br />kostüm: 100 % Baumwolle"))]
+GRIDS = [(("elvora", SHOP_IMG["elvora"], "MASSAGESESSEL<br />ELVORA", "Gänsehaut, aber die gute:<br />10 Programme, mit Heizfunktion"),
+          ("cielo", SHOP_IMG["cielo"], "HÄNGESESSEL<br />CIELO", "Abhängen wie eine<br />Fledermaus – inkl. Kissen")),
+         (("nara", SHOP_IMG["nara"], "SCHAUKELSTUHL<br />NARA", "Schaukelt ganz von allein …<br />sobald du drinsitzt"),
+          ("bademantel", SHOP_IMG["bademantel"], "BADEMANTEL<br />HOME DELUXE", "Das gemütlichste Gespenster-<br />kostüm: 100 % Baumwolle")),
+         (("nero", SHOP_IMG["nero"], "INFRAROTKABINE<br />NERO", "Schwarz wie die Geisterstunde –<br />mit LED-Farblicht"),
+          ("blackpearl", SHOP_IMG["blackpearl"], "DAMPFDUSCHE<br />BLACK PEARL", "Nebel auf Knopfdruck:<br />90 × 90 cm, mit Radio")),
+         (("cozy", SHOP_IMG["cozy"], "SITZSACK<br />COZY", "Zum Verstecken beim Gruselfilm –<br />Samt-Cord, inkl. Hocker"),
+          ("clara", SHOP_IMG["clara"], "LED-SOLARLAMPE<br />CLARA", "Licht an, Geister aus –<br />kabellos per Solar oder USB"))]
 BAND = ("Happy Halloween! 🎃", f"Nicht vergessen: Mit dem Code {CODE} sparst du<br />bis {VALID_UNTIL[:6]} 10&nbsp;% auf deine Bestellung.")
 CONDITIONS = (f"**Aktionsbedingungen Halloween-Rabatt: Mit dem Gutscheincode {CODE} erhältst du 10&nbsp;% Rabatt auf deine "
               f"Bestellung auf homedeluxe.de. Gültig bis zum {VALID_UNTIL}, 23:59 Uhr. Einmal pro Kunde einlösbar, nicht mit "
@@ -255,7 +280,7 @@ def wood_header():
 
 def wood_image():
     name, url, _ = P["antares3"]
-    return section(image(utm(url), "antares-set_ambiente.jpg", f"{name} mit Brennholz auf der Terrasse", 640))
+    return section(image(utm(url), SHOP_IMG["antares3"], f"{name} mit Brennholz auf der Terrasse", 640))
 
 
 def usps():
