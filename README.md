@@ -45,11 +45,12 @@ zwischen `CMS-BLOCK START` und `CMS-BLOCK ENDE` in `index.html`, nur ohne Dokume
   Navy `#0f2334` und Weiß `#fefefe`, Orange `#ff6a00` nur als Akzent, Poppins 500–700, alle Ecken und Buttons scharfkantig (CI).
   Mobile first: Grundgrößen für ~390 px, nach oben per `clamp()` und `auto-fit`-Grids skaliert,
   keine Media Queries.
-- Aufbau, kurz und direkt aufs Ziel: 1 Video-Hero (Navy) mit „Finde den Clown.“ (Überschrift
-  Ebene 1) und Gutschein „50 € ab 500 € Einkaufswert*“, darunter das Video – alles im ersten
-  Bildschirm; ein Klick aufs Video scrollt zur nächsten Section. 2 „Wo steckt der andere Clown?“
-  mit 6 Produkten, 3 dunkle Karte „Noch nicht gefunden?“ mit Tipp, 4 Service-Leiste
-  (0 % Finanzierung, versandfrei, Stores) und Fußnote.
+- Aufbau, kurz und direkt aufs Ziel: 1 Hero (Navy) mit „Finde den anderen Clown.“ (Überschrift
+  Ebene 1), Gutschein „50 € ab 500 € Einkaufswert*“ und dem Video als Einstieg. Eine Leiste auf dem
+  Video sagt „Nicht im Video suchen – der andere Clown steckt unten in einem Produktbild.“, ein Klick
+  aufs Video scrollt dorthin. 2 „Wo steckt der andere Clown?“ mit den drei Schritten
+  Produktbilder ansehen · Clown entdecken · Anklicken & 50 € sichern und 6 Produkten, 3 dunkle Karte
+  „Noch nicht gefunden?“ mit Tipp, 4 Service-Leiste (0 % Finanzierung, versandfrei, Stores) und Fußnote.
 - Das Video (`media/hdx-halloween-hero.mp4`, 5 s, stumm, mit Standbild) liegt in den Shopify-Dateien
   und wird vom Shopify-CDN geladen.
 - Der Clown sieht aus wie der im Video: orange Haare, blauer Hoodie, blauer Ballon mit Haus. Er lugt
