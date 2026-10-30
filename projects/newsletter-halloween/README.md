@@ -1,8 +1,8 @@
 # Newsletter Halloween-Edition (KW44)
 
-Halloween-Newsletter im Layout des KW43-Newsletters „New Ins“ mit Clown-Aktion: Im Hero sitzt
-ein Clown mit rotem Ballon auf dem Sofa. Wer aufs Bild klickt, landet im Shop, und dort öffnet
-sich ein Pop-up mit dem Gutscheincode – **50 € ab 500 € Bestellwert**.
+Halloween-Newsletter im Look von homedeluxe.de mit Clown-Aktion: Im Hero-GIF kommt ein Clown
+im Home-Deluxe-Hoodie hinter dem Sofa hervor und setzt sich. Wer auf ihn klickt, landet im
+Shop, und dort öffnet sich ein Pop-up mit dem Gutscheincode – **50 € ab 500 € Bestellwert**.
 
 Zum Ansehen und Weitergeben: `output/vorschau/newsletter-halloween-kw44_vorschau.html` und
 `output/vorschau/clown-popup_vorschau.html` – alle Bilder eingebettet, das Pop-up ist sofort offen.
@@ -12,11 +12,40 @@ Die eigentlichen Dateien (`output/newsletter-halloween-kw44.html`, `output/popup
 binden ihre Bilder relativ ein (`images/…`, `clown.jpg`). Einzeln geöffnet oder verschickt zeigen
 sie deshalb keine Bilder – erst mit dem Bilderordner daneben bzw. nach dem Hochladen in JUNE/Shop.
 
+## Gestaltung (CI von homedeluxe.de)
+
+Die Werte stammen aus dem CSS des Shops (`--primary`, Badge-Farben, Schrift):
+
+| Element | im Newsletter |
+|---|---|
+| Navy `#0e2234` | Header, Nacht-Abschnitte, Buttons |
+| Orange `#ff9800` (TOPSELLER-Badge im Shop) | Badges, „CLOWN“, Buttons „ZUM CLOWN“, Kürbisse |
+| Rot `#FF4500` (Sale im Shop) | „Sale%“ in der Navigation |
+| Poppins, Überschriften fett + normal („**Nach Kategorie** shoppen“) | „**Wellness** für die Geisternacht“ usw. |
+| eckige Ecken, Buttons „Artikel anzeigen“ | Produktkacheln |
+| USP-Leiste, Navy-Header mit weißem Logo, graue Navigation | Kopf des Newsletters |
+
+Nacht (Navy) und Tag (Weiß) wechseln sich ab; die Übergänge sind Halloween-Grafiken
+(`graphics/uebergaenge.html`): tropfendes Navy, aufsteigender Nebel, hängende Äste mit Spinne,
+Hügel mit leuchtenden Kürbissen. Der Hero blendet aus dem Nachthimmel (Mond, Fledermäuse) auf
+und läuft wieder in Navy aus.
+
+## Hero-GIF
+
+1. `source/hero/wohnzimmer-clown-hoodie.webp` – Bild mit dem sitzenden Clown (Vorgabe).
+2. Startbild ohne Clown und Ballon: per KI (Nano Banana 2.1 über Higgsfield) entfernt; übernommen
+   wurde nur der Bereich um den Clown, der Rest ist das Original, damit Start und Ende deckungsgleich sind.
+3. Video vom leeren Sofa bis zum Vorgabebild (FLUX 3 Video über Higgsfield, 5 s, 720p):
+   `source/hero/clown-hervor.mp4`.
+4. `build_images.py` macht daraus `hero_clown.gif` (640 px, 12 fps, Navy-Verlauf oben/unten):
+   Clown sitzt → verblasst wie ein Geist → leeres Sofa → er kommt hinter dem Sofa hervor und
+   setzt sich. Das erste Bild zeigt den sitzenden Clown, weil Outlook für Windows nur das erste
+   Bild eines GIFs anzeigt.
+
 ## Klick → Pop-up
 
-- Das ganze Hero-Bild (Band „HALLOWEEN – Finde den Clown“ + Wohnzimmer) verlinkt auf
+- Hero-Kopf, Hero-GIF und die beiden Buttons „ZUM CLOWN“ verlinken auf
   `https://www.homedeluxe.de/?halloween=clown&utm_campaign=KW44_Halloween&…&utm_content=clown`.
-  Es ist der einzige Link mit diesem Parameter im Newsletter.
 - `output/popup/clown-popup.html` enthält den Block für den Shop (zwischen
   `HD-CLOWN-POPUP START` und `ENDE`): Er bleibt unsichtbar, bis die Adresse `halloween=clown`
   enthält, zeigt dann Code, „Code kopieren“ und Bedingungen und schließt per ×, Klick daneben
@@ -28,64 +57,53 @@ sie deshalb keine Bilder – erst mit dem Bilderordner daneben bzw. nach dem Hoc
 
 | Block | Produkt | Bild | Preis |
 |---|---|---|---|
-| Hero „HALLOWEEN – Finde den Clown“ | Klick öffnet das Gutschein-Pop-up | Wohnzimmer mit Clown (`source/hero/`) | – |
-| Intro „Gemütlich durch die Gruselnacht“ | CTA: Alle Saunen | – | – |
-| Suchspiel | Teaser „Finde den Clown“ + 50-€-Gutschein, Spielregel als Live-Text | Grafik | – |
-| Schwitzen statt Schaudern | Outdoor Fasssauna LAHTI XL | Shopfoto Dämmerung + Fledermäuse | 2.599 € |
-| Dein eigener Hexenkessel | Hot Tub SKANDI M | Shopfoto Nacht | 1.999 € |
-| Lagerfeuer für Gruselgeschichten | Gartenfeuer SWING, USPs (Handarbeit, 2 in 1, wetterfest) | Shopfoto Garten | – |
-| Produktkarten | Feuerschale FRANK · Gartenfeuer SWING | Freisteller | 39 € · 79 € |
-| Gruselfilm-Abend? | Sofa CASARA Dunkelgrün | Shopfoto Wohnzimmer | 1.199 € |
-| Raster | Elektrokamin CALOR · Massagesessel DUNES | Shopfotos | 329 € · 1.399 € |
-| Raster | LED-Spiegel DUBI 80 cm · Kratzbaum RUBY Schwarz | Shopfotos | 139 € · 69 € |
-| Navy-Band | „Happy Halloween! Noch nicht geklickt? Der Clown wartet ganz oben …“ | – | – |
+| Hero „HALLOWEEN-SPECIAL – Finde den Clown“ | Klick öffnet das Gutschein-Pop-up | GIF | – |
+| „**Gemütlich** durch die Gruselnacht“ | CTA: Alle Saunen | – | – |
+| „**Wellness** für die Geisternacht“ | Fasssauna LAHTI XL · Hot Tub SKANDI M | Shopfotos (LAHTI mit Fledermäusen) | 2.599 € · 1.999 € |
+| „**Lagerfeuer** für Gruselgeschichten“ | Gartenfeuer SWING, Feuerschale FRANK | Shopfoto, Freisteller | 79 € · 39 € |
+| „**Gruselfilm**-Abend“ | Sofa CASARA Dunkelgrün | Shopfoto | 1.199 € |
+| „Noch mehr **Gänsehaut**-Momente“ | Elektrokamin CALOR · Massagesessel DUNES · LED-Spiegel DUBI · Kratzbaum RUBY | Shopfotos | 329 € · 1.399 € · 139 € · 69 € |
+| „Happy **Halloween!**“ | Erinnerung + „ZUM CLOWN“ | – | – |
 
 Produktnamen, Links, Preise und Merkmale stammen von den Produktseiten auf homedeluxe.de
-(Stand 30.10.2026) und stehen gesammelt oben in `scripts/build_newsletter.py` (`P`). Preise
-vor dem Versand gegenprüfen. Die Produktfotos sind unverändert, nur auf das LAHTI-Foto kommen
-Fledermaus-Silhouetten.
+(Stand 30.10.2026) und stehen oben in `scripts/build_newsletter.py` (`P` und Abschnitt „Texte“).
+Preise vor dem Versand gegenprüfen.
 
-Gestaltung nach CI: nur Navy, Weiß und Grautöne, Poppins in den Grafiken, eckige Ecken.
+## Textversion
+
+`output/newsletter-halloween-kw44.txt` ist der Plain-Text-Teil der Mail (UTF-8, Zeilen bis 72
+Zeichen, URLs ungebrochen), gebaut aus denselben Texten wie das HTML. Der Clown steht dort als
+Link „ZUM CLOWN:“. In JUNE prüfen, ob der Abmeldelink in der Textversion durch den
+personalisierten Link bzw. Platzhalter ersetzt wird – im Export steht die feste Adresse
+`…/newsletter/unsubscribe/?folderId=0`.
 
 ## Vor dem Versand festlegen
 
-Die folgenden Werte sind Vorschläge und stehen als Konstanten oben in `scripts/build_newsletter.py`
-(Gutscheincode, Datum und Ablaufzeit zusätzlich in `output/popup/clown-popup.html` und
-`graphics/teaser.html`):
+Vorschläge, oben in `scripts/build_newsletter.py` (Code, Datum und Ablaufzeit zusätzlich in
+`output/popup/clown-popup.html` und `graphics/kopf.html`):
 
 - **Gutscheincode** `CLOWN50` – im Shop anlegen: 50 € Rabatt, Mindestbestellwert 500 €, einmal pro Kunde.
 - **Gültig bis** 02.11.2026, 23:59 Uhr.
 - **Pop-up einbauen** – Block aus `output/popup/clown-popup.html` global ins Shop-Layout
   (z. B. Footer), `clown.jpg` ins Shop-CDN laden und den Bildpfad im Block anpassen.
 
-## Textversion
-
-`output/newsletter-halloween-kw44.txt` ist der Plain-Text-Teil der Mail (UTF-8, Zeilen bis 72
-Zeichen, URLs ungebrochen). Er enthält alle Texte, Preise und Links des HTML; statt des
-Hero-Bilds steht der Clown-Link als „ZUM CLOWN:“ direkt darunter und noch einmal unten im
-Halloween-Band. Footer-Hinweis und Rechtslinks werden aus dem JUNE-Export übernommen.
-Alle Texte stehen nur einmal im Skript (Abschnitt „Texte“ in `scripts/build_newsletter.py`)
-und gehen in HTML und Textversion.
-
-In JUNE prüfen, ob der Abmeldelink in der Textversion durch den personalisierten Link bzw.
-Platzhalter ersetzt wird – im Export steht die feste Adresse `…/newsletter/unsubscribe/?folderId=0`.
-
 ## In JUNE übernehmen
 
-Der Newsletter bindet alle Inhaltsbilder relativ ein (`images/…`). Die Dateien aus
-`output/images/` in JUNE hochladen und die Pfade durch die CDN-URLs ersetzen. Logo, Social-Icons
-und Trusted-Shops-Siegel kommen weiter vom bestehenden CDN.
+Alle Dateien aus `output/images/` in JUNE hochladen und die Pfade `images/…` durch die CDN-URLs
+ersetzen. Das Trusted-Shops-Siegel kommt weiter vom bestehenden CDN. Poppins wird per
+Google-Fonts-Link geladen (wie schon Montserrat im KW43-Export); Gmail zeigt stattdessen
+Helvetica/Arial.
 
 ## Bauen
 
 ```bash
-npm run halloween:build     # alles: Grafiken -> Bilder -> HTML -> Vorschau + Prüfungen
+npm run halloween:build     # alles: Grafiken -> Bilder/GIF -> HTML + Text -> Vorschau + Prüfungen
 ```
 
 | Skript | macht |
 |---|---|
-| `halloween:graphics` | `graphics/*.html` per Chromium -> `build/newsletter-halloween/graphics/*.png` (Hero-Band, Fledermäuse, Teaser) |
-| `halloween:images` | Hero aus Band + Wohnzimmer-Bild, LAHTI mit Fledermäusen, Produktbilder, Pop-up-Bild -> `output/` |
-| `halloween:html` | Kopf, Navigation und Footer aus `source/newsletter-new-ins-kw43.html`, Inhaltsblöcke neu -> `output/newsletter-halloween-kw44.html` + Textversion `.txt` |
-| `halloween:preview` | Ganzseiten-Vorschau Desktop/Mobil, Pop-up-Vorschau; prüft, dass nur das Hero-Bild zum Pop-up führt und das Pop-up nur mit `?halloween=clown` aufgeht |
-| `halloween:vorschau` | eigenständige Vorschau-HTMLs mit eingebetteten Bildern und Schrift -> `output/vorschau/` (nicht für den Versand: Gmail zeigt eingebettete Bilder nicht) |
+| `halloween:graphics` | `graphics/*.html` per Chromium -> `build/newsletter-halloween/graphics/*.png` (Logo, Hero-Kopf, Übergänge, Social-Icons, Fledermäuse) |
+| `halloween:images` | Hero-GIF und Standbild, Grafiken, Produktbilder, Pop-up-Bild -> `output/` |
+| `halloween:html` | Newsletter-HTML + Textversion; Navigation, Social-Links, Footer-Hinweis und Rechtslinks aus `source/newsletter-new-ins-kw43.html` |
+| `halloween:preview` | Ganzseiten-Vorschau Desktop/Mobil, Pop-up-Vorschau; prüft die Clown-Links und das Pop-up mit/ohne `?halloween=clown` |
+| `halloween:vorschau` | eigenständige Vorschau-HTMLs mit eingebetteten Bildern -> `output/vorschau/` (nicht für den Versand) |

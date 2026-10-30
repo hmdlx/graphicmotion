@@ -8,12 +8,16 @@
 Grafiken:  Logo, Hero-Kopf und Social-Icons auf Navy, Halloween-Übergänge als PNG (verlustfrei,
            damit die Kanten exakt Navy bzw. Weiß treffen).
 Hero:      Standbild aus source/hero/ mit Navy-Verlauf oben und unten, so dass es nahtlos aus
-           dem Hero-Kopf kommt und in den Navy-Abschnitt darunter übergeht. Liegt ein Hero-GIF
-           vor (build_hero_gif.py), nimmt der Newsletter das GIF; das Standbild bleibt Fallback.
+           dem Hero-Kopf kommt und in den Navy-Abschnitt darunter übergeht. Liegt das KI-Video
+           source/hero/clown-hervor.mp4 vor (leeres Sofa -> Clown sitzt), entsteht daraus
+           hero_clown.gif mit demselben Verlauf; der Newsletter nimmt dann das GIF.
 Produkte:  Shopfotos unverändert, Freisteller auf hellgrauem Grund wie die Kacheln im Shop.
 """
+import glob
 import os
+import subprocess
 import sys
+import tempfile
 
 import numpy as np
 from PIL import Image, ImageChops, ImageDraw
@@ -21,9 +25,13 @@ from PIL import Image, ImageChops, ImageDraw
 NAVY = (14, 34, 52)
 TILE_GREY = (244, 246, 248)          # #f4f6f8, Kachelgrund wie auf homedeluxe.de
 HERO_W = 1280                         # 2x der 640 px Newsletter-Breite
-HERO_SRC = os.path.join("hero", "wohnzimmer-clown.webp")
+HERO_SRC = os.path.join("hero", "wohnzimmer-clown-hoodie.webp")
 FADE_TOP, FADE_BOTTOM = 0.16, 0.20    # Anteil der Bildhöhe, der in Navy übergeht
 CLOWN_CROP = (700, 200, 1300, 600)    # Clown im Hero-Bild (1774 × 887) für das Pop-up
+HERO_VIDEO = os.path.join("hero", "clown-hervor.mp4")
+GIF_W, GIF_FPS = 640, 12              # GIF in 1x: 2x wäre für E-Mail zu schwer
+GIF_HOLD, GIF_GHOST = 2.5, 0.6        # Sekunden: Clown sitzt / verblasst wie ein Geist
+GIF_COLORS = 160
 
 
 def save(img, path, quality=86):
@@ -46,6 +54,31 @@ def navy_fade(img, top=FADE_TOP, bottom=FADE_BOTTOM):
     k = k * k * (3 - 2 * k)       # weicher Einstieg und Ausklang
     out = a * (1 - k) + np.array(NAVY, float) * k
     return Image.fromarray(out.round().astype(np.uint8))
+
+
+def build_hero_gif(src, out):
+    """Hero-GIF aus dem KI-Video. Reihenfolge: Clown sitzt (Outlook zeigt nur dieses erste Bild),
+    verblasst wie ein Geist, das leere Sofa, er kommt hinter dem Sofa hervor und setzt sich –
+    das Ende passt wieder an den Anfang, die Schleife läuft ohne Sprung."""
+    video = os.path.join(src, HERO_VIDEO)
+    if not os.path.exists(video):
+        return False
+    with tempfile.TemporaryDirectory() as tmp:
+        subprocess.run(["ffmpeg", "-v", "error", "-i", video, "-vf", f"fps={GIF_FPS},scale={GIF_W}:-2:flags=lanczos",
+                        os.path.join(tmp, "v%04d.png")], check=True)
+        frames = [navy_fade(Image.open(f)) for f in sorted(glob.glob(os.path.join(tmp, "v*.png")))]
+        seated, empty = frames[-1], frames[0]
+        n = round(GIF_GHOST * GIF_FPS)
+        seq = ([seated] * round(GIF_HOLD * GIF_FPS)
+               + [Image.blend(seated, empty, (i + 1) / (n + 1)) for i in range(n)]
+               + frames)
+        for i, im in enumerate(seq):
+            im.save(os.path.join(tmp, f"g{i:04d}.png"))
+        subprocess.run(["ffmpeg", "-v", "error", "-y", "-framerate", str(GIF_FPS), "-i", os.path.join(tmp, "g%04d.png"),
+                        "-vf", f"split[a][b];[a]palettegen=max_colors={GIF_COLORS}:stats_mode=full[p];"
+                               "[b][p]paletteuse=dither=bayer:bayer_scale=3:diff_mode=rectangle",
+                        "-loop", "0", os.path.join(out, "hero_clown.gif")], check=True)
+    return True
 
 
 def save_png(img, path, colors=None):
@@ -91,6 +124,9 @@ def main():
     hero = Image.open(os.path.join(src, HERO_SRC)).convert("RGB")
     hero = hero.resize((HERO_W, round(hero.height * HERO_W / hero.width)), Image.LANCZOS)
     save(navy_fade(hero), os.path.join(out, "hero_clown.jpg"))
+    gif = os.path.join(out, "hero_clown.gif")
+    if not build_hero_gif(src, out) and os.path.exists(gif):
+        os.remove(gif)
 
     # Produkte
     lahti = Image.open(os.path.join(shop, "lahti-xl_ambiente.jpg")).convert("RGBA")
