@@ -39,7 +39,7 @@ TITLE = "🎃 Halloween-Edition: Finde den Clown!"
 PREHEADER = "Psst … hinter dem Sofa bewegt sich was 🤡 Finde den Clown und wir schenken dir 50 € ab 500 € Bestellwert."
 HERO_ALT = "Halloween-Special: Finde den Clown! Klick ihn an und sichere dir 50 € Gutschein"
 HERO_IMG_ALT = "Ein Clown klettert hinter dem Sofa hervor und setzt sich – klick ihn an"
-TEASER_ALT = f"Süßes oder Saures? 50 € Gutschein ab 500 € Bestellwert, nur bis {VALID_UNTIL} – finde einfach den Clown"
+TEASER_ALT = f"Süßes oder Saures? 50 € Gutschein ab 500 € Bestellwert, nur bis {VALID_UNTIL}"
 HERO_CTA = dict(text="Klick auf den <b>Clown</b> – er versteckt sich jetzt auf unserer Halloween-Seite in einem Produktbild. Find ihn dort, klick ihn an und dein Gutscheincode gehört dir.**",
                 cta="ZUM CLOWN", note=f"**Nur bis {VALID_UNTIL}. Alle Aktionsbedingungen findest du ganz unten.")
 # Navy-Band vor dem Footer wie in der SPUK10-Version; §LINK§ = „Halloween-Seite“ als Link zum Clown
