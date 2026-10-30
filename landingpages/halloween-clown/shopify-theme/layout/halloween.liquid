@@ -1,0 +1,52 @@
+<!doctype html>
+<html
+  {% if request.design_mode %}
+    class="shopify-design-mode"
+  {% endif %}
+  lang="{{ request.locale.iso_code }}"
+  dir="{{ request.locale.direction | default: 'ltr' }}"
+>
+  <head>
+    {%- if settings.favicon != blank -%}
+      <link
+        rel="icon"
+        type="image/png"
+        href="{{ settings.favicon | image_url: width: 32, height: 32 }}"
+      >
+    {%- endif -%}
+
+    {%- render 'meta-tags' -%}
+    {%- render 'stylesheets' -%}
+    {%- render 'fonts' -%}
+    {%- render 'scripts' -%}
+    {%- render 'theme-styles-variables' -%}
+    {%- render 'color-palette' -%}
+
+    {% if request.design_mode %}
+      {%- render 'theme-editor' -%}
+    {% endif %}
+
+    {{ content_for_header }}
+  </head>
+
+  {%- comment -%}
+    Landingpage-Layout: wie theme.liquid, aber ohne Header-Gruppe, Drawer und Suche.
+    Der Seiteninhalt läuft über die volle Breite, der Footer (Impressum & Co.) bleibt.
+  {%- endcomment -%}
+  <body class="page-width-{{ settings.page_width }}" style="margin:0;">
+    <div class="page-wrapper">
+      <main
+        id="MainContent"
+        class="content-for-layout"
+        role="main"
+        data-template="{{ template }}"
+      >
+        {{ content_for_layout }}
+      </main>
+
+      <footer>
+        {% sections 'footer-group' %}
+      </footer>
+    </div>
+  </body>
+</html>

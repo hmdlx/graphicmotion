@@ -1,0 +1,15 @@
+{
+  "layout": "halloween",
+  "sections": {
+    "main": {
+      "type": "custom-liquid",
+      "settings": {
+        "custom_liquid": "{{ page.content }}",
+        "section_width": "full-width",
+        "padding-block-start": 0,
+        "padding-block-end": 0
+      }
+    }
+  },
+  "order": ["main"]
+}
