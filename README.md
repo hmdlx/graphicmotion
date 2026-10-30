@@ -34,12 +34,17 @@ Preise sind bewusst nicht eingebaut, weil sie sich häufig ändern.
 | Seite | Inhalt |
 |---|---|
 | `landingpages/halloween-clown/index.html` | Newsletter-Halloween-Suchspiel: 6 Produkte, ein gruseliger Clown öffnet ein Pop-up mit 50 € Gutschein ab 500 € Einkaufswert |
-| `landingpages/halloween-clown/cms-block.html` | nur der CMS-Block, ohne `<html>`/`<head>`/`<body>` – diese Datei komplett ins CMS-Feld einfügen |
+| `landingpages/halloween-clown/plenty-block.html` | **für plentyShop (homedeluxe.de):** nur der Block, ohne `<html>`/`<head>`/`<body>` und ohne Google-Fonts-Link – die Datei komplett in ein ShopBuilder-Code-Widget einfügen |
 | `landingpages/halloween-clown/iframe.html` | dieselbe Seite als selbsttragendes iframe zum Einbetten (siehe unten) |
 
 Die Seite kommt ohne Style-Tag aus: alle Styles stehen inline, damit der Block direkt in einen
-CMS-Block (Plenty, Shopify) passt. Ins CMS kommt `cms-block.html` (komplett); das ist derselbe Inhalt wie
-zwischen `CMS-BLOCK START` und `CMS-BLOCK ENDE` in `index.html`, nur ohne Dokument-Tags wie `</body>`.
+CMS-Block passt. Für plentyShop kommt `plenty-block.html` komplett in ein ShopBuilder-Code-Widget; das
+ist derselbe Inhalt wie zwischen `CMS-BLOCK START` und `CMS-BLOCK ENDE` in `index.html`, aber ohne
+Dokument-Tags wie `</body>` und ohne Google-Fonts-Link (Poppins lädt der Shop selbst; Google Fonts extern
+zu laden ist datenschutzrechtlich heikel). Getestet in einer nachgebauten Plenty-Seite mit Vue-Neurendern:
+volle Breite, Überschriften ohne Theme-Stile, Video, Animationen, Pop-up, Kopieren und Tracking laufen.
+Das Video liegt noch auf dem Shopify-CDN; für plenty besser in den Plenty-Webspace laden und die zwei
+URLs (`poster`, `source`) im Block ersetzen.
 
 - Look: hell und ruhig im Aufbau der Apple-„Why Mac“-Seite (Referenz vom Kunden). Farben vor allem
   Navy `#0f2334` und Weiß `#fefefe`, Orange `#ff6a00` nur als Akzent, Poppins 500–700, alle Ecken und Buttons scharfkantig (CI).
@@ -91,7 +96,7 @@ Gutschein-Pop-up in den sichtbaren Bereich und schreibt das Event `halloween_clo
 
 ```bash
 python3 -I landingpages/halloween-clown/build_iframe.py      # -> landingpages/halloween-clown/iframe.html
-python3 -I landingpages/halloween-clown/build_cms_block.py   # -> landingpages/halloween-clown/cms-block.html
+python3 -I landingpages/halloween-clown/build_plenty_block.py   # -> landingpages/halloween-clown/plenty-block.html
 ```
 
 ## Shopify
