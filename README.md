@@ -39,7 +39,7 @@ Die Seite kommt ohne Style-Tag aus: alle Styles stehen inline, damit der Block d
 CMS-Block (Plenty, Shopify) passt. Kopiert wird alles zwischen `CMS-BLOCK START` und `CMS-BLOCK ENDE`.
 
 - Look: hell und ruhig im Aufbau der Apple-„Why Mac“-Seite (Referenz vom Kunden). Farben vor allem
-  Navy `#0f2334` und Weiß `#fefefe`, Orange `#ff6a00` nur als Akzent, Poppins 500–700, runde Karten.
+  Navy `#0f2334` und Weiß `#fefefe`, Orange `#ff6a00` nur als Akzent, Poppins 500–700, alle Ecken und Buttons scharfkantig (CI).
   Mobile first: Grundgrößen für ~390 px, nach oben per `clamp()` und `auto-fit`-Grids skaliert,
   keine Media Queries.
 - Aufbau: 1 Hero (zentriert: „Finde den Clown.“ als `h1`, schwebende Haus-Ballons, Text, Buttons),
