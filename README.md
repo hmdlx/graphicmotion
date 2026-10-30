@@ -57,7 +57,7 @@ zwischen `CMS-BLOCK START` und `CMS-BLOCK ENDE` in `index.html`, nur ohne Dokume
   in der Produktübersicht (dritte Kachel) von rechts ins Bild des Massagesessels DUNES, taucht auf und ab und hat rot
   glühende Augen. Definiert ist er einmal als `#hdx-clown` und wird per `<use>` im Bild und im Pop-up
   gezeigt.
-- Motion-Elemente, alle als SVG-Animation (SMIL): schwebende Ballons, Fledermäuse,
+- Motion-Elemente, alle als SVG-Animation (SMIL): Fledermäuse im Pop-up, Pfeil auf dem Video,
   Nebel in den Navy-Karten, glühende Augen und ein wanderndes Auge in der dunklen Karte.
 - Das Pop-up nutzt die Popover-API (`popover` / `popovertarget`) und funktioniert damit ohne
   JavaScript. Das Script am Ende ergänzt: „Code kopieren“, „Jetzt einlösen“ kopiert den Code
