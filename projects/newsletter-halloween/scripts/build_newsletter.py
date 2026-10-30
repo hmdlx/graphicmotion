@@ -13,10 +13,11 @@ Footer-Hinweis und Rechtslinks. Ergebnis: output/newsletter-halloween-kw44.html 
 Textversion output/newsletter-halloween-kw44.txt, beide aus den Texten unten.
 
 Klick auf Hero oder „ZUM CLOWN“ führt in den Shop, wo das Pop-up aus output/popup/ den
-Gutscheincode zeigt. Bilder werden relativ eingebunden (images/…); vor dem Versand in JUNE
-hochladen.
+Gutscheincode zeigt. Bilder werden relativ eingebunden (images/…), außer sie stehen schon mit
+CDN-Adresse in source/cdn-urls.json (nach dem Hochladen in JUNE dort eintragen).
 """
 import html as htmllib
+import json
 import os
 import re
 import sys
@@ -133,6 +134,13 @@ def from_export(src):
 
 # --- HTML-Bausteine ----------------------------------------------------------------------
 
+def src_url(name):
+    """Bild-Adresse: CDN, wenn in source/cdn-urls.json eingetragen, sonst relativ images/…"""
+    path = os.path.join(PROJECT, "source", "cdn-urls.json")
+    cdn = json.load(open(path)) if os.path.exists(path) else {}
+    return cdn.get(name, f"images/{name}")
+
+
 def rich(s):
     return s.replace("<b>", '<strong style="font-weight:700;">').replace("</b>", "</strong>")
 
@@ -159,7 +167,7 @@ def badge(text):
 
 
 def img(src, alt, width, href=None, kind="image"):
-    tag = (f'<img src="images/{src}" width="{width}" alt="{alt}" '
+    tag = (f'<img src="{src_url(src)}" width="{width}" alt="{alt}" '
            f'style="display:block;width:100%;max-width:{width}px;height:auto;border:0;">')
     if not href:
         return tag
@@ -250,7 +258,7 @@ def header(ex):
     return (
         row(p(usps, 11, NAVY, "center"), bg=LINE, pad="7px 16px", cls="topbar")
         + row(f'<a href="{ex["home"]}" target="_blank" style="display:block;width:230px;margin:0 auto;">'
-              '<img src="images/logo_weiss.png" width="230" alt="Home Deluxe" style="display:block;width:230px;height:auto;border:0;margin:0 auto;"></a>',
+              f'<img src="{src_url("logo_weiss.png")}" width="230" alt="Home Deluxe" style="display:block;width:230px;height:auto;border:0;margin:0 auto;"></a>',
               bg=NAVY, pad="22px 20px")
         + row(f'<table role="presentation" width="100%" border="0" cellpadding="0" cellspacing="0" class="nav"><tr>{nav}</tr></table>',
               bg=GREY, pad="0 10px")
@@ -320,7 +328,7 @@ def closing():
 
 
 def footer(ex):
-    icons = "".join(f'<td style="padding:0 14px;"><a href="{u}" target="_blank"><img src="images/social_{n.lower()}.png" width="30" alt="{n}" '
+    icons = "".join(f'<td style="padding:0 14px;"><a href="{u}" target="_blank"><img src="{src_url(f"social_{n.lower()}.png")}" width="30" alt="{n}" '
                     'style="display:block;width:30px;height:30px;border:0;"></a></td>' for n, u in ex["social"])
     usps = "&nbsp;&nbsp;·&nbsp;&nbsp;".join(f"{u}&nbsp;✓" for u in ex["usps"])
     contact = f'<a href="{ex["contact"][1]}" target="_blank" style="color:#ffffff;text-decoration:underline;">{ex["contact"][0]}</a>'

@@ -41,7 +41,7 @@ const CLOWN = /[?&]halloween=clown/;
     };
     const res = {
       clown_links: await page.locator('a[href*="halloween=clown"]').count(),
-      hero: await hit('img[src^="images/hero_clown"]'),
+      hero: await hit('a[href*="halloween=clown"] >> nth=1 >> img'),
       lahti: await hit('img[src="images/lahti-xl_abend.jpg"]'),
     };
     console.log(v.name, JSON.stringify(res, null, 1));

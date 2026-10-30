@@ -93,8 +93,10 @@ Vorschläge, oben in `scripts/build_newsletter.py` (Code, Datum und Ablaufzeit z
 
 ## In JUNE übernehmen
 
-Alle Dateien aus `output/images/` in JUNE hochladen und die Pfade `images/…` durch die CDN-URLs
-ersetzen. Das Trusted-Shops-Siegel kommt weiter vom bestehenden CDN. Poppins wird per
+Alle Dateien aus `output/images/` in JUNE hochladen und die CDN-Adressen in
+`source/cdn-urls.json` eintragen (Dateiname → URL), dann `npm run halloween:build`: Eingetragene
+Bilder kommen vom CDN, die übrigen bleiben relativ `images/…`. Bereits eingetragen:
+`hero_clown.gif`. `hero_clown.jpg` ist nur das Standbild und muss nicht hochgeladen werden. Das Trusted-Shops-Siegel kommt weiter vom bestehenden CDN. Poppins wird per
 Google-Fonts-Link geladen (wie schon Montserrat im KW43-Export); Gmail zeigt stattdessen
 Helvetica/Arial.
 
