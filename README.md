@@ -33,7 +33,7 @@ Preise sind bewusst nicht eingebaut, weil sie sich häufig ändern.
 
 | Seite | Inhalt |
 |---|---|
-| `landingpages/halloween-clown/index.html` | Newsletter-Halloween-Suchspiel: 8 Produkte, ein gruseliger Clown öffnet ein Pop-up mit 50 € Gutschein ab 500 € Einkaufswert |
+| `landingpages/halloween-clown/index.html` | Newsletter-Halloween-Suchspiel: 6 Produkte, ein gruseliger Clown öffnet ein Pop-up mit 50 € Gutschein ab 500 € Einkaufswert |
 
 Die Seite kommt ohne Style-Tag aus: alle Styles stehen inline, damit der Block direkt in einen
 CMS-Block (Plenty, Shopify) passt. Kopiert wird alles zwischen `CMS-BLOCK START` und `CMS-BLOCK ENDE`.
@@ -42,18 +42,18 @@ CMS-Block (Plenty, Shopify) passt. Kopiert wird alles zwischen `CMS-BLOCK START`
   Navy `#0f2334` und Weiß `#fefefe`, Orange `#ff6a00` nur als Akzent, Poppins 500–700, alle Ecken und Buttons scharfkantig (CI).
   Mobile first: Grundgrößen für ~390 px, nach oben per `clamp()` und `auto-fit`-Grids skaliert,
   keine Media Queries.
-- Aufbau: 1 Hero (zentriert: „Finde den Clown.“ als `h1`, schwebende Haus-Ballons, Text, Buttons),
-  2 Video-Karte „Er ist schon da.“ mit dem Clown-Video, 3 „Draußen spukt’s. Drinnen nicht.“ mit zwei
-  Produkten, 4 Verlaufskarte „Schaurig gemütlich.“, 5 dunkle Karte „Psst … er beobachtet dich.“,
-  6 Spielregeln als Kacheln, 7 Produktübersicht „Welches Produkt passt zu dir?“ (8 Produkte),
-  8 Service-Leiste (0 % Finanzierung, versandfrei, Stores) und Fußnote.
+- Aufbau, kurz und direkt aufs Ziel: 1 Hero mit „Finde den Clown.“ (`h1`), Gutschein-Block „50 €“
+  und Button „Jetzt Clown suchen“ im ersten Bildschirm, darunter die Leiste Suchen · Klicken · Sparen,
+  2 Video-Karte „Er ist schon da.“ mit Button zu den Produkten, 3 „Wo steckt er?“ mit 6 Produkten,
+  4 dunkle Karte „Noch nicht gefunden?“ mit Tipp, 5 Service-Leiste (0 % Finanzierung, versandfrei,
+  Stores) und Fußnote.
 - Das Video (`media/hdx-halloween-hero.mp4`, 5 s, stumm, mit Standbild) liegt in den Shopify-Dateien
   und wird vom Shopify-CDN geladen.
 - Der Clown sieht aus wie der im Video: orange Haare, blauer Hoodie, blauer Ballon mit Haus. Er lugt
-  in der Produktübersicht von rechts ins Bild des Massagesessels DUNES, taucht auf und ab und hat rot
+  in der Produktübersicht (dritte Kachel) von rechts ins Bild des Massagesessels DUNES, taucht auf und ab und hat rot
   glühende Augen. Definiert ist er einmal als `#hdx-clown` und wird per `<use>` im Bild und im Pop-up
   gezeigt.
-- Motion-Elemente, alle als SVG-Animation (SMIL): schwebende Ballons, Fledermäuse, Spinne am Faden,
+- Motion-Elemente, alle als SVG-Animation (SMIL): schwebende Ballons, Fledermäuse,
   Nebel in den Navy-Karten, glühende Augen und ein wanderndes Auge in der dunklen Karte.
 - Das Pop-up nutzt die Popover-API (`popover` / `popovertarget`) und funktioniert damit ohne
   JavaScript. Das kleine Script am Ende ist optional: Fallback für alte Browser, „Code kopieren“,
