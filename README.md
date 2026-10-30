@@ -38,18 +38,23 @@ Preise sind bewusst nicht eingebaut, weil sie sich häufig ändern.
 Die Seite kommt ohne Style-Tag aus: alle Styles stehen inline, damit der Block direkt in einen
 CMS-Block (Plenty, Shopify) passt. Kopiert wird alles zwischen `CMS-BLOCK START` und `CMS-BLOCK ENDE`.
 
-- Look: schwarz mit Nebel, Akzente in Orange (`#ff6a00`), Poppins 700–900 in Versalien, plakativ.
-  Mobile first: Grundgrößen für ~390 px, nach oben per `clamp()` und `auto-fill`-Grids skaliert,
+- Look: hell und ruhig im Aufbau der Apple-„Why Mac“-Seite (Referenz vom Kunden). Farben vor allem
+  Navy `#0f2334` und Weiß `#fefefe`, Orange `#ff6a00` nur als Akzent, Poppins 500–700, runde Karten.
+  Mobile first: Grundgrößen für ~390 px, nach oben per `clamp()` und `auto-fit`-Grids skaliert,
   keine Media Queries.
-- Aufbau: gestapelter Claim HALLO/WEEN (einzige `h1`) mit orangen Tropfen, rotierender Gutschein-Störer,
-  Laufband, drei Schritte mit großen Konturziffern, zwei Produktblöcke als Poster-Kacheln
-  (Bild abgedunkelt, große Namen, Nummer 01–08), Zwischenband „Psst … er beobachtet dich.“,
-  oranges Tipp-Band, Kategorie-Liste, Laufband unten.
-- Der Clown hängt kopfüber von oben ins Bild des Massagesessels DUNES (Kachel 07), taucht auf und ab
-  und pendelt. Definiert ist er einmal als `#hdx-clown` und wird per `<use>` im Bild und im Pop-up gezeigt.
-- Motion-Elemente, alle als SVG-Animation (SMIL), also ohne CSS und ohne JavaScript: Blutmond mit
-  ziehender Wolke, flatternde Fledermäuse, Geister, Spinnen am Faden, Spinnennetze, Nebel (`#hdx-fog`,
-  mehrfach per `<use>`), aufsteigende Glut, glühende Augen, flackernder Kürbis, Laufbänder.
+- Aufbau: 1 Hero (zentriert: „Finde den Clown.“ als `h1`, schwebende Haus-Ballons, Text, Buttons),
+  2 Video-Karte „Er ist schon da.“ mit dem Clown-Video, 3 „Draußen spukt’s. Drinnen nicht.“ mit zwei
+  Produkten, 4 Verlaufskarte „Schaurig gemütlich.“, 5 dunkle Karte „Psst … er beobachtet dich.“,
+  6 Spielregeln als Kacheln, 7 Produktübersicht „Welches Produkt passt zu dir?“ (8 Produkte),
+  8 Service-Leiste (0 % Finanzierung, versandfrei, Stores) und Fußnote.
+- Das Video (`media/hdx-halloween-hero.mp4`, 5 s, stumm, mit Standbild) liegt in den Shopify-Dateien
+  und wird vom Shopify-CDN geladen.
+- Der Clown sieht aus wie der im Video: orange Haare, blauer Hoodie, blauer Ballon mit Haus. Er lugt
+  in der Produktübersicht von rechts ins Bild des Massagesessels DUNES, taucht auf und ab und hat rot
+  glühende Augen. Definiert ist er einmal als `#hdx-clown` und wird per `<use>` im Bild und im Pop-up
+  gezeigt.
+- Motion-Elemente, alle als SVG-Animation (SMIL): schwebende Ballons, Fledermäuse, Spinne am Faden,
+  Nebel in den Navy-Karten, glühende Augen und ein wanderndes Auge in der dunklen Karte.
 - Das Pop-up nutzt die Popover-API (`popover` / `popovertarget`) und funktioniert damit ohne
   JavaScript. Das kleine Script am Ende ist optional: Fallback für alte Browser, „Code kopieren“,
   `dataLayer`-Event `halloween_clown_gefunden` und Pause aller Animationen bei reduzierter Bewegung.
