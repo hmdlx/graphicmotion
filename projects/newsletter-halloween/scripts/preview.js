@@ -42,7 +42,7 @@ const CLOWN = /[?&]halloween=clown/;
     const res = {
       clown_links: await page.locator('a[href*="halloween=clown"]').count(),
       hero: await hit('a[href*="halloween=clown"] >> nth=1 >> img'),
-      lahti: await hit('img[src="images/lahti-xl_abend.jpg"]'),
+      lahti: await hit('img[src*="LAHTI-XL-ambiente-01"]'),
     };
     console.log(v.name, JSON.stringify(res, null, 1));
     if (res.clown_links !== 4 || !CLOWN.test(res.hero) || CLOWN.test(res.lahti)) fail('Klick-Test Newsletter');

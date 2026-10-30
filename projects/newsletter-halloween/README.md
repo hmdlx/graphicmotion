@@ -63,7 +63,7 @@ und läuft wieder in Navy aus.
 |---|---|---|---|
 | Hero „HALLOWEEN-SPECIAL – Finde den Clown“ | Klick öffnet das Gutschein-Pop-up | GIF | – |
 | „**Gemütlich** durch die Gruselnacht“ | CTA: Alle Saunen | – | – |
-| „**Wellness** für die Geisternacht“ | Fasssauna LAHTI XL · Hot Tub SKANDI M | Shopfotos (LAHTI mit Fledermäusen) | 2.599 € · 1.999 € |
+| „**Wellness** für die Geisternacht“ | Fasssauna LAHTI XL · Hot Tub SKANDI M | Shopfotos | 2.599 € · 1.999 € |
 | „**Lagerfeuer** für Gruselgeschichten“ | Gartenfeuer SWING, Feuerschale FRANK | Shopfoto, Freisteller | 79 € · 39 € |
 | „**Gruselfilm**-Abend“ | Sofa CASARA Dunkelgrün | Shopfoto | 1.199 € |
 | „Noch mehr **Gänsehaut**-Momente“ | Elektrokamin CALOR · Massagesessel DUNES · LED-Spiegel DUBI · Kratzbaum RUBY | Shopfotos | 329 € · 1.399 € · 139 € · 69 € |
@@ -72,6 +72,9 @@ und läuft wieder in Navy aus.
 Produktnamen, Links, Preise und Merkmale stammen von den Produktseiten auf homedeluxe.de
 (Stand 30.10.2026) und stehen oben in `scripts/build_newsletter.py` (`P` und Abschnitt „Texte“).
 Preise vor dem Versand gegenprüfen.
+
+Die Produktfotos werden unverändert direkt vom Shop-CDN eingebunden (`cdn02.plentyone.com`,
+`SHOP_IMG` im Skript) – sie müssen also nicht hochgeladen werden.
 
 ## Textversion
 
@@ -93,10 +96,17 @@ Vorschläge, oben in `scripts/build_newsletter.py` (Code, Datum und Ablaufzeit z
 
 ## In JUNE übernehmen
 
-Alle Dateien aus `output/images/` in JUNE hochladen und die CDN-Adressen in
-`source/cdn-urls.json` eintragen (Dateiname → URL), dann `npm run halloween:build`: Eingetragene
-Bilder kommen vom CDN, die übrigen bleiben relativ `images/…`. Bereits eingetragen:
-`hero_clown.gif`. `hero_clown.jpg` ist nur das Standbild und muss nicht hochgeladen werden. Das Trusted-Shops-Siegel kommt weiter vom bestehenden CDN. Poppins wird per
+Woher die Bilder kommen:
+
+| Bilder | Quelle |
+|---|---|
+| Produktfotos | Shop-CDN, direkt verlinkt |
+| Hero-GIF, Trusted-Shops-Siegel | JUNE-CDN (`homedeluxe-bf09.kxcdn.com`) |
+| eigene Grafiken (Hero-Kopf, Logo, Übergänge, Social-Icons) | `output/fuer-june-hochladen.zip` – in JUNE hochladen |
+
+Nach dem Hochladen die CDN-Adressen in `source/cdn-urls.json` eintragen (Dateiname → URL) und
+`npm run halloween:build` ausführen. Das ZIP enthält immer nur die Grafiken, die dort noch fehlen.
+`hero_clown.jpg` ist nur das Standbild zum GIF und muss nicht hochgeladen werden. Das Trusted-Shops-Siegel kommt weiter vom bestehenden CDN. Poppins wird per
 Google-Fonts-Link geladen (wie schon Montserrat im KW43-Export); Gmail zeigt stattdessen
 Helvetica/Arial.
 
@@ -108,8 +118,8 @@ npm run halloween:build     # alles: Grafiken -> Bilder/GIF -> HTML + Text -> Vo
 
 | Skript | macht |
 |---|---|
-| `halloween:graphics` | `graphics/*.html` per Chromium -> `build/newsletter-halloween/graphics/*.png` (Logo, Hero-Kopf, Übergänge, Social-Icons, Fledermäuse) |
-| `halloween:images` | Hero-GIF und Standbild, Grafiken, Produktbilder, Pop-up-Bild -> `output/` |
+| `halloween:graphics` | `graphics/*.html` per Chromium -> `build/newsletter-halloween/graphics/*.png` (Logo, Hero-Kopf, Übergänge, Social-Icons) |
+| `halloween:images` | Hero-GIF und Standbild, Grafiken, Pop-up-Bild, ZIP der noch hochzuladenden Grafiken -> `output/` |
 | `halloween:html` | Newsletter-HTML + Textversion; Navigation, Social-Links, Footer-Hinweis und Rechtslinks aus `source/newsletter-new-ins-kw43.html` |
 | `halloween:preview` | Ganzseiten-Vorschau Desktop/Mobil, Pop-up-Vorschau; prüft die Clown-Links und das Pop-up mit/ohne `?halloween=clown` |
 | `halloween:vorschau` | eigenständige Vorschau-HTMLs mit eingebetteten Bildern -> `output/vorschau/` (nicht für den Versand) |

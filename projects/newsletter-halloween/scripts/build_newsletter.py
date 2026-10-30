@@ -13,8 +13,8 @@ Footer-Hinweis und Rechtslinks. Ergebnis: output/newsletter-halloween-kw44.html 
 Textversion output/newsletter-halloween-kw44.txt, beide aus den Texten unten.
 
 Klick auf Hero oder „ZUM CLOWN“ führt in den Shop, wo das Pop-up aus output/popup/ den
-Gutscheincode zeigt. Bilder werden relativ eingebunden (images/…), außer sie stehen schon mit
-CDN-Adresse in source/cdn-urls.json (nach dem Hochladen in JUNE dort eintragen).
+Gutscheincode zeigt. Produktfotos kommen direkt vom Shop-CDN (SHOP_IMG), eigene Grafiken vom
+JUNE-CDN, sobald sie in source/cdn-urls.json eingetragen sind, sonst relativ images/….
 """
 import html as htmllib
 import json
@@ -32,6 +32,20 @@ VALID_UNTIL = "02.11.2026"
 NAVY, ORANGE, SALE = "#0e2234", "#ff9800", "#FF4500"     # Werte aus dem CSS von homedeluxe.de
 GREY, LINE, MUTED, NIGHT_TEXT = "#f4f6f8", "#e3e7ec", "#66727d", "#c7d0d9"
 FONT = "Poppins,Helvetica,Arial,sans-serif"
+
+# Produktfotos direkt vom Shop-CDN (unverändert, 1000 × 1000 px)
+SHOP_IMG = {
+    "lahti": "https://cdn02.plentyone.com/emoguafh21bo/item/images/20004/full/48669-Home-Deluxe-Outdoorsauna-LAHTI-XL-ambiente-01.jpg",
+    "skandi": "https://cdn02.plentyone.com/emoguafh21bo/item/images/20042/full/20042-home-deuxe-hot-tub-holzbefeuertes-badefass-skandi-M-Ambiente01-mit-Model.jpg",
+    "swing_amb": "https://cdn02.plentyone.com/emoguafh21bo/item/images/18184/full/35678-Home-Deluxe-Kamin-Swing-Ambiente02-1.jpg",
+    "swing_frei": "https://cdn02.plentyone.com/emoguafh21bo/item/images/18184/full/Kamin-Swing-45grad-rust.jpg",
+    "frank_frei": "https://cdn02.plentyone.com/emoguafh21bo/item/images/18183/full/Feuerschale-Frank-front-rust-holz.jpg",
+    "casara": "https://cdn02.plentyone.com/emoguafh21bo/item/images/25129/full/60495-home-deluxe-sofa-casara-gruen-ambiente-01.jpg",
+    "calor": "https://cdn02.plentyone.com/emoguafh21bo/item/images/15586/full/15586-Elektrokamin-Calor-mit-Flammeneffekt-01-neu.jpg",
+    "dunes": "https://cdn02.plentyone.com/emoguafh21bo/item/images/20321/full/20321-Home-Deluxe-Massagesessel-DUNES-Schwarz-Ambiente01_1.jpg",
+    "dubi": "https://cdn02.plentyone.com/emoguafh21bo/item/images/24411/full/59122-home-deluxe-led-spiegel-dubi-60-cm-ambiente-neu.jpg",
+    "ruby": "https://cdn02.plentyone.com/emoguafh21bo/item/images/20934/full/Home-Deluxe-Kratzbaum-Ruby-Schwarz-Ambiente01.jpg",
+}
 
 SAUNEN_URL = "https://www.homedeluxe.de/saunen-infrarotkabinen/"
 SOFAS_URL = "https://www.homedeluxe.de/wohnen/wohnzimmer/sofas/"
@@ -62,24 +76,24 @@ INTRO = dict(label="HALLOWEEN BEI HOME DELUXE", heading=[("Gemütlich", True), (
              text="Draußen gruselig, drinnen heiß: Sauna, Feuer &amp; Kuschelplätze für lange Herbstabende – "
                   "direkt vom Hersteller, kostenlos geliefert*.")
 WELLNESS = dict(heading=[("Wellness", True), (" für die Geisternacht", False)], more=("Alle Saunen", SAUNEN_URL), tiles=[
-    dict(key="lahti", src="lahti-xl_abend.jpg", badge="SCHWITZEN STATT SCHAUDERN", name="LAHTI XL",
+    dict(key="lahti", src=SHOP_IMG["lahti"], badge="SCHWITZEN STATT SCHAUDERN", name="LAHTI XL",
          sub="Outdoor Fasssauna · inkl. 8 kW Saunaofen · ideal für 4–6 Personen"),
-    dict(key="skandi", src="skandi-m_nacht.jpg", badge="DEIN EIGENER HEXENKESSEL", name="SKANDI M",
+    dict(key="skandi", src=SHOP_IMG["skandi"], badge="DEIN EIGENER HEXENKESSEL", name="SKANDI M",
          sub="Hot Tub · holzbefeuert, kein Strom nötig · Ø 180 cm für bis zu 4 Personen"),
 ])
 FIRE = dict(label="MADE IN GERMANY", heading=[("Lagerfeuer", True), (" für Gruselgeschichten", False)],
             text="Feuerschale und Holzlager in einem – in Handarbeit in Deutschland hergestellt.",
             usps=[("HANDARBEIT", "Hergestellt in Deutschland"), ("2 IN 1", "Feuerschale und Holzlager"), ("WETTERFEST", "Für draußen gemacht")],
-            cards=[dict(key="frank", src="frank_karte.jpg", badge="MADE IN GERMANY", name="FEUERSCHALE FRANK", sub="mit Holzlager · Edelrost-Patina"),
-                   dict(key="swing", src="swing_karte.jpg", badge="MADE IN GERMANY", name="GARTENFEUER SWING", sub="mit Holzlager · variabel aufstellbar")])
+            cards=[dict(key="frank", src=SHOP_IMG["frank_frei"], badge="MADE IN GERMANY", name="FEUERSCHALE FRANK", sub="mit Holzlager · Edelrost-Patina"),
+                   dict(key="swing", src=SHOP_IMG["swing_frei"], badge="MADE IN GERMANY", name="GARTENFEUER SWING", sub="mit Holzlager · variabel aufstellbar")])
 MOVIE = dict(heading=[("Gruselfilm", True), ("-Abend", False)], more=("Alle Sofas", SOFAS_URL),
-             tile=dict(key="casara", src="casara_dunkelgruen.jpg", badge="FÜR DEN FILMABEND", name="CASARA",
+             tile=dict(key="casara", src=SHOP_IMG["casara"], badge="FÜR DEN FILMABEND", name="CASARA",
                        sub="Sofa · Webstoff Dunkelgrün · 258 × 128 × 72 cm · weich genug zum Reinkuscheln"))
 MORE = dict(heading=[("Noch mehr ", False), ("Gänsehaut", True), ("-Momente", False)], tiles=[
-    dict(key="calor", src="calor_ambiente.jpg", badge="KAMINFEUER", name="ELEKTROKAMIN CALOR", sub="Flammeneffekt, inkl. Fernbedienung"),
-    dict(key="dunes", src="dunes_ambiente.jpg", badge="ZERO GRAVITY", name="MASSAGESESSEL DUNES", sub="12 Programme, Heizfunktion"),
-    dict(key="dubi", src="dubi_ambiente.jpg", badge="SPIEGLEIN, SPIEGLEIN", name="LED-SPIEGEL DUBI", sub="Ø 80 cm, 3 Lichtfarben, dimmbar"),
-    dict(key="ruby", src="ruby_ambiente.jpg", badge="FÜR SCHWARZE KATZEN", name="KRATZBAUM RUBY", sub="Schwarz, 100 cm hoch, inkl. Spielzeug"),
+    dict(key="calor", src=SHOP_IMG["calor"], badge="KAMINFEUER", name="ELEKTROKAMIN CALOR", sub="Flammeneffekt, inkl. Fernbedienung"),
+    dict(key="dunes", src=SHOP_IMG["dunes"], badge="ZERO GRAVITY", name="MASSAGESESSEL DUNES", sub="12 Programme, Heizfunktion"),
+    dict(key="dubi", src=SHOP_IMG["dubi"], badge="SPIEGLEIN, SPIEGLEIN", name="LED-SPIEGEL DUBI", sub="Ø 80 cm, 3 Lichtfarben, dimmbar"),
+    dict(key="ruby", src=SHOP_IMG["ruby"], badge="FÜR SCHWARZE KATZEN", name="KRATZBAUM RUBY", sub="Schwarz, 100 cm hoch, inkl. Spielzeug"),
 ])
 CLOSING = dict(heading=[("Happy ", False), ("Halloween!", True)],
                text="Noch nicht geklickt? Der Clown wartet ganz oben auf dem Sofa – mit 50&nbsp;€ für deine Bestellung.",
@@ -135,7 +149,10 @@ def from_export(src):
 # --- HTML-Bausteine ----------------------------------------------------------------------
 
 def src_url(name):
-    """Bild-Adresse: CDN, wenn in source/cdn-urls.json eingetragen, sonst relativ images/…"""
+    """Bild-Adresse: volle URL bleibt, eigene Grafik kommt vom CDN, wenn in source/cdn-urls.json
+    eingetragen, sonst relativ images/…"""
+    if name.startswith("https://"):
+        return name
     path = os.path.join(PROJECT, "source", "cdn-urls.json")
     cdn = json.load(open(path)) if os.path.exists(path) else {}
     return cdn.get(name, f"images/{name}")
@@ -302,7 +319,7 @@ def fire():
     return row(
         section_head(FIRE["heading"], color="#ffffff", label=FIRE["label"])
         + p(FIRE["text"], 14, NIGHT_TEXT, extra="padding:8px 0 18px;")
-        + img("swing_ambiente.jpg", f"{name} mit Holzlager im Garten", 592, utm(url))
+        + img(SHOP_IMG["swing_amb"], f"{name} mit Holzlager im Garten", 592, utm(url))
         + '<table role="presentation" width="100%" border="0" cellpadding="0" cellspacing="0"><tr><td style="padding:22px 0;">'
         + '<table role="presentation" width="100%" border="0" cellpadding="0" cellspacing="0"><tr>'
         + "".join(usp(*u) for u in FIRE["usps"]) + '</tr></table></td></tr></table>'

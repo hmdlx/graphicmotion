@@ -11,19 +11,22 @@ Hero:      Standbild aus source/hero/ mit Navy-Verlauf oben und unten, so dass e
            dem Hero-Kopf kommt und in den Navy-Abschnitt darunter übergeht. Liegt das KI-Video
            source/hero/clown-hervor.mp4 vor (leeres Sofa -> Clown sitzt), entsteht daraus
            hero_clown.gif mit demselben Verlauf; der Newsletter nimmt dann das GIF.
-Produkte:  Shopfotos unverändert, Freisteller auf hellgrauem Grund wie die Kacheln im Shop.
+Produkte:  kommen direkt vom Shop-CDN (SHOP_IMG in build_newsletter.py), hier nichts zu tun.
+Upload:    output/fuer-june-hochladen.zip enthält genau die eigenen Grafiken, die noch auf das
+           JUNE-CDN müssen (ohne Einträge in source/cdn-urls.json).
 """
 import glob
+import json
 import os
 import subprocess
 import sys
 import tempfile
+import zipfile
 
 import numpy as np
-from PIL import Image, ImageChops, ImageDraw, ImageFilter
+from PIL import Image, ImageFilter
 
 NAVY = (14, 34, 52)
-TILE_GREY = (244, 246, 248)          # #f4f6f8, Kachelgrund wie auf homedeluxe.de
 HERO_W = 1280                         # 2x der 640 px Newsletter-Breite
 HERO_SRC = os.path.join("hero", "wohnzimmer-clown-hoodie.webp")
 FADE_TOP, FADE_BOTTOM = 0.16, 0.20    # Anteil der Bildhöhe, der in Navy übergeht
@@ -138,25 +141,9 @@ def save_png(img, path, colors=None):
     img.save(path, optimize=True)
 
 
-def fit_cutout(path, size, pad, bg=TILE_GREY):
-    """Freisteller: weißen Rand von den Ecken her einfärben, zuschneiden, mittig einpassen."""
-    im = Image.open(path).convert("RGB")
-    bbox = ImageChops.difference(im, Image.new("RGB", im.size, "white")).point(lambda v: 255 if v > 18 else 0).getbbox()
-    im = im.crop(bbox)
-    w, h = size[0] - 2 * pad, size[1] - 2 * pad
-    s = min(w / im.width, h / im.height)
-    im = im.resize((round(im.width * s), round(im.height * s)), Image.LANCZOS)
-    card = Image.new("RGB", size, "white")
-    card.paste(im, ((size[0] - im.width) // 2, (size[1] - im.height) // 2))
-    for xy in ((0, 0), (size[0] - 1, 0), (0, size[1] - 1), (size[0] - 1, size[1] - 1)):
-        ImageDraw.floodfill(card, xy, bg, thresh=14)
-    return card
-
-
 def main():
     project, gfx = sys.argv[1:3]
     src = os.path.join(project, "source")
-    shop = os.path.join(src, "shop")
     out = os.path.join(project, "output", "images")
     os.makedirs(out, exist_ok=True)
     g = lambda name: os.path.join(gfx, f"{name}.png")
@@ -178,17 +165,6 @@ def main():
     if not build_hero_gif(src, out) and os.path.exists(gif):
         os.remove(gif)
 
-    # Produkte
-    lahti = Image.open(os.path.join(shop, "lahti-xl_ambiente.jpg")).convert("RGBA")
-    lahti.alpha_composite(Image.open(g("lahti-bats")).convert("RGBA"))
-    save(lahti, os.path.join(out, "lahti-xl_abend.jpg"))
-    for name in ("skandi-m_nacht", "swing_ambiente", "casara_dunkelgruen"):
-        save(Image.open(os.path.join(shop, f"{name}.jpg")), os.path.join(out, f"{name}.jpg"))
-    for name in ("calor_ambiente", "dunes_ambiente", "dubi_ambiente", "ruby_ambiente"):
-        save(Image.open(os.path.join(shop, f"{name}.jpg")).resize((640, 640), Image.LANCZOS), os.path.join(out, f"{name}.jpg"))
-    for name in ("frank", "swing"):
-        save(fit_cutout(os.path.join(shop, f"{name}_freisteller.jpg"), (560, 480), 28), os.path.join(out, f"{name}_karte.jpg"))
-
     # Pop-up
     popup = os.path.join(project, "output", "popup")
     os.makedirs(popup, exist_ok=True)
@@ -196,6 +172,19 @@ def main():
     k = clown.width / 1774
     clown = clown.crop(tuple(round(v * k) for v in CLOWN_CROP))
     save(clown.resize((720, 480), Image.LANCZOS), os.path.join(popup, "clown.jpg"))
+
+    # Eigene Grafiken, die noch nicht auf dem CDN liegen, als ZIP zum Hochladen
+    cdn_file = os.path.join(src, "cdn-urls.json")
+    on_cdn = json.load(open(cdn_file)) if os.path.exists(cdn_file) else {}
+    todo = [f for f in sorted(os.listdir(out)) if f not in on_cdn and f != "hero_clown.jpg"]
+    zpath = os.path.join(project, "output", "fuer-june-hochladen.zip")
+    if os.path.exists(zpath):
+        os.remove(zpath)
+    if todo:
+        with zipfile.ZipFile(zpath, "w", zipfile.ZIP_DEFLATED) as z:
+            for f in todo:
+                z.write(os.path.join(out, f), f)
+    print("noch hochzuladen:", ", ".join(todo) or "nichts")
 
 
 if __name__ == "__main__":
