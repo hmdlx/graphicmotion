@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // Full-page previews of the newsletter and the voucher pop-up (desktop + mobile), with checks:
-// only the hero (header graphic, clown GIF, voucher teaser) and the two "ZUM CLOWN" buttons link to the pop-up URL,
-// and the pop-up opens only with ?halloween=clown.
+// only the hero (header graphic, clown GIF, voucher teaser) and the two "ZUM CLOWN" buttons link to the Halloween
+// landing page, and the (optional) shop pop-up opens only with ?halloween=clown.
 //
 //   node scripts/preview.js <newsletter.html> <popup.html> <out_dir>
 const path = require('path');
@@ -12,7 +12,8 @@ const VIEWS = [
   { name: 'desktop', width: 700, height: 900, scale: 1 },
   { name: 'mobile', width: 390, height: 844, scale: 2 },
 ];
-const CLOWN = /[?&]halloween=clown/;
+const CLOWN = /^https:\/\/www\.homedeluxe\.de\/halloween\/\?/;
+const CLOWN_SEL = 'a[href^="https://www.homedeluxe.de/halloween/"]';
 
 (async () => {
   const [html, popup, out] = process.argv.slice(2);
@@ -29,7 +30,7 @@ const CLOWN = /[?&]halloween=clown/;
     await page.waitForLoadState('networkidle');
     await page.evaluate(() => Promise.all([...document.images].map(i => i.complete ? 0 : new Promise(r => { i.onload = i.onerror = r; }))));
 
-    // Klick-Test: Mitte des Hero-Bilds -> Pop-up, Mitte des LAHTI-Bilds -> Produkt
+    // Klick-Test: Mitte des Hero-GIFs -> Halloween-Seite, Mitte des LAHTI-Bilds -> Produkt
     const hit = async sel => {
       // Seitenkoordinaten, unabhängig davon, wohin vorher gescrollt wurde
       const b = await page.locator(sel).evaluate(e => { const r = e.getBoundingClientRect(); return { x: r.x, y: r.y + scrollY, width: r.width, height: r.height }; });
@@ -40,8 +41,8 @@ const CLOWN = /[?&]halloween=clown/;
       }, [b.x + b.width / 2, b.y + b.height / 2]);
     };
     const res = {
-      clown_links: await page.locator('a[href*="halloween=clown"]').count(),
-      hero: await hit('a[href*="halloween=clown"] >> nth=1 >> img'),
+      clown_links: await page.locator(CLOWN_SEL).count(),
+      hero: await hit(CLOWN_SEL + ' >> nth=1 >> img'),
       lahti: await hit('img[src*="LAHTI-XL-ambiente-01"]'),
     };
     console.log(v.name, JSON.stringify(res, null, 1));

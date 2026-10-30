@@ -1,8 +1,9 @@
 # Newsletter Halloween-Edition (KW44)
 
 Halloween-Newsletter im Look von homedeluxe.de mit Clown-Aktion: Im Hero-GIF kommt ein Clown
-im Home-Deluxe-Hoodie hinter dem Sofa hervor und setzt sich. Wer auf ihn klickt, landet im
-Shop, und dort öffnet sich ein Pop-up mit dem Gutscheincode – **50 € ab 500 € Bestellwert**.
+im Home-Deluxe-Hoodie hinter dem Sofa hervor und setzt sich. Wer auf ihn klickt, landet auf der
+Halloween-Seite https://www.homedeluxe.de/halloween/. Dort versteckt er sich in einem Produktbild;
+ein Klick auf ihn öffnet das Pop-up mit dem Gutscheincode – **50 € ab 500 € Bestellwert**.
 
 Zum Ansehen und Weitergeben: `output/vorschau/newsletter-halloween-kw44_vorschau.html` und
 `output/vorschau/clown-popup_vorschau.html` – alle Bilder eingebettet, das Pop-up ist sofort offen.
@@ -54,11 +55,16 @@ dann Text und Button „ZUM CLOWN“. Kürbisse, Fledermäuse und Netz kommen au
    der Hintergrund eingefroren (`motion_mask`, weiche Kante); das GIF speichert pro Bild nur noch
    den Clown-Ausschnitt. Stellschrauben oben im Skript: `GIF_FPS`, `GIF_COLORS`, `GIF_MOTION_X`.
 
-## Klick → Pop-up
+## Klick → Halloween-Seite
 
 - Hero-Kopf, Hero-GIF, Gutschein-Teaser und die beiden Buttons „ZUM CLOWN“ verlinken auf
-  `https://www.homedeluxe.de/?halloween=clown&utm_campaign=KW44_Halloween&…&utm_content=clown`.
-- `output/popup/clown-popup.html` enthält den Block für den Shop (zwischen
+  `https://www.homedeluxe.de/halloween/?utm_campaign=KW44_Halloween&…&utm_content=clown`.
+- Die Halloween-Seite (`landingpages/halloween-clown/`, Branch `claude/sharp-mendel-yx9yar`) führt
+  die Geschichte weiter („Eben noch auf dem Sofa. Jetzt steckt er in einem unserer Produktbilder.“)
+  und hat ein eigenes Pop-up mit dem Code `CLOWN50`.
+- Der Newsletter enthält bewusst kein `halloween=clown` mehr (`build_newsletter.py` bricht sonst ab):
+  das Shop-Pop-up unten würde sich sonst sofort öffnen und die Suche auf der Seite verraten.
+- Nicht mehr nötig, nur noch als Reserve: `output/popup/clown-popup.html` enthält einen Block für den Shop (zwischen
   `HD-CLOWN-POPUP START` und `ENDE`): Er bleibt unsichtbar, bis die Adresse `halloween=clown`
   enthält, zeigt dann Code, „Code kopieren“ und Bedingungen und schließt per ×, Klick daneben
   oder Esc. Nach dem 02.11.2026, 23:59 Uhr zeigt er statt des Codes „Huch, zu spät!“.
@@ -71,7 +77,6 @@ dann Text und Button „ZUM CLOWN“. Kürbisse, Fledermäuse und Netz kommen au
 |---|---|---|---|
 | Hero „HALLOWEEN-SPECIAL – Finde den Clown“ | Klick öffnet das Gutschein-Pop-up | Hero-Kopf, GIF | – |
 | Teaser „Süßes oder Saures?“ (Navy) | 50-€-Gutschein ab 500 €, Text, Button „ZUM CLOWN“ | Grafik | – |
-| „**Gemütlich** durch die Gruselnacht“ | CTA: Alle Saunen | – | – |
 | „**Wellness** für die Geisternacht“ | Fasssauna LAHTI XL · Infrarotkabine NERO M | Shopfotos | 2.599 € · 1.349 € |
 | „NEU IM SHOP – **Gespenstisch** schöne Neuheiten“ | LED-Wasserdampfkamin ODENA · LED-Bett MELURA · Couchtisch-Set LAMESA | Shopfotos, Freisteller (LAMESA) | 349 € · 399 € · 179 € |
 | „**Gruselfilm**-Abend“ | Sofa CASARA Dunkelgrün | Shopfoto | 1.199 € |
@@ -99,9 +104,8 @@ Vorschläge, oben in `scripts/build_newsletter.py` (Code, Datum und Ablaufzeit z
 `output/popup/clown-popup.html` und `graphics/kopf.html`):
 
 - **Gutscheincode** `CLOWN50` – im Shop anlegen: 50 € Rabatt, Mindestbestellwert 500 €, einmal pro Kunde.
-- **Gültig bis** 02.11.2026, 23:59 Uhr.
-- **Pop-up einbauen** – Block aus `output/popup/clown-popup.html` global ins Shop-Layout
-  (z. B. Footer), `clown.jpg` ins Shop-CDN laden und den Bildpfad im Block anpassen.
+- **Gültig bis** 02.11.2026, 23:59 Uhr. Achtung: Die Halloween-Seite nennt „gültig bis 31.12.2026“ –
+  ein Datum festlegen und Newsletter (`VALID_UNTIL`, `graphics/teaser.html`) bzw. Seite angleichen.
 
 ## In JUNE übernehmen
 

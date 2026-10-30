@@ -12,8 +12,8 @@ kommen unverändert aus dem JUNE-Export (source/newsletter-new-ins-kw43.html) �
 SPUK10-Version. Ergebnis: output/newsletter-halloween-kw44.html und die Textversion
 output/newsletter-halloween-kw44.txt, beide aus den Texten unten.
 
-Klick auf Hero oder „ZUM CLOWN“ führt in den Shop, wo das Pop-up aus output/popup/ den
-Gutscheincode zeigt. Produktfotos kommen direkt vom Shop-CDN (SHOP_IMG), Logo und Social-Icons
+Klick auf Hero oder „ZUM CLOWN“ führt auf die Halloween-Seite im Shop (homedeluxe.de/halloween/):
+dort versteckt sich der Clown in einem Produktbild, ein Klick auf ihn zeigt den Gutscheincode. Produktfotos kommen direkt vom Shop-CDN (SHOP_IMG), Logo und Social-Icons
 aus dem Export vom JUNE-CDN, eigene Grafiken vom JUNE-CDN, sobald sie in source/cdn-urls.json
 eingetragen sind, sonst relativ images/….
 """
@@ -26,8 +26,8 @@ import textwrap
 
 CAMPAIGN = "KW44_Halloween"
 UTM = f"utm_campaign={CAMPAIGN}&utm_source=newsletter&utm_medium=email"
-# Klick auf den Clown: Shop-Startseite, der Parameter halloween=clown öffnet dort das Gutschein-Pop-up
-CLOWN_URL = f"https://www.homedeluxe.de/?halloween=clown&{UTM}&utm_content=clown"
+# Klick auf den Clown: Halloween-Seite im Shop, dort geht die Suche weiter (eigenes Gutschein-Pop-up)
+CLOWN_URL = f"https://www.homedeluxe.de/halloween/?{UTM}&utm_content=clown"
 VALID_UNTIL = "02.11.2026"
 
 NAVY, ORANGE = "#0e2234", "#ff9800"     # Werte aus dem CSS von homedeluxe.de
@@ -73,11 +73,8 @@ PREHEADER = "Psst … hinter dem Sofa bewegt sich was 🤡 Finde den Clown und w
 HERO_ALT = "Halloween-Special: Finde den Clown! Klick ihn an und sichere dir 50 € Gutschein"
 HERO_IMG_ALT = "Ein Clown klettert hinter dem Sofa hervor und setzt sich – klick ihn an"
 TEASER_ALT = f"Süßes oder Saures? 50 € Gutschein ab 500 € Bestellwert, nur bis {VALID_UNTIL} – finde einfach den Clown"
-HERO_CTA = dict(text="Klick auf den <b>Clown</b> – dann öffnet sich im Shop dein Gutscheincode. Einfach bei der Bestellung eingeben.**",
+HERO_CTA = dict(text="Klick auf den <b>Clown</b> – er versteckt sich jetzt auf unserer Halloween-Seite in einem Produktbild. Find ihn dort, klick ihn an und dein Gutscheincode gehört dir.**",
                 cta="ZUM CLOWN", note=f"**Nur bis {VALID_UNTIL}. Alle Aktionsbedingungen findest du ganz unten.")
-INTRO = dict(label="HALLOWEEN BEI HOME DELUXE", heading=[("Gemütlich", True), (" durch die Gruselnacht", False)],
-             text="Draußen gruselig, drinnen heiß: Sauna, Feuer &amp; Kuschelplätze für lange Herbstabende – "
-                  "direkt vom Hersteller, kostenlos geliefert*.")
 WELLNESS = dict(heading=[("Wellness", True), (" für die Geisternacht", False)], more=("Alle Saunen", SAUNEN_URL), tiles=[
     dict(key="lahti", src=SHOP_IMG["lahti"], badge="SCHWITZEN STATT SCHAUDERN", name="LAHTI XL",
          sub="Outdoor Fasssauna · inkl. 8 kW Saunaofen · ideal für 4–6 Personen"),
@@ -103,17 +100,18 @@ MORE = dict(heading=[("Noch mehr ", False), ("Gänsehaut", True), ("-Momente", F
     dict(key="ruby", src=SHOP_IMG["ruby"], badge="FÜR SCHWARZE KATZEN", name="KRATZBAUM RUBY", sub="Schwarz, 100 cm hoch, inkl. Spielzeug"),
 ])
 CLOSING = dict(heading=[("Happy ", False), ("Halloween!", True)],
-               text="Noch nicht geklickt? Der Clown wartet ganz oben auf dem Sofa – mit 50&nbsp;€ für deine Bestellung.",
+               text="Noch nicht gefunden? Der Clown hat sich auf unserer Halloween-Seite versteckt – mit 50&nbsp;€ für deine Bestellung.",
                cta="ZUM CLOWN")
 CONDITIONS = ("**Aktionsbedingungen Halloween-Suchspiel: Den Gutscheincode über 50&nbsp;€ erhältst du, "
-              "wenn du in diesem Newsletter auf den Clown klickst. Einlösbar auf homedeluxe.de ab einem Bestellwert von "
+              "wenn du den Clown auf homedeluxe.de/halloween findest und anklickst. Einlösbar auf homedeluxe.de ab einem Bestellwert von "
               f"500&nbsp;€ (inkl. MwSt.) bis zum {VALID_UNTIL}, 23:59 Uhr. Einmal pro Kunde einlösbar, nicht mit anderen Gutscheinen "
               "oder Aktionen kombinierbar, keine Barauszahlung.")
 SHIPPING = "*Kostenloser Versand innerhalb Deutschlands - ausgeschlossen Inseln. Alle Preise in Euro inkl. MwSt."
 # nur Textversion
 TEXT_HERO = "HALLOWEEN-SPECIAL – FINDE DEN CLOWN & SICHERE DIR 50 €"
-TEXT_GAME = ("Psst … hinter dem Sofa bewegt sich was: Ein Clown hat es sich bei uns gemütlich gemacht. Klick ihn an – "
-             "dann öffnet sich dein Gutschein: 50 € auf deine Bestellung ab 500 €.**")
+TEXT_GAME = ("Psst … hinter dem Sofa bewegt sich was: Ein Clown hat es sich bei uns gemütlich gemacht – jetzt "
+             "versteckt er sich auf unserer Halloween-Seite. Find ihn und klick ihn an: Dann gehört dir dein Gutschein "
+             "über 50 € für deine Bestellung ab 500 €.**")
 
 SECTION_END = '<!--[if (gte mso 9)|(IE)]></td></tr></table><![endif]--></div></td></tr></table>'
 
@@ -302,17 +300,9 @@ def hero():
     )
 
 
-def intro():
-    return row(p(INTRO["label"], 11, ORANGE, "center", "font-weight:600;letter-spacing:2px;padding-bottom:6px;")
-               + heading_html(INTRO["heading"], NAVY, 26, "center")
-               + p(INTRO["text"], 14, NAVY, "center", "padding-top:10px;")
-               + gap(20) + button(utm(SAUNEN_URL), "ALLE SAUNEN ENTDECKEN", align="center"),
-               pad="6px 48px 34px", cls="px")
-
-
 def wellness():
     tiles = gap(30).join(wide_tile(t) for t in WELLNESS["tiles"])
-    return row(section_head(WELLNESS["heading"], WELLNESS["more"]) + gap(16) + tiles, pad="0 24px 10px", cls="px")
+    return row(section_head(WELLNESS["heading"], WELLNESS["more"]) + gap(16) + tiles, pad="12px 24px 10px", cls="px")
 
 
 def new_in():
@@ -359,7 +349,7 @@ def footer(ex):
 def build(src):
     ex = from_export(src)
     rows = [
-        header(ex), hero(), transition("ueb_tropfen.png"), intro(), wellness(),
+        header(ex), hero(), transition("ueb_tropfen.png"), wellness(),
         transition("ueb_nebel.png"), new_in(), transition("ueb_aeste.png"), movie(), more(),
         transition("ueb_kuerbisse.png"), closing(), footer(ex),
     ]
@@ -458,8 +448,6 @@ def build_text(src):
         "=" * WIDTH + "\n" + TEXT_HERO + "\n" + "=" * WIDTH,
         para(TEXT_GAME) + "\n\n" + text_link(HERO_CTA["cta"], CLOWN_URL) + "\n\n" + para(HERO_CTA["note"]),
         rule,
-        para(INTRO["label"], text_heading(INTRO["heading"]), INTRO["text"]) + "\n\n" + text_link("ALLE SAUNEN ENTDECKEN", utm(SAUNEN_URL)),
-        rule,
         text_heading(WELLNESS["heading"]), *(text_tile(t) for t in WELLNESS["tiles"]),
         rule,
         para(NEW["label"], text_heading(NEW["heading"]), NEW["text"]),
@@ -492,6 +480,8 @@ def main():
     for name, content in (("newsletter-halloween-kw44.html", build(src)), ("newsletter-halloween-kw44.txt", build_text(src))):
         if "KW43" in content:
             sys.exit(f"KW43 steht noch in {name}")
+        if "halloween=clown" in content:
+            sys.exit(f"{name} öffnet das Shop-Pop-up direkt – der Clown soll auf der Halloween-Seite gesucht werden")
         out = os.path.join(PROJECT, "output", name)
         open(out, "w", encoding="utf-8").write(content)
         print(out)
