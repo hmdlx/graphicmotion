@@ -152,6 +152,7 @@ def main():
     # Hero-Kopf und Übergänge (Logo und Social-Icons kommen mit Kopf und Footer aus dem JUNE-Export)
     save(on_navy(g("hero-kopf"), (1280, 400)), os.path.join(out, "hero_kopf.jpg"), 90)
     save(on_navy(g("teaser"), (1280, 720)), os.path.join(out, "teaser_clown.jpg"), 88)
+    save(on_navy(g("band-kuerbisse"), (1280, 210)), os.path.join(out, "band_kuerbisse.jpg"), 88)
     for name in ("ueb-tropfen", "ueb-nebel", "ueb-aeste", "ueb-kuerbisse"):
         save_png(Image.open(g(name)), os.path.join(out, f"{name.replace('-', '_')}.png"), 48)
 

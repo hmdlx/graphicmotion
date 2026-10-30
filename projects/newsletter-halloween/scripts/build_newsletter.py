@@ -99,9 +99,9 @@ MORE = dict(heading=[("Noch mehr ", False), ("Gänsehaut", True), ("-Momente", F
     dict(key="dubi", src=SHOP_IMG["dubi"], badge="SPIEGLEIN, SPIEGLEIN", name="LED-SPIEGEL DUBI", sub="Ø 80 cm, 3 Lichtfarben, dimmbar"),
     dict(key="ruby", src=SHOP_IMG["ruby"], badge="FÜR SCHWARZE KATZEN", name="KRATZBAUM RUBY", sub="Schwarz, 100 cm hoch, inkl. Spielzeug"),
 ])
-CLOSING = dict(heading=[("Happy ", False), ("Halloween!", True)],
-               text="Noch nicht gefunden? Der Clown hat sich auf unserer Halloween-Seite versteckt – mit 50&nbsp;€ für deine Bestellung.",
-               cta="ZUM CLOWN")
+# Navy-Band vor dem Footer wie in der SPUK10-Version; §LINK§ = „Halloween-Seite“ als Link zum Clown
+CLOSING = dict(heading="Happy Halloween! 🎃",
+               text="Noch nicht gefunden? Der Clown hat sich auf unserer<br />§LINK§ versteckt – mit 50&nbsp;€ für deine Bestellung.")
 CONDITIONS = ("**Aktionsbedingungen Halloween-Suchspiel: Den Gutscheincode über 50&nbsp;€ erhältst du, "
               "wenn du den Clown auf homedeluxe.de/halloween findest und anklickst. Einlösbar auf homedeluxe.de ab einem Bestellwert von "
               f"500&nbsp;€ (inkl. MwSt.) bis zum {VALID_UNTIL}, 23:59 Uhr. Einmal pro Kunde einlösbar, nicht mit anderen Gutscheinen "
@@ -148,6 +148,7 @@ def from_export(src):
     footer_html = footer.replace(f"{SHIPPING}</span>", f'{SHIPPING}</span><br /><br /><span style="color:#ffffff;">{CONDITIONS}</span>')
     return dict(
         header=fix(logo + SECTION_END + parts[1] + SECTION_END),
+        band=parts[14] + SECTION_END,
         footer=fix(parts[15] + SECTION_END + parts[16] + SECTION_END + footer_html + SECTION_END),
         home=fix(re.search(r'<a [^>]*href="([^"]+)"', parts[0]).group(1)),
         social=[(re.search(r'alt="([^"]+)"', t).group(1), fix(u)) for u, t in re.findall(A_TAG, parts[15], re.S)],
@@ -333,11 +334,28 @@ def more():
                + two_cols(small_tile(c), small_tile(d)), pad="0 24px 6px", cls="px")
 
 
-def closing():
-    return row(heading_html(CLOSING["heading"], "#ffffff", 30, "center")
-               + p(rich(CLOSING["text"]), 15, NIGHT_TEXT, "center", "padding:10px 0 20px;")
-               + button(CLOWN_URL, CLOSING["cta"], ORANGE, NAVY, "center"),
-               bg=NAVY, pad="0 40px 36px", cls="px")
+def swap(s, old, new):
+    if s.count(old) != 1:
+        sys.exit(f"erwartet 1× im JUNE-Export, gefunden {s.count(old)}×: {old[:80]!r}")
+    return s.replace(old, new)
+
+
+def closing(ex):
+    """Navy-Band aus dem JUNE-Export wie in der SPUK10-Version: oben die Kürbisreihe statt der
+    Leerzeile, darunter Gruß und Erinnerung; „Halloween-Seite“ führt zum Clown."""
+    white = '<span style="color:rgb(255,255,255);letter-spacing:0px;">'
+    pumpkins = ('<table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="border-collapse:collapse;">'
+                '<tr><td style="font-size:0;line-height:0;padding:0;">'
+                f'<img src="{src_url("band_kuerbisse.jpg")}" width="640" alt="Drei leuchtende Halloween-Kürbisse" '
+                'style="display:block;width:100%;max-width:640px;height:auto;border:0;"></td></tr></table>')
+    link = (f'<span style="color:{ORANGE};text-decoration:underline;"><a href="{CLOWN_URL}" target="_blank" style="color:{ORANGE};font-weight:700;">Halloween-Seite</a></span>')
+    band = swap(ex["band"], '<p style="font-family:Verdana,Geneva,sans-serif;font-size:13px;font-weight:400;letter-spacing:0;'
+                'line-height:20px;margin:0;margin-bottom:5px;text-align:center;"><strong style="font-weight:700;">'
+                '<span style="color:rgb(255,255,255);">&nbsp;</span></strong></p>', pumpkins)
+    band = swap(band, f'<strong style="font-weight:700;">{white}Neu im Shop. Direkt vom Hersteller.<br />Kostenlos geliefert*.<br /><br /></span></strong>',
+                f'<strong style="font-weight:700;">{white}{CLOSING["heading"]}</span></strong><br />'
+                f'{white}{CLOSING["text"].replace("§LINK§", link)}<br /><br /></span>')
+    return row(band, cls="june")
 
 
 def footer(ex):
@@ -351,7 +369,7 @@ def build(src):
     rows = [
         header(ex), hero(), transition("ueb_tropfen.png"), wellness(),
         transition("ueb_nebel.png"), new_in(), transition("ueb_aeste.png"), movie(), more(),
-        transition("ueb_kuerbisse.png"), closing(), footer(ex),
+        transition("ueb_kuerbisse.png"), closing(ex), footer(ex),
     ]
     filler = "&#847;&zwnj;&nbsp;" * 60
     return f"""<!DOCTYPE html>
@@ -457,7 +475,8 @@ def build_text(src):
         text_heading(MOVIE["heading"]), text_tile(MOVIE["tile"]),
         rule,
         text_heading(MORE["heading"]), *(text_tile(t) for t in MORE["tiles"]),
-        "=" * WIDTH + "\n" + para(text_heading(CLOSING["heading"]), CLOSING["text"]) + "\n" + CLOWN_URL + "\n" + "=" * WIDTH,
+        "=" * WIDTH + "\n" + para(CLOSING["heading"].upper(), CLOSING["text"].replace("§LINK§", "Halloween-Seite"))
+        + "\n" + CLOWN_URL + "\n" + "=" * WIDTH,
         "Bleibe in Verbindung mit uns", *(text_link(n, u) for n, u in ex["social"]),
         " · ".join(f"{u} ✓" for u in ex["usps"]),
         para(ex["disclaimer"].replace("§LINK§", f"{ex['contact'][0]} ({ex['contact'][1]})")),

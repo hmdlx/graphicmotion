@@ -81,7 +81,7 @@ dann Text und Button „ZUM CLOWN“. Kürbisse, Fledermäuse und Netz kommen au
 | „NEU IM SHOP – **Gespenstisch** schöne Neuheiten“ | LED-Wasserdampfkamin ODENA · LED-Bett MELURA · Couchtisch-Set LAMESA | Shopfotos, Freisteller (LAMESA) | 349 € · 399 € · 179 € |
 | „**Gruselfilm**-Abend“ | Sofa CASARA Dunkelgrün | Shopfoto | 1.199 € |
 | „Noch mehr **Gänsehaut**-Momente“ | Elektrokamin CALOR · Massagesessel DUNES · LED-Spiegel DUBI · Kratzbaum RUBY | Shopfotos | 329 € · 1.399 € · 139 € · 69 € |
-| „Happy **Halloween!**“ | Erinnerung + „ZUM CLOWN“ | – | – |
+| Navy-Band „Happy Halloween! 🎃“ (wie SPUK10, Block aus dem JUNE-Export) | Kürbisreihe, Erinnerung, Link „Halloween-Seite“ | Grafik | – |
 
 Produktnamen, Links, Preise und Merkmale stammen von den Produktseiten auf homedeluxe.de
 (Stand 30.10.2026) und stehen oben in `scripts/build_newsletter.py` (`P` und Abschnitt „Texte“).
@@ -115,7 +115,7 @@ Woher die Bilder kommen:
 |---|---|
 | Produktfotos | Shop-CDN, direkt verlinkt |
 | Hero-GIF, Logo, Social-Icons, Trusted-Shops-Siegel | JUNE-CDN (`homedeluxe-bf09.kxcdn.com`) |
-| eigene Grafiken (Hero-Kopf, Gutschein-Teaser, Übergänge) | `output/fuer-june-hochladen.zip` – in JUNE hochladen |
+| eigene Grafiken (Hero-Kopf, Gutschein-Teaser, Übergänge, Kürbisreihe) | `output/fuer-june-hochladen.zip` – in JUNE hochladen |
 
 Nach dem Hochladen die CDN-Adressen in `source/cdn-urls.json` eintragen (Dateiname → URL) und
 `npm run halloween:build` ausführen. Das ZIP enthält immer nur die Grafiken, die dort noch fehlen.
@@ -131,7 +131,7 @@ npm run halloween:build     # alles: Grafiken -> Bilder/GIF -> HTML + Text -> Vo
 
 | Skript | macht |
 |---|---|
-| `halloween:graphics` | `graphics/*.html` per Chromium -> `build/newsletter-halloween/graphics/*.png` (Hero-Kopf, Gutschein-Teaser, Übergänge) |
+| `halloween:graphics` | `graphics/*.html` per Chromium -> `build/newsletter-halloween/graphics/*.png` (Hero-Kopf, Gutschein-Teaser, Übergänge, Kürbisreihe) |
 | `halloween:images` | Hero-GIF und Standbild, Grafiken, Pop-up-Bild, ZIP der noch hochzuladenden Grafiken -> `output/` |
 | `halloween:html` | Newsletter-HTML + Textversion; Kopf und Footer unverändert aus `source/newsletter-new-ins-kw43.html` |
 | `halloween:preview` | Ganzseiten-Vorschau Desktop/Mobil, Pop-up-Vorschau; prüft die Clown-Links und das Pop-up mit/ohne `?halloween=clown` |
