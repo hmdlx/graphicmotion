@@ -10,7 +10,7 @@
     "halloween:graphics": "node projects/newsletter-halloween/scripts/render_graphics.js build/newsletter-halloween/graphics",
     "halloween:images": "python3 -I projects/newsletter-halloween/scripts/build_images.py projects/newsletter-halloween build/newsletter-halloween/graphics",
     "halloween:html": "python3 -I projects/newsletter-halloween/scripts/build_newsletter.py projects/newsletter-halloween",
-    "halloween:preview": "node projects/newsletter-halloween/scripts/preview.js projects/newsletter-halloween/output/newsletter-halloween-kw44.html projects/newsletter-halloween/output/preview",
+    "halloween:preview": "node projects/newsletter-halloween/scripts/preview.js projects/newsletter-halloween/output/newsletter-halloween-kw44.html projects/newsletter-halloween/output/popup/clown-popup.html projects/newsletter-halloween/output/preview",
     "halloween:build": "npm run halloween:graphics && npm run halloween:images && npm run halloween:html && npm run halloween:preview"
   },
   "devDependencies": {

@@ -1,57 +1,57 @@
 # Newsletter Halloween-Edition (KW44)
 
-Halloween-Newsletter im Layout des KW43-Newsletters „New Ins“ mit Suchspiel: Im Newsletter
-versteckt sich ein Clown. Wer ihn anklickt, landet auf einer Seite mit dem Gutscheincode –
-**50 € ab 500 € Bestellwert**.
+Halloween-Newsletter im Layout des KW43-Newsletters „New Ins“ mit Clown-Aktion: Im Hero sitzt
+ein Clown mit rotem Ballon auf dem Sofa. Wer aufs Bild klickt, landet im Shop, und dort öffnet
+sich ein Pop-up mit dem Gutscheincode – **50 € ab 500 € Bestellwert**.
 
-Alle Produktbilder sind Original-Shopfotos von homedeluxe.de; es werden keine KI-Bilder
-verwendet. Halloween-Elemente (Fledermäuse, Spinne, Clown) sind eigene Grafiken, die auf die
-Fotos gelegt werden, die Produkte selbst bleiben unverändert.
+Vorschau: `output/preview/preview_desktop.jpg`, `output/preview/preview_mobile.jpg`,
+Pop-up: `output/preview/preview_popup_desktop.jpg`, `output/preview/preview_popup_mobile.jpg`
 
-Vorschau: `output/preview/preview_desktop.jpg`, `output/preview/preview_mobile.jpg`
-Auflösung: `output/aufloesung_sofa_mit_clown.jpg`
+## Klick → Pop-up
 
-## Wo ist der Clown?
-
-Im Foto vom **Sofa CASARA** (Dunkelgrün): Er lugt rechts hinter der Rückenlehne hervor, neben
-der Vase, die Handschuhe auf der Lehne. Das Foto ist in Slices geschnitten. Nur der Clown-Slice
-(Desktop 112 × 128 px, Mobil ca. 68 × 78 px) verlinkt auf die Gutschein-Seite, alle anderen
-Slices auf das Sofa. Das Raster steht in `output/slices.json`.
+- Das ganze Hero-Bild (Band „HALLOWEEN – Finde den Clown“ + Wohnzimmer) verlinkt auf
+  `https://www.homedeluxe.de/?halloween=clown&utm_campaign=KW44_Halloween&…&utm_content=clown`.
+  Es ist der einzige Link mit diesem Parameter im Newsletter.
+- `output/popup/clown-popup.html` enthält den Block für den Shop (zwischen
+  `HD-CLOWN-POPUP START` und `ENDE`): Er bleibt unsichtbar, bis die Adresse `halloween=clown`
+  enthält, zeigt dann Code, „Code kopieren“ und Bedingungen und schließt per ×, Klick daneben
+  oder Esc. Nach dem 02.11.2026, 23:59 Uhr zeigt er statt des Codes „Huch, zu spät!“.
+- Ein Pop-up direkt in der E-Mail ist technisch nicht möglich (Mail-Programme führen kein
+  JavaScript aus), deshalb öffnet es sich im Shop.
 
 ## Inhalt
 
-| Block | Produkt | Bild (Shop) | Preis |
+| Block | Produkt | Bild | Preis |
 |---|---|---|---|
-| Hero „HALLOWEEN – Finde den Clown“ | Outdoor Fasssauna LAHTI XL | Dämmerung mit Laternen, + Fledermäuse | – |
+| Hero „HALLOWEEN – Finde den Clown“ | Klick öffnet das Gutschein-Pop-up | Wohnzimmer mit Clown (`source/hero/`) | – |
 | Intro „Gemütlich durch die Gruselnacht“ | CTA: Alle Saunen | – | – |
 | Suchspiel | Teaser „Finde den Clown“ + 50-€-Gutschein, Spielregel als Live-Text | Grafik | – |
-| Schwitzen statt Schaudern | Outdoor Fasssauna LAHTI XL | Innenansicht | 2.599 € |
-| Dein eigener Hexenkessel | Hot Tub SKANDI M | Nachtaufnahme | 1.999 € |
-| Lagerfeuer für Gruselgeschichten | Gartenfeuer SWING, USPs (Handarbeit, 2 in 1, wetterfest) | Garten | – |
+| Schwitzen statt Schaudern | Outdoor Fasssauna LAHTI XL | Shopfoto Dämmerung + Fledermäuse | 2.599 € |
+| Dein eigener Hexenkessel | Hot Tub SKANDI M | Shopfoto Nacht | 1.999 € |
+| Lagerfeuer für Gruselgeschichten | Gartenfeuer SWING, USPs (Handarbeit, 2 in 1, wetterfest) | Shopfoto Garten | – |
 | Produktkarten | Feuerschale FRANK · Gartenfeuer SWING | Freisteller | 39 € · 79 € |
-| Gruselfilm-Abend? (Clown-Versteck) | Sofa CASARA Dunkelgrün | Wohnzimmer | 1.199 € |
-| Raster | Elektrokamin CALOR · Massagesessel DUNES | Ambiente | 329 € · 1.399 € |
-| Raster | LED-Spiegel DUBI 80 cm · Kratzbaum RUBY Schwarz | Ambiente | 139 € · 69 € |
-| Navy-Band | „Happy Halloween! Schon den Clown gefunden? … irgendwo zwischen Sauna und Kratzbaum.“ | – | – |
+| Gruselfilm-Abend? | Sofa CASARA Dunkelgrün | Shopfoto Wohnzimmer | 1.199 € |
+| Raster | Elektrokamin CALOR · Massagesessel DUNES | Shopfotos | 329 € · 1.399 € |
+| Raster | LED-Spiegel DUBI 80 cm · Kratzbaum RUBY Schwarz | Shopfotos | 139 € · 69 € |
+| Navy-Band | „Happy Halloween! Noch nicht geklickt? Der Clown wartet ganz oben …“ | – | – |
 
 Produktnamen, Links, Preise und Merkmale stammen von den Produktseiten auf homedeluxe.de
 (Stand 30.10.2026) und stehen gesammelt oben in `scripts/build_newsletter.py` (`P`). Preise
-vor dem Versand gegenprüfen.
+vor dem Versand gegenprüfen. Die Produktfotos sind unverändert, nur auf das LAHTI-Foto kommen
+Fledermaus-Silhouetten.
 
 Gestaltung nach CI: nur Navy, Weiß und Grautöne, Poppins in den Grafiken, eckige Ecken.
 
 ## Vor dem Versand festlegen
 
 Die folgenden Werte sind Vorschläge und stehen als Konstanten oben in `scripts/build_newsletter.py`
-(Gutscheincode und Datum zusätzlich im Text von `output/landingpage/clown-gefunden.html`
-und `graphics/teaser.html`):
+(Gutscheincode, Datum und Ablaufzeit zusätzlich in `output/popup/clown-popup.html` und
+`graphics/teaser.html`):
 
 - **Gutscheincode** `CLOWN50` – im Shop anlegen: 50 € Rabatt, Mindestbestellwert 500 €, einmal pro Kunde.
 - **Gültig bis** 02.11.2026, 23:59 Uhr.
-- **Ziel des Clowns** `https://www.homedeluxe.de/halloween-clown/` – Seite im Shop-CMS anlegen,
-  Inhalt aus `output/landingpage/clown-gefunden.html` (Block `<section class="hd-clown">`
-  samt `<style>`, Bild `clown.jpg` mit Markierung des Verstecks). Die Seite ist `noindex`,
-  damit der Code nicht über Google auffindbar ist.
+- **Pop-up einbauen** – Block aus `output/popup/clown-popup.html` global ins Shop-Layout
+  (z. B. Footer), `clown.jpg` ins Shop-CDN laden und den Bildpfad im Block anpassen.
 
 ## In JUNE übernehmen
 
@@ -62,21 +62,12 @@ und Trusted-Shops-Siegel kommen weiter vom bestehenden CDN.
 ## Bauen
 
 ```bash
-npm run halloween:build     # alles: Grafiken -> Bilder -> HTML -> Vorschau + Klick-Test
+npm run halloween:build     # alles: Grafiken -> Bilder -> HTML -> Vorschau + Prüfungen
 ```
 
 | Skript | macht |
 |---|---|
-| `halloween:graphics` | `graphics/*.html` per Chromium -> `build/newsletter-halloween/graphics/*.png` (Hero-Band, Fledermäuse, Teaser, Clown-Kopf, Clown-Handschuhe) |
-| `halloween:images` | Hero zusammensetzen, Clown hinter die Sofalehne setzen, Slices + `slices.json`, Produktbilder, Landingpage-Bild -> `output/` |
+| `halloween:graphics` | `graphics/*.html` per Chromium -> `build/newsletter-halloween/graphics/*.png` (Hero-Band, Fledermäuse, Teaser) |
+| `halloween:images` | Hero aus Band + Wohnzimmer-Bild, LAHTI mit Fledermäusen, Produktbilder, Pop-up-Bild -> `output/` |
 | `halloween:html` | Kopf, Navigation und Footer aus `source/newsletter-new-ins-kw43.html`, Inhaltsblöcke neu -> `output/newsletter-halloween-kw44.html` |
-| `halloween:preview` | Ganzseiten-Vorschau Desktop/Mobil + Test, dass nur der Clown-Slice auf die Gutschein-Seite führt |
-
-## Wie der Clown ins Foto kommt
-
-`graphics/clown.html` zeichnet Kopf und Handschuhe als zwei transparente Ebenen. `build_images.py`
-verkleinert sie, gleicht sie leicht an das Foto an (etwas flacher, minimal weich, Korn) und
-sucht je Bildspalte die Oberkante der Sofalehne (erster dunkelgrüner Pixel unter dem hellen
-Vorhang). Unterhalb dieser Kante wird der Kopf ausgeblendet, er sitzt also hinter der Lehne; die
-Handschuhe liegen vorn auf der Kante, mit kleinem Schatten. Position und Größe: `CLOWN_X`,
-`CLOWN_SCALE` oben im Skript.
+| `halloween:preview` | Ganzseiten-Vorschau Desktop/Mobil, Pop-up-Vorschau; prüft, dass nur das Hero-Bild zum Pop-up führt und das Pop-up nur mit `?halloween=clown` aufgeht |

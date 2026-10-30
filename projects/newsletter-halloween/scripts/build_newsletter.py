@@ -7,17 +7,19 @@ USP-Leiste und Footer erhalten. Alle Inhaltsblöcke werden mit den Vorlagen unte
 im selben Markup wie der Export (640 px, MSO-Ghost-Tables, VML-Buttons) – und mit Produkten
 aus dem Shop gefüllt. Ergebnis: output/newsletter-halloween-kw44.html.
 
+Das Hero-Bild (Clown im Wohnzimmer) ist der Klick zum Gutschein: Es führt in den Shop, wo das
+Pop-up aus output/popup/clown-popup.html den Code zeigt.
+
 Bilder werden relativ eingebunden (images/…). Vor dem Versand in JUNE hochladen, dann
 ersetzt JUNE die Pfade durch CDN-URLs.
 """
-import json
 import os
 import sys
 
 CAMPAIGN = "KW44_Halloween"
 UTM = f"utm_campaign={CAMPAIGN}&utm_source=newsletter&utm_medium=email"
-# Ziel des Clowns: Landingpage mit Gutscheincode (Vorlage: output/landingpage/clown-gefunden.html)
-CLOWN_URL = f"https://www.homedeluxe.de/halloween-clown/?{UTM}&utm_content=clown"
+# Klick aufs Hero-Bild: Shop-Startseite, der Parameter halloween=clown öffnet dort das Gutschein-Pop-up
+CLOWN_URL = f"https://www.homedeluxe.de/?halloween=clown&{UTM}&utm_content=clown"
 VALID_UNTIL = "02.11.2026"
 NAVY = "#0e2234"
 
@@ -116,9 +118,8 @@ def columns(cells, gap_style=("padding-right:5px;", "padding-left:5px;"), max_wi
 # --- Blöcke ------------------------------------------------------------------------------
 
 def hero():
-    name, url, _ = P["lahti"]
-    return section(image(utm(url), "hero_halloween.jpg",
-                         f"Halloween bei Home Deluxe – finde den Clown und sichere dir 50 €. {name} in der Abenddämmerung", 640),
+    return section(image(CLOWN_URL, "hero_halloween.jpg",
+                         "Halloween bei Home Deluxe: Ein Clown sitzt im Wohnzimmer auf dem Sofa – klick ihn an und sichere dir 50 €", 640),
                    bg="#F6F4F2")
 
 
@@ -143,9 +144,9 @@ def game():
         'style="display:block;width:100%;max-width:640px;height:auto;border:0;"></td></tr>'
         '<tr><td style="padding:6px 30px 34px 30px;">'
         f'<p style="{PX}text-align:center;font-size:15px;line-height:24px;color:#ffffff;">'
-        'Irgendwo in diesem Newsletter hat sich ein <strong style="font-weight:700;">Clown</strong> versteckt. '
-        'Halte beim Scrollen die Augen offen und <strong style="font-weight:700;">klick ihn an</strong>, sobald du ihn entdeckst – '
-        'dann schenken wir dir <strong style="font-weight:700;">50&nbsp;€</strong> auf deine Bestellung ab 500&nbsp;€.**</p>'
+        'Oben im Wohnzimmer hat es sich ein <strong style="font-weight:700;">Clown</strong> auf dem Sofa gemütlich gemacht. '
+        '<strong style="font-weight:700;">Klick auf das Bild</strong> – dann öffnet sich dein Gutschein: '
+        '<strong style="font-weight:700;">50&nbsp;€</strong> auf deine Bestellung ab 500&nbsp;€.**</p>'
         f'<p style="{PX}text-align:center;font-size:11px;line-height:17px;color:#9fb0bf;padding-top:12px;">'
         f'**Nur bis {VALID_UNTIL}. Alle Aktionsbedingungen findest du ganz unten.</p>'
         '</td></tr></table>'
@@ -207,31 +208,6 @@ def cards():
                              card("swing", "swing_karte.jpg", "mit Holzlager", "variabel aufstellbar · Made in Germany")]))
 
 
-def clown_feature(spec):
-    name, url, price = P["casara"]
-
-    def cell(src, width, alt, href, pct):
-        return (f'<td width="{pct:g}%" valign="top" style="font-size:0;line-height:0;padding:0;width:{pct:g}%;">'
-                f'<a href="{href}" target="_blank" data-trigger-action-id="#{{image.actionTriggerId}}" style="display:block;">'
-                f'<img border="0" src="images/{src}" alt="{alt}" width="{width}" style="display:block;width:100%;height:auto;border:0;"></a></td>')
-
-    def row(cells):
-        return ('<table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" '
-                f'style="border-collapse:collapse;border-spacing:0;width:100%;"><tr>{cells}</tr></table>')
-
-    # Je Bildzeile eine eigene Tabelle (kein colspan); nur der Clown-Slice führt zum Gutschein
-    slices = (
-        row(cell(spec["top"], 640, f"{name} in Dunkelgrün", utm(url), 100))
-        + row(''.join(cell(c["src"], c["width"], "Clown gefunden? Hier klicken" if c["clown"] else "",
-                           CLOWN_URL if c["clown"] else utm(url), c["width"] / 6.4) for c in spec["row"]))
-        + row(cell(spec["bottom"], 640, "", utm(url), 100))
-    )
-    return section(slices + "  " + spacer(18) + "  "
-                   + copy("GRUSELFILM-ABEND?<br />SOFA CASARA",
-                          "Weich genug zum Reinkuscheln,<br />groß genug zum Dahinter-Verstecken.<br />Webstoff Dunkelgrün, 258 × 128 × 72 cm.", price)
-                   + "  " + button(utm(url), "SOFA CASARA ANSEHEN"))
-
-
 def grid(left, right):
     def cell(key, src, title, text):
         name, url, price = P[key]
@@ -246,7 +222,7 @@ def grid(left, right):
 
 # --- Zusammenbau -------------------------------------------------------------------------
 
-def build(src, spec):
+def build(src):
     parts = src.split(SECTION_END)
     if len(parts) != 19 or "BAD" not in parts[1] or "Bleibe in Verbindung" not in parts[15]:
         sys.exit("Aufbau des JUNE-Exports hat sich geändert – Abschnitte prüfen")
@@ -261,18 +237,18 @@ def build(src, spec):
     white = '<span style="color:rgb(255,255,255);letter-spacing:0px;">'
     band = replace(band, f'<strong style="font-weight:700;">{white}Neu im Shop. Direkt vom Hersteller.<br />Kostenlos geliefert*.<br /><br /></span></strong>',
                    f'<strong style="font-weight:700;">{white}Happy Halloween! 🎃</span></strong><br />'
-                   f'{white}Schon den Clown gefunden? Kleiner Tipp:<br />Er versteckt sich irgendwo zwischen Sauna und Kratzbaum.<br /><br /></span>')
+                   f'{white}Noch nicht geklickt? Der Clown wartet ganz oben<br />auf dem Sofa auf dich – mit 50&nbsp;€ für deine Bestellung.<br /><br /></span>')
 
     footer = replace(footer, "*Kostenloser Versand innerhalb Deutschlands - ausgeschlossen Inseln. Alle Preise in Euro inkl. MwSt.</span>",
                      "*Kostenloser Versand innerhalb Deutschlands - ausgeschlossen Inseln. Alle Preise in Euro inkl. MwSt.</span>"
                      '<br /><br /><span style="color:#ffffff;">**Aktionsbedingungen Halloween-Suchspiel: Den Gutscheincode über 50&nbsp;€ erhältst du, '
-                     "wenn du den in diesem Newsletter versteckten Clown anklickst. Einlösbar auf homedeluxe.de ab einem Bestellwert von "
+                     "wenn du in diesem Newsletter auf den Clown klickst. Einlösbar auf homedeluxe.de ab einem Bestellwert von "
                      f"500&nbsp;€ (inkl. MwSt.) bis zum {VALID_UNTIL}, 23:59 Uhr. Einmal pro Kunde einlösbar, nicht mit anderen Gutscheinen "
                      "oder Aktionen kombinierbar, keine Barauszahlung.</span>")
 
     body = [
         hero(), intro(), game(),
-        feature("lahti", "lahti-xl_innen.jpg", "SCHWITZEN STATT SCHAUDERN.",
+        feature("lahti", "lahti-xl_abend.jpg", "SCHWITZEN STATT SCHAUDERN.",
                 "Outdoor Fasssauna LAHTI XL – inkl. 8 kW Saunaofen<br />und Saunazubehör, ideal für 4–6 Personen.",
                 "FASSSAUNA LAHTI XL ANSEHEN", title_style="font-size:17px;line-height:26px;"),
         feature("skandi", "skandi-m_nacht.jpg", "DEIN EIGENER HEXENKESSEL:<br />HOT TUB SKANDI M",
@@ -280,7 +256,9 @@ def build(src, spec):
         fire_header(), fire_image(), usps(), cards(),
     ]
     rest = [
-        clown_feature(spec),
+        feature("casara", "casara_dunkelgruen.jpg", "GRUSELFILM-ABEND?<br />SOFA CASARA",
+                "Weich genug zum Reinkuscheln,<br />groß genug für den ganzen Filmabend.<br />Webstoff Dunkelgrün, 258 × 128 × 72 cm.",
+                "SOFA CASARA ANSEHEN"),
         grid(("calor", "calor_ambiente.jpg", "ELEKTROKAMIN<br />CALOR", "Flammeneffekt,<br />inkl. Fernbedienung"),
              ("dunes", "dunes_ambiente.jpg", "MASSAGESESSEL<br />DUNES", "12 Programme,<br />Zero-Gravity-Liegeposition")),
         grid(("dubi", "dubi_ambiente.jpg", "LED-SPIEGEL<br />DUBI", "3 Lichtfarben,<br />stufenlos dimmbar"),
@@ -299,9 +277,8 @@ def build(src, spec):
 def main():
     project = sys.argv[1]
     src = open(os.path.join(project, "source", "newsletter-new-ins-kw43.html"), encoding="utf-8").read()
-    spec = json.load(open(os.path.join(project, "output", "slices.json")))
     out = os.path.join(project, "output", "newsletter-halloween-kw44.html")
-    open(out, "w", encoding="utf-8").write(build(src, spec))
+    open(out, "w", encoding="utf-8").write(build(src))
     print(out)
 
 

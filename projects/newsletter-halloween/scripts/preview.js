@@ -1,55 +1,65 @@
 #!/usr/bin/env node
-// Full-page previews of the newsletter (desktop + mobile) and a click test:
-// the clown slice must link to the voucher page, its neighbours to the product.
+// Full-page previews of the newsletter and the voucher pop-up (desktop + mobile), with checks:
+// only the hero image links to the pop-up URL, and the pop-up opens only with ?halloween=clown.
 //
-//   node scripts/preview.js <newsletter.html> <out_dir>
+//   node scripts/preview.js <newsletter.html> <popup.html> <out_dir>
 const path = require('path');
 const fs = require('fs');
 const { chromium } = require('playwright');
 
 const VIEWS = [
-  { name: 'desktop', width: 700, scale: 1 },
-  { name: 'mobile', width: 390, scale: 2 },
+  { name: 'desktop', width: 700, height: 900, scale: 1 },
+  { name: 'mobile', width: 390, height: 844, scale: 2 },
 ];
+const CLOWN = /[?&]halloween=clown/;
 
 (async () => {
-  const [html, out] = process.argv.slice(2);
-  if (!html || !out) { console.error('usage: preview.js <newsletter.html> <out_dir>'); process.exit(1); }
+  const [html, popup, out] = process.argv.slice(2);
+  if (!html || !popup || !out) { console.error('usage: preview.js <newsletter.html> <popup.html> <out_dir>'); process.exit(1); }
   fs.mkdirSync(out, { recursive: true });
   const browser = await chromium.launch();
+  const fail = msg => { console.error('FEHLER:', msg); process.exitCode = 1; };
 
   for (const v of VIEWS) {
-    const page = await browser.newPage({ viewport: { width: v.width, height: 900 }, deviceScaleFactor: v.scale });
+    const page = await browser.newPage({ viewport: { width: v.width, height: v.height }, deviceScaleFactor: v.scale });
     await page.goto('file://' + path.resolve(html));
     // lazy/async-Bilder fehlen sonst im Full-Page-Screenshot (nur Vorschau, Newsletter bleibt unverändert)
     await page.evaluate(() => document.querySelectorAll('img').forEach(i => { i.removeAttribute('loading'); i.removeAttribute('decoding'); }));
     await page.waitForLoadState('networkidle');
     await page.evaluate(() => Promise.all([...document.images].map(i => i.complete ? 0 : new Promise(r => { i.onload = i.onerror = r; }))));
 
-    // Klick-Test: Mittelpunkt des Clown-Slices und je ein Punkt links/rechts daneben
-    // (boundingBox bei scrollY 0 = Seitenkoordinaten, hit() rechnet auf den Viewport um)
-    const box = await page.locator('a[href*="halloween-clown"] img').boundingBox();
-    const hit = async (x, y) => page.evaluate(([x, y]) => {
-      const el = document.elementFromPoint(x, y - window.scrollY);
-      return el && el.closest('a') ? el.closest('a').href : null;
-    }, [x, y]);
-    await page.evaluate(y => window.scrollTo(0, y - 300), box.y);
-    const cy = box.y + box.height / 2;
+    // Klick-Test: Mitte des Hero-Bilds -> Pop-up, Mitte des LAHTI-Bilds -> Produkt
+    const hit = async sel => {
+      const b = await page.locator(sel).boundingBox();
+      await page.evaluate(y => window.scrollTo(0, y), b.y - 100);
+      return page.evaluate(([x, y]) => {
+        const el = document.elementFromPoint(x, y - window.scrollY);
+        return el && el.closest('a') ? el.closest('a').href : null;
+      }, [b.x + b.width / 2, b.y + b.height / 2]);
+    };
     const res = {
-      clown_slice_px: `${Math.round(box.width)}×${Math.round(box.height)} @ ${Math.round(box.x)},${Math.round(box.y)}`,
-      center: await hit(box.x + box.width / 2, cy),
-      left: await hit(box.x - 10, cy),
-      right: await hit(box.x + box.width + 10, cy),
+      clown_links: await page.locator('a[href*="halloween=clown"]').count(),
+      hero: await hit('img[src="images/hero_halloween.jpg"]'),
+      lahti: await hit('img[src="images/lahti-xl_abend.jpg"]'),
     };
     console.log(v.name, JSON.stringify(res, null, 1));
-    if (!/halloween-clown/.test(res.center) || /halloween-clown/.test(res.left) || /halloween-clown/.test(res.right)) {
-      console.error('Klick-Test fehlgeschlagen'); process.exitCode = 1;
-    }
+    if (res.clown_links !== 1 || !CLOWN.test(res.hero) || CLOWN.test(res.lahti)) fail('Klick-Test Newsletter');
 
     await page.evaluate(() => window.scrollTo(0, 0));
     const file = path.join(out, `preview_${v.name}.jpg`);
     await page.screenshot({ path: file, fullPage: true, type: 'jpeg', quality: 82 });
     console.log(file);
+
+    // Pop-up: ohne Parameter unsichtbar, mit ?halloween=clown offen
+    const url = 'file://' + path.resolve(popup);
+    await page.goto(url);
+    if (await page.locator('#hd-clown-popup').isVisible()) fail('Pop-up ohne Parameter sichtbar');
+    await page.goto(url + '?halloween=clown');
+    await page.evaluate(() => document.fonts.ready);
+    if (!(await page.locator('#hd-clown-popup .hd-pop__live').isVisible())) fail('Pop-up mit Parameter nicht offen');
+    const pfile = path.join(out, `preview_popup_${v.name}.jpg`);
+    await page.screenshot({ path: pfile, type: 'jpeg', quality: 85 });
+    console.log(pfile);
     await page.close();
   }
   await browser.close();
