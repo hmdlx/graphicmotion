@@ -47,7 +47,7 @@ zwischen `CMS-BLOCK START` und `CMS-BLOCK ENDE` in `index.html`, nur ohne Dokume
   keine Media Queries.
 - Aufbau, kurz und direkt aufs Ziel: 1 Hero (Navy) mit „Finde den anderen Clown.“ (Überschrift
   Ebene 1), Gutschein „50 € ab 500 € Einkaufswert*“ und dem Video als Einstieg. Eine Leiste auf dem
-  Video sagt „Nicht im Video suchen – der andere Clown steckt unten in einem Produktbild.“, ein Klick
+  Video sagt „Psst … der hier lenkt nur ab. Sein Kumpel hockt unten in einem Produktbild – findest du ihn?“, ein Klick
   aufs Video scrollt dorthin. 2 „Wo steckt der andere Clown?“ mit den drei Schritten
   Produktbilder ansehen · Clown entdecken · Anklicken & 50 € sichern und 6 Produkten, 3 dunkle Karte
   „Noch nicht gefunden?“ mit Tipp, 4 Service-Leiste (0 % Finanzierung, versandfrei, Stores) und Fußnote.
