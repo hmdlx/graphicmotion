@@ -5,14 +5,12 @@
 <projekt>     projects/newsletter-halloween (source/, output/)
 <grafik-dir>  Ausgabe von render_graphics.js
 
-Grafiken:  Hero-Kopf und Gutschein-Teaser (Übergang unter dem GIF) auf Navy, Halloween-Übergänge
-           als PNG (verlustfrei, damit die Kanten exakt Navy bzw. Weiß treffen). Logo und
-           Social-Icons kommen mit dem JUNE-Export.
+Grafiken:  Hero-Kopf, Gutschein-Teaser (Übergang unter dem GIF) und Kürbisreihe auf Navy. Logo
+           und Social-Icons kommen mit dem JUNE-Export.
 Hero:      Standbild aus source/hero/ mit Navy-Verlauf oben und unten, so dass es nahtlos aus
            dem Hero-Kopf kommt und in den Navy-Abschnitt darunter übergeht. Liegt das KI-Video
            source/hero/clown-hervor.mp4 vor (leeres Sofa -> Clown sitzt), entsteht daraus
            hero_clown.gif mit demselben Verlauf; der Newsletter nimmt dann das GIF.
-Produkte:  kommen direkt vom Shop-CDN (SHOP_IMG in build_newsletter.py), hier nichts zu tun.
 Upload:    output/fuer-june-hochladen.zip enthält genau die eigenen Grafiken, die noch auf das
            JUNE-CDN müssen (ohne Einträge in source/cdn-urls.json).
 """
@@ -135,13 +133,6 @@ def build_hero_gif(src, out):
     return True
 
 
-def save_png(img, path, colors=None):
-    img = img.convert("RGB")
-    if colors:
-        img = img.quantize(colors, method=Image.Quantize.MEDIANCUT, dither=Image.Dither.NONE)
-    img.save(path, optimize=True)
-
-
 def main():
     project, gfx = sys.argv[1:3]
     src = os.path.join(project, "source")
@@ -149,12 +140,10 @@ def main():
     os.makedirs(out, exist_ok=True)
     g = lambda name: os.path.join(gfx, f"{name}.png")
 
-    # Hero-Kopf und Übergänge (Logo und Social-Icons kommen mit Kopf und Footer aus dem JUNE-Export)
+    # Hero-Kopf, Teaser, Kürbisreihe (Logo und Social-Icons kommen mit Kopf und Footer aus dem JUNE-Export)
     save(on_navy(g("hero-kopf"), (1280, 400)), os.path.join(out, "hero_kopf.jpg"), 90)
     save(on_navy(g("teaser"), (1280, 720)), os.path.join(out, "teaser_clown.jpg"), 88)
     save(on_navy(g("band-kuerbisse"), (1280, 210)), os.path.join(out, "band_kuerbisse.jpg"), 88)
-    for name in ("ueb-tropfen", "ueb-nebel", "ueb-aeste", "ueb-kuerbisse"):
-        save_png(Image.open(g(name)), os.path.join(out, f"{name.replace('-', '_')}.png"), 48)
 
     # Hero-Standbild (Fallback für das GIF)
     hero = Image.open(os.path.join(src, HERO_SRC)).convert("RGB")

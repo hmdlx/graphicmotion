@@ -10,7 +10,7 @@ Zum Ansehen und Weitergeben: `output/vorschau/newsletter-halloween-kw44_vorschau
 Screenshots: `output/preview/`.
 
 Die Versand-Datei `output/newsletter-halloween-kw44.html` (rund 75 KB) bindet alle Bilder von CDNs
-ein (Produktfotos vom Shop, alles andere von JUNE) und zeigt sie deshalb auch einzeln geöffnet.
+ein (JUNE-CDN) und zeigt sie deshalb auch einzeln geöffnet.
 Ändert sich eine eigene Grafik, wird sie wieder relativ (`images/…`) eingebunden, bis die neue
 Adresse in `source/cdn-urls.json` steht; solange baut `halloween:vorschau` zusätzlich
 `output/newsletter-halloween-kw44_mit-bildern.zip` (HTML + Bilderordner) zum Prüfen.
@@ -21,10 +21,9 @@ Die Werte stammen aus dem CSS des Shops (`--primary`, Badge-Farben, Schrift):
 
 | Element | im Newsletter |
 |---|---|
-| Navy `#0e2234` | Hero, Nacht-Abschnitte, Footer, Buttons |
-| Orange `#ff9800` (TOPSELLER-Badge im Shop) | Badges, „CLOWN“, Buttons „ZUM CLOWN“, Kürbisse |
-| Poppins, Überschriften fett + normal („**Nach Kategorie** shoppen“) | „**Wellness** für die Geisternacht“ usw. |
-| eckige Ecken, Buttons „Artikel anzeigen“ | Produktkacheln |
+| Navy `#0e2234` | Hero, Band, Footer |
+| Orange `#ff9800` (TOPSELLER-Badge im Shop) | Badge, „CLOWN“, Gutschein, Button „ZUM CLOWN“, Kürbisse |
+| Poppins, eckige Ecken | Hero-Grafiken, Text und Button im Hero |
 
 Kopf (Logo, Navigation BAD · SAUNEN · WOHNEN · GARTEN · SALE) und Footer (Social-Leiste, USP-Leiste,
 Hinweis, Rechtslinks, Trusted Shops) kommen unverändert aus dem JUNE-Export – wie in der
@@ -32,9 +31,8 @@ SPUK10-Version (`projects/newsletter-halloween-spuk10`, Branch `claude/epic-ride
 Aktionsbedingungen stehen im Footer unter dem Versandhinweis. Die CSS-Regeln des Exports gelten nur
 für diese Blöcke (Klasse `june`), damit sie die Poppins-Inhalte nicht auf Verdana/12 px setzen.
 
-Nacht (Navy) und Tag (Weiß) wechseln sich ab; die Übergänge sind Halloween-Grafiken
-(`graphics/uebergaenge.html`): tropfendes Navy, aufsteigender Nebel, hängende Äste mit Spinne,
-Hügel mit leuchtenden Kürbissen. Der Hero blendet aus dem Nachthimmel (Mond, Fledermäuse) auf
+Der Newsletter hat keine Produkte (entfernt am 30.10.2026): Nach dem Hero geht das Navy direkt in
+das Band „Happy Halloween!“ und den Footer über. Der Hero blendet aus dem Nachthimmel (Mond, Fledermäuse) auf
 und läuft wieder in Navy aus. Darunter führt der Gutschein-Teaser (`graphics/teaser.html`) die Nacht
 weiter wie in der SPUK10-Version: oben reines Navy, Spinnennetz und Fledermäuse, „Süßes oder
 Saures?“ mit dem 50-€-Gutschein (ohne Code – der steht erst im Pop-up), unten leuchtende Kürbisse,
@@ -75,22 +73,13 @@ dann Text und Button „ZUM CLOWN“. Kürbisse, Fledermäuse und Netz kommen au
 
 ## Inhalt
 
-| Block | Produkt | Bild | Preis |
-|---|---|---|---|
-| Hero „HALLOWEEN-SPECIAL – Finde den Clown“ | Klick öffnet das Gutschein-Pop-up | Hero-Kopf, GIF | – |
-| Teaser „Süßes oder Saures?“ (Navy) | 50-€-Gutschein ab 500 €, Text, Button „ZUM CLOWN“ | Grafik | – |
-| „**Wellness** für die Geisternacht“ | Fasssauna LAHTI XL · Infrarotkabine NERO M | Shopfotos | 2.599 € · 1.349 € |
-| „NEU IM SHOP – **Gespenstisch** schöne Neuheiten“ | LED-Wasserdampfkamin ODENA · LED-Bett MELURA · Couchtisch-Set LAMESA | Shopfotos, Freisteller (LAMESA) | 349 € · 399 € · 179 € |
-| „**Gruselfilm**-Abend“ | Sofa CASARA Dunkelgrün | Shopfoto | 1.199 € |
-| „Noch mehr **Gänsehaut**-Momente“ | Elektrokamin CALOR · Massagesessel DUNES · LED-Spiegel DUBI · Kratzbaum RUBY | Shopfotos | 329 € · 1.399 € · 139 € · 69 € |
-| Navy-Band „Happy Halloween! 🎃“ (wie SPUK10, Block aus dem JUNE-Export) | Kürbisreihe, Erinnerung, Link „Halloween-Seite“ | Grafik | – |
-
-Produktnamen, Links, Preise und Merkmale stammen von den Produktseiten auf homedeluxe.de
-(Stand 30.10.2026) und stehen oben in `scripts/build_newsletter.py` (`P` und Abschnitt „Texte“).
-Preise vor dem Versand gegenprüfen.
-
-Die Produktfotos werden unverändert direkt vom Shop-CDN eingebunden (`cdn02.plentyone.com`,
-`SHOP_IMG` im Skript) – sie müssen also nicht hochgeladen werden.
+| Block | Inhalt | Bild |
+|---|---|---|
+| Kopf aus dem JUNE-Export | Logo, Navigation | Logo |
+| Hero „HALLOWEEN-SPECIAL – Finde den Clown“ | Klick führt auf die Halloween-Seite | Hero-Kopf, GIF |
+| Teaser „Süßes oder Saures?“ (Navy) | 50-€-Gutschein ab 500 €, Text, Button „ZUM CLOWN“ | Grafik |
+| Navy-Band „Happy Halloween! 🎃“ (wie SPUK10, Block aus dem JUNE-Export) | Kürbisreihe, Erinnerung, Link „Halloween-Seite“ | Grafik |
+| Footer aus dem JUNE-Export | Social-Leiste, USP-Leiste, Hinweis, Aktionsbedingungen, Rechtslinks | Icons, Siegel |
 
 ## Textversion
 
@@ -115,9 +104,8 @@ Woher die Bilder kommen:
 
 | Bilder | Quelle |
 |---|---|
-| Produktfotos | Shop-CDN, direkt verlinkt |
 | Hero-GIF, Logo, Social-Icons, Trusted-Shops-Siegel | JUNE-CDN (`homedeluxe-bf09.kxcdn.com`) |
-| eigene Grafiken (Hero-Kopf, Gutschein-Teaser, Übergänge, Kürbisreihe) | JUNE-CDN, Adressen in `source/cdn-urls.json` (JUNE speichert die PNG-Übergänge als JPG; Kanten geprüft) |
+| eigene Grafiken (Hero-Kopf, Gutschein-Teaser, Kürbisreihe) | JUNE-CDN, Adressen in `source/cdn-urls.json` |
 
 Wird eine eigene Grafik geändert: `npm run halloween:build` legt sie in `output/fuer-june-hochladen.zip`
 (nur Grafiken ohne Eintrag in `source/cdn-urls.json` – den alten Eintrag dafür löschen), in JUNE
@@ -134,8 +122,8 @@ npm run halloween:build     # alles: Grafiken -> Bilder/GIF -> HTML + Text -> Vo
 
 | Skript | macht |
 |---|---|
-| `halloween:graphics` | `graphics/*.html` per Chromium -> `build/newsletter-halloween/graphics/*.png` (Hero-Kopf, Gutschein-Teaser, Übergänge, Kürbisreihe) |
+| `halloween:graphics` | `graphics/*.html` per Chromium -> `build/newsletter-halloween/graphics/*.png` (Hero-Kopf, Gutschein-Teaser, Kürbisreihe) |
 | `halloween:images` | Hero-GIF und Standbild, Grafiken, Pop-up-Bild, ZIP der noch hochzuladenden Grafiken -> `output/` |
 | `halloween:html` | Newsletter-HTML + Textversion; Kopf und Footer unverändert aus `source/newsletter-new-ins-kw43.html` |
-| `halloween:preview` | Ganzseiten-Vorschau Desktop/Mobil, Pop-up-Vorschau; prüft die Clown-Links und das Pop-up mit/ohne `?halloween=clown` |
+| `halloween:preview` | Ganzseiten-Vorschau Desktop/Mobil, Pop-up-Vorschau; prüft die Clown-Links (5, Hero → Halloween-Seite) und das Pop-up mit/ohne `?halloween=clown` |
 | `halloween:vorschau` | eigenständige Vorschau-HTMLs mit eingebetteten Bildern -> `output/vorschau/` (nicht für den Versand) |

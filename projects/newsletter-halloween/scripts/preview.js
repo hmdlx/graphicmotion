@@ -30,7 +30,7 @@ const CLOWN_SEL = 'a[href^="https://www.homedeluxe.de/halloween/"]';
     await page.waitForLoadState('networkidle');
     await page.evaluate(() => Promise.all([...document.images].map(i => i.complete ? 0 : new Promise(r => { i.onload = i.onerror = r; }))));
 
-    // Klick-Test: Mitte des Hero-GIFs -> Halloween-Seite, Mitte des LAHTI-Bilds -> Produkt
+    // Klick-Test: Mitte des Hero-GIFs -> Halloween-Seite
     const hit = async sel => {
       // Seitenkoordinaten, unabhängig davon, wohin vorher gescrollt wurde
       const b = await page.locator(sel).evaluate(e => { const r = e.getBoundingClientRect(); return { x: r.x, y: r.y + scrollY, width: r.width, height: r.height }; });
@@ -43,10 +43,9 @@ const CLOWN_SEL = 'a[href^="https://www.homedeluxe.de/halloween/"]';
     const res = {
       clown_links: await page.locator(CLOWN_SEL).count(),
       hero: await hit(CLOWN_SEL + ' >> nth=1 >> img'),
-      lahti: await hit('img[src*="LAHTI-XL-ambiente-01"]'),
     };
     console.log(v.name, JSON.stringify(res, null, 1));
-    if (res.clown_links !== 5 || !CLOWN.test(res.hero) || CLOWN.test(res.lahti)) fail('Klick-Test Newsletter');
+    if (res.clown_links !== 5 || !CLOWN.test(res.hero)) fail('Klick-Test Newsletter');
 
     await page.evaluate(() => window.scrollTo(0, 0));
     const file = path.join(out, `preview_${v.name}.jpg`);

@@ -2,10 +2,9 @@
 
     python3 -I scripts/build_newsletter.py <projekt>
 
-Gestaltung nach dem Shop: Überschriften mit fettem und normalem Teil („**Wellness** für die
-Geisternacht“), eckige Navy-Buttons „Artikel anzeigen“, Orange #ff9800 wie die TOPSELLER-Badges im
-Shop. Nacht-Abschnitte (Navy) und Tag-Abschnitte (Weiß) gehen über Halloween-Grafiken ineinander
-über (Tropfen, Nebel, Äste, Kürbis-Hügel), der Hero blendet aus dem Nachthimmel auf.
+Ohne Produkte: Kopf, Hero (Kopfband, Clown-GIF, Gutschein-Teaser, Text und Button), Navy-Band
+„Happy Halloween!“ und Footer. Der Hero blendet aus dem Nachthimmel auf und geht in Navy direkt in
+das Band über. Orange #ff9800 wie die TOPSELLER-Badges im Shop.
 
 Kopf (Logo, Navigation) und Footer (Social-Leiste, USP-Leiste, Hinweis, Rechtslinks, Trusted Shops)
 kommen unverändert aus dem JUNE-Export (source/newsletter-new-ins-kw43.html) – wie in der
@@ -13,9 +12,9 @@ SPUK10-Version. Ergebnis: output/newsletter-halloween-kw44.html und die Textvers
 output/newsletter-halloween-kw44.txt, beide aus den Texten unten.
 
 Klick auf Hero oder „ZUM CLOWN“ führt auf die Halloween-Seite im Shop (homedeluxe.de/halloween/):
-dort versteckt sich der Clown in einem Produktbild, ein Klick auf ihn zeigt den Gutscheincode. Produktfotos kommen direkt vom Shop-CDN (SHOP_IMG), Logo und Social-Icons
-aus dem Export vom JUNE-CDN, eigene Grafiken vom JUNE-CDN, sobald sie in source/cdn-urls.json
-eingetragen sind, sonst relativ images/….
+dort versteckt sich der Clown in einem Produktbild, ein Klick auf ihn zeigt den Gutscheincode. Logo
+und Social-Icons kommen aus dem Export vom JUNE-CDN, eigene Grafiken vom JUNE-CDN, sobald sie in
+source/cdn-urls.json eingetragen sind, sonst relativ images/….
 """
 import html as htmllib
 import json
@@ -31,42 +30,10 @@ CLOWN_URL = f"https://www.homedeluxe.de/halloween/?{UTM}&utm_content=clown"
 VALID_UNTIL = "02.11.2026"
 
 NAVY, ORANGE = "#0e2234", "#ff9800"     # Werte aus dem CSS von homedeluxe.de
-LINE, MUTED, NIGHT_TEXT = "#e3e7ec", "#66727d", "#c7d0d9"
+NIGHT_TEXT = "#c7d0d9"
 FONT = "Poppins,Helvetica,Arial,sans-serif"
 
-# Produktfotos direkt vom Shop-CDN (unverändert, 1000 × 1000 px)
-SHOP_IMG = {
-    "lahti": "https://cdn02.plentyone.com/emoguafh21bo/item/images/20004/full/48669-Home-Deluxe-Outdoorsauna-LAHTI-XL-ambiente-01.jpg",
-    "nero": "https://cdn02.plentyone.com/emoguafh21bo/item/images/29878/full/49212-Home-Deluxe-Infrarotkanine-nero-M-Ambiente-01.jpg",
-    "odena": "https://cdn02.plentyone.com/emoguafh21bo/item/images/29596/full/75130-home-deluxe-wasserdampfkamin-ODENA-ambiente-01.jpg",
-    "melura": "https://cdn02.plentyone.com/emoguafh21bo/item/images/29317/full/74649-74653-home-deluxe-led-bett-melura-140x200-dunkelgrau-ambiente-01.jpg",
-    "lamesa": "https://cdn02.plentyone.com/emoguafh21bo/item/images/36072/full/home-deluxe-couchtisch-LAMESA-dark-Freisteller-01.jpg",
-    "casara": "https://cdn02.plentyone.com/emoguafh21bo/item/images/25129/full/60495-home-deluxe-sofa-casara-gruen-ambiente-01.jpg",
-    "calor": "https://cdn02.plentyone.com/emoguafh21bo/item/images/15586/full/15586-Elektrokamin-Calor-mit-Flammeneffekt-01-neu.jpg",
-    "dunes": "https://cdn02.plentyone.com/emoguafh21bo/item/images/20321/full/20321-Home-Deluxe-Massagesessel-DUNES-Schwarz-Ambiente01_1.jpg",
-    "dubi": "https://cdn02.plentyone.com/emoguafh21bo/item/images/24411/full/59122-home-deluxe-led-spiegel-dubi-60-cm-ambiente-neu.jpg",
-    "ruby": "https://cdn02.plentyone.com/emoguafh21bo/item/images/20934/full/Home-Deluxe-Kratzbaum-Ruby-Schwarz-Ambiente01.jpg",
-}
-
-SAUNEN_URL = "https://www.homedeluxe.de/saunen-infrarotkabinen/"
-SOFAS_URL = "https://www.homedeluxe.de/wohnen/wohnzimmer/sofas/"
-
-# Produkte: Links, Preise und Merkmale von homedeluxe.de (Stand 30.10.2026)
-P = {
-    "lahti": ("Outdoor Fasssauna LAHTI XL", "https://www.homedeluxe.de/outdoor-fasssauna-lahti-xl_20004_48669/", "2.599"),
-    "nero": ("Infrarotkabine NERO M", "https://www.homedeluxe.de/saunen-infrarotkabinen/infrarotkabinen/infrarotkabine-nero_29878_75374/", "1.349"),
-    "odena": ("LED-Wasserdampfkamin ODENA", "https://www.homedeluxe.de/wohnen/wohnzimmer/led-wasserdampfkamin-odena_29596_75130/", "349"),
-    "melura": ("LED-Bett MELURA", "https://www.homedeluxe.de/wohnen/schlafzimmer/betten/doppelbetten/led-bett-schwebend-melura_29317_74656/", "399"),
-    "lamesa": ("Couchtisch-Set LAMESA", "https://www.homedeluxe.de/wohnen/wohnzimmer/couchtische/couchtisch-set-lamesa_36072_76438/", "179"),
-    "casara": ("Sofa CASARA", "https://www.homedeluxe.de/sofa-casara_25129_60496/", "1.199"),
-    "calor": ("Elektrokamin CALOR", "https://www.homedeluxe.de/elektrokamin-calor-mit-flammeneffekt_15586_25159/", "329"),
-    "dunes": ("Massagesessel DUNES", "https://www.homedeluxe.de/massagesessel-dunes-schwarz_20321_49238/", "1.399"),
-    "dubi": ("LED-Spiegel DUBI", "https://www.homedeluxe.de/led-spiegel-rund-dubi_24411_59124/", "139"),
-    "ruby": ("Kratzbaum RUBY", "https://www.homedeluxe.de/kratzbaum-ruby-schwarz_20934_49994/", "69"),
-}
-
 # --- Texte (für HTML und Textversion; <b> = fett) ------------------------------------------
-# Überschriften wie im Shop: Liste aus (Text, fett?)
 
 TITLE = "🎃 Halloween-Edition: Finde den Clown!"
 PREHEADER = "Psst … hinter dem Sofa bewegt sich was 🤡 Finde den Clown und wir schenken dir 50 € ab 500 € Bestellwert."
@@ -75,30 +42,6 @@ HERO_IMG_ALT = "Ein Clown klettert hinter dem Sofa hervor und setzt sich – kli
 TEASER_ALT = f"Süßes oder Saures? 50 € Gutschein ab 500 € Bestellwert, nur bis {VALID_UNTIL} – finde einfach den Clown"
 HERO_CTA = dict(text="Klick auf den <b>Clown</b> – er versteckt sich jetzt auf unserer Halloween-Seite in einem Produktbild. Find ihn dort, klick ihn an und dein Gutscheincode gehört dir.**",
                 cta="ZUM CLOWN", note=f"**Nur bis {VALID_UNTIL}. Alle Aktionsbedingungen findest du ganz unten.")
-WELLNESS = dict(heading=[("Wellness", True), (" für die Geisternacht", False)], more=("Alle Saunen", SAUNEN_URL), tiles=[
-    dict(key="lahti", src=SHOP_IMG["lahti"], badge="SCHWITZEN STATT SCHAUDERN", name="LAHTI XL",
-         sub="Outdoor Fasssauna · inkl. 8 kW Saunaofen · ideal für 4–6 Personen"),
-    dict(key="nero", src=SHOP_IMG["nero"], badge="SCHWARZ WIE DIE NACHT", name="NERO M",
-         sub="Infrarotkabine · 120 × 105 × 190 cm für 2 Personen · LED-Farblicht in der Decke"),
-])
-NEW = dict(label="NEU IM SHOP", heading=[("Gespenstisch", True), (" schöne Neuheiten", False)],
-           text="Flammen aus Nebel, ein Bett, das schwebt, und Tische in Marmoroptik – frisch eingezogen bei Home Deluxe.",
-           tile=dict(key="odena", src=SHOP_IMG["odena"], badge="FLAMMEN AUS NEBEL", name="ODENA",
-                     sub="LED-Wasserdampfkamin zum Einbau · 100 cm breit · mit Fernbedienung"),
-           usps=[("3D-FLAMMEN", "aus feinstem Wasserdampf"), ("OHNE RAUCH", "kein Ruß, kein offenes Feuer"), ("3 LICHTFARBEN", "warmweiß, orange, blau")],
-           cards=[dict(key="melura", src=SHOP_IMG["melura"], badge="SCHWEBT WIE EIN GEIST", name="LED-BETT MELURA",
-                       sub="Dunkelgrau · 200 × 200 cm · LED per Fernbedienung"),
-                  dict(key="lamesa", src=SHOP_IMG["lamesa"], badge="NEU", name="COUCHTISCH-SET LAMESA",
-                       sub="Marmor Braun · 2er-Set, ineinander schiebbar")])
-MOVIE = dict(heading=[("Gruselfilm", True), ("-Abend", False)], more=("Alle Sofas", SOFAS_URL),
-             tile=dict(key="casara", src=SHOP_IMG["casara"], badge="FÜR DEN FILMABEND", name="CASARA",
-                       sub="Sofa · Webstoff Dunkelgrün · 258 × 128 × 72 cm · weich genug zum Reinkuscheln"))
-MORE = dict(heading=[("Noch mehr ", False), ("Gänsehaut", True), ("-Momente", False)], tiles=[
-    dict(key="calor", src=SHOP_IMG["calor"], badge="KAMINFEUER", name="ELEKTROKAMIN CALOR", sub="Flammeneffekt, inkl. Fernbedienung"),
-    dict(key="dunes", src=SHOP_IMG["dunes"], badge="ZERO GRAVITY", name="MASSAGESESSEL DUNES", sub="12 Programme, Heizfunktion"),
-    dict(key="dubi", src=SHOP_IMG["dubi"], badge="SPIEGLEIN, SPIEGLEIN", name="LED-SPIEGEL DUBI", sub="Ø 80 cm, 3 Lichtfarben, dimmbar"),
-    dict(key="ruby", src=SHOP_IMG["ruby"], badge="FÜR SCHWARZE KATZEN", name="KRATZBAUM RUBY", sub="Schwarz, 100 cm hoch, inkl. Spielzeug"),
-])
 # Navy-Band vor dem Footer wie in der SPUK10-Version; §LINK§ = „Halloween-Seite“ als Link zum Clown
 CLOSING = dict(heading="Happy Halloween! 🎃",
                text="Noch nicht gefunden? Der Clown hat sich auf unserer<br />§LINK§ versteckt – mit 50&nbsp;€ für deine Bestellung.")
@@ -114,10 +57,6 @@ TEXT_GAME = ("Psst … hinter dem Sofa bewegt sich was: Ein Clown hat es sich be
              "über 50 € für deine Bestellung ab 500 €.**")
 
 SECTION_END = '<!--[if (gte mso 9)|(IE)]></td></tr></table><![endif]--></div></td></tr></table>'
-
-
-def utm(url):
-    return f"{url}?{UTM}"
 
 
 # --- Export auslesen ---------------------------------------------------------------------
@@ -175,12 +114,6 @@ def rich(s):
     return s.replace("<b>", '<strong style="font-weight:700;">').replace("</b>", "</strong>")
 
 
-def heading_html(parts, color=NAVY, size=24, align="left"):
-    spans = "".join(f'<span style="font-weight:{700 if b else 400};">{t}</span>' for t, b in parts)
-    return (f'<h2 class="h2" style="margin:0;font-family:{FONT};font-size:{size}px;line-height:{round(size * 1.25)}px;'
-            f'color:{color};text-align:{align};font-weight:400;">{spans}</h2>')
-
-
 def p(text, size=14, color=NAVY, align="left", extra=""):
     return (f'<p style="margin:0;font-family:{FONT};font-size:{size}px;line-height:{round(size * 1.55)}px;'
             f'color:{color};text-align:{align};{extra}">{text}</p>')
@@ -188,12 +121,6 @@ def p(text, size=14, color=NAVY, align="left", extra=""):
 
 def gap(h):
     return f'<div style="height:{h}px;line-height:{h}px;font-size:1px;">&nbsp;</div>'
-
-
-def badge(text):
-    return (f'<table role="presentation" border="0" cellpadding="0" cellspacing="0"><tr><td bgcolor="{ORANGE}" '
-            f'style="background:{ORANGE};padding:3px 6px;font-family:{FONT};font-size:11px;line-height:15px;font-weight:600;'
-            f'color:#ffffff;letter-spacing:.3px;">{text}</td></tr></table>')
 
 
 def img(src, alt, width, href=None, kind="image"):
@@ -225,60 +152,6 @@ def row(inner, bg="#ffffff", pad="0", cls=""):
     return f'<tr><td class="{cls}" bgcolor="{bg}" style="background:{bg};padding:{pad};">{inner}</td></tr>'
 
 
-def section_head(parts, more=None, color=NAVY, label=None):
-    left = (p(label, 11, ORANGE, extra="font-weight:600;letter-spacing:2px;padding-bottom:4px;") if label else "") + heading_html(parts, color)
-    right = (f'<a href="{utm(more[1])}" target="_blank" style="font-family:{FONT};font-size:12px;color:{color};'
-             f'text-decoration:underline;white-space:nowrap;">{more[0]} ›</a>') if more else ""
-    return ('<table role="presentation" width="100%" border="0" cellpadding="0" cellspacing="0"><tr>'
-            f'<td valign="bottom" style="padding:0;">{left}</td>'
-            f'<td valign="bottom" align="right" style="padding:0 0 4px 12px;">{right}</td></tr></table>')
-
-
-def wide_tile(t, dark=False):
-    """Breite Produktkachel: Bild, darunter Badge, Name, Merkmale links – Preis und Button rechts.
-    dark: für Navy-Abschnitte (weiße Schrift, oranger Button)."""
-    name, url, price = P[t["key"]]
-    fg, sub, btn = ("#ffffff", NIGHT_TEXT, (ORANGE, NAVY)) if dark else (NAVY, MUTED, (NAVY, "#ffffff"))
-    return (
-        img(t["src"], name, 592, utm(url))
-        + '<table role="presentation" width="100%" border="0" cellpadding="0" cellspacing="0"><tr>'
-        f'<td class="stack" valign="top" style="padding:14px 12px 0 0;">{badge(t["badge"])}'
-        + p(t["name"], 18, fg, extra="font-weight:700;padding-top:8px;")
-        + p(t["sub"], 12, sub, extra="padding-top:2px;") + '</td>'
-        '<td class="stack" valign="top" width="190" style="width:190px;padding:14px 0 0 0;">'
-        + p(f'{price}&nbsp;€', 22, fg, "right", "font-weight:700;padding-bottom:8px;")
-        + button(utm(url), "ARTIKEL ANZEIGEN", *btn, align="right")
-        + '</td></tr></table>'
-    )
-
-
-def small_tile(t, card=False):
-    """Kachel im 2er-Raster wie in den Kategorien auf homedeluxe.de."""
-    name, url, price = P[t["key"]]
-    border = f"border:1px solid {LINE};" if card else ""
-    pad = "10px" if card else "0"
-    return (
-        f'<table role="presentation" width="100%" border="0" cellpadding="0" cellspacing="0" bgcolor="#ffffff" style="background:#ffffff;{border}">'
-        f'<tr><td style="padding:{pad} {pad} 0;">' + img(t["src"], name, 280, utm(url)) + '</td></tr>'
-        f'<tr><td style="padding:12px {pad} 16px;">' + badge(t["badge"])
-        + p(t["name"], 13, NAVY, extra="font-weight:700;padding-top:8px;")
-        + p(t["sub"], 12, MUTED, extra="padding-top:2px;height:38px;")
-        + p(f'{price}&nbsp;€', 18, NAVY, extra="font-weight:700;padding:6px 0 10px;")
-        + button(utm(url), "ARTIKEL ANZEIGEN", full=True)
-        + '</td></tr></table>'
-    )
-
-
-def two_cols(a, b, space=16):
-    return ('<table role="presentation" width="100%" border="0" cellpadding="0" cellspacing="0"><tr>'
-            f'<td width="50%" valign="top" style="width:50%;padding-right:{space // 2}px;">{a}</td>'
-            f'<td width="50%" valign="top" style="width:50%;padding-left:{space // 2}px;">{b}</td></tr></table>')
-
-
-def transition(src):
-    return row(img(src, "", 640))
-
-
 # --- Abschnitte --------------------------------------------------------------------------
 
 def header(ex):
@@ -299,39 +172,6 @@ def hero():
               + p(HERO_CTA["note"], 11, NIGHT_TEXT, "center", "padding-top:14px;clear:both;"),
               bg=NAVY, pad="4px 40px 26px", cls="px")
     )
-
-
-def wellness():
-    tiles = gap(30).join(wide_tile(t) for t in WELLNESS["tiles"])
-    return row(section_head(WELLNESS["heading"], WELLNESS["more"]) + gap(16) + tiles, pad="12px 24px 10px", cls="px")
-
-
-def new_in():
-    def usp(h, t):
-        return ('<td width="33%" valign="top" style="width:33%;padding:0 5px;">'
-                '<table role="presentation" width="100%" border="0" cellpadding="0" cellspacing="0"><tr>'
-                f'<td style="border-top:3px solid {ORANGE};padding-top:10px;text-align:center;">'
-                + p(h, 11, "#ffffff", "center", "font-weight:700;letter-spacing:1px;")
-                + p(t, 12, NIGHT_TEXT, "center", "padding-top:2px;") + '</td></tr></table></td>')
-    return row(
-        section_head(NEW["heading"], color="#ffffff", label=NEW["label"])
-        + p(NEW["text"], 14, NIGHT_TEXT, extra="padding:8px 0 18px;")
-        + wide_tile(NEW["tile"], dark=True)
-        + '<table role="presentation" width="100%" border="0" cellpadding="0" cellspacing="0"><tr><td style="padding:26px 0 24px;">'
-        + '<table role="presentation" width="100%" border="0" cellpadding="0" cellspacing="0"><tr>'
-        + "".join(usp(*u) for u in NEW["usps"]) + '</tr></table></td></tr></table>'
-        + two_cols(*(small_tile(c, card=True) for c in NEW["cards"])),
-        bg=NAVY, pad="0 24px 30px", cls="px")
-
-
-def movie():
-    return row(section_head(MOVIE["heading"], MOVIE["more"]) + gap(16) + wide_tile(MOVIE["tile"]), pad="14px 24px 40px", cls="px")
-
-
-def more():
-    a, b, c, d = MORE["tiles"]
-    return row(section_head(MORE["heading"]) + gap(16) + two_cols(small_tile(a), small_tile(b)) + gap(26)
-               + two_cols(small_tile(c), small_tile(d)), pad="0 24px 6px", cls="px")
 
 
 def swap(s, old, new):
@@ -367,9 +207,8 @@ def footer(ex):
 def build(src):
     ex = from_export(src)
     rows = [
-        header(ex), hero(), transition("ueb_tropfen.png"), wellness(),
-        transition("ueb_nebel.png"), new_in(), transition("ueb_aeste.png"), movie(), more(),
-        transition("ueb_kuerbisse.png"), closing(ex), footer(ex),
+        # der Hero endet in Navy und geht direkt in das Navy-Band über
+        header(ex), hero(), closing(ex), footer(ex),
     ]
     filler = "&#847;&zwnj;&nbsp;" * 60
     return f"""<!DOCTYPE html>
@@ -401,10 +240,6 @@ def build(src):
   div > u ~ div .june .tc {{ font-size:10px !important; line-height:15px !important; }}
   @media screen and (max-width:640px) {{
     .px {{ padding-left:18px !important; padding-right:18px !important; }}
-    .stack {{ display:block !important; width:100% !important; padding-right:0 !important; }}
-    .stack p {{ text-align:left !important; }}
-    .stack table {{ float:none !important; }}
-    .h2 {{ font-size:21px !important; line-height:27px !important; }}
     .june .kd {{ text-align:center !important; }}
     .june .md, .june .md * {{ text-align:left !important; }}
     .june .nd, .june .nd * {{ text-align:center !important; }}
@@ -448,33 +283,13 @@ def text_link(label, url):
     return f"{label}{'' if label[-1] in '.:?!' else ':'}\n{url}"
 
 
-def text_heading(parts):
-    return "".join(t for t, _ in parts).upper()
-
-
-def text_tile(t):
-    name, url, price = P[t["key"]]
-    return para(t["badge"], t["name"], t["sub"], f"{price} €") + "\n" + text_link("ARTIKEL ANZEIGEN", utm(url))
-
-
 def build_text(src):
     ex = from_export(src)
-    rule = "-" * WIDTH
     blocks = [
         para(PREHEADER),
         text_link("HOME DELUXE – Wir machen dein Zuhause", ex["home"]),
         "=" * WIDTH + "\n" + TEXT_HERO + "\n" + "=" * WIDTH,
         para(TEXT_GAME) + "\n\n" + text_link(HERO_CTA["cta"], CLOWN_URL) + "\n\n" + para(HERO_CTA["note"]),
-        rule,
-        text_heading(WELLNESS["heading"]), *(text_tile(t) for t in WELLNESS["tiles"]),
-        rule,
-        para(NEW["label"], text_heading(NEW["heading"]), NEW["text"]),
-        text_tile(NEW["tile"]) + "\n" + "\n".join(f"✓ {h}: {t}" for h, t in NEW["usps"]),
-        *(text_tile(c) for c in NEW["cards"]),
-        rule,
-        text_heading(MOVIE["heading"]), text_tile(MOVIE["tile"]),
-        rule,
-        text_heading(MORE["heading"]), *(text_tile(t) for t in MORE["tiles"]),
         "=" * WIDTH + "\n" + para(CLOSING["heading"].upper(), CLOSING["text"].replace("§LINK§", "Halloween-Seite"))
         + "\n" + CLOWN_URL + "\n" + "=" * WIDTH,
         "Bleibe in Verbindung mit uns", *(text_link(n, u) for n, u in ex["social"]),
