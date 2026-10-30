@@ -9,9 +9,12 @@ Zum Ansehen und Weitergeben: `output/vorschau/newsletter-halloween-kw44_vorschau
 `output/vorschau/clown-popup_vorschau.html` – alle Bilder eingebettet, das Pop-up ist sofort offen.
 Screenshots: `output/preview/`.
 
-Die eigentlichen Dateien (`output/newsletter-halloween-kw44.html`, `output/popup/clown-popup.html`)
-binden ihre Bilder relativ ein (`images/…`, `clown.jpg`). Einzeln geöffnet oder verschickt zeigen
-sie deshalb keine Bilder – erst mit dem Bilderordner daneben bzw. nach dem Hochladen in JUNE/Shop.
+Die Versand-Datei `output/newsletter-halloween-kw44.html` (rund 75 KB) bindet Produktfotos, GIF, Logo
+und Social-Icons von CDNs ein, die eigenen Grafiken (Hero-Kopf, Gutschein-Teaser, Übergänge,
+Kürbisreihe) aber relativ (`images/…`), solange sie nicht in `source/cdn-urls.json` stehen. Einzeln
+geöffnet fehlen ihr deshalb diese 7 Bilder. Zum Prüfen der echten Datei:
+`output/newsletter-halloween-kw44_mit-bildern.zip` entpacken und die HTML darin öffnen (HTML +
+Bilderordner). Vollständig auch einzeln erst, wenn die Grafiken in JUNE liegen (siehe unten).
 
 ## Gestaltung (CI von homedeluxe.de)
 

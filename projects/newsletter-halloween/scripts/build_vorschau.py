@@ -8,6 +8,8 @@ alle Bilder als data-URI ein – auch die vom CDN – und schreibt nach output/v
 
 Nur zum Ansehen: Mail-Programme wie Gmail zeigen eingebettete Bilder nicht an. Für den Versand
 gilt weiter output/newsletter-halloween-kw44.html mit den in JUNE hochgeladenen Bildern.
+Zusätzlich: output/newsletter-halloween-kw44_mit-bildern.zip – die Versand-Datei mit ihrem
+Bilderordner, zum Prüfen der echten Datei, bevor alle Bilder auf dem CDN liegen.
 """
 import base64
 import mimetypes
@@ -15,6 +17,7 @@ import os
 import re
 import sys
 import urllib.request
+import zipfile
 
 
 def data_uri(src, base):
@@ -55,10 +58,26 @@ def inline(path, out, open_popup=False):
     print(out, f"{len(cache)} Bilder, {os.path.getsize(out) // 1024} KB")
 
 
+def package(path, out):
+    """Newsletter-HTML mit den relativ eingebundenen Bildern (images/…) als ZIP: entpackt und
+    geöffnet zeigt die Versand-Datei alle Bilder, solange sie noch nicht auf dem JUNE-CDN liegen."""
+    html = open(path, encoding="utf-8").read()
+    base = os.path.dirname(path)
+    local = sorted({s for s in re.findall(r'<img\b[^>]*?\ssrc="([^"]+)"', html) if not s.startswith(("https://", "data:"))})
+    if os.path.exists(out):
+        os.remove(out)
+    with zipfile.ZipFile(out, "w", zipfile.ZIP_DEFLATED) as z:
+        z.write(path, os.path.basename(path))
+        for src in local:
+            z.write(os.path.join(base, src), src)
+    print(out, f"HTML + {len(local)} Bilder")
+
+
 def main():
     project = sys.argv[1]
     o = os.path.join(project, "output")
     inline(os.path.join(o, "newsletter-halloween-kw44.html"), os.path.join(o, "vorschau", "newsletter-halloween-kw44_vorschau.html"))
+    package(os.path.join(o, "newsletter-halloween-kw44.html"), os.path.join(o, "newsletter-halloween-kw44_mit-bildern.zip"))
     inline(os.path.join(o, "popup", "clown-popup.html"), os.path.join(o, "vorschau", "clown-popup_vorschau.html"), open_popup=True)
 
 
