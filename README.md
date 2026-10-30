@@ -66,10 +66,17 @@ Die LP liegt im Shopify-Shop als Seite `halloween-suchspiel` (SEO-ausgeblendet �
 |---|---|
 | `layout/halloween.liquid` | wie `theme.liquid`, aber ohne Header-Gruppe, Drawer und Suche; der Footer bleibt |
 | `templates/page.halloween.json` | nutzt dieses Layout und gibt nur `{{ page.content }}` in einem vollbreiten Custom-Liquid-Abschnitt aus, ohne Seitentitel |
+| `sections/halloween-lp.liquid` | die LP als eigener Abschnitt (ohne Einstellungen) |
+| `templates/index.json` | Startseite: Layout `halloween` mit dem Abschnitt `halloween-lp` statt Black Friday |
+
+Zusätzlich gibt es den Inhalt als Theme-Abschnitt `sections/halloween-lp.liquid` (erzeugt das
+Build-Script mit). `templates/index.json` macht daraus die Startseite: Layout `halloween`, nur dieser
+Abschnitt, kein Header, kein Titel. Der bisherige Black-Friday-Stand der Startseite liegt unter
+`shopify-theme/backup/index.blackfriday.json`.
 
 Die Admin-API darf das Live-Theme nicht beschreiben. Die Dateien liegen deshalb in der Theme-Kopie
-„Home Deluxe Black Friday + Halloween-LP“. Fürs Live-Theme entweder diese Kopie veröffentlichen oder
-die beiden Dateien im Live-Theme unter „Code bearbeiten“ anlegen. Solange das Live-Theme das
+„Home Deluxe Black Friday + Halloween-LP“ (Vorschau: `https://1skjwk-xt.myshopify.com/?preview_theme_id=209970823493`).
+Fürs Live-Theme diese Kopie veröffentlichen. Solange das Live-Theme das
 Template nicht kennt, zeigt Shopify die Seite mit dem Standard-Template (mit Header und Titel); der
 Block bricht dann aus der schmalen Spalte auf bis zu 1340 px aus.
 
