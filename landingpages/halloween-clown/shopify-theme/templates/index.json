@@ -1,0 +1,10 @@
+{
+  "layout": "halloween",
+  "sections": {
+    "halloween": {
+      "type": "halloween-lp",
+      "settings": {}
+    }
+  },
+  "order": ["halloween"]
+}

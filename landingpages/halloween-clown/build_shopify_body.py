@@ -13,6 +13,8 @@ import sys
 HERE = pathlib.Path(__file__).resolve().parent
 SRC = HERE / "index.html"
 OUT = HERE / "shopify-body.html"
+SECTION = HERE / "shopify-theme" / "sections" / "halloween-lp.liquid"
+SCHEMA = '{% schema %}\n{"name": "Halloween-LP", "settings": []}\n{% endschema %}\n'
 
 html = SRC.read_text(encoding="utf-8")
 start = html.index("-->", html.index("CMS-BLOCK START")) + 3
@@ -34,5 +36,13 @@ body = body.replace('"', "'")
 if "\\" in body:
     sys.exit("Backslash im Body – bitte prüfen.")
 
+if "{{" in body or "{%" in body:
+    sys.exit("Liquid-Klammern im Body – würden im Theme-Abschnitt ausgewertet.")
+
 OUT.write_text(body + "\n", encoding="utf-8")
 print(f"{OUT.relative_to(HERE.parent.parent)}: {len(body)} Zeichen")
+
+# Derselbe Inhalt als Theme-Abschnitt, z. B. für die Startseite (templates/index.json).
+SECTION.parent.mkdir(parents=True, exist_ok=True)
+SECTION.write_text(body + "\n" + SCHEMA, encoding="utf-8")
+print(f"{SECTION.relative_to(HERE.parent.parent)}: {len(body) + 1 + len(SCHEMA)} Zeichen")
