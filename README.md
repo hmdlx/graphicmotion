@@ -9,6 +9,7 @@ rendert. ffmpeg schreibt die Frames anschließend als MP4.
 | Projekt | Format | Ergebnis |
 |---|---|---|
 | `projects/laguna-m` | 9:16, 1080×1920, 30 fps, 18,5 s | `output/HomeDeluxe_Laguna-M_Reel_9x16.mp4` + Titelbild |
+| `projects/newsletter-halloween` | E-Mail-HTML, 640 px | Halloween-Edition des KW43-Newsletters mit Clown-Suchspiel (50 € ab 500 €), Landingpage – siehe [README](projects/newsletter-halloween/README.md) |
 
 ### Laguna M – Schnitt und Übergänge
 
