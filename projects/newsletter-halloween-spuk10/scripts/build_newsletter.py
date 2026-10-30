@@ -397,7 +397,7 @@ def build_text(src):
         rule,
         *(text_product(k, t, x) for g in GRIDS for k, _, t, x in g),
         "=" * WIDTH + "\n" + para(BAND[0], TEXT_BAND) + "\n" + utm(SHOP_URL, "band") + "\n" + "=" * WIDTH,
-        "Bleibe in Verbindung mit uns\n" + "\n".join(f"{n}: {u}" for n, u in social),
+        "Bleibe in Verbindung mit uns\n\n" + "\n\n".join(text_link(n, u) for n, u in social),
         para(plain(parts[16]).replace(" ✓ ", " ✓ · ")),
         "\n\n".join(para(b) for b in re.split(r"(?:\s*<br\s*/?>\s*){2}", disclaimer) if plain(b)),
         "\n\n".join(text_link(t, u) for t, u in legal),
