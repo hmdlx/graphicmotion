@@ -91,7 +91,7 @@ Die LP liegt im Shopify-Shop als Seite `halloween-suchspiel` (SEO-ausgeblendet Ã
 
 | Datei | Zweck |
 |---|---|
-| `layout/halloween.liquid` | wie `theme.liquid`, aber ohne Header-Gruppe, Drawer und Suche; der Footer bleibt |
+| `layout/halloween.liquid` | wie `theme.liquid`, aber ohne Header-Gruppe, Footer-Gruppe, Drawer und Suche |
 | `templates/page.halloween.json` | nutzt dieses Layout und gibt nur `{{ page.content }}` in einem vollbreiten Custom-Liquid-Abschnitt aus, ohne Seitentitel |
 | `sections/halloween-lp.liquid` | die LP als eigener Abschnitt (ohne Einstellungen) |
 | `templates/index.json` | Startseite: Layout `halloween` mit dem Abschnitt `halloween-lp` statt Black Friday |
