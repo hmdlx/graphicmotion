@@ -2,15 +2,16 @@
 
     python3 -I scripts/build_newsletter.py <projekt>
 
-Gestaltung nach dem Shop: Navy-Header mit weißem Logo und grauer Navigation, Überschriften mit
-fettem und normalem Teil („**Wellness** für die Geisternacht“), eckige Navy-Buttons
-„Artikel anzeigen“, Orange #ff9800 wie die TOPSELLER-Badges im Shop. Nacht-Abschnitte (Navy)
-und Tag-Abschnitte (Weiß) gehen über Halloween-Grafiken ineinander über (Tropfen, Nebel, Äste,
-Kürbis-Hügel), der Hero blendet aus dem Nachthimmel auf.
+Gestaltung nach dem Shop: Überschriften mit fettem und normalem Teil („**Wellness** für die
+Geisternacht“), eckige Navy-Buttons „Artikel anzeigen“, Orange #ff9800 wie die TOPSELLER-Badges
+im Shop. Nacht-Abschnitte (Navy) und Tag-Abschnitte (Weiß) gehen über Halloween-Grafiken
+ineinander über (Tropfen, Nebel, Äste, Kürbis-Hügel), der Hero blendet aus dem Nachthimmel auf.
 
-Aus dem JUNE-Export (source/newsletter-new-ins-kw43.html) kommen Navigation, Social-Links,
-Footer-Hinweis und Rechtslinks. Ergebnis: output/newsletter-halloween-kw44.html und die
-Textversion output/newsletter-halloween-kw44.txt, beide aus den Texten unten.
+Kopf und Fuß wie beim Fallback SPUK10 (projects/newsletter-halloween-spuk10): Aus dem JUNE-Export
+(source/newsletter-new-ins-kw43.html) bleiben Kopf (Logo, Navigation), Social-Leiste, USP-Leiste
+und Footer unverändert erhalten, im Footer ergänzt um die Aktionsbedingungen. Dazwischen stehen
+die Inhaltsblöcke unten. Ergebnis: output/newsletter-halloween-kw44.html und die Textversion
+output/newsletter-halloween-kw44.txt, beide aus den Texten unten.
 
 Klick auf Hero oder „ZUM CLOWN“ führt in den Shop, wo das Pop-up aus output/popup/ den
 Gutscheincode zeigt. Produktfotos kommen direkt vom Shop-CDN (SHOP_IMG), eigene Grafiken vom
@@ -29,8 +30,8 @@ UTM = f"utm_campaign={CAMPAIGN}&utm_source=newsletter&utm_medium=email"
 CLOWN_URL = f"https://www.homedeluxe.de/?halloween=clown&{UTM}&utm_content=clown"
 VALID_UNTIL = "02.11.2026"
 
-NAVY, ORANGE, SALE = "#0e2234", "#ff9800", "#FF4500"     # Werte aus dem CSS von homedeluxe.de
-GREY, LINE, MUTED, NIGHT_TEXT = "#f4f6f8", "#e3e7ec", "#66727d", "#c7d0d9"
+NAVY, ORANGE = "#0e2234", "#ff9800"     # Werte aus dem CSS von homedeluxe.de
+LINE, MUTED, NIGHT_TEXT = "#e3e7ec", "#66727d", "#c7d0d9"
 FONT = "Poppins,Helvetica,Arial,sans-serif"
 
 # Produktfotos direkt vom Shop-CDN (unverändert, 1000 × 1000 px)
@@ -131,24 +132,22 @@ def plain(s):
     return " ".join(htmllib.unescape(re.sub(r"<[^>]+>", "", s)).replace("\xa0", " ").split())
 
 
+def replace(s, old, new, count=1):
+    n = s.count(old)
+    if n != count:
+        sys.exit(f"erwartet {count}× im Export, gefunden {n}×: {old[:80]!r}")
+    return s.replace(old, new)
+
+
 def from_export(src):
+    """Kopf (mit Logo), Navigation, Social-Leiste, USP-Leiste, Footer und Schluss des Exports –
+    dieselben Abschnitte wie beim Fallback SPUK10. Im Footer stehen die Aktionsbedingungen
+    unter dem Versandhinweis."""
     parts = src.split(SECTION_END)
     if len(parts) != 19 or "BAD" not in parts[1] or "Bleibe in Verbindung" not in parts[15]:
         sys.exit("Aufbau des JUNE-Exports hat sich geändert – Abschnitte prüfen")
-    fix = lambda u: u.replace("utm_campaign=KW43&", f"utm_campaign={CAMPAIGN}&")
-    footer = parts[17]
-    disclaimer = next(p for p in re.findall(r"<p\b[^>]*>(.*?)</p>", footer, re.S) if "Diese E-Mail wird" in p)
-    contact = re.search(A_TAG, disclaimer, re.S)
-    return dict(
-        home=fix(re.search(r'<a [^>]*href="([^"]+)"', parts[0]).group(1)),
-        nav=[(plain(t), fix(u)) for u, t in re.findall(A_TAG, parts[1], re.S) if plain(t)],
-        social=[(re.search(r'alt="([^"]+)"', t).group(1), fix(u)) for u, t in re.findall(A_TAG, parts[15], re.S)],
-        usps=[plain(t).rstrip(" ✓") for t in re.split(r"✓", plain(parts[16])) if plain(t)],
-        disclaimer=plain(disclaimer.split("*Kostenloser")[0].replace(contact.group(0), "§LINK§")),
-        contact=(plain(contact.group(2)), fix(contact.group(1))),
-        legal=[(plain(t), fix(u)) for u, t in re.findall(A_TAG, footer, re.S) if plain(t) and plain(t) != plain(contact.group(2))],
-        trusted=(fix(re.findall(A_TAG, footer, re.S)[-1][0]), re.search(r'src="([^"]+352cb1[^"]+)"', footer).group(1)),
-    )
+    footer = replace(parts[17], f"{SHIPPING}</span>", f'{SHIPPING}</span><br /><br /><span style="color:#ffffff;">{CONDITIONS}</span>')
+    return dict(head=parts[0], nav=parts[1], social=parts[15], usp_bar=parts[16], footer=footer, tail=parts[18])
 
 
 # --- HTML-Bausteine ----------------------------------------------------------------------
@@ -167,15 +166,18 @@ def rich(s):
     return s.replace("<b>", '<strong style="font-weight:700;">').replace("</b>", "</strong>")
 
 
+# Überschriften und Absätze als <div>: Der Kopf des JUNE-Exports setzt jedes <p> und <h2> per
+# !important auf Verdana/Helvetica und mobil auf 12 bzw. 26 px – die Inhaltsblöcke behalten so Poppins.
+
 def heading_html(parts, color=NAVY, size=24, align="left"):
     spans = "".join(f'<span style="font-weight:{700 if b else 400};">{t}</span>' for t, b in parts)
-    return (f'<h2 class="h2" style="margin:0;font-family:{FONT};font-size:{size}px;line-height:{round(size * 1.25)}px;'
-            f'color:{color};text-align:{align};font-weight:400;">{spans}</h2>')
+    return (f'<div class="h2" role="heading" aria-level="2" style="margin:0;font-family:{FONT};font-size:{size}px;'
+            f'line-height:{round(size * 1.25)}px;color:{color};text-align:{align};font-weight:400;">{spans}</div>')
 
 
 def p(text, size=14, color=NAVY, align="left", extra=""):
-    return (f'<p style="margin:0;font-family:{FONT};font-size:{size}px;line-height:{round(size * 1.55)}px;'
-            f'color:{color};text-align:{align};{extra}">{text}</p>')
+    return (f'<div class="t" style="margin:0;font-family:{FONT};font-size:{size}px;line-height:{round(size * 1.55)}px;'
+            f'color:{color};text-align:{align};{extra}">{text}</div>')
 
 
 def gap(h):
@@ -273,22 +275,6 @@ def transition(src):
 
 # --- Abschnitte --------------------------------------------------------------------------
 
-def header(ex):
-    usps = "&nbsp;&nbsp;&nbsp;".join(f"✓&nbsp;{u}" for u in ex["usps"])
-    nav = "".join(
-        f'<td align="center" style="padding:12px 4px;"><a href="{u}" target="_blank" style="font-family:{FONT};font-size:13px;'
-        f'font-weight:500;color:{SALE if t.upper().startswith("SALE") else NAVY};text-decoration:none;">'
-        f'{"Sale%" if t.upper().startswith("SALE") else t.capitalize()}</a></td>' for t, u in ex["nav"])
-    return (
-        row(p(usps, 11, NAVY, "center"), bg=LINE, pad="7px 16px", cls="topbar")
-        + row(f'<a href="{ex["home"]}" target="_blank" style="display:block;width:230px;margin:0 auto;">'
-              f'<img src="{src_url("logo_weiss.png")}" width="230" alt="Home Deluxe" style="display:block;width:230px;height:auto;border:0;margin:0 auto;"></a>',
-              bg=NAVY, pad="22px 20px")
-        + row(f'<table role="presentation" width="100%" border="0" cellpadding="0" cellspacing="0" class="nav"><tr>{nav}</tr></table>',
-              bg=GREY, pad="0 10px")
-    )
-
-
 def hero():
     gif = os.path.exists(os.path.join(PROJECT, "output", "images", "hero_clown.gif"))
     return (
@@ -349,76 +335,45 @@ def closing():
                bg=NAVY, pad="0 40px 36px", cls="px")
 
 
-def footer(ex):
-    icons = "".join(f'<td style="padding:0 14px;"><a href="{u}" target="_blank"><img src="{src_url(f"social_{n.lower()}.png")}" width="30" alt="{n}" '
-                    'style="display:block;width:30px;height:30px;border:0;"></a></td>' for n, u in ex["social"])
-    usps = "&nbsp;&nbsp;·&nbsp;&nbsp;".join(f"{u}&nbsp;✓" for u in ex["usps"])
-    contact = f'<a href="{ex["contact"][1]}" target="_blank" style="color:#ffffff;text-decoration:underline;">{ex["contact"][0]}</a>'
-    legal = "&nbsp;&nbsp;|&nbsp;&nbsp; ".join(f'<a href="{u}" target="_blank" style="color:#ffffff;text-decoration:underline;">{t}</a>' for t, u in ex["legal"])
-    small = lambda t, extra="": p(t, 11, NIGHT_TEXT, "center", extra)
-    return row(
-        '<table role="presentation" width="100%" border="0" cellpadding="0" cellspacing="0"><tr><td style="border-top:1px solid #1c3a54;font-size:1px;line-height:1px;">&nbsp;</td></tr></table>'
-        + p("Bleibe in Verbindung mit uns", 13, "#ffffff", "center", "padding:22px 0 12px;")
-        + f'<table role="presentation" border="0" cellpadding="0" cellspacing="0" align="center"><tr>{icons}</tr></table>'
-        + p(usps, 12, "#ffffff", "center", "padding:22px 0 18px;clear:both;")
-        + small(ex["disclaimer"].replace("§LINK§", contact))
-        + small(SHIPPING, "padding-top:10px;") + small(CONDITIONS, "padding-top:10px;")
-        + small(legal, "padding-top:18px;line-height:22px;")
-        + f'<a href="{ex["trusted"][0]}" target="_blank" style="display:block;width:40px;margin:20px auto 0;">'
-          f'<img src="{ex["trusted"][1]}" width="40" alt="Trusted Shops" style="display:block;width:40px;height:auto;border:0;"></a>',
-        bg=NAVY, pad="0 36px 34px", cls="px")
+# Rahmen der Inhaltsblöcke im Markup des JUNE-Exports (640 px, MSO-Ghost-Table)
+CONTENT_START = (
+    ' <table role="presentation" width="100%" border="0" cellpadding="0" cellspacing="0" style="background-color:#fff!important;border-collapse:collapse;border-spacing:0;margin:0;width:100%;" bgcolor="#FFFFFF">'
+    '<tr><td align="center" class="xb" style="margin:0 auto;padding:0;"><div style="max-width:640px;">'
+    '<!--[if (gte mso 9)|(IE)]><table role="presentation" align="center" border="0" cellpadding="0" cellspacing="0" style="border-collapse:collapse;border-spacing:0;width:640px;" width="640"><tr><td style="margin:0;"><![endif]-->'
+    '<table role="presentation" class="hw" width="100%" border="0" cellpadding="0" cellspacing="0" style="max-width:640px;width:100%;">\n'
+)
+# kommt in den Kopf des Exports; gilt nur für die Inhaltsblöcke (Klassen px, stack, t, h2, hw)
+HEAD_EXTRA = """<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style type="text/css">
+  a[x-apple-data-detectors] { color:inherit !important; text-decoration:none !important; }
+  .hw table { border-collapse:collapse; mso-table-lspace:0; mso-table-rspace:0; }
+  .hw img { border:0; outline:none; text-decoration:none; -ms-interpolation-mode:bicubic; }
+  @media screen and (max-width:640px) {
+    .px { padding-left:18px !important; padding-right:18px !important; }
+    .stack { display:block !important; width:100% !important; padding-right:0 !important; }
+    .stack .t { text-align:left !important; }
+    .stack table { float:none !important; }
+    .h2 { font-size:21px !important; line-height:27px !important; }
+  }
+</style>
+"""
 
 
 def build(src):
     ex = from_export(src)
+    head = replace(ex["head"], "<title>✨ New Ins: Sauna &amp; Infrarot in einer Kabine</title>", f"<title>{TITLE}</title>")
+    head = replace(head, "Kombisauna EVEREST, Whirlpool SUNSHINE &amp; 7 weitere Neuheiten – kostenlos geliefert*.", PREHEADER)
+    head = replace(head, "</head>", HEAD_EXTRA + "</head>")
     rows = [
-        header(ex), hero(), transition("ueb_tropfen.png"), intro(), wellness(),
+        hero(), transition("ueb_tropfen.png"), intro(), wellness(),
         transition("ueb_nebel.png"), new_in(), transition("ueb_aeste.png"), movie(), more(),
-        transition("ueb_kuerbisse.png"), closing(), footer(ex),
+        transition("ueb_kuerbisse.png"), closing(),
     ]
-    filler = "&#847;&zwnj;&nbsp;" * 60
-    return f"""<!DOCTYPE html>
-<html lang="de" xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="x-apple-disable-message-reformatting">
-<meta name="format-detection" content="telephone=no,address=no,email=no,date=no">
-<meta name="color-scheme" content="light only">
-<meta name="supported-color-schemes" content="light only">
-<title>{TITLE}</title>
-<!--[if mso]><xml><o:OfficeDocumentSettings><o:AllowPNG/><o:PixelsPerInch>96</o:PixelsPerInch></o:OfficeDocumentSettings></xml><![endif]-->
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
-<style>
-  body {{ margin:0; padding:0; -webkit-text-size-adjust:100%; -ms-text-size-adjust:100%; }}
-  table {{ border-collapse:collapse; mso-table-lspace:0; mso-table-rspace:0; }}
-  img {{ border:0; outline:none; text-decoration:none; -ms-interpolation-mode:bicubic; }}
-  a[x-apple-data-detectors] {{ color:inherit !important; text-decoration:none !important; }}
-  @media screen and (max-width:640px) {{
-    .px {{ padding-left:18px !important; padding-right:18px !important; }}
-    .stack {{ display:block !important; width:100% !important; padding-right:0 !important; }}
-    .stack p {{ text-align:left !important; }}
-    .stack table {{ float:none !important; }}
-    .h2 {{ font-size:21px !important; line-height:27px !important; }}
-    .nav a {{ font-size:11px !important; }}
-    .topbar p {{ font-size:9px !important; }}
-  }}
-</style>
-</head>
-<body style="margin:0;padding:0;background:{GREY};">
-<div style="display:none;max-height:0;overflow:hidden;mso-hide:all;font-size:1px;line-height:1px;color:{GREY};opacity:0;">{PREHEADER}{filler}</div>
-<table role="presentation" width="100%" border="0" cellpadding="0" cellspacing="0" bgcolor="{GREY}" style="background:{GREY};">
-<tr><td align="center" style="padding:0;">
-<!--[if mso]><table role="presentation" width="640" border="0" cellpadding="0" cellspacing="0"><tr><td><![endif]-->
-<table role="presentation" width="100%" border="0" cellpadding="0" cellspacing="0" style="max-width:640px;width:100%;">
-{chr(10).join(rows)}
-</table>
-<!--[if mso]></td></tr></table><![endif]-->
-</td></tr></table>
-</body>
-</html>
-"""
+    # die übernommenen Teile bekommen ihr SECTION_END beim Zusammensetzen zurück
+    kept = lambda *ps: "".join(p + SECTION_END for p in ps)
+    html = (kept(head, ex["nav"]) + CONTENT_START + "\n".join(rows) + "\n</table>" + SECTION_END
+            + kept(ex["social"], ex["usp_bar"], ex["footer"]) + ex["tail"])
+    return html.replace("utm_campaign=KW43&", f"utm_campaign={CAMPAIGN}&")
 
 
 # --- Textversion -------------------------------------------------------------------------
@@ -447,9 +402,15 @@ def text_tile(t):
 def build_text(src):
     ex = from_export(src)
     rule = "-" * WIDTH
+    # Kopf und Fuß wie in der Textversion des Fallbacks SPUK10
+    home = re.search(r'<a [^>]*href="([^"]+)"', ex["head"]).group(1)
+    social = [(re.search(r'alt="([^"]+)"', t).group(1), u) for u, t in re.findall(A_TAG, ex["social"], re.S)]
+    disclaimer = next(p for p in re.findall(r"<p\b[^>]*>(.*?)</p>", ex["footer"], re.S) if "Diese E-Mail wird" in p)
+    disclaimer = re.sub(A_TAG, lambda m: f"{plain(m.group(2))} ({m.group(1)})", disclaimer, flags=re.S)
+    legal = [(plain(t), u) for u, t in re.findall(A_TAG, ex["footer"], re.S) if plain(t) and plain(t) != "dieses Kontaktformular"]
     blocks = [
         para(PREHEADER),
-        text_link("HOME DELUXE – Wir machen dein Zuhause", ex["home"]),
+        text_link("HOME DELUXE – Wir machen dein Zuhause", home),
         "=" * WIDTH + "\n" + TEXT_HERO + "\n" + "=" * WIDTH,
         para(TEXT_GAME) + "\n\n" + text_link(HERO_CTA["cta"], CLOWN_URL) + "\n\n" + para(HERO_CTA["note"]),
         rule,
@@ -465,13 +426,12 @@ def build_text(src):
         rule,
         text_heading(MORE["heading"]), *(text_tile(t) for t in MORE["tiles"]),
         "=" * WIDTH + "\n" + para(text_heading(CLOSING["heading"]), CLOSING["text"]) + "\n" + CLOWN_URL + "\n" + "=" * WIDTH,
-        "Bleibe in Verbindung mit uns\n" + "\n".join(f"{n}: {u}" for n, u in ex["social"]),
-        " · ".join(f"{u} ✓" for u in ex["usps"]),
-        para(ex["disclaimer"].replace("§LINK§", f"{ex['contact'][0]} ({ex['contact'][1]})")),
-        para(SHIPPING), para(CONDITIONS),
-        "\n\n".join(text_link(t, u) for t, u in ex["legal"]),
+        "Bleibe in Verbindung mit uns\n\n" + "\n\n".join(text_link(n, u) for n, u in social),
+        para(plain(ex["usp_bar"]).replace(" ✓ ", " ✓ · ")),
+        "\n\n".join(para(b) for b in re.split(r"(?:\s*<br\s*/?>\s*){2}", disclaimer) if plain(b)),
+        "\n\n".join(text_link(t, u) for t, u in legal),
     ]
-    text = "\n\n".join(blocks) + "\n"
+    text = ("\n\n".join(blocks) + "\n").replace("utm_campaign=KW43&", f"utm_campaign={CAMPAIGN}&")
     if "<" in text:
         sys.exit("Textversion enthält noch HTML")
     return text

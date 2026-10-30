@@ -4,10 +4,8 @@
 <meta charset="utf-8">
 <title>Kopf-Grafiken Halloween-Newsletter</title>
 <!--
-  logo-weiss        Home-Deluxe-Logo weiß auf Navy (Header wie auf homedeluxe.de)
   hero-kopf         Nachthimmel über dem Hero-GIF, aufgebaut wie der Slider auf homedeluxe.de:
                     Badge, Zeile, großer Name, Zusatz. Unten reines Navy, das GIF blendet daraus auf.
-  social-*          Social-Icons weiß für den dunklen Footer
   Alles in 2x der Newsletter-Größe.
 -->
 <style>
@@ -18,9 +16,6 @@
   :root { --navy: #0e2234; --orange: #ff9800; }
   body { margin: 0; background: transparent; font-family: Poppins, sans-serif; }
   [data-out] { display: block; }
-
-  .logo { width: 460px; padding: 0; background: var(--navy); }
-  .logo img { display: block; width: 460px; }
 
   .hero { position: relative; width: 1280px; height: 400px; overflow: hidden;
           background: radial-gradient(700px 420px at 1040px 90px, #1c3a54 0%, var(--navy) 70%); }
@@ -35,13 +30,9 @@
   .name span { color: var(--orange); }
   .sub { position: absolute; left: 72px; top: 302px; color: #fff; font-weight: 600; font-size: 34px; }
   .sub b { color: var(--orange); font-weight: 800; }
-
-  .icon { width: 64px; height: 64px; }
 </style>
 </head>
 <body>
-<div data-out="logo-weiss" class="logo"><img src="../../../assets/logo/homedeluxe-logo-white.svg" alt=""></div>
-
 <div data-out="hero-kopf" class="hero">
   <svg class="web" width="300" height="260" viewBox="0 0 300 260" fill="none" stroke="#ffffff" stroke-opacity=".22" stroke-width="1.6">
     <path d="M0 0 L300 0 M0 0 L270 120 M0 0 L200 220 M0 0 L90 260 M0 0 L0 260"/>
@@ -62,8 +53,5 @@
   <div class="sub">Klick ihn an und sichere dir <b>50&nbsp;€</b> Gutschein</div>
 </div>
 
-<svg data-out="social-instagram" class="icon" viewBox="0 0 64 64" fill="none" stroke="#fff" stroke-width="4"><rect x="10" y="10" width="44" height="44" rx="12"/><circle cx="32" cy="32" r="10"/><circle cx="45" cy="19" r="2.5" fill="#fff" stroke="none"/></svg>
-<svg data-out="social-facebook" class="icon" viewBox="0 0 64 64"><path fill="#fff" d="M35.5 56V34.6h7.2l1.1-8.4h-8.3v-5.3c0-2.4.7-4.1 4.2-4.1h4.4V9.3c-.8-.1-3.4-.3-6.4-.3-6.4 0-10.7 3.9-10.7 11v6.2h-7.2v8.4H21V56z"/></svg>
-<svg data-out="social-youtube" class="icon" viewBox="0 0 64 64"><path fill="#fff" d="M58 21.6a6.6 6.6 0 0 0-4.7-4.7C49.2 16 32 16 32 16s-17.2 0-21.3 1.1A6.6 6.6 0 0 0 6 21.6C5 25.8 5 32 5 32s0 6.2 1 10.4a6.6 6.6 0 0 0 4.7 4.7C14.8 48 32 48 32 48s17.2 0 21.3-1.1a6.6 6.6 0 0 0 4.7-4.7C59 38.2 59 32 59 32s0-6.2-1-10.4z"/><path fill="#0e2234" d="M26.5 39.5 40.5 32l-14-7.5z"/></svg>
 </body>
 </html>

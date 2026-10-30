@@ -18,12 +18,23 @@ Die Werte stammen aus dem CSS des Shops (`--primary`, Badge-Farben, Schrift):
 
 | Element | im Newsletter |
 |---|---|
-| Navy `#0e2234` | Header, Nacht-Abschnitte, Buttons |
+| Navy `#0e2234` | Nacht-Abschnitte, Buttons |
 | Orange `#ff9800` (TOPSELLER-Badge im Shop) | Badges, „CLOWN“, Buttons „ZUM CLOWN“, Kürbisse |
-| Rot `#FF4500` (Sale im Shop) | „Sale%“ in der Navigation |
 | Poppins, Überschriften fett + normal („**Nach Kategorie** shoppen“) | „**Wellness** für die Geisternacht“ usw. |
 | eckige Ecken, Buttons „Artikel anzeigen“ | Produktkacheln |
-| USP-Leiste, Navy-Header mit weißem Logo, graue Navigation | Kopf des Newsletters |
+
+## Kopf und Fuß
+
+Wie beim Fallback SPUK10 (`projects/newsletter-halloween-spuk10` auf Branch
+`claude/epic-ride-aylhjp`): Kopf (Logo, Navigation BAD · SAUNEN · WOHNEN · GARTEN · SALE),
+Social-Leiste „Bleibe in Verbindung mit uns“, USP-Leiste und Navy-Footer kommen unverändert aus
+dem JUNE-Export (`source/newsletter-new-ins-kw43.html`). Im Footer stehen unter dem
+Versandhinweis die Aktionsbedingungen (`CONDITIONS`). Logo, Social-Icons und Trusted-Shops-Siegel
+liegen damit schon auf dem JUNE-CDN.
+
+Der Kopf des Exports setzt per `!important` jedes `<p>` und `<h2>` auf Verdana/Helvetica und mobil
+auf 12 bzw. 26 px. Texte und Überschriften der Inhaltsblöcke stehen deshalb in `<div>`s und
+bleiben in Poppins; ihr eigenes CSS (`HEAD_EXTRA` im Skript) kommt zusätzlich in den Kopf.
 
 Nacht (Navy) und Tag (Weiß) wechseln sich ab; die Übergänge sind Halloween-Grafiken
 (`graphics/uebergaenge.html`): tropfendes Navy, aufsteigender Nebel, hängende Äste mit Spinne,
@@ -101,12 +112,12 @@ Woher die Bilder kommen:
 | Bilder | Quelle |
 |---|---|
 | Produktfotos | Shop-CDN, direkt verlinkt |
-| Hero-GIF, Trusted-Shops-Siegel | JUNE-CDN (`homedeluxe-bf09.kxcdn.com`) |
-| eigene Grafiken (Hero-Kopf, Logo, Übergänge, Social-Icons) | `output/fuer-june-hochladen.zip` – in JUNE hochladen |
+| Hero-GIF, Logo, Social-Icons, Trusted-Shops-Siegel | JUNE-CDN (`homedeluxe-bf09.kxcdn.com`) |
+| eigene Grafiken (Hero-Kopf, Übergänge) | `output/fuer-june-hochladen.zip` – in JUNE hochladen |
 
 Nach dem Hochladen die CDN-Adressen in `source/cdn-urls.json` eintragen (Dateiname → URL) und
 `npm run halloween:build` ausführen. Das ZIP enthält immer nur die Grafiken, die dort noch fehlen.
-`hero_clown.jpg` ist nur das Standbild zum GIF und muss nicht hochgeladen werden. Das Trusted-Shops-Siegel kommt weiter vom bestehenden CDN. Poppins wird per
+`hero_clown.jpg` ist nur das Standbild zum GIF und muss nicht hochgeladen werden. Poppins wird per
 Google-Fonts-Link geladen (wie schon Montserrat im KW43-Export); Gmail zeigt stattdessen
 Helvetica/Arial.
 
@@ -118,8 +129,8 @@ npm run halloween:build     # alles: Grafiken -> Bilder/GIF -> HTML + Text -> Vo
 
 | Skript | macht |
 |---|---|
-| `halloween:graphics` | `graphics/*.html` per Chromium -> `build/newsletter-halloween/graphics/*.png` (Logo, Hero-Kopf, Übergänge, Social-Icons) |
+| `halloween:graphics` | `graphics/*.html` per Chromium -> `build/newsletter-halloween/graphics/*.png` (Hero-Kopf, Übergänge) |
 | `halloween:images` | Hero-GIF und Standbild, Grafiken, Pop-up-Bild, ZIP der noch hochzuladenden Grafiken -> `output/` |
-| `halloween:html` | Newsletter-HTML + Textversion; Navigation, Social-Links, Footer-Hinweis und Rechtslinks aus `source/newsletter-new-ins-kw43.html` |
+| `halloween:html` | Kopf, Navigation, Social-Leiste, USP-Leiste und Footer aus `source/newsletter-new-ins-kw43.html`, Inhaltsblöcke neu -> Newsletter-HTML + Textversion |
 | `halloween:preview` | Ganzseiten-Vorschau Desktop/Mobil, Pop-up-Vorschau; prüft die Clown-Links und das Pop-up mit/ohne `?halloween=clown` |
 | `halloween:vorschau` | eigenständige Vorschau-HTMLs mit eingebetteten Bildern -> `output/vorschau/` (nicht für den Versand) |
