@@ -6,11 +6,13 @@ Ablauf wie beim Hero-GIF des Newsletters (build_images.py), aber flüssig mit 24
 Navy-Verlauf: Clown sitzt, verblasst wie ein Geist, leeres Sofa, er kommt hinter dem Sofa hervor
 und setzt sich – das Ende passt an den Anfang, die Schleife läuft ohne Sprung.
 
-Das KI-Video hat nur 1344 × 672 px. Für die großen Formate kommt der Hintergrund deshalb aus dem
-schärferen Standbild (1774 × 887, deckungsgleich mit dem letzten Videobild); nur dort, wo sich der
-Clown bewegt (motion_mask), läuft das Video. Ergebnis: output/hero-video/hero_clown_<B>x<H>.mp4
-(H.264, ohne Ton, faststart) und je ein Standbild _poster.jpg (erstes Bild: Clown sitzt).
+Quelle ist das KI-Video, per KI auf 4K hochgerechnet (HERO_VIDEO_4K, Higgsfield-Upscale „aigc“ des
+1344 × 672-Videos). Alle Formate werden daraus nur ausgeschnitten und verkleinert. Wie beim GIF steht
+der Raum still (erstes Bild), nur dort, wo sich der Clown bewegt (motion_mask), läuft das Video.
+Ergebnis: output/hero-video/hero_clown_<B>x<H>.mp4 (H.264, ohne Ton, faststart) und je ein
+Standbild _poster.jpg (erstes Bild: Clown sitzt).
 """
+import json
 import os
 import subprocess
 import sys
@@ -19,23 +21,30 @@ import numpy as np
 from PIL import Image
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from build_images import GIF_GHOST, GIF_HOLD, GIF_W, HERO_SRC, HERO_VIDEO, motion_mask  # noqa: E402
+from build_images import GIF_GHOST, GIF_HOLD, GIF_W, motion_mask  # noqa: E402
 
+HERO_VIDEO_4K = os.path.join("hero", "clown-hervor_4k.mp4")
 FPS = 24
-VIDEO_SIZE = (1344, 672)
-# Ausschnitt im Standbild (x, y, Breite, Höhe) und Zielgröße; der Clown sitzt im Quadrat im rechten
-# Drittel. Im Banner steigt der Ballon beim Klettern bis y = 168 – der Ausschnitt beginnt darüber
+# Ausschnitt als Anteil des Videobilds (x, y) und Zielgröße; Breite/Höhe des Ausschnitts ergeben sich
+# aus dem Seitenverhältnis. Im Quadrat sitzt der Clown im rechten Drittel; im Banner steigt der Ballon
+# beim Klettern bis knapp 19 % unter die Oberkante – der Ausschnitt beginnt darüber.
 FORMATS = [
-    ((470, 0, 887, 887), (1440, 1440)),
-    ((0, 135, 1774, 621), (1600, 560)),
-    ((0, 135, 1774, 621), (3200, 1120)),
+    ((0.265, 0.0), (1440, 1440)),
+    ((0.0, 0.152), (1600, 560)),
+    ((0.0, 0.152), (3200, 1120)),
 ]
-CRF = 19
+CRF = 18
 
 
-def video_frames(path):
-    """Alle Bilder des KI-Videos nacheinander als RGB-Array (1344 × 672)."""
-    w, h = VIDEO_SIZE
+def video_size(path):
+    s = json.loads(subprocess.run(["ffprobe", "-v", "error", "-select_streams", "v:0", "-show_entries", "stream=width,height",
+                                   "-of", "json", path], capture_output=True, check=True).stdout)["streams"][0]
+    return s["width"], s["height"]
+
+
+def video_frames(path, size):
+    """Alle Bilder des Videos nacheinander als RGB-Array."""
+    w, h = size
     p = subprocess.Popen(["ffmpeg", "-v", "error", "-i", path, "-f", "rawvideo", "-pix_fmt", "rgb24", "-"], stdout=subprocess.PIPE)
     while True:
         buf = p.stdout.read(w * h * 3)
@@ -45,29 +54,38 @@ def video_frames(path):
     p.wait()
 
 
+def crop_box(size, rel, target):
+    """Größter Ausschnitt im Seitenverhältnis des Ziels ab der relativen Position, gerade Pixelzahlen."""
+    w, h = size
+    cw = min(w, round(h * target[0] / target[1])) // 2 * 2
+    ch = round(cw * target[1] / target[0]) // 2 * 2
+    x = min(round(rel[0] * w), w - cw)
+    y = min(round(rel[1] * h), h - ch)
+    return cw, ch, x, y
+
+
 def main():
     project = sys.argv[1]
-    src = os.path.join(project, "source")
     out = os.path.join(project, "output", "hero-video")
     os.makedirs(out, exist_ok=True)
-    video = os.path.join(src, HERO_VIDEO)
+    video = os.path.join(project, "source", HERO_VIDEO_4K)
+    size = video_size(video)
 
-    still_img = Image.open(os.path.join(src, HERO_SRC)).convert("RGB")
-    size = still_img.size
-    still = np.asarray(still_img, np.float32)
-
-    # Maske wie beim GIF (in dessen 640er Koordinaten), etwas großzügiger, damit vom sitzenden
-    # Clown im Standbild nichts stehen bleibt, wenn das Sofa leer ist
-    small = [Image.fromarray(f).resize((GIF_W, GIF_W * VIDEO_SIZE[1] // VIDEO_SIZE[0]), Image.LANCZOS) for f in video_frames(video)]
-    m = motion_mask(small, grow=4)[..., 0]
+    # Maske wie beim GIF (in dessen 640er Koordinaten), auf Videogröße gebracht; erstes und letztes
+    # Bild für Hintergrund, sitzenden Clown und das Verblassen merken
+    small, first, last = [], None, None
+    for f in video_frames(video, size):
+        small.append(Image.fromarray(f).resize((GIF_W, GIF_W * size[1] // size[0]), Image.LANCZOS))
+        first = f if first is None else first
+        last = f
+    m = motion_mask(small, grow=3)[..., 0]
     mask = np.asarray(Image.fromarray((m * 255).astype(np.uint8)).resize(size, Image.BILINEAR), np.float32)[..., None] / 255
+    room = first.astype(np.float32)
 
     def comp(frame):
-        up = np.asarray(Image.fromarray(frame).resize(size, Image.LANCZOS), np.float32)
-        return (up * mask + still * (1 - mask)).round().astype(np.uint8)
+        return (frame.astype(np.float32) * mask + room * (1 - mask)).round().astype(np.uint8)
 
-    frames = list(video_frames(video))
-    seated, empty = comp(frames[-1]), comp(frames[0])
+    seated, empty = comp(last), comp(first)
     n = round(GIF_GHOST * FPS)
 
     def sequence():
@@ -76,17 +94,18 @@ def main():
         for i in range(n):
             t = (i + 1) / (n + 1)
             yield (seated * (1 - t) + empty * t).round().astype(np.uint8)
-        for f in frames:
+        for f in video_frames(video, size):
             yield comp(f)
 
-    # ein Durchlauf, drei Ausgaben: Ausschnitt, Lanczos, leicht nachschärfen, wo hochskaliert wird
+    # ein Durchlauf, drei Ausgaben: Ausschnitt und Verkleinern (Lanczos)
     chains, outputs = [], []
-    for i, ((x, y, w, h), (W, H)) in enumerate(FORMATS):
-        sharpen = ",unsharp=5:5:0.45" if W > w else ""
-        chains.append(f"[s{i}]crop={w}:{h}:{x}:{y},scale={W}:{H}:flags=lanczos{sharpen},format=yuv420p[o{i}]")
-        name = os.path.join(out, f"hero_clown_{W}x{H}.mp4")
+    for i, (rel, (W, H)) in enumerate(FORMATS):
+        cw, ch, x, y = crop_box(size, rel, (W, H))
+        if cw < W:
+            sys.exit(f"{W}×{H}: Ausschnitt nur {cw}×{ch} – Quelle zu klein")
+        chains.append(f"[s{i}]crop={cw}:{ch}:{x}:{y},scale={W}:{H}:flags=lanczos,format=yuv420p[o{i}]")
         outputs += ["-map", f"[o{i}]", "-c:v", "libx264", "-preset", "slow", "-crf", str(CRF), "-profile:v", "high",
-                    "-movflags", "+faststart", "-an", name]
+                    "-movflags", "+faststart", "-an", os.path.join(out, f"hero_clown_{W}x{H}.mp4")]
     split = f"[0]split={len(FORMATS)}" + "".join(f"[s{i}]" for i in range(len(FORMATS)))
     p = subprocess.Popen(["ffmpeg", "-v", "error", "-y", "-f", "rawvideo", "-pix_fmt", "rgb24", "-s", f"{size[0]}x{size[1]}",
                           "-r", str(FPS), "-i", "-", "-filter_complex", ";".join([split] + chains)] + outputs,

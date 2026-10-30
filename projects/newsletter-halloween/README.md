@@ -66,9 +66,10 @@ wie das GIF: sitzt → verblasst → leeres Sofa → kommt hervor → setzt sich
 | `hero_clown_1600x560.mp4` | Banner 20:7 über die ganze Breite |
 | `hero_clown_3200x1120.mp4` | dasselbe Banner in doppelter Auflösung |
 
-Dazu je ein Standbild `_poster.jpg` (Clown sitzt). Ohne Text und ohne Navy-Verlauf. Der Hintergrund
-kommt aus dem Standbild (1774 × 887), nur der Clown aus dem KI-Video (1344 × 672) – im 3200er ist er
-deshalb rund 2,4-fach hochskaliert und bei 100 % etwas weicher als der Raum.
+Dazu je ein Standbild `_poster.jpg` (Clown sitzt). Ohne Text und ohne Navy-Verlauf. Quelle ist
+`source/hero/clown-hervor_4k.mp4`: das KI-Video (1344 × 672), per Higgsfield-Upscale (ByteDance,
+Preset „aigc“) auf 4320 × 2160 hochgerechnet. Alle Formate werden daraus nur ausgeschnitten und
+verkleinert – keine Kompressionsblöcke mehr im Clown.
 
 ## Klick → Halloween-Seite
 
