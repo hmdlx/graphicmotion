@@ -58,8 +58,22 @@ CMS-Block (Plenty, Shopify) passt. Kopiert wird alles zwischen `CMS-BLOCK START`
 
 ### Shopify
 
-Die LP liegt im Shopify-Shop als Seite `halloween-suchspiel` (Standard-Seiten-Template,
-SEO-ausgeblendet über das Metafeld `seo.hidden = 1`). Den Seiteninhalt erzeugt:
+Die LP liegt im Shopify-Shop als Seite `halloween-suchspiel` (SEO-ausgeblendet über das Metafeld
+`seo.hidden = 1`) mit dem Seiten-Template `halloween`. Dafür braucht das Theme zwei Dateien aus
+`landingpages/halloween-clown/shopify-theme/`:
+
+| Datei | Zweck |
+|---|---|
+| `layout/halloween.liquid` | wie `theme.liquid`, aber ohne Header-Gruppe, Drawer und Suche; der Footer bleibt |
+| `templates/page.halloween.json` | nutzt dieses Layout und gibt nur `{{ page.content }}` in einem vollbreiten Custom-Liquid-Abschnitt aus, ohne Seitentitel |
+
+Die Admin-API darf das Live-Theme nicht beschreiben. Die Dateien liegen deshalb in der Theme-Kopie
+„Home Deluxe Black Friday + Halloween-LP“. Fürs Live-Theme entweder diese Kopie veröffentlichen oder
+die beiden Dateien im Live-Theme unter „Code bearbeiten“ anlegen. Solange das Live-Theme das
+Template nicht kennt, zeigt Shopify die Seite mit dem Standard-Template (mit Header und Titel); der
+Block bricht dann aus der schmalen Spalte auf bis zu 1340 px aus.
+
+Den Seiteninhalt erzeugt:
 
 ```bash
 python3 -I landingpages/halloween-clown/build_shopify_body.py   # -> landingpages/halloween-clown/shopify-body.html
@@ -70,6 +84,9 @@ Attribute auf einfache Anführungszeichen um, damit der Inhalt als JSON-String a
 `body`) gehen kann. Shopify schreibt Tag- und Attributnamen beim Speichern klein (`viewbox`,
 `animatemotion` …); der HTML-Parser des Browsers korrigiert das bei SVG wieder, alle Animationen
 laufen weiter.
+
+Achtung: Ist die Seite im Shopify-Admin geöffnet, während der Inhalt per API aktualisiert wird,
+überschreibt ein Speichern im Admin den neuen Inhalt mit dem alten Stand. Vorher neu laden.
 
 ## Rendern
 
