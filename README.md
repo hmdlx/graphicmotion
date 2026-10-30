@@ -34,6 +34,7 @@ Preise sind bewusst nicht eingebaut, weil sie sich häufig ändern.
 | Seite | Inhalt |
 |---|---|
 | `landingpages/halloween-clown/index.html` | Newsletter-Halloween-Suchspiel: 6 Produkte, ein gruseliger Clown öffnet ein Pop-up mit 50 € Gutschein ab 500 € Einkaufswert |
+| `landingpages/halloween-clown/iframe.html` | dieselbe Seite als selbsttragendes iframe zum Einbetten (siehe unten) |
 
 Die Seite kommt ohne Style-Tag aus: alle Styles stehen inline, damit der Block direkt in einen
 CMS-Block (Plenty, Shopify) passt. Kopiert wird alles zwischen `CMS-BLOCK START` und `CMS-BLOCK ENDE`.
@@ -42,11 +43,10 @@ CMS-Block (Plenty, Shopify) passt. Kopiert wird alles zwischen `CMS-BLOCK START`
   Navy `#0f2334` und Weiß `#fefefe`, Orange `#ff6a00` nur als Akzent, Poppins 500–700, alle Ecken und Buttons scharfkantig (CI).
   Mobile first: Grundgrößen für ~390 px, nach oben per `clamp()` und `auto-fit`-Grids skaliert,
   keine Media Queries.
-- Aufbau, kurz und direkt aufs Ziel: 1 Hero mit „Finde den Clown.“ (`h1`), Gutschein-Block „50 €“
-  und Button „Jetzt Clown suchen“ im ersten Bildschirm, darunter die Leiste Suchen · Klicken · Sparen,
-  2 Video-Karte „Er ist schon da.“ mit Button zu den Produkten, 3 „Wo steckt er?“ mit 6 Produkten,
-  4 dunkle Karte „Noch nicht gefunden?“ mit Tipp, 5 Service-Leiste (0 % Finanzierung, versandfrei,
-  Stores) und Fußnote.
+- Aufbau, kurz und direkt aufs Ziel: 1 Video-Hero (Navy) mit „Finde den Clown.“ (`h1`), Gutschein
+  „50 € ab 500 € Einkaufswert“ und Button „Jetzt Clown suchen“ auf dem Video – alles im ersten
+  Bildschirm, 2 „Wo steckt er?“ mit 6 Produkten, 3 dunkle Karte „Noch nicht gefunden?“ mit Tipp,
+  4 Service-Leiste (0 % Finanzierung, versandfrei, Stores) und Fußnote.
 - Das Video (`media/hdx-halloween-hero.mp4`, 5 s, stumm, mit Standbild) liegt in den Shopify-Dateien
   und wird vom Shopify-CDN geladen.
 - Der Clown sieht aus wie der im Video: orange Haare, blauer Hoodie, blauer Ballon mit Haus. Er lugt
@@ -66,7 +66,24 @@ CMS-Block (Plenty, Shopify) passt. Kopiert wird alles zwischen `CMS-BLOCK START`
 - Der Block füllt vollbreite Container aus und bricht aus schmalen Inhaltsspalten auf bis zu 1340 px
   aus (inline per `width:max(…)` und negativem `margin-left`).
 
-### Shopify
+#### Als iframe einbetten
+
+`landingpages/halloween-clown/iframe.html` enthält die LP als `<iframe srcdoc="…">`: der komplette
+Inhalt steckt im iframe-Code, es wird keine URL geladen. Das ist nötig, weil Shopify das Einbetten
+seiner Seiten verbietet (`X-Frame-Options: DENY`). Eingefügt wird alles zwischen `IFRAME START` und
+`IFRAME ENDE`, am besten in einen vollbreiten Bereich der Zielseite.
+
+Ein kleines Script im iframe übernimmt, was ein iframe sonst nicht kann: Es passt die Höhe an den
+Inhalt an (kein innerer Scrollbalken), scrollt bei „Jetzt Clown suchen“ die äußere Seite, setzt das
+Gutschein-Pop-up in den sichtbaren Bereich und schreibt das Event `halloween_clown_gefunden` in den
+`dataLayer` der äußeren Seite. Shop-Links öffnen im ganzen Fenster (`target="_top"`). Ohne Script
+(z. B. wenn die Zielseite iframes in einer Sandbox ausführt) hat das iframe eine feste Höhe von 3600 px.
+
+```bash
+python3 -I landingpages/halloween-clown/build_iframe.py   # -> landingpages/halloween-clown/iframe.html
+```
+
+## Shopify
 
 Die LP liegt im Shopify-Shop als Seite `halloween-suchspiel` (SEO-ausgeblendet über das Metafeld
 `seo.hidden = 1`) mit dem Seiten-Template `halloween`. Dafür braucht das Theme zwei Dateien aus

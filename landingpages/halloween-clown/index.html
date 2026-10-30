@@ -59,69 +59,34 @@
     </defs>
   </svg>
 
-  <!-- ================= 1 · HERO: Angebot + Ziel sofort sichtbar ================= -->
-  <section style="position:relative;background:#fefefe;text-align:center;">
-    <div style="max-width:1100px;margin:0 auto;padding:clamp(24px,4vw,48px) 20px clamp(32px,4vw,52px);box-sizing:border-box;">
-      <svg data-hdx-anim viewBox="0 0 600 300" aria-hidden="true" focusable="false" style="display:block;width:clamp(150px,30vw,210px);height:auto;margin:0 auto clamp(8px,1.4vw,14px);overflow:visible;">
-        <g><animateMotion dur="12s" begin="-4s" repeatCount="indefinite" path="M-60 110 C120 40 260 170 420 70 S620 40 680 110"/><use href="#hdx-bat" transform="scale(1.3)"/></g>
-        <g><animateTransform attributeName="transform" type="translate" values="0 0;0 -10;0 0" dur="4.2s" repeatCount="indefinite"/>
-          <path d="M190 220 C200 260 260 280 296 300" fill="none" stroke="#0f2334" stroke-opacity=".45" stroke-width="2.4"/>
-          <g transform="translate(190 160) rotate(-12) scale(1.1)"><use href="#hdx-balloon"/></g>
-        </g>
-        <g><animateTransform attributeName="transform" type="translate" values="0 0;0 -14;0 0" dur="5.4s" begin="-2s" repeatCount="indefinite"/>
-          <path d="M412 214 C400 260 340 284 304 300" fill="none" stroke="#0f2334" stroke-opacity=".45" stroke-width="2.4"/>
-          <g transform="translate(412 150) rotate(10) scale(1.15)"><use href="#hdx-balloon"/></g>
-        </g>
-        <g><animateTransform attributeName="transform" type="translate" values="0 0;0 -12;0 0" dur="4.8s" begin="-3s" repeatCount="indefinite"/>
-          <path d="M300 200 C292 240 310 270 300 300" fill="none" stroke="#0f2334" stroke-opacity=".5" stroke-width="2.6"/>
-          <g transform="translate(300 110) scale(1.45)"><use href="#hdx-balloon"/></g>
-        </g>
-        <g><animateTransform attributeName="transform" type="translate" values="0 0;0 -8;0 0" dur="3.6s" begin="-1s" repeatCount="indefinite"/>
-          <ellipse cx="372" cy="40" rx="26" ry="31" fill="#ff6a00"/><path d="M369 70 L375 70 L372 75 Z" fill="#ff6a00"/>
-        </g>
-      </svg>
-      <h1 style="font-family:'Poppins',Arial,Helvetica,sans-serif;text-transform:none;margin:0;font-size:clamp(60px,17vw,156px);line-height:.9;font-weight:700;letter-spacing:-.045em;color:#0f2334;">Finde den<br>Clown.</h1>
-      <p style="margin:clamp(14px,2.4vw,22px) auto 0;max-width:560px;font-size:clamp(18px,2.4vw,22px);line-height:1.4;font-weight:600;color:#0f2334;text-wrap:balance;">Er versteckt sich auf dieser Seite. Ein Klick auf ihn – und der Gutschein gehört dir.</p>
-
-      <div style="display:flex;flex-wrap:wrap;gap:12px;max-width:900px;margin:clamp(24px,4vw,36px) auto 0;">
-      <div style="position:relative;flex:1 1 440px;display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:4px 20px;padding:clamp(18px,3vw,26px) 20px;background:#0f2334;color:#fefefe;box-sizing:border-box;">
-        <span aria-hidden="true" style="position:absolute;top:8px;left:8px;right:8px;bottom:8px;border:2px dashed rgba(254,254,254,.35);"></span>
-        <span style="position:relative;font-size:clamp(64px,17vw,116px);line-height:1;font-weight:700;letter-spacing:-.05em;">50&nbsp;€</span>
-        <span style="position:relative;text-align:left;"><span style="display:block;font-size:clamp(20px,4.4vw,30px);line-height:1.05;font-weight:700;letter-spacing:-.01em;text-transform:uppercase;">Gutschein</span><span style="display:block;margin-top:4px;font-size:clamp(14px,2vw,16px);line-height:1.3;font-weight:500;color:#c9d5e1;">ab 500&nbsp;€<br>Einkaufswert*</span></span>
+  <!-- ================= 1 · HERO: Video, Aufgabe, Gutschein, Button ================= -->
+  <section style="position:relative;overflow:hidden;background:#0f2334;color:#fefefe;">
+    <svg data-hdx-anim viewBox="0 0 1200 300" preserveAspectRatio="none" aria-hidden="true" focusable="false" style="position:absolute;left:0;top:0;width:100%;height:260px;pointer-events:none;"><use href="#hdx-fog" transform="matrix(1 0 0 -1 0 300)"/></svg>
+    <div style="position:relative;display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:18px 40px;max-width:1400px;margin:0 auto;padding:clamp(28px,4.5vw,56px) clamp(20px,4vw,48px) clamp(20px,3vw,32px);box-sizing:border-box;">
+      <div>
+        <h1 style="font-family:'Poppins',Arial,Helvetica,sans-serif;text-transform:none;margin:0;font-size:clamp(52px,10vw,112px);line-height:.92;font-weight:700;letter-spacing:-.045em;color:#fefefe;">Finde den Clown.</h1>
+        <p style="margin:clamp(12px,1.6vw,18px) 0 0;max-width:560px;font-size:clamp(17px,2vw,20px);line-height:1.45;font-weight:500;color:#c9d5e1;text-wrap:balance;">Er ist schon da – versteckt in einem unserer Produktbilder. Klick ihn an.</p>
       </div>
-
-      <a href="#hdx-halloween-produkte" style="flex:1 1 240px;display:flex;align-items:center;justify-content:center;gap:10px;box-sizing:border-box;padding:18px 24px;background:#ff6a00;color:#0f2334;border:0;border-radius:0;font-size:clamp(18px,2.2vw,24px);line-height:1.2;font-weight:700;letter-spacing:.01em;text-decoration:none;">Jetzt Clown suchen <span aria-hidden="true">&darr;</span></a>
+      <div style="position:relative;display:flex;align-items:center;gap:14px;padding:14px 20px 14px 18px;border:2px dashed rgba(254,254,254,.45);box-sizing:border-box;">
+        <span style="font-size:clamp(50px,7vw,76px);line-height:1;font-weight:700;letter-spacing:-.05em;color:#fefefe;">50&nbsp;€</span>
+        <span style="text-align:left;"><span style="display:block;font-size:clamp(18px,2.2vw,24px);line-height:1.05;font-weight:700;letter-spacing:-.01em;text-transform:uppercase;color:#fefefe;">Gutschein</span><span style="display:block;margin-top:4px;font-size:14px;line-height:1.3;font-weight:500;color:#c9d5e1;">ab 500&nbsp;€<br>Einkaufswert*</span></span>
       </div>
     </div>
-    <div style="background:#0f2334;color:#fefefe;">
-      <ol style="list-style:none;max-width:1100px;margin:0 auto;padding:clamp(18px,3vw,32px) 8px;box-sizing:border-box;display:grid;grid-template-columns:repeat(3,1fr);text-align:center;">
-        <li style="margin:0;padding:2px 4px;"><span style="display:block;font-size:clamp(40px,8vw,68px);line-height:1;font-weight:700;letter-spacing:-.04em;color:transparent;-webkit-text-stroke:2px #fefefe;">1</span><span style="display:block;margin-top:6px;font-size:clamp(15px,2.4vw,22px);line-height:1.1;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:#fefefe;">Suchen</span><span style="display:block;margin-top:3px;font-size:clamp(12px,1.6vw,15px);line-height:1.3;color:#9fb3c6;">Bilder checken</span></li>
-        <li style="margin:0;padding:2px 4px;border-left:1px solid rgba(254,254,254,.18);"><span style="display:block;font-size:clamp(40px,8vw,68px);line-height:1;font-weight:700;letter-spacing:-.04em;color:transparent;-webkit-text-stroke:2px #fefefe;">2</span><span style="display:block;margin-top:6px;font-size:clamp(15px,2.4vw,22px);line-height:1.1;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:#fefefe;">Klicken</span><span style="display:block;margin-top:3px;font-size:clamp(12px,1.6vw,15px);line-height:1.3;color:#9fb3c6;">Clown antippen</span></li>
-        <li style="margin:0;padding:2px 4px;border-left:1px solid rgba(254,254,254,.18);"><span style="display:block;font-size:clamp(40px,8vw,68px);line-height:1;font-weight:700;letter-spacing:-.04em;color:transparent;-webkit-text-stroke:2px #fefefe;">3</span><span style="display:block;margin-top:6px;font-size:clamp(15px,2.4vw,22px);line-height:1.1;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:#fefefe;">Sparen</span><span style="display:block;margin-top:3px;font-size:clamp(12px,1.6vw,15px);line-height:1.3;color:#9fb3c6;">50&nbsp;€ sichern</span></li>
-      </ol>
+    <div style="position:relative;max-width:1400px;margin:0 auto;padding:0 clamp(12px,2vw,24px) clamp(12px,2vw,24px);box-sizing:border-box;">
+      <div style="position:relative;overflow:hidden;border-radius:0;background:#0b1a28;">
+        <video autoplay muted loop playsinline preload="auto" disablepictureinpicture aria-label="Video: Ein Clown mit blauem Home-Deluxe-Ballon klettert im Wohnzimmer aufs Sofa" poster="https://cdn.shopify.com/s/files/1/1095/9175/7125/files/hdx-halloween-hero-poster.jpg?v=1793354051" style="display:block;width:100%;height:clamp(400px,46vw,640px);object-fit:cover;object-position:55% 45%;">
+          <source src="https://cdn.shopify.com/s/files/1/1095/9175/7125/files/hdx-halloween-hero.mp4?v=1793354053" type="video/mp4">
+        </video>
+        <svg data-hdx-anim viewBox="0 0 1200 600" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false" style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;">
+          <g><animateMotion dur="10s" begin="-3s" repeatCount="indefinite" path="M-60 90 C220 20 420 160 700 70 S1080 30 1280 110"/><use href="#hdx-bat" transform="scale(1)"/></g>
+          <g><animateMotion dur="13s" begin="-8s" repeatCount="indefinite" path="M1280 60 C980 150 760 10 520 90 S160 170 -80 70"/><use href="#hdx-bat" transform="scale(.7)"/></g>
+        </svg>
+        <a href="#hdx-halloween-produkte" style="position:absolute;left:clamp(12px,2.4vw,28px);bottom:clamp(12px,2.4vw,28px);display:inline-flex;align-items:center;gap:10px;padding:16px 24px;border-radius:0;background:#ff6a00;color:#0f2334;font-size:clamp(17px,1.8vw,20px);font-weight:700;text-decoration:none;">Jetzt Clown suchen <span aria-hidden="true">&darr;</span></a>
+      </div>
     </div>
   </section>
 
-  <!-- ================= 2 · VIDEO: kurz, dann direkt zur Suche ================= -->
-  <section style="position:relative;overflow:hidden;box-sizing:border-box;width:calc(100% - 24px);max-width:1400px;margin:12px auto 0;border-radius:0;background:#0f2334;color:#fefefe;">
-    <svg data-hdx-anim viewBox="0 0 1200 300" preserveAspectRatio="none" aria-hidden="true" focusable="false" style="position:absolute;left:0;top:0;width:100%;height:240px;pointer-events:none;"><use href="#hdx-fog" transform="matrix(1 0 0 -1 0 300)"/></svg>
-    <div style="position:relative;display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:10px 32px;padding:clamp(28px,5vw,56px) clamp(20px,4vw,48px) clamp(20px,3vw,32px);box-sizing:border-box;">
-      <h2 style="font-family:'Poppins',Arial,Helvetica,sans-serif;text-transform:none;margin:0;font-size:clamp(46px,11vw,104px);line-height:.92;font-weight:700;letter-spacing:-.045em;color:#fefefe;">Er ist<br>schon da.</h2>
-      <p style="margin:0;max-width:380px;font-size:clamp(17px,2vw,20px);line-height:1.45;font-weight:500;color:#c9d5e1;">Eben noch auf dem Sofa. Jetzt steckt er in einem unserer Produktbilder.</p>
-    </div>
-    <div style="position:relative;margin:0 clamp(12px,2vw,24px) clamp(12px,2vw,24px);border-radius:0;overflow:hidden;background:#0b1a28;">
-      <video autoplay muted loop playsinline preload="auto" disablepictureinpicture aria-label="Video: Ein Clown mit blauem Home-Deluxe-Ballon klettert im Wohnzimmer aufs Sofa" poster="https://cdn.shopify.com/s/files/1/1095/9175/7125/files/hdx-halloween-hero-poster.jpg?v=1793354051" style="display:block;width:100%;height:clamp(400px,46vw,640px);object-fit:cover;object-position:55% 45%;">
-        <source src="https://cdn.shopify.com/s/files/1/1095/9175/7125/files/hdx-halloween-hero.mp4?v=1793354053" type="video/mp4">
-      </video>
-      <svg data-hdx-anim viewBox="0 0 1200 600" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false" style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;">
-        <g><animateMotion dur="10s" begin="-3s" repeatCount="indefinite" path="M-60 90 C220 20 420 160 700 70 S1080 30 1280 110"/><use href="#hdx-bat" transform="scale(1)"/></g>
-        <g><animateMotion dur="13s" begin="-8s" repeatCount="indefinite" path="M1280 60 C980 150 760 10 520 90 S160 170 -80 70"/><use href="#hdx-bat" transform="scale(.7)"/></g>
-      </svg>
-      <a href="#hdx-halloween-produkte" style="position:absolute;left:clamp(12px,2.4vw,28px);bottom:clamp(12px,2.4vw,28px);display:inline-flex;align-items:center;gap:10px;padding:14px 22px;border-radius:0;background:#fefefe;color:#0f2334;font-size:16px;font-weight:700;text-decoration:none;">Zu den Produkten <span aria-hidden="true">&darr;</span></a>
-    </div>
-  </section>
-
-  <!-- ================= 3 · PRODUKTE: hier versteckt sich der Clown ================= -->
+  <!-- ================= 2 · PRODUKTE: hier versteckt sich der Clown ================= -->
   <section id="hdx-halloween-produkte" style="background:#fefefe;">
     <div style="max-width:1240px;margin:0 auto;padding:clamp(48px,7vw,80px) 16px 0;box-sizing:border-box;text-align:center;">
       <h2 style="font-family:'Poppins',Arial,Helvetica,sans-serif;text-transform:none;margin:0 0 10px;font-size:clamp(50px,13vw,120px);line-height:.95;font-weight:700;letter-spacing:-.045em;color:#0f2334;">Wo steckt er?</h2>
@@ -139,7 +104,7 @@
     </div>
   </section>
 
-  <!-- ================= 4 · NOCH NICHT GEFUNDEN? (dunkle Karte mit Tipp) ================= -->
+  <!-- ================= 3 · NOCH NICHT GEFUNDEN? (dunkle Karte mit Tipp) ================= -->
   <section style="position:relative;overflow:hidden;box-sizing:border-box;width:calc(100% - 24px);max-width:1400px;margin:clamp(56px,8vw,96px) auto 0;border-radius:0;background:#0b1a28;color:#fefefe;text-align:center;">
     <svg data-hdx-anim viewBox="0 0 1200 520" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false" style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;">
       <g transform="translate(110 90) scale(1.3)" opacity="0"><animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;0.17;0.23;0.62;0.69;1" dur="7.1s" begin="-0.8s" repeatCount="indefinite"/><use href="#hdx-eyes"/></g>
@@ -164,7 +129,7 @@
     </div>
   </section>
 
-  <!-- ================= 5 · SERVICE ================= -->
+  <!-- ================= 4 · SERVICE ================= -->
   <section style="background:#fefefe;">
     <div style="max-width:1100px;margin:0 auto;padding:clamp(48px,7vw,88px) 20px clamp(40px,6vw,64px);box-sizing:border-box;">
       <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:clamp(28px,4vw,40px);border-top:1px solid #e3e7ec;padding-top:clamp(40px,6vw,64px);text-align:center;">
