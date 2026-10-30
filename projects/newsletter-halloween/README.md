@@ -112,8 +112,8 @@ Vorschläge, oben in `scripts/build_newsletter.py` (Code, Datum und Ablaufzeit z
 `output/popup/clown-popup.html` und `graphics/kopf.html`):
 
 - **Betreff** (in JUNE eintragen): „🤡 50-€-Gutschein: Finde den Clown und schnapp dir die 50 €! 🎃“ (`TITLE`).
-  Preheader: „Der Clown vom Sofa versteckt sich in unserem Onlineshop 🤡 Gutschein ab 500 € Bestellwert,
-  nur bis 02.11.“ (`PREHEADER`).
+  Preheader: „Er versteckt sich in unserem Onlineshop. Einlösbar ab 500 € Bestellwert, nur bis 02.11.“
+  (`PREHEADER`, liest sich als Fortsetzung des Betreffs).
 - **Gutscheincode** `CLOWN50` – im Shop anlegen: 50 € Rabatt, Mindestbestellwert 500 €, einmal pro Kunde.
 - **Gültig bis** 02.11.2026, 23:59 Uhr. Achtung: Die Halloween-Seite nennt „gültig bis 31.12.2026“ –
   ein Datum festlegen und Newsletter (`VALID_UNTIL`, `graphics/teaser.html`) bzw. Seite angleichen.
