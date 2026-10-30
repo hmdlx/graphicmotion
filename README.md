@@ -68,7 +68,7 @@ URLs (`poster`, `source`) im Block ersetzen.
   automatisch in die Zwischenablage (danach geht es zum Shop), weiches Scrollen beim Klick aufs Video,
   Fallback für alte Browser, `dataLayer`-Event `halloween_clown_gefunden` und Pause aller Animationen
   bei reduzierter Bewegung.
-- Gutscheincode `CLOWN50` (`id="hdx-gs-code"`) und die Bedingungen (gültig bis 02.11.2026, stehen im
+- Gutscheincode `CLOWN50` (`id="hdx-gs-code"`) und die Bedingungen (einlösbar bis 02.11.2026, stehen im
   Pop-up und in der Fußnote) sind Platzhalter: vor dem Versand den echten Code und die echten
   Bedingungen eintragen.
 - Produktbilder kommen direkt aus dem Shop-CDN (`cdn02.plentyone.com`), Preise sind bewusst nicht
