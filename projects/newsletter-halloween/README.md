@@ -58,6 +58,18 @@ Die folgenden Werte sind Vorschläge und stehen als Konstanten oben in `scripts/
 - **Pop-up einbauen** – Block aus `output/popup/clown-popup.html` global ins Shop-Layout
   (z. B. Footer), `clown.jpg` ins Shop-CDN laden und den Bildpfad im Block anpassen.
 
+## Textversion
+
+`output/newsletter-halloween-kw44.txt` ist der Plain-Text-Teil der Mail (UTF-8, Zeilen bis 72
+Zeichen, URLs ungebrochen). Er enthält alle Texte, Preise und Links des HTML; statt des
+Hero-Bilds steht der Clown-Link als „ZUM CLOWN:“ direkt darunter und noch einmal unten im
+Halloween-Band. Footer-Hinweis und Rechtslinks werden aus dem JUNE-Export übernommen.
+Alle Texte stehen nur einmal im Skript (Abschnitt „Texte“ in `scripts/build_newsletter.py`)
+und gehen in HTML und Textversion.
+
+In JUNE prüfen, ob der Abmeldelink in der Textversion durch den personalisierten Link bzw.
+Platzhalter ersetzt wird – im Export steht die feste Adresse `…/newsletter/unsubscribe/?folderId=0`.
+
 ## In JUNE übernehmen
 
 Der Newsletter bindet alle Inhaltsbilder relativ ein (`images/…`). Die Dateien aus
@@ -74,6 +86,6 @@ npm run halloween:build     # alles: Grafiken -> Bilder -> HTML -> Vorschau + Pr
 |---|---|
 | `halloween:graphics` | `graphics/*.html` per Chromium -> `build/newsletter-halloween/graphics/*.png` (Hero-Band, Fledermäuse, Teaser) |
 | `halloween:images` | Hero aus Band + Wohnzimmer-Bild, LAHTI mit Fledermäusen, Produktbilder, Pop-up-Bild -> `output/` |
-| `halloween:html` | Kopf, Navigation und Footer aus `source/newsletter-new-ins-kw43.html`, Inhaltsblöcke neu -> `output/newsletter-halloween-kw44.html` |
+| `halloween:html` | Kopf, Navigation und Footer aus `source/newsletter-new-ins-kw43.html`, Inhaltsblöcke neu -> `output/newsletter-halloween-kw44.html` + Textversion `.txt` |
 | `halloween:preview` | Ganzseiten-Vorschau Desktop/Mobil, Pop-up-Vorschau; prüft, dass nur das Hero-Bild zum Pop-up führt und das Pop-up nur mit `?halloween=clown` aufgeht |
 | `halloween:vorschau` | eigenständige Vorschau-HTMLs mit eingebetteten Bildern und Schrift -> `output/vorschau/` (nicht für den Versand: Gmail zeigt eingebettete Bilder nicht) |

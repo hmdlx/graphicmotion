@@ -5,7 +5,9 @@
 Aus source/newsletter-new-ins-kw43.html (JUNE-Export) bleiben Kopf, Navigation, Social-Leiste,
 USP-Leiste und Footer erhalten. Alle Inhaltsblöcke werden mit den Vorlagen unten neu gebaut –
 im selben Markup wie der Export (640 px, MSO-Ghost-Tables, VML-Buttons) – und mit Produkten
-aus dem Shop gefüllt. Ergebnis: output/newsletter-halloween-kw44.html.
+aus dem Shop gefüllt. Ergebnis: output/newsletter-halloween-kw44.html und die Textversion
+output/newsletter-halloween-kw44.txt (Plain-Text-Teil der Mail). Beide bauen auf denselben
+Texten unten auf (Abschnitt „Texte“).
 
 Das Hero-Bild (Clown im Wohnzimmer) ist der Klick zum Gutschein: Es führt in den Shop, wo das
 Pop-up aus output/popup/clown-popup.html den Code zeigt.
@@ -13,8 +15,11 @@ Pop-up aus output/popup/clown-popup.html den Code zeigt.
 Bilder werden relativ eingebunden (images/…). Vor dem Versand in JUNE hochladen, dann
 ersetzt JUNE die Pfade durch CDN-URLs.
 """
+import html as htmllib
 import os
+import re
 import sys
+import textwrap
 
 CAMPAIGN = "KW44_Halloween"
 UTM = f"utm_campaign={CAMPAIGN}&utm_source=newsletter&utm_medium=email"
@@ -37,6 +42,48 @@ P = {
 }
 SAUNEN_URL = "https://www.homedeluxe.de/saunen-infrarotkabinen/"
 
+# --- Texte (für HTML und Textversion; <br /> = Zeilenumbruch im HTML, <b> = fett) ----------
+
+TITLE = "🎃 Halloween-Edition: Finde den Clown!"
+PREHEADER = "Psst … in dieser Mail versteckt sich ein Clown 🤡 Finde ihn und wir schenken dir 50 € ab 500 € Bestellwert."
+HERO_ALT = "Halloween bei Home Deluxe: Ein Clown sitzt im Wohnzimmer auf dem Sofa – klick ihn an und sichere dir 50 €"
+INTRO = dict(head="🎃 Halloween bei Home Deluxe 🎃", sub="Gemütlich durch die Gruselnacht",
+             lead="Draußen gruselig, drinnen heiß.",
+             text="Sauna, Feuer &amp; Kuschelplätze für lange Herbstabende –<br />direkt vom Hersteller, kostenlos geliefert*.",
+             cta="ALLE SAUNEN ENTDECKEN")
+GAME = ("Oben im Wohnzimmer hat es sich ein <b>Clown</b> auf dem Sofa gemütlich gemacht. <b>Klick auf das Bild</b> – "
+        "dann öffnet sich dein Gutschein: <b>50&nbsp;€</b> auf deine Bestellung ab 500&nbsp;€.**")
+GAME_NOTE = f"**Nur bis {VALID_UNTIL}. Alle Aktionsbedingungen findest du ganz unten."
+LAHTI = dict(key="lahti", src="lahti-xl_abend.jpg", title="SCHWITZEN STATT SCHAUDERN.",
+             text="Outdoor Fasssauna LAHTI XL – inkl. 8 kW Saunaofen<br />und Saunazubehör, ideal für 4–6 Personen.",
+             cta="FASSSAUNA LAHTI XL ANSEHEN", title_style="font-size:17px;line-height:26px;")
+SKANDI = dict(key="skandi", src="skandi-m_nacht.jpg", title="DEIN EIGENER HEXENKESSEL:<br />HOT TUB SKANDI M",
+              text="Holzbefeuert, kein Strom nötig.<br />Ø 180 cm für bis zu 4 Personen.", cta="HOT TUB SKANDI ANSEHEN")
+FIRE = dict(label="MADE IN GERMANY · FEUER &amp; HOLZ", heading="Lagerfeuer für Gruselgeschichten.",
+            text="Feuerschale und Holzlager in einem –<br />in Handarbeit in Deutschland hergestellt.")
+USPS = [("HANDARBEIT", "Hergestellt<br />in Deutschland"), ("2 IN 1", "Feuerschale<br />und Holzlager"),
+        ("WETTERFEST", "Für draußen<br />gemacht")]
+CARDS = [("frank", "frank_karte.jpg", "mit Holzlager", "Edelrost-Patina · Made in Germany"),
+         ("swing", "swing_karte.jpg", "mit Holzlager", "variabel aufstellbar · Made in Germany")]
+CASARA = dict(key="casara", src="casara_dunkelgruen.jpg", title="GRUSELFILM-ABEND?<br />SOFA CASARA",
+              text="Weich genug zum Reinkuscheln,<br />groß genug für den ganzen Filmabend.<br />Webstoff Dunkelgrün, 258 × 128 × 72 cm.",
+              cta="SOFA CASARA ANSEHEN")
+GRIDS = [(("calor", "calor_ambiente.jpg", "ELEKTROKAMIN<br />CALOR", "Flammeneffekt,<br />inkl. Fernbedienung"),
+          ("dunes", "dunes_ambiente.jpg", "MASSAGESESSEL<br />DUNES", "12 Programme,<br />Zero-Gravity-Liegeposition")),
+         (("dubi", "dubi_ambiente.jpg", "LED-SPIEGEL<br />DUBI", "3 Lichtfarben,<br />stufenlos dimmbar"),
+          ("ruby", "ruby_ambiente.jpg", "KRATZBAUM<br />RUBY", "Für schwarze Katzen –<br />und alle anderen"))]
+BAND = ("Happy Halloween! 🎃", "Noch nicht geklickt? Der Clown wartet ganz oben<br />auf dem Sofa auf dich – mit 50&nbsp;€ für deine Bestellung.")
+CONDITIONS = ("**Aktionsbedingungen Halloween-Suchspiel: Den Gutscheincode über 50&nbsp;€ erhältst du, "
+              "wenn du in diesem Newsletter auf den Clown klickst. Einlösbar auf homedeluxe.de ab einem Bestellwert von "
+              f"500&nbsp;€ (inkl. MwSt.) bis zum {VALID_UNTIL}, 23:59 Uhr. Einmal pro Kunde einlösbar, nicht mit anderen Gutscheinen "
+              "oder Aktionen kombinierbar, keine Barauszahlung.")
+SHIPPING = "*Kostenloser Versand innerhalb Deutschlands - ausgeschlossen Inseln. Alle Preise in Euro inkl. MwSt."
+# nur Textversion: dort gibt es kein Bild zum Anklicken, der Clown ist ein Link
+TEXT_HERO = "HALLOWEEN – FINDE DEN CLOWN & SICHERE DIR 50 €"
+TEXT_GAME = ("Im Wohnzimmer hat es sich ein Clown auf dem Sofa gemütlich gemacht. Klick ihn an – "
+             "dann öffnet sich dein Gutschein: 50 € auf deine Bestellung ab 500 €.**")
+TEXT_BAND = "Noch nicht geklickt? Der Clown wartet auf dich – mit 50 € für deine Bestellung:"
+
 SECTION_END = '<!--[if (gte mso 9)|(IE)]></td></tr></table><![endif]--></div></td></tr></table>'
 PS = "font-family:Verdana,Geneva,sans-serif;font-size:13px;font-weight:400;letter-spacing:0;line-height:20px;margin:0;margin-bottom:5px;"
 PX = "font-family:Verdana,Geneva,sans-serif;letter-spacing:0;margin:0;"
@@ -44,6 +91,10 @@ PX = "font-family:Verdana,Geneva,sans-serif;letter-spacing:0;margin:0;"
 
 def utm(url):
     return f"{url}?{UTM}"
+
+
+def rich(s):
+    return s.replace("<b>", '<strong style="font-weight:700;">').replace("</b>", "</strong>")
 
 
 def replace(s, old, new, count=1):
@@ -118,19 +169,16 @@ def columns(cells, gap_style=("padding-right:5px;", "padding-left:5px;"), max_wi
 # --- Blöcke ------------------------------------------------------------------------------
 
 def hero():
-    return section(image(CLOWN_URL, "hero_halloween.jpg",
-                         "Halloween bei Home Deluxe: Ein Clown sitzt im Wohnzimmer auf dem Sofa – klick ihn an und sichere dir 50 €", 640),
-                   bg="#F6F4F2")
+    return section(image(CLOWN_URL, "hero_halloween.jpg", HERO_ALT, 640), bg="#F6F4F2")
 
 
 def intro():
     inner = (
         '<div class="ef" style="color:#343a40;font-family:Helvetica,Arial,Verdana,sans-serif;font-size:14px;line-height:20px;text-align:center;">'
         '<h4 style="Margin:0;Margin-bottom:0;font-family:Verdana,Geneva,sans-serif;font-size:17px;font-weight:100;letter-spacing:0;line-height:27px;margin:0;margin-bottom:0;">'
-        '<strong style="font-weight:700;">🎃 Halloween bei Home Deluxe 🎃</strong><br />Gemütlich durch die Gruselnacht<strong style="font-weight:700;">&nbsp;<br /><br /></strong></h4>'
-        f'<p style="{PS}"><strong style="font-weight:700;">Draußen gruselig, drinnen heiß.</strong><br />Sauna, Feuer &amp; Kuschelplätze für lange Herbstabende –<br />'
-        'direkt vom Hersteller, kostenlos geliefert*.<br /><br /></p></div>'
-        + button(utm(SAUNEN_URL), "ALLE SAUNEN ENTDECKEN", td="text-align:center;")
+        f'<strong style="font-weight:700;">{INTRO["head"]}</strong><br />{INTRO["sub"]}<strong style="font-weight:700;">&nbsp;<br /><br /></strong></h4>'
+        f'<p style="{PS}"><strong style="font-weight:700;">{INTRO["lead"]}</strong><br />{INTRO["text"]}<br /><br /></p></div>'
+        + button(utm(SAUNEN_URL), INTRO["cta"], td="text-align:center;")
     )
     return section(inner, pad="padding-bottom:40px;padding-left:20px;padding-right:20px;padding-top:20px;")
 
@@ -143,18 +191,15 @@ def game():
         f'alt="Halloween-Suchspiel: Finde den Clown – 50 € Gutschein ab 500 € Bestellwert, nur bis {VALID_UNTIL}" '
         'style="display:block;width:100%;max-width:640px;height:auto;border:0;"></td></tr>'
         '<tr><td style="padding:6px 30px 34px 30px;">'
-        f'<p style="{PX}text-align:center;font-size:15px;line-height:24px;color:#ffffff;">'
-        'Oben im Wohnzimmer hat es sich ein <strong style="font-weight:700;">Clown</strong> auf dem Sofa gemütlich gemacht. '
-        '<strong style="font-weight:700;">Klick auf das Bild</strong> – dann öffnet sich dein Gutschein: '
-        '<strong style="font-weight:700;">50&nbsp;€</strong> auf deine Bestellung ab 500&nbsp;€.**</p>'
-        f'<p style="{PX}text-align:center;font-size:11px;line-height:17px;color:#9fb0bf;padding-top:12px;">'
-        f'**Nur bis {VALID_UNTIL}. Alle Aktionsbedingungen findest du ganz unten.</p>'
+        f'<p style="{PX}text-align:center;font-size:15px;line-height:24px;color:#ffffff;">{rich(GAME)}</p>'
+        f'<p style="{PX}text-align:center;font-size:11px;line-height:17px;color:#9fb0bf;padding-top:12px;">{GAME_NOTE}</p>'
         '</td></tr></table>'
     )
     return section(inner, bg=NAVY)
 
 
 def feature(key, src, title, text, cta, title_style=""):
+    """Großes Bild + Titel, Text, Preis, Button; Argumente wie in LAHTI, SKANDI, CASARA."""
     name, url, price = P[key]
     return section(image(utm(url), src, name, 640) + "  " + spacer(18) + "  "
                    + copy(title, text, price, title_style) + "  " + button(utm(url), cta))
@@ -163,9 +208,9 @@ def feature(key, src, title, text, cta, title_style=""):
 def fire_header():
     inner = (
         spacer(24) + '  <div class="ef" style="color:#343a40;font-family:Helvetica,Arial,Verdana,sans-serif;font-size:14px;line-height:20px;text-align:center;">'
-        f'<p style="{PX}font-size:11px;line-height:16px;font-weight:700;letter-spacing:2px;color:#6b7b88;">MADE IN GERMANY · FEUER &amp; HOLZ</p>'
-        f'<p style="{PX}font-size:26px;line-height:34px;font-weight:700;color:#0c2335;padding-top:8px;">Lagerfeuer für Gruselgeschichten.</p>'
-        f'<p style="{PX}font-size:13px;line-height:20px;color:#343a40;padding-top:6px;">Feuerschale und Holzlager in einem –<br />in Handarbeit in Deutschland hergestellt.</p></div>'
+        f'<p style="{PX}font-size:11px;line-height:16px;font-weight:700;letter-spacing:2px;color:#6b7b88;">{FIRE["label"]}</p>'
+        f'<p style="{PX}font-size:26px;line-height:34px;font-weight:700;color:#0c2335;padding-top:8px;">{FIRE["heading"]}</p>'
+        f'<p style="{PX}font-size:13px;line-height:20px;color:#343a40;padding-top:6px;">{FIRE["text"]}</p></div>'
         + spacer(18)
     )
     return section(inner, pad="padding-left:20px;padding-right:20px;")
@@ -182,9 +227,7 @@ def usps():
                 '<tr><td style="border-top:3px solid #0c2335;padding:12px 6px 0 6px;text-align:center;">'
                 f'<p style="{PX}font-size:12px;line-height:18px;font-weight:700;letter-spacing:1px;color:#0c2335;">{head}</p>'
                 f'<p style="{PX}font-size:12px;line-height:17px;color:#343a40;padding-top:4px;">{text}</p></td></tr></table>')
-    cells = [usp("HANDARBEIT", "Hergestellt<br />in Deutschland"), usp("2 IN 1", "Feuerschale<br />und Holzlager"),
-             usp("WETTERFEST", "Für draußen<br />gemacht")]
-    return section(columns(cells, gap_style=("padding-left:6px;padding-right:6px;",) * 3, max_width=600),
+    return section(columns([usp(*u) for u in USPS], gap_style=("padding-left:6px;padding-right:6px;",) * 3, max_width=600),
                    pad="padding-left:14px;padding-right:14px;padding-top:24px;padding-bottom:24px;")
 
 
@@ -204,8 +247,7 @@ def card(key, src, line1, line2):
 
 
 def cards():
-    return section(columns([card("frank", "frank_karte.jpg", "mit Holzlager", "Edelrost-Patina · Made in Germany"),
-                             card("swing", "swing_karte.jpg", "mit Holzlager", "variabel aufstellbar · Made in Germany")]))
+    return section(columns([card(*c) for c in CARDS]))
 
 
 def grid(left, right):
@@ -229,41 +271,17 @@ def build(src):
     head, nav, spacer30, band, social, usp_bar, footer, tail = (
         parts[0], parts[1], parts[10], parts[14], parts[15], parts[16], parts[17], parts[18])
 
-    head = replace(head, "<title>✨ New Ins: Sauna &amp; Infrarot in einer Kabine</title>",
-                   "<title>🎃 Halloween-Edition: Finde den Clown!</title>")
-    head = replace(head, "Kombisauna EVEREST, Whirlpool SUNSHINE &amp; 7 weitere Neuheiten – kostenlos geliefert*.",
-                   "Psst … in dieser Mail versteckt sich ein Clown 🤡 Finde ihn und wir schenken dir 50 € ab 500 € Bestellwert.")
+    head = replace(head, "<title>✨ New Ins: Sauna &amp; Infrarot in einer Kabine</title>", f"<title>{TITLE}</title>")
+    head = replace(head, "Kombisauna EVEREST, Whirlpool SUNSHINE &amp; 7 weitere Neuheiten – kostenlos geliefert*.", PREHEADER)
 
     white = '<span style="color:rgb(255,255,255);letter-spacing:0px;">'
     band = replace(band, f'<strong style="font-weight:700;">{white}Neu im Shop. Direkt vom Hersteller.<br />Kostenlos geliefert*.<br /><br /></span></strong>',
-                   f'<strong style="font-weight:700;">{white}Happy Halloween! 🎃</span></strong><br />'
-                   f'{white}Noch nicht geklickt? Der Clown wartet ganz oben<br />auf dem Sofa auf dich – mit 50&nbsp;€ für deine Bestellung.<br /><br /></span>')
+                   f'<strong style="font-weight:700;">{white}{BAND[0]}</span></strong><br />{white}{BAND[1]}<br /><br /></span>')
 
-    footer = replace(footer, "*Kostenloser Versand innerhalb Deutschlands - ausgeschlossen Inseln. Alle Preise in Euro inkl. MwSt.</span>",
-                     "*Kostenloser Versand innerhalb Deutschlands - ausgeschlossen Inseln. Alle Preise in Euro inkl. MwSt.</span>"
-                     '<br /><br /><span style="color:#ffffff;">**Aktionsbedingungen Halloween-Suchspiel: Den Gutscheincode über 50&nbsp;€ erhältst du, '
-                     "wenn du in diesem Newsletter auf den Clown klickst. Einlösbar auf homedeluxe.de ab einem Bestellwert von "
-                     f"500&nbsp;€ (inkl. MwSt.) bis zum {VALID_UNTIL}, 23:59 Uhr. Einmal pro Kunde einlösbar, nicht mit anderen Gutscheinen "
-                     "oder Aktionen kombinierbar, keine Barauszahlung.</span>")
+    footer = replace(footer, f"{SHIPPING}</span>", f'{SHIPPING}</span><br /><br /><span style="color:#ffffff;">{CONDITIONS}</span>')
 
-    body = [
-        hero(), intro(), game(),
-        feature("lahti", "lahti-xl_abend.jpg", "SCHWITZEN STATT SCHAUDERN.",
-                "Outdoor Fasssauna LAHTI XL – inkl. 8 kW Saunaofen<br />und Saunazubehör, ideal für 4–6 Personen.",
-                "FASSSAUNA LAHTI XL ANSEHEN", title_style="font-size:17px;line-height:26px;"),
-        feature("skandi", "skandi-m_nacht.jpg", "DEIN EIGENER HEXENKESSEL:<br />HOT TUB SKANDI M",
-                "Holzbefeuert, kein Strom nötig.<br />Ø 180 cm für bis zu 4 Personen.", "HOT TUB SKANDI ANSEHEN"),
-        fire_header(), fire_image(), usps(), cards(),
-    ]
-    rest = [
-        feature("casara", "casara_dunkelgruen.jpg", "GRUSELFILM-ABEND?<br />SOFA CASARA",
-                "Weich genug zum Reinkuscheln,<br />groß genug für den ganzen Filmabend.<br />Webstoff Dunkelgrün, 258 × 128 × 72 cm.",
-                "SOFA CASARA ANSEHEN"),
-        grid(("calor", "calor_ambiente.jpg", "ELEKTROKAMIN<br />CALOR", "Flammeneffekt,<br />inkl. Fernbedienung"),
-             ("dunes", "dunes_ambiente.jpg", "MASSAGESESSEL<br />DUNES", "12 Programme,<br />Zero-Gravity-Liegeposition")),
-        grid(("dubi", "dubi_ambiente.jpg", "LED-SPIEGEL<br />DUBI", "3 Lichtfarben,<br />stufenlos dimmbar"),
-             ("ruby", "ruby_ambiente.jpg", "KRATZBAUM<br />RUBY", "Für schwarze Katzen –<br />und alle anderen")),
-    ]
+    body = [hero(), intro(), game(), feature(**LAHTI), feature(**SKANDI), fire_header(), fire_image(), usps(), cards()]
+    rest = [feature(**CASARA)] + [grid(*g) for g in GRIDS]
     # generierte Blöcke enden bereits mit SECTION_END; die übernommenen Teile bekommen es beim Zusammensetzen
     kept = lambda *ps: ''.join(p + SECTION_END for p in ps)
     html = (kept(head, nav) + ''.join(body) + kept(spacer30) + ''.join(rest)
@@ -274,11 +292,83 @@ def build(src):
     return html
 
 
+# --- Textversion -------------------------------------------------------------------------
+
+WIDTH = 72
+A_TAG = r'<a [^>]*href="([^"]+)"[^>]*>(.*?)</a>'
+
+
+def plain(s):
+    """HTML-Schnipsel -> Text: Umbrüche werden Leerzeichen, Tags fallen weg, Entities aufgelöst."""
+    s = re.sub(r"\s*<br\s*/?>\s*", " ", s)
+    return " ".join(htmllib.unescape(re.sub(r"<[^>]+>", "", s)).replace("\xa0", " ").split())
+
+
+def para(*lines):
+    return "\n".join(textwrap.fill(plain(l), WIDTH, break_long_words=False, break_on_hyphens=False) for l in lines if l)
+
+
+def text_link(label, url):
+    label = plain(label)
+    return f"{label}{'' if label[-1] in '.:?!' else ':'}\n{url}"
+
+
+def text_product(key, title, text, cta="JETZT SHOPPEN"):
+    name, url, price = P[key]
+    return para(title, text, f"{price} €") + "\n" + text_link(cta, utm(url))
+
+
+def build_text(src):
+    parts = src.split(SECTION_END)
+    footer = replace(parts[17], f"{SHIPPING}</span>", f"{SHIPPING}</span><br /><br /><span>{CONDITIONS}</span>")
+    rule = "-" * WIDTH
+
+    home = re.search(r'<a [^>]*href="([^"]+)"', parts[0]).group(1)
+    social = [(re.search(r'alt="([^"]+)"', m.group(2)).group(1), m.group(1)) for m in re.finditer(A_TAG, parts[15], re.S)]
+    disclaimer = next(p for p in re.findall(r"<p\b[^>]*>(.*?)</p>", footer, re.S) if "Diese E-Mail wird" in p)
+    disclaimer = re.sub(A_TAG, lambda m: f"{plain(m.group(2))} ({m.group(1)})", disclaimer, flags=re.S)
+    legal = [(plain(t), u) for u, t in re.findall(A_TAG, footer, re.S) if plain(t) and plain(t) != "dieses Kontaktformular"]
+
+    blocks = [
+        para(PREHEADER),
+        text_link("HOME DELUXE – Wir machen dein Zuhause", home),
+        "=" * WIDTH + "\n" + TEXT_HERO + "\n" + "=" * WIDTH,
+        para(TEXT_GAME) + "\n\n" + text_link("ZUM CLOWN", CLOWN_URL) + "\n\n" + para(GAME_NOTE),
+        rule,
+        para(INTRO["head"], INTRO["sub"]) + "\n\n" + para(INTRO["lead"], INTRO["text"]) + "\n\n"
+        + text_link(INTRO["cta"], utm(SAUNEN_URL)),
+        rule,
+        text_product(LAHTI["key"], LAHTI["title"], LAHTI["text"], LAHTI["cta"]),
+        rule,
+        text_product(SKANDI["key"], SKANDI["title"], SKANDI["text"], SKANDI["cta"]),
+        rule,
+        para(FIRE["label"], FIRE["heading"], FIRE["text"]) + "\n\n"
+        + "\n".join(f"✓ {plain(h).capitalize()}: {plain(t)}" for h, t in USPS),
+        *(text_product(k, P[k][0].upper(), f"{l1}, {l2}") for k, _, l1, l2 in CARDS),
+        rule,
+        text_product(CASARA["key"], CASARA["title"], CASARA["text"], CASARA["cta"]),
+        rule,
+        *(text_product(k, t, x) for g in GRIDS for k, _, t, x in g),
+        "=" * WIDTH + "\n" + para(BAND[0], TEXT_BAND) + "\n" + CLOWN_URL + "\n" + "=" * WIDTH,
+        "Bleibe in Verbindung mit uns\n" + "\n".join(f"{n}: {u}" for n, u in social),
+        para(plain(parts[16]).replace(" ✓ ", " ✓ · ")),
+        "\n\n".join(para(b) for b in re.split(r"(?:\s*<br\s*/?>\s*){2}", disclaimer) if plain(b)),
+        "\n\n".join(text_link(t, u) for t, u in legal),
+    ]
+    text = "\n\n".join(blocks).replace("utm_campaign=KW43&", f"utm_campaign={CAMPAIGN}&") + "\n"
+    if "KW43" in text or "<" in text:
+        sys.exit("Textversion enthält noch KW43 oder HTML")
+    return text
+
+
 def main():
     project = sys.argv[1]
     src = open(os.path.join(project, "source", "newsletter-new-ins-kw43.html"), encoding="utf-8").read()
     out = os.path.join(project, "output", "newsletter-halloween-kw44.html")
     open(out, "w", encoding="utf-8").write(build(src))
+    print(out)
+    out = os.path.join(project, "output", "newsletter-halloween-kw44.txt")
+    open(out, "w", encoding="utf-8").write(build_text(src))
     print(out)
 
 
