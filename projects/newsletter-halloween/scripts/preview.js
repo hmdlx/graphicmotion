@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 // Full-page previews of the newsletter and the voucher pop-up (desktop + mobile), with checks:
-// only the hero image links to the pop-up URL, and the pop-up opens only with ?halloween=clown.
+// only the hero (header graphic + clown image) and the two "ZUM CLOWN" buttons link to the pop-up URL,
+// and the pop-up opens only with ?halloween=clown.
 //
 //   node scripts/preview.js <newsletter.html> <popup.html> <out_dir>
 const path = require('path');
@@ -30,7 +31,8 @@ const CLOWN = /[?&]halloween=clown/;
 
     // Klick-Test: Mitte des Hero-Bilds -> Pop-up, Mitte des LAHTI-Bilds -> Produkt
     const hit = async sel => {
-      const b = await page.locator(sel).boundingBox();
+      // Seitenkoordinaten, unabhängig davon, wohin vorher gescrollt wurde
+      const b = await page.locator(sel).evaluate(e => { const r = e.getBoundingClientRect(); return { x: r.x, y: r.y + scrollY, width: r.width, height: r.height }; });
       await page.evaluate(y => window.scrollTo(0, y), b.y - 100);
       return page.evaluate(([x, y]) => {
         const el = document.elementFromPoint(x, y - window.scrollY);
@@ -39,11 +41,11 @@ const CLOWN = /[?&]halloween=clown/;
     };
     const res = {
       clown_links: await page.locator('a[href*="halloween=clown"]').count(),
-      hero: await hit('img[src="images/hero_halloween.jpg"]'),
+      hero: await hit('img[src^="images/hero_clown"]'),
       lahti: await hit('img[src="images/lahti-xl_abend.jpg"]'),
     };
     console.log(v.name, JSON.stringify(res, null, 1));
-    if (res.clown_links !== 1 || !CLOWN.test(res.hero) || CLOWN.test(res.lahti)) fail('Klick-Test Newsletter');
+    if (res.clown_links !== 4 || !CLOWN.test(res.hero) || CLOWN.test(res.lahti)) fail('Klick-Test Newsletter');
 
     await page.evaluate(() => window.scrollTo(0, 0));
     const file = path.join(out, `preview_${v.name}.jpg`);

@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>Kopf-Grafiken Halloween-Newsletter</title>
+<!--
+  logo-weiss        Home-Deluxe-Logo weiß auf Navy (Header wie auf homedeluxe.de)
+  hero-kopf         Nachthimmel über dem Hero-GIF, aufgebaut wie der Slider auf homedeluxe.de:
+                    Badge, Zeile, großer Name, Zusatz. Unten reines Navy, das GIF blendet daraus auf.
+  social-*          Social-Icons weiß für den dunklen Footer
+  Alles in 2x der Newsletter-Größe.
+-->
+<style>
+  @font-face { font-family: Poppins; font-weight: 400; src: url(../../../assets/fonts/poppins/poppins-latin-400-normal.woff2); }
+  @font-face { font-family: Poppins; font-weight: 500; src: url(../../../assets/fonts/poppins/poppins-latin-500-normal.woff2); }
+  @font-face { font-family: Poppins; font-weight: 600; src: url(../../../assets/fonts/poppins/poppins-latin-600-normal.woff2); }
+  @font-face { font-family: Poppins; font-weight: 800; src: url(../../../assets/fonts/poppins/poppins-latin-800-normal.woff2); }
+  :root { --navy: #0e2234; --orange: #ff9800; }
+  body { margin: 0; background: transparent; font-family: Poppins, sans-serif; }
+  [data-out] { display: block; }
+
+  .logo { width: 460px; padding: 0; background: var(--navy); }
+  .logo img { display: block; width: 460px; }
+
+  .hero { position: relative; width: 1280px; height: 400px; overflow: hidden;
+          background: radial-gradient(700px 420px at 1040px 90px, #1c3a54 0%, var(--navy) 70%); }
+  .moon { position: absolute; left: 980px; top: 40px; width: 120px; height: 120px; border-radius: 50%;
+          background: radial-gradient(circle at 40% 40%, #fff6e0, #f4dfb0 70%, #e6c98c);
+          box-shadow: 0 0 60px 20px #ffe9b833, 0 0 140px 60px #ffe9b81a; }
+  .web { position: absolute; left: 0; top: 0; }
+  .bat { position: absolute; fill: #08141f; }
+  .badge { position: absolute; left: 72px; top: 64px; background: var(--orange); color: #fff; font-weight: 600; font-size: 26px; padding: 6px 12px; letter-spacing: .5px; }
+  .line { position: absolute; left: 72px; top: 128px; color: #fff; font-weight: 500; font-size: 36px; }
+  .name { position: absolute; left: 66px; top: 170px; margin: 0; color: #fff; font-weight: 800; font-size: 118px; line-height: 1; letter-spacing: -1px; }
+  .name span { color: var(--orange); }
+  .sub { position: absolute; left: 72px; top: 302px; color: #fff; font-weight: 600; font-size: 34px; }
+  .sub b { color: var(--orange); font-weight: 800; }
+
+  .icon { width: 64px; height: 64px; }
+</style>
+</head>
+<body>
+<div data-out="logo-weiss" class="logo"><img src="../../../assets/logo/homedeluxe-logo-white.svg" alt=""></div>
+
+<div data-out="hero-kopf" class="hero">
+  <svg class="web" width="300" height="260" viewBox="0 0 300 260" fill="none" stroke="#ffffff" stroke-opacity=".22" stroke-width="1.6">
+    <path d="M0 0 L300 0 M0 0 L270 120 M0 0 L200 220 M0 0 L90 260 M0 0 L0 260"/>
+    <path d="M60 0 Q58 22 54 24 Q47 40 18 52 Q8 52 0 54"/>
+    <path d="M130 0 Q122 46 114 52 Q96 86 42 112 Q18 114 0 116"/>
+    <path d="M205 0 Q190 72 176 82 Q150 132 70 170 Q34 174 0 178"/>
+    <path d="M280 0 Q258 96 240 110 Q204 178 98 230 Q48 236 0 240"/>
+  </svg>
+  <div class="moon"></div>
+  <svg class="bat" style="left:900px;top:70px;width:70px;transform:rotate(-12deg)" viewBox="0 0 96 40"><path id="b" d="M48 14c2-4 4-6 4-9 2 3 1 6 3 7 6-6 16-10 26-10-4 3-6 7-5 11 5-2 11-1 15 3-5 0-9 2-11 6-5-3-11-3-15 2-3-4-6-5-9-4-2 2-4 6-8 11-4-5-6-9-8-11-3-1-6 0-9 4-4-5-10-5-15-2-2-4-6-6-11-6 4-4 10-5 15-3 1-4-1-8-5-11 10 0 20 4 26 10 2-1 1-4 3-7 0 3 2 5 4 9z"/></svg>
+  <svg class="bat" style="left:1120px;top:150px;width:46px;transform:rotate(14deg) scaleX(-1)" viewBox="0 0 96 40"><use href="#b"/></svg>
+  <svg class="bat" style="left:1015px;top:22px;width:34px;transform:rotate(8deg)" viewBox="0 0 96 40"><use href="#b"/></svg>
+  <svg class="bat" style="left:820px;top:200px;width:30px;transform:rotate(-6deg) scaleX(-1)" viewBox="0 0 96 40"><use href="#b"/></svg>
+
+  <div class="badge">HALLOWEEN-SPECIAL</div>
+  <div class="line">Psst … hinter dem Sofa bewegt sich was.</div>
+  <h1 class="name">FINDE DEN <span>CLOWN</span></h1>
+  <div class="sub">Klick ihn an und sichere dir <b>50&nbsp;€</b> Gutschein</div>
+</div>
+
+<svg data-out="social-instagram" class="icon" viewBox="0 0 64 64" fill="none" stroke="#fff" stroke-width="4"><rect x="10" y="10" width="44" height="44" rx="12"/><circle cx="32" cy="32" r="10"/><circle cx="45" cy="19" r="2.5" fill="#fff" stroke="none"/></svg>
+<svg data-out="social-facebook" class="icon" viewBox="0 0 64 64"><path fill="#fff" d="M35.5 56V34.6h7.2l1.1-8.4h-8.3v-5.3c0-2.4.7-4.1 4.2-4.1h4.4V9.3c-.8-.1-3.4-.3-6.4-.3-6.4 0-10.7 3.9-10.7 11v6.2h-7.2v8.4H21V56z"/></svg>
+<svg data-out="social-youtube" class="icon" viewBox="0 0 64 64"><path fill="#fff" d="M58 21.6a6.6 6.6 0 0 0-4.7-4.7C49.2 16 32 16 32 16s-17.2 0-21.3 1.1A6.6 6.6 0 0 0 6 21.6C5 25.8 5 32 5 32s0 6.2 1 10.4a6.6 6.6 0 0 0 4.7 4.7C14.8 48 32 48 32 48s17.2 0 21.3-1.1a6.6 6.6 0 0 0 4.7-4.7C59 38.2 59 32 59 32s0-6.2-1-10.4z"/><path fill="#0e2234" d="M26.5 39.5 40.5 32l-14-7.5z"/></svg>
+</body>
+</html>

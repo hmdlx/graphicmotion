@@ -1,19 +1,20 @@
-"""Halloween-Edition (KW44) mit Clown-Suchspiel aus dem JUNE-Export des KW43-Newsletters bauen.
+"""Halloween-Newsletter (KW44) im Look von homedeluxe.de bauen – HTML und Textversion.
 
     python3 -I scripts/build_newsletter.py <projekt>
 
-Aus source/newsletter-new-ins-kw43.html (JUNE-Export) bleiben Kopf, Navigation, Social-Leiste,
-USP-Leiste und Footer erhalten. Alle Inhaltsblöcke werden mit den Vorlagen unten neu gebaut –
-im selben Markup wie der Export (640 px, MSO-Ghost-Tables, VML-Buttons) – und mit Produkten
-aus dem Shop gefüllt. Ergebnis: output/newsletter-halloween-kw44.html und die Textversion
-output/newsletter-halloween-kw44.txt (Plain-Text-Teil der Mail). Beide bauen auf denselben
-Texten unten auf (Abschnitt „Texte“).
+Gestaltung nach dem Shop: Navy-Header mit weißem Logo und grauer Navigation, Überschriften mit
+fettem und normalem Teil („**Wellness** für die Geisternacht“), eckige Navy-Buttons
+„Artikel anzeigen“, Orange #ff9800 wie die TOPSELLER-Badges im Shop. Nacht-Abschnitte (Navy)
+und Tag-Abschnitte (Weiß) gehen über Halloween-Grafiken ineinander über (Tropfen, Nebel, Äste,
+Kürbis-Hügel), der Hero blendet aus dem Nachthimmel auf.
 
-Das Hero-Bild (Clown im Wohnzimmer) ist der Klick zum Gutschein: Es führt in den Shop, wo das
-Pop-up aus output/popup/clown-popup.html den Code zeigt.
+Aus dem JUNE-Export (source/newsletter-new-ins-kw43.html) kommen Navigation, Social-Links,
+Footer-Hinweis und Rechtslinks. Ergebnis: output/newsletter-halloween-kw44.html und die
+Textversion output/newsletter-halloween-kw44.txt, beide aus den Texten unten.
 
-Bilder werden relativ eingebunden (images/…). Vor dem Versand in JUNE hochladen, dann
-ersetzt JUNE die Pfade durch CDN-URLs.
+Klick auf Hero oder „ZUM CLOWN“ führt in den Shop, wo das Pop-up aus output/popup/ den
+Gutscheincode zeigt. Bilder werden relativ eingebunden (images/…); vor dem Versand in JUNE
+hochladen.
 """
 import html as htmllib
 import os
@@ -23,10 +24,16 @@ import textwrap
 
 CAMPAIGN = "KW44_Halloween"
 UTM = f"utm_campaign={CAMPAIGN}&utm_source=newsletter&utm_medium=email"
-# Klick aufs Hero-Bild: Shop-Startseite, der Parameter halloween=clown öffnet dort das Gutschein-Pop-up
+# Klick auf den Clown: Shop-Startseite, der Parameter halloween=clown öffnet dort das Gutschein-Pop-up
 CLOWN_URL = f"https://www.homedeluxe.de/?halloween=clown&{UTM}&utm_content=clown"
 VALID_UNTIL = "02.11.2026"
-NAVY = "#0e2234"
+
+NAVY, ORANGE, SALE = "#0e2234", "#ff9800", "#FF4500"     # Werte aus dem CSS von homedeluxe.de
+GREY, LINE, MUTED, NIGHT_TEXT = "#f4f6f8", "#e3e7ec", "#66727d", "#c7d0d9"
+FONT = "Poppins,Helvetica,Arial,sans-serif"
+
+SAUNEN_URL = "https://www.homedeluxe.de/saunen-infrarotkabinen/"
+SOFAS_URL = "https://www.homedeluxe.de/wohnen/wohnzimmer/sofas/"
 
 # Produkte: Links, Preise und Merkmale von homedeluxe.de (Stand 30.10.2026)
 P = {
@@ -40,261 +47,61 @@ P = {
     "dubi": ("LED-Spiegel DUBI", "https://www.homedeluxe.de/led-spiegel-rund-dubi_24411_59124/", "139"),
     "ruby": ("Kratzbaum RUBY", "https://www.homedeluxe.de/kratzbaum-ruby-schwarz_20934_49994/", "69"),
 }
-SAUNEN_URL = "https://www.homedeluxe.de/saunen-infrarotkabinen/"
 
-# --- Texte (für HTML und Textversion; <br /> = Zeilenumbruch im HTML, <b> = fett) ----------
+# --- Texte (für HTML und Textversion; <b> = fett) ------------------------------------------
+# Überschriften wie im Shop: Liste aus (Text, fett?)
 
 TITLE = "🎃 Halloween-Edition: Finde den Clown!"
-PREHEADER = "Psst … in dieser Mail versteckt sich ein Clown 🤡 Finde ihn und wir schenken dir 50 € ab 500 € Bestellwert."
-HERO_ALT = "Halloween bei Home Deluxe: Ein Clown sitzt im Wohnzimmer auf dem Sofa – klick ihn an und sichere dir 50 €"
-INTRO = dict(head="🎃 Halloween bei Home Deluxe 🎃", sub="Gemütlich durch die Gruselnacht",
-             lead="Draußen gruselig, drinnen heiß.",
-             text="Sauna, Feuer &amp; Kuschelplätze für lange Herbstabende –<br />direkt vom Hersteller, kostenlos geliefert*.",
-             cta="ALLE SAUNEN ENTDECKEN")
-GAME = ("Oben im Wohnzimmer hat es sich ein <b>Clown</b> auf dem Sofa gemütlich gemacht. <b>Klick auf das Bild</b> – "
-        "dann öffnet sich dein Gutschein: <b>50&nbsp;€</b> auf deine Bestellung ab 500&nbsp;€.**")
-GAME_NOTE = f"**Nur bis {VALID_UNTIL}. Alle Aktionsbedingungen findest du ganz unten."
-LAHTI = dict(key="lahti", src="lahti-xl_abend.jpg", title="SCHWITZEN STATT SCHAUDERN.",
-             text="Outdoor Fasssauna LAHTI XL – inkl. 8 kW Saunaofen<br />und Saunazubehör, ideal für 4–6 Personen.",
-             cta="FASSSAUNA LAHTI XL ANSEHEN", title_style="font-size:17px;line-height:26px;")
-SKANDI = dict(key="skandi", src="skandi-m_nacht.jpg", title="DEIN EIGENER HEXENKESSEL:<br />HOT TUB SKANDI M",
-              text="Holzbefeuert, kein Strom nötig.<br />Ø 180 cm für bis zu 4 Personen.", cta="HOT TUB SKANDI ANSEHEN")
-FIRE = dict(label="MADE IN GERMANY · FEUER &amp; HOLZ", heading="Lagerfeuer für Gruselgeschichten.",
-            text="Feuerschale und Holzlager in einem –<br />in Handarbeit in Deutschland hergestellt.")
-USPS = [("HANDARBEIT", "Hergestellt<br />in Deutschland"), ("2 IN 1", "Feuerschale<br />und Holzlager"),
-        ("WETTERFEST", "Für draußen<br />gemacht")]
-CARDS = [("frank", "frank_karte.jpg", "mit Holzlager", "Edelrost-Patina · Made in Germany"),
-         ("swing", "swing_karte.jpg", "mit Holzlager", "variabel aufstellbar · Made in Germany")]
-CASARA = dict(key="casara", src="casara_dunkelgruen.jpg", title="GRUSELFILM-ABEND?<br />SOFA CASARA",
-              text="Weich genug zum Reinkuscheln,<br />groß genug für den ganzen Filmabend.<br />Webstoff Dunkelgrün, 258 × 128 × 72 cm.",
-              cta="SOFA CASARA ANSEHEN")
-GRIDS = [(("calor", "calor_ambiente.jpg", "ELEKTROKAMIN<br />CALOR", "Flammeneffekt,<br />inkl. Fernbedienung"),
-          ("dunes", "dunes_ambiente.jpg", "MASSAGESESSEL<br />DUNES", "12 Programme,<br />Zero-Gravity-Liegeposition")),
-         (("dubi", "dubi_ambiente.jpg", "LED-SPIEGEL<br />DUBI", "3 Lichtfarben,<br />stufenlos dimmbar"),
-          ("ruby", "ruby_ambiente.jpg", "KRATZBAUM<br />RUBY", "Für schwarze Katzen –<br />und alle anderen"))]
-BAND = ("Happy Halloween! 🎃", "Noch nicht geklickt? Der Clown wartet ganz oben<br />auf dem Sofa auf dich – mit 50&nbsp;€ für deine Bestellung.")
+PREHEADER = "Psst … hinter dem Sofa bewegt sich was 🤡 Finde den Clown und wir schenken dir 50 € ab 500 € Bestellwert."
+HERO_ALT = "Halloween-Special: Finde den Clown! Klick ihn an und sichere dir 50 € Gutschein"
+HERO_IMG_ALT = "Ein Clown klettert hinter dem Sofa hervor und setzt sich – klick ihn an"
+HERO_CTA = dict(text="Klick auf den Clown – dann öffnet sich im Shop dein Gutschein: <b>50&nbsp;€</b> auf deine Bestellung ab 500&nbsp;€.**",
+                cta="ZUM CLOWN", note=f"**Nur bis {VALID_UNTIL}. Alle Aktionsbedingungen findest du ganz unten.")
+INTRO = dict(label="HALLOWEEN BEI HOME DELUXE", heading=[("Gemütlich", True), (" durch die Gruselnacht", False)],
+             text="Draußen gruselig, drinnen heiß: Sauna, Feuer &amp; Kuschelplätze für lange Herbstabende – "
+                  "direkt vom Hersteller, kostenlos geliefert*.")
+WELLNESS = dict(heading=[("Wellness", True), (" für die Geisternacht", False)], more=("Alle Saunen", SAUNEN_URL), tiles=[
+    dict(key="lahti", src="lahti-xl_abend.jpg", badge="SCHWITZEN STATT SCHAUDERN", name="LAHTI XL",
+         sub="Outdoor Fasssauna · inkl. 8 kW Saunaofen · ideal für 4–6 Personen"),
+    dict(key="skandi", src="skandi-m_nacht.jpg", badge="DEIN EIGENER HEXENKESSEL", name="SKANDI M",
+         sub="Hot Tub · holzbefeuert, kein Strom nötig · Ø 180 cm für bis zu 4 Personen"),
+])
+FIRE = dict(label="MADE IN GERMANY", heading=[("Lagerfeuer", True), (" für Gruselgeschichten", False)],
+            text="Feuerschale und Holzlager in einem – in Handarbeit in Deutschland hergestellt.",
+            usps=[("HANDARBEIT", "Hergestellt in Deutschland"), ("2 IN 1", "Feuerschale und Holzlager"), ("WETTERFEST", "Für draußen gemacht")],
+            cards=[dict(key="frank", src="frank_karte.jpg", badge="MADE IN GERMANY", name="FEUERSCHALE FRANK", sub="mit Holzlager · Edelrost-Patina"),
+                   dict(key="swing", src="swing_karte.jpg", badge="MADE IN GERMANY", name="GARTENFEUER SWING", sub="mit Holzlager · variabel aufstellbar")])
+MOVIE = dict(heading=[("Gruselfilm", True), ("-Abend", False)], more=("Alle Sofas", SOFAS_URL),
+             tile=dict(key="casara", src="casara_dunkelgruen.jpg", badge="FÜR DEN FILMABEND", name="CASARA",
+                       sub="Sofa · Webstoff Dunkelgrün · 258 × 128 × 72 cm · weich genug zum Reinkuscheln"))
+MORE = dict(heading=[("Noch mehr ", False), ("Gänsehaut", True), ("-Momente", False)], tiles=[
+    dict(key="calor", src="calor_ambiente.jpg", badge="KAMINFEUER", name="ELEKTROKAMIN CALOR", sub="Flammeneffekt, inkl. Fernbedienung"),
+    dict(key="dunes", src="dunes_ambiente.jpg", badge="ZERO GRAVITY", name="MASSAGESESSEL DUNES", sub="12 Programme, Heizfunktion"),
+    dict(key="dubi", src="dubi_ambiente.jpg", badge="SPIEGLEIN, SPIEGLEIN", name="LED-SPIEGEL DUBI", sub="Ø 80 cm, 3 Lichtfarben, dimmbar"),
+    dict(key="ruby", src="ruby_ambiente.jpg", badge="FÜR SCHWARZE KATZEN", name="KRATZBAUM RUBY", sub="Schwarz, 100 cm hoch, inkl. Spielzeug"),
+])
+CLOSING = dict(heading=[("Happy ", False), ("Halloween!", True)],
+               text="Noch nicht geklickt? Der Clown wartet ganz oben auf dem Sofa – mit 50&nbsp;€ für deine Bestellung.",
+               cta="ZUM CLOWN")
 CONDITIONS = ("**Aktionsbedingungen Halloween-Suchspiel: Den Gutscheincode über 50&nbsp;€ erhältst du, "
               "wenn du in diesem Newsletter auf den Clown klickst. Einlösbar auf homedeluxe.de ab einem Bestellwert von "
               f"500&nbsp;€ (inkl. MwSt.) bis zum {VALID_UNTIL}, 23:59 Uhr. Einmal pro Kunde einlösbar, nicht mit anderen Gutscheinen "
               "oder Aktionen kombinierbar, keine Barauszahlung.")
 SHIPPING = "*Kostenloser Versand innerhalb Deutschlands - ausgeschlossen Inseln. Alle Preise in Euro inkl. MwSt."
-# nur Textversion: dort gibt es kein Bild zum Anklicken, der Clown ist ein Link
-TEXT_HERO = "HALLOWEEN – FINDE DEN CLOWN & SICHERE DIR 50 €"
-TEXT_GAME = ("Im Wohnzimmer hat es sich ein Clown auf dem Sofa gemütlich gemacht. Klick ihn an – "
+# nur Textversion
+TEXT_HERO = "HALLOWEEN-SPECIAL – FINDE DEN CLOWN & SICHERE DIR 50 €"
+TEXT_GAME = ("Psst … hinter dem Sofa bewegt sich was: Ein Clown hat es sich bei uns gemütlich gemacht. Klick ihn an – "
              "dann öffnet sich dein Gutschein: 50 € auf deine Bestellung ab 500 €.**")
-TEXT_BAND = "Noch nicht geklickt? Der Clown wartet auf dich – mit 50 € für deine Bestellung:"
 
 SECTION_END = '<!--[if (gte mso 9)|(IE)]></td></tr></table><![endif]--></div></td></tr></table>'
-PS = "font-family:Verdana,Geneva,sans-serif;font-size:13px;font-weight:400;letter-spacing:0;line-height:20px;margin:0;margin-bottom:5px;"
-PX = "font-family:Verdana,Geneva,sans-serif;letter-spacing:0;margin:0;"
 
 
 def utm(url):
     return f"{url}?{UTM}"
 
 
-def rich(s):
-    return s.replace("<b>", '<strong style="font-weight:700;">').replace("</b>", "</strong>")
+# --- Export auslesen ---------------------------------------------------------------------
 
-
-def replace(s, old, new, count=1):
-    n = s.count(old)
-    if n != count:
-        sys.exit(f"erwartet {count}× im Export, gefunden {n}×: {old[:80]!r}")
-    return s.replace(old, new)
-
-
-# --- Vorlagen im Markup des JUNE-Exports -------------------------------------------------
-
-def section(inner, bg="#FFF", pad=""):
-    return (
-        ' <table role="presentation" width="100%" border="0" cellpadding="0" cellspacing="0" style="background-color:#fff!important;border-collapse:collapse;border-spacing:0;font-size:0;line-height:0;margin:0;width:100%;" bgcolor="#FFFFFF">'
-        '<tr><td align="center" class="xb" style="margin:0 auto;padding:0;"><div style="max-width:640px;">'
-        '<!--[if (gte mso 9)|(IE)]><table role="presentation" align="center" border="0" cellpadding="0" cellspacing="0" style="border-collapse:collapse;border-spacing:0;width:640px;" width="640"><tr><td style="margin:0;"><![endif]-->'
-        f'<table width="100%" border="0" cellpadding="0" cellspacing="0" style="background-color:{bg};border-collapse:separate;border-spacing:0;max-width:640px;width:100%;" role="presentation" bgcolor="{bg}">'
-        f'<tr><td valign="top" style="font-size:1px;line-height:1px;margin:0;{pad}"><div> {inner} </div></td></tr></table>'
-        + SECTION_END
-    )
-
-
-def spacer(h):
-    return (
-        '<table width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="border-collapse:collapse;border-spacing:0;font-size:1px;line-height:1;width:100%;">'
-        f'<tr><td style="height:{h}px;margin:0;" height="{h}">&nbsp;</td></tr></table>'
-    )
-
-
-def image(href, src, alt, width):
-    return (
-        '<table role="presentation" border="0" cellpadding="0" cellspacing="0" style="border-collapse:collapse;border-spacing:0;width:100%;" width="100%">'
-        f'<tr><td class="kd" style="line-height:1;text-align:center;"><a href="{href}" class="yd" target="_blank" data-trigger-action-id="#{{image.actionTriggerId}}" style="display:inline-block;">'
-        f'<img class="yd" border="0" src="images/{src}" alt="{alt}" width="{width}" style="max-width:100%;height:auto;"></a></td></tr></table>'
-    )
-
-
-def button(href, label, td="text-align:center;padding-bottom:40px;padding-top:10px;"):
-    w = 10 * len(label) + 30   # wie im Export: 13 Zeichen -> 163 px, 26 Zeichen -> 290 px
-    return (
-        f'<table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="border-collapse:collapse;"><tr><td style="{td}"><div class="kd" style="text-align:center;">'
-        f'<!--[if mso]><v:rect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="{href}" style="height:45px;v-text-anchor:middle;width:{w}px;" stroke="f" fillcolor="{NAVY}"><w:anchorlock/>'
-        f'<center style="color:#ffffff;font-family:Verdana,Geneva,sans-serif;font-size:13px;font-weight:400;letter-spacing:1px;">{label}</center></v:rect><![endif]-->'
-        '<table class="gc hc" role="presentation" border="0" cellpadding="0" cellspacing="0" width="0" style="border-collapse:separate;display:inline-table;mso-hide:all;">'
-        f'<tr><td class="se" width="{w}" bgcolor="{NAVY}" style="background:{NAVY};border:2px solid {NAVY};mso-hide:all;text-align:center;width:{w}px;">'
-        f'<a class="ye" href="{href}" target="_blank" role="button" data-trigger-action-id="#{{button.actionTriggerId}}" style="color:#ffffff;display:block;font-family:Verdana,Geneva,sans-serif;font-size:13px;font-weight:400;letter-spacing:1px;line-height:41px;padding:0 20px;text-align:center;text-decoration:none;white-space:nowrap;">{label}</a>'
-        '</td></tr></table></div></td></tr></table>'
-    )
-
-
-def copy(title, text, price=None, title_style=""):
-    out = (
-        '<div class="ef" style="color:#343a40;font-family:Helvetica,Arial,Verdana,sans-serif;font-size:14px;line-height:20px;text-align:center;">'
-        f'<p style="{PS}{title_style}"><b style="font-weight:700;">{title}</b></p>'
-        f'<p style="{PS}padding-left:20px;padding-right:20px;">{text}</p>'
-    )
-    if price:
-        out += f'<p style="{PS}"><b style="font-weight:700;color:{NAVY};">{price}&nbsp;€</b></p>'
-    return out + '</div>'
-
-
-def columns(cells, gap_style=("padding-right:5px;", "padding-left:5px;"), max_width=640):
-    tds = ''.join(
-        f'<td style="margin:0;vertical-align:top;width:{100 / len(cells):.10g}%;" valign="top">'
-        '<table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="border-collapse:collapse;border-spacing:0;">'
-        f'<tr><td style="font-size:0;line-height:1;margin:0;{gap_style[i] if len(gap_style) > i else ""}vertical-align:top!important;" valign="top">{c}</td></tr></table></td>'
-        for i, c in enumerate(cells))
-    return (f'<table width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" '
-            f'style="border-collapse:collapse;border-spacing:0;max-width:{max_width}px;width:100%;"><tr>{tds}</tr></table>')
-
-
-# --- Blöcke ------------------------------------------------------------------------------
-
-def hero():
-    return section(image(CLOWN_URL, "hero_halloween.jpg", HERO_ALT, 640), bg="#F6F4F2")
-
-
-def intro():
-    inner = (
-        '<div class="ef" style="color:#343a40;font-family:Helvetica,Arial,Verdana,sans-serif;font-size:14px;line-height:20px;text-align:center;">'
-        '<h4 style="Margin:0;Margin-bottom:0;font-family:Verdana,Geneva,sans-serif;font-size:17px;font-weight:100;letter-spacing:0;line-height:27px;margin:0;margin-bottom:0;">'
-        f'<strong style="font-weight:700;">{INTRO["head"]}</strong><br />{INTRO["sub"]}<strong style="font-weight:700;">&nbsp;<br /><br /></strong></h4>'
-        f'<p style="{PS}"><strong style="font-weight:700;">{INTRO["lead"]}</strong><br />{INTRO["text"]}<br /><br /></p></div>'
-        + button(utm(SAUNEN_URL), INTRO["cta"], td="text-align:center;")
-    )
-    return section(inner, pad="padding-bottom:40px;padding-left:20px;padding-right:20px;padding-top:20px;")
-
-
-def game():
-    inner = (
-        '<table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="border-collapse:collapse;border-spacing:0;width:100%;">'
-        '<tr><td style="font-size:0;line-height:0;padding:0;">'
-        '<img border="0" src="images/teaser_finde-den-clown.jpg" width="640" '
-        f'alt="Halloween-Suchspiel: Finde den Clown – 50 € Gutschein ab 500 € Bestellwert, nur bis {VALID_UNTIL}" '
-        'style="display:block;width:100%;max-width:640px;height:auto;border:0;"></td></tr>'
-        '<tr><td style="padding:6px 30px 34px 30px;">'
-        f'<p style="{PX}text-align:center;font-size:15px;line-height:24px;color:#ffffff;">{rich(GAME)}</p>'
-        f'<p style="{PX}text-align:center;font-size:11px;line-height:17px;color:#9fb0bf;padding-top:12px;">{GAME_NOTE}</p>'
-        '</td></tr></table>'
-    )
-    return section(inner, bg=NAVY)
-
-
-def feature(key, src, title, text, cta, title_style=""):
-    """Großes Bild + Titel, Text, Preis, Button; Argumente wie in LAHTI, SKANDI, CASARA."""
-    name, url, price = P[key]
-    return section(image(utm(url), src, name, 640) + "  " + spacer(18) + "  "
-                   + copy(title, text, price, title_style) + "  " + button(utm(url), cta))
-
-
-def fire_header():
-    inner = (
-        spacer(24) + '  <div class="ef" style="color:#343a40;font-family:Helvetica,Arial,Verdana,sans-serif;font-size:14px;line-height:20px;text-align:center;">'
-        f'<p style="{PX}font-size:11px;line-height:16px;font-weight:700;letter-spacing:2px;color:#6b7b88;">{FIRE["label"]}</p>'
-        f'<p style="{PX}font-size:26px;line-height:34px;font-weight:700;color:#0c2335;padding-top:8px;">{FIRE["heading"]}</p>'
-        f'<p style="{PX}font-size:13px;line-height:20px;color:#343a40;padding-top:6px;">{FIRE["text"]}</p></div>'
-        + spacer(18)
-    )
-    return section(inner, pad="padding-left:20px;padding-right:20px;")
-
-
-def fire_image():
-    name, url, _ = P["swing"]
-    return section(image(utm(url), "swing_ambiente.jpg", f"{name} mit Holzlager im Garten", 640))
-
-
-def usps():
-    def usp(head, text):
-        return ('<table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="border-collapse:collapse;">'
-                '<tr><td style="border-top:3px solid #0c2335;padding:12px 6px 0 6px;text-align:center;">'
-                f'<p style="{PX}font-size:12px;line-height:18px;font-weight:700;letter-spacing:1px;color:#0c2335;">{head}</p>'
-                f'<p style="{PX}font-size:12px;line-height:17px;color:#343a40;padding-top:4px;">{text}</p></td></tr></table>')
-    return section(columns([usp(*u) for u in USPS], gap_style=("padding-left:6px;padding-right:6px;",) * 3, max_width=600),
-                   pad="padding-left:14px;padding-right:14px;padding-top:24px;padding-bottom:24px;")
-
-
-def card(key, src, line1, line2):
-    name, url, price = P[key]
-    return (
-        '<table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="border-collapse:collapse;border:1px solid #ececec;"><tr><td style="padding:16px 4px 18px 4px;"> '
-        + image(utm(url), src, name, 260)
-        + '  <div class="ef" style="color:#343a40;font-family:Helvetica,Arial,Verdana,sans-serif;font-size:14px;line-height:20px;text-align:center;">'
-        f'<p style="{PX}font-size:15px;line-height:22px;font-weight:700;color:#0c2335;padding-top:10px;">{name.upper()}</p>'
-        f'<p style="{PX}font-size:12px;line-height:18px;color:#343a40;">{line1}</p>'
-        f'<p style="{PX}font-size:12px;line-height:18px;color:#6b7b88;">{line2}</p>'
-        f'<p style="{PX}font-size:22px;line-height:30px;font-weight:700;color:#0c2335;padding-top:8px;">{price}&nbsp;€</p></div>  '
-        + button(utm(url), "JETZT SHOPPEN", td="text-align:center;padding-top:8px;")
-        + ' </td></tr></table>'
-    )
-
-
-def cards():
-    return section(columns([card(*c) for c in CARDS]))
-
-
-def grid(left, right):
-    def cell(key, src, title, text):
-        name, url, price = P[key]
-        return (image(utm(url), src, name, 320) + "  " + spacer(18) + "  "
-                + '<div class="ef" style="color:#343a40;font-family:Helvetica,Arial,Verdana,sans-serif;font-size:14px;line-height:20px;text-align:left;">'
-                f'<p style="{PS}text-align:center;"><b style="font-weight:700;">{title}</b></p>'
-                f'<p style="{PS}text-align:center;padding-left:10px;padding-right:10px;">{text}</p>'
-                f'<p style="{PS}text-align:center;"><b style="font-weight:700;color:{NAVY};">{price}&nbsp;€</b></p></div>  '
-                + button(utm(url), "JETZT SHOPPEN", td="text-align:center;padding-bottom:20px;padding-top:10px;"))
-    return section(columns([cell(*left), cell(*right)]))
-
-
-# --- Zusammenbau -------------------------------------------------------------------------
-
-def build(src):
-    parts = src.split(SECTION_END)
-    if len(parts) != 19 or "BAD" not in parts[1] or "Bleibe in Verbindung" not in parts[15]:
-        sys.exit("Aufbau des JUNE-Exports hat sich geändert – Abschnitte prüfen")
-    head, nav, spacer30, band, social, usp_bar, footer, tail = (
-        parts[0], parts[1], parts[10], parts[14], parts[15], parts[16], parts[17], parts[18])
-
-    head = replace(head, "<title>✨ New Ins: Sauna &amp; Infrarot in einer Kabine</title>", f"<title>{TITLE}</title>")
-    head = replace(head, "Kombisauna EVEREST, Whirlpool SUNSHINE &amp; 7 weitere Neuheiten – kostenlos geliefert*.", PREHEADER)
-
-    white = '<span style="color:rgb(255,255,255);letter-spacing:0px;">'
-    band = replace(band, f'<strong style="font-weight:700;">{white}Neu im Shop. Direkt vom Hersteller.<br />Kostenlos geliefert*.<br /><br /></span></strong>',
-                   f'<strong style="font-weight:700;">{white}{BAND[0]}</span></strong><br />{white}{BAND[1]}<br /><br /></span>')
-
-    footer = replace(footer, f"{SHIPPING}</span>", f'{SHIPPING}</span><br /><br /><span style="color:#ffffff;">{CONDITIONS}</span>')
-
-    body = [hero(), intro(), game(), feature(**LAHTI), feature(**SKANDI), fire_header(), fire_image(), usps(), cards()]
-    rest = [feature(**CASARA)] + [grid(*g) for g in GRIDS]
-    # generierte Blöcke enden bereits mit SECTION_END; die übernommenen Teile bekommen es beim Zusammensetzen
-    kept = lambda *ps: ''.join(p + SECTION_END for p in ps)
-    html = (kept(head, nav) + ''.join(body) + kept(spacer30) + ''.join(rest)
-            + kept(band, social, usp_bar, footer) + tail)
-    html = html.replace("utm_campaign=KW43&", f"utm_campaign={CAMPAIGN}&")
-    if "KW43" in html:
-        sys.exit("KW43 steht noch im Newsletter")
-    return html
-
-
-# --- Textversion -------------------------------------------------------------------------
-
-WIDTH = 72
 A_TAG = r'<a [^>]*href="([^"]+)"[^>]*>(.*?)</a>'
 
 
@@ -302,6 +109,291 @@ def plain(s):
     """HTML-Schnipsel -> Text: Umbrüche werden Leerzeichen, Tags fallen weg, Entities aufgelöst."""
     s = re.sub(r"\s*<br\s*/?>\s*", " ", s)
     return " ".join(htmllib.unescape(re.sub(r"<[^>]+>", "", s)).replace("\xa0", " ").split())
+
+
+def from_export(src):
+    parts = src.split(SECTION_END)
+    if len(parts) != 19 or "BAD" not in parts[1] or "Bleibe in Verbindung" not in parts[15]:
+        sys.exit("Aufbau des JUNE-Exports hat sich geändert – Abschnitte prüfen")
+    fix = lambda u: u.replace("utm_campaign=KW43&", f"utm_campaign={CAMPAIGN}&")
+    footer = parts[17]
+    disclaimer = next(p for p in re.findall(r"<p\b[^>]*>(.*?)</p>", footer, re.S) if "Diese E-Mail wird" in p)
+    contact = re.search(A_TAG, disclaimer, re.S)
+    return dict(
+        home=fix(re.search(r'<a [^>]*href="([^"]+)"', parts[0]).group(1)),
+        nav=[(plain(t), fix(u)) for u, t in re.findall(A_TAG, parts[1], re.S) if plain(t)],
+        social=[(re.search(r'alt="([^"]+)"', t).group(1), fix(u)) for u, t in re.findall(A_TAG, parts[15], re.S)],
+        usps=[plain(t).rstrip(" ✓") for t in re.split(r"✓", plain(parts[16])) if plain(t)],
+        disclaimer=plain(disclaimer.split("*Kostenloser")[0].replace(contact.group(0), "§LINK§")),
+        contact=(plain(contact.group(2)), fix(contact.group(1))),
+        legal=[(plain(t), fix(u)) for u, t in re.findall(A_TAG, footer, re.S) if plain(t) and plain(t) != plain(contact.group(2))],
+        trusted=(fix(re.findall(A_TAG, footer, re.S)[-1][0]), re.search(r'src="([^"]+352cb1[^"]+)"', footer).group(1)),
+    )
+
+
+# --- HTML-Bausteine ----------------------------------------------------------------------
+
+def rich(s):
+    return s.replace("<b>", '<strong style="font-weight:700;">').replace("</b>", "</strong>")
+
+
+def heading_html(parts, color=NAVY, size=24, align="left"):
+    spans = "".join(f'<span style="font-weight:{700 if b else 400};">{t}</span>' for t, b in parts)
+    return (f'<h2 class="h2" style="margin:0;font-family:{FONT};font-size:{size}px;line-height:{round(size * 1.25)}px;'
+            f'color:{color};text-align:{align};font-weight:400;">{spans}</h2>')
+
+
+def p(text, size=14, color=NAVY, align="left", extra=""):
+    return (f'<p style="margin:0;font-family:{FONT};font-size:{size}px;line-height:{round(size * 1.55)}px;'
+            f'color:{color};text-align:{align};{extra}">{text}</p>')
+
+
+def gap(h):
+    return f'<div style="height:{h}px;line-height:{h}px;font-size:1px;">&nbsp;</div>'
+
+
+def badge(text):
+    return (f'<table role="presentation" border="0" cellpadding="0" cellspacing="0"><tr><td bgcolor="{ORANGE}" '
+            f'style="background:{ORANGE};padding:3px 6px;font-family:{FONT};font-size:11px;line-height:15px;font-weight:600;'
+            f'color:#ffffff;letter-spacing:.3px;">{text}</td></tr></table>')
+
+
+def img(src, alt, width, href=None, kind="image"):
+    tag = (f'<img src="images/{src}" width="{width}" alt="{alt}" '
+           f'style="display:block;width:100%;max-width:{width}px;height:auto;border:0;">')
+    if not href:
+        return tag
+    return (f'<a href="{href}" target="_blank" data-trigger-action-id="#{{{kind}.actionTriggerId}}" '
+            f'style="display:block;text-decoration:none;">{tag}</a>')
+
+
+def button(href, label, bg=NAVY, color="#ffffff", align="left", full=False):
+    w = 10 * len(label) + 34
+    width = "100%" if full else f"{w}px"
+    return (
+        f'<table role="presentation" border="0" cellpadding="0" cellspacing="0" align="{align}" '
+        f'style="{"width:100%;" if full else ""}"><tr><td align="center">'
+        f'<!--[if mso]><v:rect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="{href}" '
+        f'style="height:44px;v-text-anchor:middle;width:{w}px;" stroke="f" fillcolor="{bg}"><w:anchorlock/>'
+        f'<center style="color:{color};font-family:Arial,sans-serif;font-size:13px;font-weight:bold;letter-spacing:1px;">{label}</center></v:rect><![endif]-->'
+        f'<!--[if !mso]><!--><a href="{href}" target="_blank" role="button" data-trigger-action-id="#{{button.actionTriggerId}}" '
+        f'style="display:block;width:{width};box-sizing:border-box;background:{bg};border:1px solid {bg};color:{color};font-family:{FONT};'
+        f'font-size:13px;font-weight:600;line-height:42px;letter-spacing:1px;text-align:center;text-decoration:none;">{label}</a><!--<![endif]-->'
+        '</td></tr></table>'
+    )
+
+
+def row(inner, bg="#ffffff", pad="0", cls=""):
+    return f'<tr><td class="{cls}" bgcolor="{bg}" style="background:{bg};padding:{pad};">{inner}</td></tr>'
+
+
+def section_head(parts, more=None, color=NAVY, label=None):
+    left = (p(label, 11, ORANGE, extra="font-weight:600;letter-spacing:2px;padding-bottom:4px;") if label else "") + heading_html(parts, color)
+    right = (f'<a href="{utm(more[1])}" target="_blank" style="font-family:{FONT};font-size:12px;color:{color};'
+             f'text-decoration:underline;white-space:nowrap;">{more[0]} ›</a>') if more else ""
+    return ('<table role="presentation" width="100%" border="0" cellpadding="0" cellspacing="0"><tr>'
+            f'<td valign="bottom" style="padding:0;">{left}</td>'
+            f'<td valign="bottom" align="right" style="padding:0 0 4px 12px;">{right}</td></tr></table>')
+
+
+def wide_tile(t):
+    """Breite Produktkachel: Bild, darunter Badge, Name, Merkmale links – Preis und Button rechts."""
+    name, url, price = P[t["key"]]
+    return (
+        img(t["src"], name, 592, utm(url))
+        + '<table role="presentation" width="100%" border="0" cellpadding="0" cellspacing="0"><tr>'
+        f'<td class="stack" valign="top" style="padding:14px 12px 0 0;">{badge(t["badge"])}'
+        + p(t["name"], 18, NAVY, extra="font-weight:700;padding-top:8px;")
+        + p(t["sub"], 12, MUTED, extra="padding-top:2px;") + '</td>'
+        '<td class="stack" valign="top" width="190" style="width:190px;padding:14px 0 0 0;">'
+        + p(f'{price}&nbsp;€', 22, NAVY, "right", "font-weight:700;padding-bottom:8px;")
+        + button(utm(url), "ARTIKEL ANZEIGEN", align="right")
+        + '</td></tr></table>'
+    )
+
+
+def small_tile(t, card=False):
+    """Kachel im 2er-Raster wie in den Kategorien auf homedeluxe.de."""
+    name, url, price = P[t["key"]]
+    border = f"border:1px solid {LINE};" if card else ""
+    pad = "10px" if card else "0"
+    return (
+        f'<table role="presentation" width="100%" border="0" cellpadding="0" cellspacing="0" bgcolor="#ffffff" style="background:#ffffff;{border}">'
+        f'<tr><td style="padding:{pad} {pad} 0;">' + img(t["src"], name, 280, utm(url)) + '</td></tr>'
+        f'<tr><td style="padding:12px {pad} 16px;">' + badge(t["badge"])
+        + p(t["name"], 13, NAVY, extra="font-weight:700;padding-top:8px;")
+        + p(t["sub"], 12, MUTED, extra="padding-top:2px;height:38px;")
+        + p(f'{price}&nbsp;€', 18, NAVY, extra="font-weight:700;padding:6px 0 10px;")
+        + button(utm(url), "ARTIKEL ANZEIGEN", full=True)
+        + '</td></tr></table>'
+    )
+
+
+def two_cols(a, b, space=16):
+    return ('<table role="presentation" width="100%" border="0" cellpadding="0" cellspacing="0"><tr>'
+            f'<td width="50%" valign="top" style="width:50%;padding-right:{space // 2}px;">{a}</td>'
+            f'<td width="50%" valign="top" style="width:50%;padding-left:{space // 2}px;">{b}</td></tr></table>')
+
+
+def transition(src):
+    return row(img(src, "", 640))
+
+
+# --- Abschnitte --------------------------------------------------------------------------
+
+def header(ex):
+    usps = "&nbsp;&nbsp;&nbsp;".join(f"✓&nbsp;{u}" for u in ex["usps"])
+    nav = "".join(
+        f'<td align="center" style="padding:12px 4px;"><a href="{u}" target="_blank" style="font-family:{FONT};font-size:13px;'
+        f'font-weight:500;color:{SALE if t.upper().startswith("SALE") else NAVY};text-decoration:none;">'
+        f'{"Sale%" if t.upper().startswith("SALE") else t.capitalize()}</a></td>' for t, u in ex["nav"])
+    return (
+        row(p(usps, 11, NAVY, "center"), bg=LINE, pad="7px 16px", cls="topbar")
+        + row(f'<a href="{ex["home"]}" target="_blank" style="display:block;width:230px;margin:0 auto;">'
+              '<img src="images/logo_weiss.png" width="230" alt="Home Deluxe" style="display:block;width:230px;height:auto;border:0;margin:0 auto;"></a>',
+              bg=NAVY, pad="22px 20px")
+        + row(f'<table role="presentation" width="100%" border="0" cellpadding="0" cellspacing="0" class="nav"><tr>{nav}</tr></table>',
+              bg=GREY, pad="0 10px")
+    )
+
+
+def hero():
+    gif = os.path.exists(os.path.join(PROJECT, "output", "images", "hero_clown.gif"))
+    return (
+        row(img("hero_kopf.jpg", HERO_ALT, 640, CLOWN_URL), bg=NAVY)
+        + row(img("hero_clown.gif" if gif else "hero_clown.jpg", HERO_IMG_ALT, 640, CLOWN_URL), bg=NAVY)
+        + row(p(rich(HERO_CTA["text"]), 15, "#ffffff", "center") + gap(18)
+              + button(CLOWN_URL, HERO_CTA["cta"], ORANGE, NAVY, "center")
+              + p(HERO_CTA["note"], 11, NIGHT_TEXT, "center", "padding-top:14px;clear:both;"),
+              bg=NAVY, pad="4px 40px 26px", cls="px")
+    )
+
+
+def intro():
+    return row(p(INTRO["label"], 11, ORANGE, "center", "font-weight:600;letter-spacing:2px;padding-bottom:6px;")
+               + heading_html(INTRO["heading"], NAVY, 26, "center")
+               + p(INTRO["text"], 14, NAVY, "center", "padding-top:10px;")
+               + gap(20) + button(utm(SAUNEN_URL), "ALLE SAUNEN ENTDECKEN", align="center"),
+               pad="6px 48px 34px", cls="px")
+
+
+def wellness():
+    tiles = gap(30).join(wide_tile(t) for t in WELLNESS["tiles"])
+    return row(section_head(WELLNESS["heading"], WELLNESS["more"]) + gap(16) + tiles, pad="0 24px 10px", cls="px")
+
+
+def fire():
+    name, url, _ = P["swing"]
+
+    def usp(h, t):
+        return ('<td width="33%" valign="top" style="width:33%;padding:0 5px;">'
+                '<table role="presentation" width="100%" border="0" cellpadding="0" cellspacing="0"><tr>'
+                f'<td style="border-top:3px solid {ORANGE};padding-top:10px;text-align:center;">'
+                + p(h, 11, "#ffffff", "center", "font-weight:700;letter-spacing:1px;")
+                + p(t, 12, NIGHT_TEXT, "center", "padding-top:2px;") + '</td></tr></table></td>')
+    return row(
+        section_head(FIRE["heading"], color="#ffffff", label=FIRE["label"])
+        + p(FIRE["text"], 14, NIGHT_TEXT, extra="padding:8px 0 18px;")
+        + img("swing_ambiente.jpg", f"{name} mit Holzlager im Garten", 592, utm(url))
+        + '<table role="presentation" width="100%" border="0" cellpadding="0" cellspacing="0"><tr><td style="padding:22px 0;">'
+        + '<table role="presentation" width="100%" border="0" cellpadding="0" cellspacing="0"><tr>'
+        + "".join(usp(*u) for u in FIRE["usps"]) + '</tr></table></td></tr></table>'
+        + two_cols(*(small_tile(c, card=True) for c in FIRE["cards"])),
+        bg=NAVY, pad="0 24px 30px", cls="px")
+
+
+def movie():
+    return row(section_head(MOVIE["heading"], MOVIE["more"]) + gap(16) + wide_tile(MOVIE["tile"]), pad="14px 24px 40px", cls="px")
+
+
+def more():
+    a, b, c, d = MORE["tiles"]
+    return row(section_head(MORE["heading"]) + gap(16) + two_cols(small_tile(a), small_tile(b)) + gap(26)
+               + two_cols(small_tile(c), small_tile(d)), pad="0 24px 6px", cls="px")
+
+
+def closing():
+    return row(heading_html(CLOSING["heading"], "#ffffff", 30, "center")
+               + p(rich(CLOSING["text"]), 15, NIGHT_TEXT, "center", "padding:10px 0 20px;")
+               + button(CLOWN_URL, CLOSING["cta"], ORANGE, NAVY, "center"),
+               bg=NAVY, pad="0 40px 36px", cls="px")
+
+
+def footer(ex):
+    icons = "".join(f'<td style="padding:0 14px;"><a href="{u}" target="_blank"><img src="images/social_{n.lower()}.png" width="30" alt="{n}" '
+                    'style="display:block;width:30px;height:30px;border:0;"></a></td>' for n, u in ex["social"])
+    usps = "&nbsp;&nbsp;·&nbsp;&nbsp;".join(f"{u}&nbsp;✓" for u in ex["usps"])
+    contact = f'<a href="{ex["contact"][1]}" target="_blank" style="color:#ffffff;text-decoration:underline;">{ex["contact"][0]}</a>'
+    legal = "&nbsp;&nbsp;|&nbsp;&nbsp; ".join(f'<a href="{u}" target="_blank" style="color:#ffffff;text-decoration:underline;">{t}</a>' for t, u in ex["legal"])
+    small = lambda t, extra="": p(t, 11, NIGHT_TEXT, "center", extra)
+    return row(
+        '<table role="presentation" width="100%" border="0" cellpadding="0" cellspacing="0"><tr><td style="border-top:1px solid #1c3a54;font-size:1px;line-height:1px;">&nbsp;</td></tr></table>'
+        + p("Bleibe in Verbindung mit uns", 13, "#ffffff", "center", "padding:22px 0 12px;")
+        + f'<table role="presentation" border="0" cellpadding="0" cellspacing="0" align="center"><tr>{icons}</tr></table>'
+        + p(usps, 12, "#ffffff", "center", "padding:22px 0 18px;clear:both;")
+        + small(ex["disclaimer"].replace("§LINK§", contact))
+        + small(SHIPPING, "padding-top:10px;") + small(CONDITIONS, "padding-top:10px;")
+        + small(legal, "padding-top:18px;line-height:22px;")
+        + f'<a href="{ex["trusted"][0]}" target="_blank" style="display:block;width:40px;margin:20px auto 0;">'
+          f'<img src="{ex["trusted"][1]}" width="40" alt="Trusted Shops" style="display:block;width:40px;height:auto;border:0;"></a>',
+        bg=NAVY, pad="0 36px 34px", cls="px")
+
+
+def build(src):
+    ex = from_export(src)
+    rows = [
+        header(ex), hero(), transition("ueb_tropfen.png"), intro(), wellness(),
+        transition("ueb_nebel.png"), fire(), transition("ueb_aeste.png"), movie(), more(),
+        transition("ueb_kuerbisse.png"), closing(), footer(ex),
+    ]
+    filler = "&#847;&zwnj;&nbsp;" * 60
+    return f"""<!DOCTYPE html>
+<html lang="de" xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="x-apple-disable-message-reformatting">
+<meta name="format-detection" content="telephone=no,address=no,email=no,date=no">
+<meta name="color-scheme" content="light only">
+<meta name="supported-color-schemes" content="light only">
+<title>{TITLE}</title>
+<!--[if mso]><xml><o:OfficeDocumentSettings><o:AllowPNG/><o:PixelsPerInch>96</o:PixelsPerInch></o:OfficeDocumentSettings></xml><![endif]-->
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+  body {{ margin:0; padding:0; -webkit-text-size-adjust:100%; -ms-text-size-adjust:100%; }}
+  table {{ border-collapse:collapse; mso-table-lspace:0; mso-table-rspace:0; }}
+  img {{ border:0; outline:none; text-decoration:none; -ms-interpolation-mode:bicubic; }}
+  a[x-apple-data-detectors] {{ color:inherit !important; text-decoration:none !important; }}
+  @media screen and (max-width:640px) {{
+    .px {{ padding-left:18px !important; padding-right:18px !important; }}
+    .stack {{ display:block !important; width:100% !important; padding-right:0 !important; }}
+    .stack p {{ text-align:left !important; }}
+    .stack table {{ float:none !important; }}
+    .h2 {{ font-size:21px !important; line-height:27px !important; }}
+    .nav a {{ font-size:11px !important; }}
+    .topbar p {{ font-size:9px !important; }}
+  }}
+</style>
+</head>
+<body style="margin:0;padding:0;background:{GREY};">
+<div style="display:none;max-height:0;overflow:hidden;mso-hide:all;font-size:1px;line-height:1px;color:{GREY};opacity:0;">{PREHEADER}{filler}</div>
+<table role="presentation" width="100%" border="0" cellpadding="0" cellspacing="0" bgcolor="{GREY}" style="background:{GREY};">
+<tr><td align="center" style="padding:0;">
+<!--[if mso]><table role="presentation" width="640" border="0" cellpadding="0" cellspacing="0"><tr><td><![endif]-->
+<table role="presentation" width="100%" border="0" cellpadding="0" cellspacing="0" style="max-width:640px;width:100%;">
+{chr(10).join(rows)}
+</table>
+<!--[if mso]></td></tr></table><![endif]-->
+</td></tr></table>
+</body>
+</html>
+"""
+
+
+# --- Textversion -------------------------------------------------------------------------
+
+WIDTH = 72
 
 
 def para(*lines):
@@ -313,63 +405,61 @@ def text_link(label, url):
     return f"{label}{'' if label[-1] in '.:?!' else ':'}\n{url}"
 
 
-def text_product(key, title, text, cta="JETZT SHOPPEN"):
-    name, url, price = P[key]
-    return para(title, text, f"{price} €") + "\n" + text_link(cta, utm(url))
+def text_heading(parts):
+    return "".join(t for t, _ in parts).upper()
+
+
+def text_tile(t):
+    name, url, price = P[t["key"]]
+    return para(t["badge"], t["name"], t["sub"], f"{price} €") + "\n" + text_link("ARTIKEL ANZEIGEN", utm(url))
 
 
 def build_text(src):
-    parts = src.split(SECTION_END)
-    footer = replace(parts[17], f"{SHIPPING}</span>", f"{SHIPPING}</span><br /><br /><span>{CONDITIONS}</span>")
+    ex = from_export(src)
     rule = "-" * WIDTH
-
-    home = re.search(r'<a [^>]*href="([^"]+)"', parts[0]).group(1)
-    social = [(re.search(r'alt="([^"]+)"', m.group(2)).group(1), m.group(1)) for m in re.finditer(A_TAG, parts[15], re.S)]
-    disclaimer = next(p for p in re.findall(r"<p\b[^>]*>(.*?)</p>", footer, re.S) if "Diese E-Mail wird" in p)
-    disclaimer = re.sub(A_TAG, lambda m: f"{plain(m.group(2))} ({m.group(1)})", disclaimer, flags=re.S)
-    legal = [(plain(t), u) for u, t in re.findall(A_TAG, footer, re.S) if plain(t) and plain(t) != "dieses Kontaktformular"]
-
     blocks = [
         para(PREHEADER),
-        text_link("HOME DELUXE – Wir machen dein Zuhause", home),
+        text_link("HOME DELUXE – Wir machen dein Zuhause", ex["home"]),
         "=" * WIDTH + "\n" + TEXT_HERO + "\n" + "=" * WIDTH,
-        para(TEXT_GAME) + "\n\n" + text_link("ZUM CLOWN", CLOWN_URL) + "\n\n" + para(GAME_NOTE),
+        para(TEXT_GAME) + "\n\n" + text_link(HERO_CTA["cta"], CLOWN_URL) + "\n\n" + para(HERO_CTA["note"]),
         rule,
-        para(INTRO["head"], INTRO["sub"]) + "\n\n" + para(INTRO["lead"], INTRO["text"]) + "\n\n"
-        + text_link(INTRO["cta"], utm(SAUNEN_URL)),
+        para(INTRO["label"], text_heading(INTRO["heading"]), INTRO["text"]) + "\n\n" + text_link("ALLE SAUNEN ENTDECKEN", utm(SAUNEN_URL)),
         rule,
-        text_product(LAHTI["key"], LAHTI["title"], LAHTI["text"], LAHTI["cta"]),
+        text_heading(WELLNESS["heading"]), *(text_tile(t) for t in WELLNESS["tiles"]),
         rule,
-        text_product(SKANDI["key"], SKANDI["title"], SKANDI["text"], SKANDI["cta"]),
+        para(FIRE["label"], text_heading(FIRE["heading"]), FIRE["text"]) + "\n\n"
+        + "\n".join(f"✓ {h.capitalize()}: {t}" for h, t in FIRE["usps"]),
+        *(text_tile(c) for c in FIRE["cards"]),
         rule,
-        para(FIRE["label"], FIRE["heading"], FIRE["text"]) + "\n\n"
-        + "\n".join(f"✓ {plain(h).capitalize()}: {plain(t)}" for h, t in USPS),
-        *(text_product(k, P[k][0].upper(), f"{l1}, {l2}") for k, _, l1, l2 in CARDS),
+        text_heading(MOVIE["heading"]), text_tile(MOVIE["tile"]),
         rule,
-        text_product(CASARA["key"], CASARA["title"], CASARA["text"], CASARA["cta"]),
-        rule,
-        *(text_product(k, t, x) for g in GRIDS for k, _, t, x in g),
-        "=" * WIDTH + "\n" + para(BAND[0], TEXT_BAND) + "\n" + CLOWN_URL + "\n" + "=" * WIDTH,
-        "Bleibe in Verbindung mit uns\n" + "\n".join(f"{n}: {u}" for n, u in social),
-        para(plain(parts[16]).replace(" ✓ ", " ✓ · ")),
-        "\n\n".join(para(b) for b in re.split(r"(?:\s*<br\s*/?>\s*){2}", disclaimer) if plain(b)),
-        "\n\n".join(text_link(t, u) for t, u in legal),
+        text_heading(MORE["heading"]), *(text_tile(t) for t in MORE["tiles"]),
+        "=" * WIDTH + "\n" + para(text_heading(CLOSING["heading"]), CLOSING["text"]) + "\n" + CLOWN_URL + "\n" + "=" * WIDTH,
+        "Bleibe in Verbindung mit uns\n" + "\n".join(f"{n}: {u}" for n, u in ex["social"]),
+        " · ".join(f"{u} ✓" for u in ex["usps"]),
+        para(ex["disclaimer"].replace("§LINK§", f"{ex['contact'][0]} ({ex['contact'][1]})")),
+        para(SHIPPING), para(CONDITIONS),
+        "\n\n".join(text_link(t, u) for t, u in ex["legal"]),
     ]
-    text = "\n\n".join(blocks).replace("utm_campaign=KW43&", f"utm_campaign={CAMPAIGN}&") + "\n"
-    if "KW43" in text or "<" in text:
-        sys.exit("Textversion enthält noch KW43 oder HTML")
+    text = "\n\n".join(blocks) + "\n"
+    if "<" in text:
+        sys.exit("Textversion enthält noch HTML")
     return text
 
 
+PROJECT = "."
+
+
 def main():
-    project = sys.argv[1]
-    src = open(os.path.join(project, "source", "newsletter-new-ins-kw43.html"), encoding="utf-8").read()
-    out = os.path.join(project, "output", "newsletter-halloween-kw44.html")
-    open(out, "w", encoding="utf-8").write(build(src))
-    print(out)
-    out = os.path.join(project, "output", "newsletter-halloween-kw44.txt")
-    open(out, "w", encoding="utf-8").write(build_text(src))
-    print(out)
+    global PROJECT
+    PROJECT = sys.argv[1]
+    src = open(os.path.join(PROJECT, "source", "newsletter-new-ins-kw43.html"), encoding="utf-8").read()
+    for name, content in (("newsletter-halloween-kw44.html", build(src)), ("newsletter-halloween-kw44.txt", build_text(src))):
+        if "KW43" in content:
+            sys.exit(f"KW43 steht noch in {name}")
+        out = os.path.join(PROJECT, "output", name)
+        open(out, "w", encoding="utf-8").write(content)
+        print(out)
 
 
 if __name__ == "__main__":
