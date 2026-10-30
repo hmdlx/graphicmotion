@@ -6,7 +6,13 @@
     "laguna-m:plates": "scripts/prepare_plates.sh projects/laguna-m/source/laguna-m_rohschnitt.mp4 build/laguna-m/plates",
     "laguna-m:track": "python3 -I scripts/track_points.py build/laguna-m/plates projects/laguna-m/tracking.json projects/laguna-m/tracks.js",
     "laguna-m:render": "node scripts/render.js projects/laguna-m/composition.html projects/laguna-m/output/HomeDeluxe_Laguna-M_Reel_9x16.mp4 --plates build/laguna-m/plates",
-    "laguna-m:stills": "node scripts/render.js projects/laguna-m/composition.html build/laguna-m/stills --plates build/laguna-m/plates --stills 1,2,4,5,7,10,11,13,14.5,16,17.6,18,19,21"
+    "laguna-m:stills": "node scripts/render.js projects/laguna-m/composition.html build/laguna-m/stills --plates build/laguna-m/plates --stills 1,2,4,5,7,10,11,13,14.5,16,17.6,18,19,21",
+    "spuk10:graphics": "node projects/newsletter-halloween-spuk10/scripts/render_graphics.js build/newsletter-halloween-spuk10/graphics",
+    "spuk10:images": "python3 -I projects/newsletter-halloween-spuk10/scripts/build_images.py projects/newsletter-halloween-spuk10 build/newsletter-halloween-spuk10/graphics",
+    "spuk10:html": "python3 -I projects/newsletter-halloween-spuk10/scripts/build_newsletter.py projects/newsletter-halloween-spuk10",
+    "spuk10:preview": "node projects/newsletter-halloween-spuk10/scripts/preview.js projects/newsletter-halloween-spuk10/output/newsletter-halloween-spuk10.html projects/newsletter-halloween-spuk10/output/preview",
+    "spuk10:vorschau": "python3 -I projects/newsletter-halloween-spuk10/scripts/build_vorschau.py projects/newsletter-halloween-spuk10",
+    "spuk10:build": "npm run spuk10:graphics && npm run spuk10:images && npm run spuk10:html && npm run spuk10:preview && npm run spuk10:vorschau"
   },
   "devDependencies": {
     "playwright": "1.56.1"

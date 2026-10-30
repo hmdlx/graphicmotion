@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>Halloween-Deko für den Newsletter</title>
+<!--
+  kuerbis-trenner   weißer Abschnittstrenner: feine orange Linie, Kürbis in der Mitte (1280 × 120)
+  band-kuerbisse    Kürbisreihe über dem Navy-Band „Happy Halloween!“, Hintergrund exakt Navy (1280 × 210),
+                    Schein bleibt innerhalb des Bildes, damit unten keine Kante zum Band entsteht
+-->
+<style>
+  :root { --navy: #0e2234; --orange: #ff9800; }
+  body { margin: 0; background: transparent; }
+  [data-out] { position: relative; overflow: hidden; }
+  .p { position: absolute; }
+  .bat { position: absolute; color: #c7d0d9; }
+
+  .trenner { width: 1280px; height: 120px; background: #fff; }
+  .trenner .line { position: absolute; top: 74px; height: 2px; width: 470px; background: linear-gradient(90deg, #ff980000, var(--orange)); }
+  .trenner .line.r { right: 80px; transform: scaleX(-1); }
+  .trenner .line.l { left: 80px; }
+
+  .band { width: 1280px; height: 210px; background: var(--navy); }
+  .band .glow { position: absolute; left: 390px; top: 30px; width: 500px; height: 180px; border-radius: 50%;
+                background: radial-gradient(closest-side, #ff980026, #ff980000); }
+</style>
+</head>
+<body>
+<div class="trenner" data-out="kuerbis-trenner">
+  <div class="line l"></div><div class="line r"></div>
+  <div class="p" data-pumpkin="face" style="left:584px;top:14px;width:112px"></div>
+</div>
+
+<div class="band" data-out="band-kuerbisse">
+  <div class="glow"></div>
+  <div class="bat" data-bat style="left:452px;top:40px;width:46px;opacity:.45;transform:rotate(-10deg)"></div>
+  <div class="bat" data-bat style="left:792px;top:28px;width:34px;opacity:.35;transform:rotate(12deg) scaleX(-1)"></div>
+  <div class="p" data-pumpkin="plain" style="left:516px;top:96px;width:96px"></div>
+  <div class="p" data-pumpkin="plain" style="left:676px;top:104px;width:84px"></div>
+  <div class="p" data-pumpkin="face" style="left:572px;top:54px;width:142px"></div>
+</div>
+<script src="halloween.js"></script>
+</body>
+</html>

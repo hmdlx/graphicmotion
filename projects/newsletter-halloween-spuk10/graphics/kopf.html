@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>Hero-Band Halloween SPUK10</title>
+<style>
+  @font-face { font-family: Poppins; font-weight: 400; src: url(../../../assets/fonts/poppins/poppins-latin-400-normal.woff2); }
+  @font-face { font-family: Poppins; font-weight: 600; src: url(../../../assets/fonts/poppins/poppins-latin-600-normal.woff2); }
+  @font-face { font-family: Poppins; font-weight: 800; src: url(../../../assets/fonts/poppins/poppins-latin-800-normal.woff2); }
+  /* CI Navy/Weiß/Grau, Orange (#FF9800, Shop-Badge) als Halloween-Akzent */
+  :root { --navy: #0e2234; --grey: #c7d0d9; --orange: #ff9800; }
+  body { margin: 0; background: #fff; }
+  /* gleiche Proportion wie das Kopfband der Clown-Edition (1280 × 210) */
+  [data-out] { position: relative; width: 1280px; height: 210px; overflow: hidden; font-family: Poppins, sans-serif;
+               background: radial-gradient(60% 140% at 64% 100%, #3a2412 0%, #1a2230 45%, var(--navy) 75%); }
+  .title { position: absolute; left: 56px; top: 44px; margin: 0; font-weight: 800; font-size: 112px; line-height: 1; letter-spacing: -1px; color: #fff; }
+  .right { position: absolute; right: 52px; top: 50px; text-align: right; line-height: 1.3; }
+  .right b { display: block; font-weight: 800; font-size: 40px; color: var(--orange); letter-spacing: .5px; }
+  .right span { display: block; font-weight: 400; font-size: 25px; color: var(--grey); margin-top: 6px; }
+  .right span strong { font-weight: 600; color: #fff; letter-spacing: 1.5px; }
+  .p { position: absolute; bottom: 0; }
+  .thread { position: absolute; left: 905px; top: 0; width: 2px; height: 70px; background: linear-gradient(#ffffff00, #ffffff8c 40%); }
+  .spider { position: absolute; left: 885px; top: 62px; }
+  .bat { position: absolute; color: #c7d0d9; }
+</style>
+</head>
+<body>
+<div data-out="hero-band">
+  <h1 class="title">HALLOWEEN</h1>
+
+  <div class="bat" data-bat style="left:752px;top:22px;width:44px;opacity:.55;transform:rotate(-10deg)"></div>
+  <div class="bat" data-bat style="left:812px;top:48px;width:28px;opacity:.4;transform:rotate(12deg) scaleX(-1)"></div>
+  <div class="thread"></div>
+  <svg class="spider" width="42" height="42" viewBox="0 0 42 42" fill="none" stroke="#c7d0d9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M17 18 L9 11 L4 14 M16 21 L7 19 L3 23 M16 24 L8 27 L5 33 M18 26 L12 33 L11 39"/>
+    <path d="M25 18 L33 11 L38 14 M26 21 L35 19 L39 23 M26 24 L34 27 L37 33 M24 26 L30 33 L31 39"/>
+    <ellipse cx="21" cy="24" rx="5.5" ry="7" fill="#c7d0d9" stroke="none"/>
+    <circle cx="21" cy="14.5" r="3.6" fill="#c7d0d9" stroke="none"/>
+    <circle cx="19.6" cy="14" r=".9" fill="#0e2234" stroke="none"/>
+    <circle cx="22.4" cy="14" r=".9" fill="#0e2234" stroke="none"/>
+  </svg>
+
+  <div class="p" data-pumpkin="plain" style="left:850px;width:74px;bottom:2px"></div>
+  <div class="p" data-pumpkin="face" style="left:752px;width:112px"></div>
+
+  <div class="right"><b>10&nbsp;% RABATT</b><span>mit Code <strong>SPUK10</strong></span></div>
+</div>
+<script src="halloween.js"></script>
+</body>
+</html>

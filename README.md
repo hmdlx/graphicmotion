@@ -9,6 +9,7 @@ rendert. ffmpeg schreibt die Frames anschließend als MP4.
 | Projekt | Format | Ergebnis |
 |---|---|---|
 | `projects/laguna-m` | 9:16, 1080×1920, 30 fps, 18,5 s | `output/HomeDeluxe_Laguna-M_Reel_9x16.mp4` + Titelbild |
+| `projects/newsletter-halloween-spuk10` | Newsletter 640 px (JUNE) | Halloween-Fallback mit Code SPUK10: HTML + Textversion, Vorschau – siehe Projekt-README |
 
 ### Laguna M – Schnitt und Übergänge
 
