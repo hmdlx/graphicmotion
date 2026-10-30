@@ -29,6 +29,26 @@ läuft nur mit ihren sauberen Frames (Schnittliste `SHOTS` in `composition.js`),
 Die Produktdaten stammen aus den Shop- und Händlerangaben zur LAGUNA M (homedeluxe.de, Hornbach).
 Preise sind bewusst nicht eingebaut, weil sie sich häufig ändern.
 
+## Landingpages
+
+| Seite | Inhalt |
+|---|---|
+| `landingpages/winter-clown/index.html` | Newsletter-Winter-Suchspiel: 8 Winterprodukte, versteckter Clown öffnet ein Pop-up mit 50 € Gutschein ab 500 € Einkaufswert |
+
+Die Seite kommt ohne Style-Tag aus: alle Styles stehen inline, damit der Block direkt in einen
+CMS-Block (Plenty) passt. Kopiert wird alles zwischen `CMS-BLOCK START` und `CMS-BLOCK ENDE`.
+
+- Der Clown sitzt im Bild des Elektrokamins CALOR (unten links, schaut über den Bildrand).
+- Das Pop-up nutzt die Popover-API (`popover` / `popovertarget`) und funktioniert damit ohne
+  JavaScript. Das kleine Script am Ende ist optional: Fallback für alte Browser, „Code kopieren“,
+  `dataLayer`-Event `winter_clown_gefunden` und Pause der Animationen bei reduzierter Bewegung.
+- Schnee und Clown-Wackeln sind SVG-Animationen (SMIL), also ebenfalls ohne CSS.
+- Gutscheincode `CLOWN50` (`id="hdx-gs-code"`) und die Bedingungen (gültig bis 31.12.2026, stehen im
+  Pop-up und in der Fußnote) sind Platzhalter: vor dem Versand den echten Code und die echten
+  Bedingungen eintragen.
+- Produktbilder kommen direkt aus dem Shop-CDN (`cdn02.plentyone.com`), Preise sind bewusst nicht
+  eingebaut.
+
 ## Rendern
 
 Voraussetzungen: Node 18+, Python 3 mit numpy + Pillow, ffmpeg, Chromium für Playwright.
