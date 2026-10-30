@@ -42,7 +42,7 @@ CMS-Block passt. Für plentyShop kommt `plenty-block.html` komplett in ein ShopB
 ist derselbe Inhalt wie zwischen `CMS-BLOCK START` und `CMS-BLOCK ENDE` in `index.html`, aber ohne
 Dokument-Tags wie `</body>` und ohne Google-Fonts-Link (Poppins lädt der Shop selbst; Google Fonts extern
 zu laden ist datenschutzrechtlich heikel). Getestet in einer nachgebauten Plenty-Seite mit Vue-Neurendern:
-volle Breite, Überschriften ohne Theme-Stile, Video, Animationen, Pop-up, Kopieren und Tracking laufen.
+volle Breite, Überschriften ohne Theme-Stile, Animationen, Buttons, Pop-up, Kopieren und Tracking laufen.
 Der Block lädt nichts mehr von Shopify; Bilder kommen aus dem plenty-CDN.
 
 - Look: hell und ruhig im Aufbau der Apple-„Why Mac“-Seite (Referenz vom Kunden). Farben vor allem
@@ -57,7 +57,7 @@ Der Block lädt nichts mehr von Shopify; Bilder kommen aus dem plenty-CDN.
   Stores) und Fußnote.
 - Ein Video gibt es nicht mehr. `media/hdx-halloween-hero.mp4` und das Standbild liegen nur noch als
   Material im Repo (und in den Shopify-Dateien).
-- Der Clown sieht aus wie der im Video: orange Haare, blauer Hoodie, blauer Ballon mit Haus. Er lugt
+- Der Clown sieht aus wie der aus dem früheren Intro-Video: orange Haare, blauer Hoodie, blauer Ballon mit Haus. Er lugt
   in der Produktübersicht (dritte Kachel) von rechts ins Bild des Massagesessels DUNES, taucht auf und ab und hat rot
   glühende Augen. Definiert ist er einmal als `#hdx-clown` und wird per `<use>` im Bild und im Pop-up
   gezeigt.
