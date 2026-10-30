@@ -2,15 +2,15 @@
 
     python3 -I scripts/build_hero_videos.py <projekt>
 
-Ablauf wie beim Hero-GIF des Newsletters (build_images.py), aber flüssig mit 24 fps und ohne
-Navy-Verlauf: Clown sitzt, verblasst wie ein Geist, leeres Sofa, er kommt hinter dem Sofa hervor
-und setzt sich – das Ende passt an den Anfang, die Schleife läuft ohne Sprung.
+Nur die Clown-Szene des KI-Videos mit 24 fps, ohne Navy-Verlauf: erstes Bild das leere Sofa, dann
+kommt der Clown hinter dem Sofa hervor und setzt sich (5 s). Anders als im Newsletter-GIF ohne
+vorangestelltes Sitzen und Verblassen.
 
 Quelle ist das KI-Video, per KI auf 4K hochgerechnet (HERO_VIDEO_4K, Higgsfield-Upscale „aigc“ des
 1344 × 672-Videos). Alle Formate werden daraus nur ausgeschnitten und verkleinert. Wie beim GIF steht
 der Raum still (erstes Bild), nur dort, wo sich der Clown bewegt (motion_mask), läuft das Video.
 Ergebnis: output/hero-video/hero_clown_<B>x<H>.mp4 (H.264, ohne Ton, faststart) und je ein
-Standbild _poster.jpg (erstes Bild: Clown sitzt).
+Standbild _poster.jpg (erstes Bild: leeres Sofa).
 """
 import json
 import os
@@ -21,7 +21,7 @@ import numpy as np
 from PIL import Image
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from build_images import GIF_GHOST, GIF_HOLD, GIF_W, motion_mask  # noqa: E402
+from build_images import GIF_W, motion_mask  # noqa: E402
 
 HERO_VIDEO_4K = os.path.join("hero", "clown-hervor_4k.mp4")
 FPS = 24
@@ -71,13 +71,12 @@ def main():
     video = os.path.join(project, "source", HERO_VIDEO_4K)
     size = video_size(video)
 
-    # Maske wie beim GIF (in dessen 640er Koordinaten), auf Videogröße gebracht; erstes und letztes
-    # Bild für Hintergrund, sitzenden Clown und das Verblassen merken
-    small, first, last = [], None, None
+    # Maske wie beim GIF (in dessen 640er Koordinaten), auf Videogröße gebracht; das erste Bild
+    # (leeres Sofa) ist der stehende Raum
+    small, first = [], None
     for f in video_frames(video, size):
         small.append(Image.fromarray(f).resize((GIF_W, GIF_W * size[1] // size[0]), Image.LANCZOS))
         first = f if first is None else first
-        last = f
     m = motion_mask(small, grow=3)[..., 0]
     mask = np.asarray(Image.fromarray((m * 255).astype(np.uint8)).resize(size, Image.BILINEAR), np.float32)[..., None] / 255
     room = first.astype(np.float32)
@@ -85,15 +84,7 @@ def main():
     def comp(frame):
         return (frame.astype(np.float32) * mask + room * (1 - mask)).round().astype(np.uint8)
 
-    seated, empty = comp(last), comp(first)
-    n = round(GIF_GHOST * FPS)
-
     def sequence():
-        for _ in range(round(GIF_HOLD * FPS)):
-            yield seated
-        for i in range(n):
-            t = (i + 1) / (n + 1)
-            yield (seated * (1 - t) + empty * t).round().astype(np.uint8)
         for f in video_frames(video, size):
             yield comp(f)
 
