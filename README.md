@@ -46,9 +46,8 @@ zwischen `CMS-BLOCK START` und `CMS-BLOCK ENDE` in `index.html`, nur ohne Dokume
   Mobile first: Grundgrößen für ~390 px, nach oben per `clamp()` und `auto-fit`-Grids skaliert,
   keine Media Queries.
 - Aufbau, kurz und direkt aufs Ziel: 1 Hero (Navy) mit „Finde den anderen Clown.“ (Überschrift
-  Ebene 1), Gutschein „50 € ab 500 € Einkaufswert*“ und dem Video als Einstieg. Eine Leiste auf dem
-  Video sagt „Psst … der hier lenkt nur ab. Sein Kumpel hockt unten in einem Produktbild – findest du ihn?“, ein Klick
-  aufs Video scrollt dorthin. 2 „Wo steckt der andere Clown?“ mit den drei Schritten
+  Ebene 1), Gutschein „50 € ab 500 € Einkaufswert*“ und dem Video als Einstieg. Ein oranger Button auf dem
+  Video sagt „Finde den anderen Clown, klick ihn an und erhalte 50 €“; ein Klick aufs Video scrollt zu den Produkten. 2 „Wo steckt der andere Clown?“ mit den drei Schritten
   Produktbilder ansehen · Clown entdecken · Anklicken & 50 € sichern und 6 Produkten, 3 dunkle Karte
   „Noch nicht gefunden?“ mit Tipp, 4 Service-Leiste (0 % Finanzierung, versandfrei, Stores) und Fußnote.
 - Das Video (`media/hdx-halloween-hero.mp4`, 5 s, stumm, mit Standbild) liegt in den Shopify-Dateien
@@ -57,7 +56,7 @@ zwischen `CMS-BLOCK START` und `CMS-BLOCK ENDE` in `index.html`, nur ohne Dokume
   in der Produktübersicht (dritte Kachel) von rechts ins Bild des Massagesessels DUNES, taucht auf und ab und hat rot
   glühende Augen. Definiert ist er einmal als `#hdx-clown` und wird per `<use>` im Bild und im Pop-up
   gezeigt.
-- Motion-Elemente, alle als SVG-Animation (SMIL): Fledermäuse im Pop-up, Pfeil auf dem Video,
+- Motion-Elemente, alle als SVG-Animation (SMIL): Fledermäuse im Pop-up, Pfeil im Video-Button,
   Nebel in den Navy-Karten, glühende Augen und ein wanderndes Auge in der dunklen Karte.
 - Das Pop-up nutzt die Popover-API (`popover` / `popovertarget`) und funktioniert damit ohne
   JavaScript. Das Script am Ende ergänzt: „Code kopieren“, „Jetzt einlösen“ kopiert den Code
