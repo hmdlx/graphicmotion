@@ -62,7 +62,7 @@ start = page.index("-->", page.index("CMS-BLOCK START")) + 3
 end = page.index("<!-- ===== HOME DELUXE · HALLOWEEN-SUCHSPIEL · CMS-BLOCK ENDE")
 block = re.sub(r"<!--.*?-->", "", page[start:end], flags=re.S)
 block = " ".join(line.strip() for line in block.splitlines() if line.strip())
-block = block.replace('<a href="https://', '<a target="_top" href="https://')
+block = re.sub(r'<a (?=[^>]*href="https://)', '<a target="_top" ', block)
 
 inner = (
     '<!doctype html><html lang="de"><head><meta charset="utf-8">'

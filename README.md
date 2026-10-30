@@ -45,10 +45,11 @@ zwischen `CMS-BLOCK START` und `CMS-BLOCK ENDE` in `index.html`, nur ohne Dokume
   Navy `#0f2334` und Weiß `#fefefe`, Orange `#ff6a00` nur als Akzent, Poppins 500–700, alle Ecken und Buttons scharfkantig (CI).
   Mobile first: Grundgrößen für ~390 px, nach oben per `clamp()` und `auto-fit`-Grids skaliert,
   keine Media Queries.
-- Aufbau, kurz und direkt aufs Ziel: 1 Video-Hero (Navy) mit „Finde den Clown.“ (`h1`), Gutschein
-  „50 € ab 500 € Einkaufswert“ und Button „Jetzt Clown suchen“ auf dem Video – alles im ersten
-  Bildschirm, 2 „Wo steckt er?“ mit 6 Produkten, 3 dunkle Karte „Noch nicht gefunden?“ mit Tipp,
-  4 Service-Leiste (0 % Finanzierung, versandfrei, Stores) und Fußnote.
+- Aufbau, kurz und direkt aufs Ziel: 1 Video-Hero (Navy) mit „Finde den Clown.“ (Überschrift
+  Ebene 1) und Gutschein „50 € ab 500 € Einkaufswert*“, darunter das Video – alles im ersten
+  Bildschirm; ein Klick aufs Video scrollt zur nächsten Section. 2 „Wo steckt der andere Clown?“
+  mit 6 Produkten, 3 dunkle Karte „Noch nicht gefunden?“ mit Tipp, 4 Service-Leiste
+  (0 % Finanzierung, versandfrei, Stores) und Fußnote.
 - Das Video (`media/hdx-halloween-hero.mp4`, 5 s, stumm, mit Standbild) liegt in den Shopify-Dateien
   und wird vom Shopify-CDN geladen.
 - Der Clown sieht aus wie der im Video: orange Haare, blauer Hoodie, blauer Ballon mit Haus. Er lugt
@@ -58,9 +59,11 @@ zwischen `CMS-BLOCK START` und `CMS-BLOCK ENDE` in `index.html`, nur ohne Dokume
 - Motion-Elemente, alle als SVG-Animation (SMIL): schwebende Ballons, Fledermäuse,
   Nebel in den Navy-Karten, glühende Augen und ein wanderndes Auge in der dunklen Karte.
 - Das Pop-up nutzt die Popover-API (`popover` / `popovertarget`) und funktioniert damit ohne
-  JavaScript. Das kleine Script am Ende ist optional: Fallback für alte Browser, „Code kopieren“,
-  `dataLayer`-Event `halloween_clown_gefunden` und Pause aller Animationen bei reduzierter Bewegung.
-- Gutscheincode `CLOWN50` (`id="hdx-gs-code"`) und die Bedingungen (gültig bis 31.12.2026, stehen im
+  JavaScript. Das Script am Ende ergänzt: „Code kopieren“, „Jetzt einlösen“ kopiert den Code
+  automatisch in die Zwischenablage (danach geht es zum Shop), weiches Scrollen beim Klick aufs Video,
+  Fallback für alte Browser, `dataLayer`-Event `halloween_clown_gefunden` und Pause aller Animationen
+  bei reduzierter Bewegung.
+- Gutscheincode `CLOWN50` (`id="hdx-gs-code"`) und die Bedingungen (gültig bis 02.11.2026, stehen im
   Pop-up und in der Fußnote) sind Platzhalter: vor dem Versand den echten Code und die echten
   Bedingungen eintragen.
 - Produktbilder kommen direkt aus dem Shop-CDN (`cdn02.plentyone.com`), Preise sind bewusst nicht
@@ -81,7 +84,7 @@ seiner Seiten verbietet (`X-Frame-Options: DENY`). Eingefügt wird alles zwische
 `IFRAME ENDE`, am besten in einen vollbreiten Bereich der Zielseite.
 
 Ein kleines Script im iframe übernimmt, was ein iframe sonst nicht kann: Es passt die Höhe an den
-Inhalt an (kein innerer Scrollbalken), scrollt bei „Jetzt Clown suchen“ die äußere Seite, setzt das
+Inhalt an (kein innerer Scrollbalken), scrollt beim Klick aufs Video die äußere Seite, setzt das
 Gutschein-Pop-up in den sichtbaren Bereich und schreibt das Event `halloween_clown_gefunden` in den
 `dataLayer` der äußeren Seite. Shop-Links öffnen im ganzen Fenster (`target="_top"`). Ohne Script
 (z. B. wenn die Zielseite iframes in einer Sandbox ausführt) hat das iframe eine feste Höhe von 3600 px.
