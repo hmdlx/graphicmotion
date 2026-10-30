@@ -32,7 +32,11 @@ für diese Blöcke (Klasse `june`), damit sie die Poppins-Inhalte nicht auf Verd
 Nacht (Navy) und Tag (Weiß) wechseln sich ab; die Übergänge sind Halloween-Grafiken
 (`graphics/uebergaenge.html`): tropfendes Navy, aufsteigender Nebel, hängende Äste mit Spinne,
 Hügel mit leuchtenden Kürbissen. Der Hero blendet aus dem Nachthimmel (Mond, Fledermäuse) auf
-und läuft wieder in Navy aus.
+und läuft wieder in Navy aus. Darunter führt der Gutschein-Teaser (`graphics/teaser.html`) die Nacht
+weiter wie in der SPUK10-Version: oben reines Navy, Spinnennetz und Fledermäuse, „Süßes oder
+Saures?“ mit dem 50-€-Gutschein (ohne Code – der steht erst im Pop-up), unten leuchtende Kürbisse,
+dann Text und Button „ZUM CLOWN“. Kürbisse, Fledermäuse und Netz kommen aus `graphics/halloween.js`
+(übernommen aus der SPUK10-Version).
 
 ## Hero-GIF
 
@@ -52,7 +56,7 @@ und läuft wieder in Navy aus.
 
 ## Klick → Pop-up
 
-- Hero-Kopf, Hero-GIF und die beiden Buttons „ZUM CLOWN“ verlinken auf
+- Hero-Kopf, Hero-GIF, Gutschein-Teaser und die beiden Buttons „ZUM CLOWN“ verlinken auf
   `https://www.homedeluxe.de/?halloween=clown&utm_campaign=KW44_Halloween&…&utm_content=clown`.
 - `output/popup/clown-popup.html` enthält den Block für den Shop (zwischen
   `HD-CLOWN-POPUP START` und `ENDE`): Er bleibt unsichtbar, bis die Adresse `halloween=clown`
@@ -65,7 +69,8 @@ und läuft wieder in Navy aus.
 
 | Block | Produkt | Bild | Preis |
 |---|---|---|---|
-| Hero „HALLOWEEN-SPECIAL – Finde den Clown“ | Klick öffnet das Gutschein-Pop-up | GIF | – |
+| Hero „HALLOWEEN-SPECIAL – Finde den Clown“ | Klick öffnet das Gutschein-Pop-up | Hero-Kopf, GIF | – |
+| Teaser „Süßes oder Saures?“ (Navy) | 50-€-Gutschein ab 500 €, Text, Button „ZUM CLOWN“ | Grafik | – |
 | „**Gemütlich** durch die Gruselnacht“ | CTA: Alle Saunen | – | – |
 | „**Wellness** für die Geisternacht“ | Fasssauna LAHTI XL · Infrarotkabine NERO M | Shopfotos | 2.599 € · 1.349 € |
 | „NEU IM SHOP – **Gespenstisch** schöne Neuheiten“ | LED-Wasserdampfkamin ODENA · LED-Bett MELURA · Couchtisch-Set LAMESA | Shopfotos, Freisteller (LAMESA) | 349 € · 399 € · 179 € |
@@ -106,7 +111,7 @@ Woher die Bilder kommen:
 |---|---|
 | Produktfotos | Shop-CDN, direkt verlinkt |
 | Hero-GIF, Logo, Social-Icons, Trusted-Shops-Siegel | JUNE-CDN (`homedeluxe-bf09.kxcdn.com`) |
-| eigene Grafiken (Hero-Kopf, Übergänge) | `output/fuer-june-hochladen.zip` – in JUNE hochladen |
+| eigene Grafiken (Hero-Kopf, Gutschein-Teaser, Übergänge) | `output/fuer-june-hochladen.zip` – in JUNE hochladen |
 
 Nach dem Hochladen die CDN-Adressen in `source/cdn-urls.json` eintragen (Dateiname → URL) und
 `npm run halloween:build` ausführen. Das ZIP enthält immer nur die Grafiken, die dort noch fehlen.
@@ -122,7 +127,7 @@ npm run halloween:build     # alles: Grafiken -> Bilder/GIF -> HTML + Text -> Vo
 
 | Skript | macht |
 |---|---|
-| `halloween:graphics` | `graphics/*.html` per Chromium -> `build/newsletter-halloween/graphics/*.png` (Hero-Kopf, Übergänge) |
+| `halloween:graphics` | `graphics/*.html` per Chromium -> `build/newsletter-halloween/graphics/*.png` (Hero-Kopf, Gutschein-Teaser, Übergänge) |
 | `halloween:images` | Hero-GIF und Standbild, Grafiken, Pop-up-Bild, ZIP der noch hochzuladenden Grafiken -> `output/` |
 | `halloween:html` | Newsletter-HTML + Textversion; Kopf und Footer unverändert aus `source/newsletter-new-ins-kw43.html` |
 | `halloween:preview` | Ganzseiten-Vorschau Desktop/Mobil, Pop-up-Vorschau; prüft die Clown-Links und das Pop-up mit/ohne `?halloween=clown` |

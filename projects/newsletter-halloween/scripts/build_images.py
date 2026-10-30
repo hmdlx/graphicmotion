@@ -5,8 +5,9 @@
 <projekt>     projects/newsletter-halloween (source/, output/)
 <grafik-dir>  Ausgabe von render_graphics.js
 
-Grafiken:  Hero-Kopf auf Navy, Halloween-Übergänge als PNG (verlustfrei, damit die Kanten exakt
-           Navy bzw. Weiß treffen). Logo und Social-Icons kommen mit dem JUNE-Export.
+Grafiken:  Hero-Kopf und Gutschein-Teaser (Übergang unter dem GIF) auf Navy, Halloween-Übergänge
+           als PNG (verlustfrei, damit die Kanten exakt Navy bzw. Weiß treffen). Logo und
+           Social-Icons kommen mit dem JUNE-Export.
 Hero:      Standbild aus source/hero/ mit Navy-Verlauf oben und unten, so dass es nahtlos aus
            dem Hero-Kopf kommt und in den Navy-Abschnitt darunter übergeht. Liegt das KI-Video
            source/hero/clown-hervor.mp4 vor (leeres Sofa -> Clown sitzt), entsteht daraus
@@ -150,6 +151,7 @@ def main():
 
     # Hero-Kopf und Übergänge (Logo und Social-Icons kommen mit Kopf und Footer aus dem JUNE-Export)
     save(on_navy(g("hero-kopf"), (1280, 400)), os.path.join(out, "hero_kopf.jpg"), 90)
+    save(on_navy(g("teaser"), (1280, 720)), os.path.join(out, "teaser_clown.jpg"), 88)
     for name in ("ueb-tropfen", "ueb-nebel", "ueb-aeste", "ueb-kuerbisse"):
         save_png(Image.open(g(name)), os.path.join(out, f"{name.replace('-', '_')}.png"), 48)
 

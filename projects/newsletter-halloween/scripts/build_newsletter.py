@@ -72,7 +72,8 @@ TITLE = "🎃 Halloween-Edition: Finde den Clown!"
 PREHEADER = "Psst … hinter dem Sofa bewegt sich was 🤡 Finde den Clown und wir schenken dir 50 € ab 500 € Bestellwert."
 HERO_ALT = "Halloween-Special: Finde den Clown! Klick ihn an und sichere dir 50 € Gutschein"
 HERO_IMG_ALT = "Ein Clown klettert hinter dem Sofa hervor und setzt sich – klick ihn an"
-HERO_CTA = dict(text="Klick auf den Clown – dann öffnet sich im Shop dein Gutschein: <b>50&nbsp;€</b> auf deine Bestellung ab 500&nbsp;€.**",
+TEASER_ALT = f"Süßes oder Saures? 50 € Gutschein ab 500 € Bestellwert, nur bis {VALID_UNTIL} – finde einfach den Clown"
+HERO_CTA = dict(text="Klick auf den <b>Clown</b> – dann öffnet sich im Shop dein Gutscheincode. Einfach bei der Bestellung eingeben.**",
                 cta="ZUM CLOWN", note=f"**Nur bis {VALID_UNTIL}. Alle Aktionsbedingungen findest du ganz unten.")
 INTRO = dict(label="HALLOWEEN BEI HOME DELUXE", heading=[("Gemütlich", True), (" durch die Gruselnacht", False)],
              text="Draußen gruselig, drinnen heiß: Sauna, Feuer &amp; Kuschelplätze für lange Herbstabende – "
@@ -287,10 +288,13 @@ def header(ex):
 
 
 def hero():
+    """Hero-Kopf, GIF und darunter der Teaser, der die Nacht weiterführt (wie in der SPUK10-Version):
+    das GIF läuft in Navy aus, der Teaser beginnt in Navy und endet wieder darin."""
     gif = os.path.exists(os.path.join(PROJECT, "output", "images", "hero_clown.gif"))
     return (
         row(img("hero_kopf.jpg", HERO_ALT, 640, CLOWN_URL), bg=NAVY)
         + row(img("hero_clown.gif" if gif else "hero_clown.jpg", HERO_IMG_ALT, 640, CLOWN_URL), bg=NAVY)
+        + row(img("teaser_clown.jpg", TEASER_ALT, 640, CLOWN_URL), bg=NAVY)
         + row(p(rich(HERO_CTA["text"]), 15, "#ffffff", "center") + gap(18)
               + button(CLOWN_URL, HERO_CTA["cta"], ORANGE, NAVY, "center")
               + p(HERO_CTA["note"], 11, NIGHT_TEXT, "center", "padding-top:14px;clear:both;"),

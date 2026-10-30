@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>Gutschein-Teaser Clown</title>
+<!--
+  teaser   Übergang vom Hero-GIF in den Navy-Block darunter, wie in der SPUK10-Version: oben reines Navy
+           (das GIF läuft darin aus), dann Nachthimmel mit Spinnennetz und Fledermäusen (der Mond steht schon im Hero-Kopf),
+           „Süßes oder Saures?“ und der 50-€-Gutschein, unten leuchtende Kürbisse, die wieder in Navy
+           auslaufen. 1280 × 720, im Newsletter 640 px breit. Motive aus halloween.js.
+-->
+<style>
+  @font-face { font-family: Poppins; font-weight: 400; src: url(../../../assets/fonts/poppins/poppins-latin-400-normal.woff2); }
+  @font-face { font-family: Poppins; font-weight: 500; src: url(../../../assets/fonts/poppins/poppins-latin-500-normal.woff2); }
+  @font-face { font-family: Poppins; font-weight: 600; src: url(../../../assets/fonts/poppins/poppins-latin-600-normal.woff2); }
+  @font-face { font-family: Poppins; font-weight: 800; src: url(../../../assets/fonts/poppins/poppins-latin-800-normal.woff2); }
+  :root { --navy: #0e2234; --navy-deep: #08141f; --orange: #ff9800; }
+  body { margin: 0; background: #fff; }
+  [data-out] { position: relative; width: 1280px; height: 720px; overflow: hidden; font-family: Poppins, sans-serif;
+               background: linear-gradient(var(--navy), #0e223400 160px),
+                           radial-gradient(130% 120% at 30% 30%, var(--navy) 35%, var(--navy-deep) 100%); }
+  /* warmer Kürbisschein von unten */
+  .glow { position: absolute; left: -100px; bottom: -260px; width: 900px; height: 520px; border-radius: 50%;
+          background: radial-gradient(closest-side, #ff98003d, #ff980014 55%, #ff980000); }
+  .floor { position: absolute; left: 0; right: 0; bottom: 0; height: 120px; background: linear-gradient(#0e223400, var(--navy) 85%); }
+
+  .web { position: absolute; left: 0; top: 0; width: 230px; color: #ffffff1f; }
+  .bat { position: absolute; color: #fff; }
+
+  .label { position: absolute; left: 72px; top: 92px; font-weight: 600; font-size: 22px; letter-spacing: 5px; color: var(--orange); }
+  .h1 { position: absolute; left: 68px; top: 132px; margin: 0; font-weight: 800; color: #fff; line-height: .98; }
+  .h1 .a { display: block; font-size: 92px; letter-spacing: -.5px; }
+  .h1 .b { display: block; font-size: 150px; letter-spacing: -2px; }
+  .rule { position: absolute; left: 72px; top: 446px; width: 64px; height: 4px; background: var(--orange); }
+  .sub { position: absolute; left: 72px; top: 470px; width: 600px; font-weight: 400; font-size: 27px; line-height: 40px; color: #ffffffd9; }
+  .sub strong { font-weight: 600; color: #fff; }
+
+  /* Gutschein in Shop-Orange mit Stanzungen links und rechts; der Code steht erst im Pop-up */
+  .ticket { position: absolute; left: 790px; top: 132px; width: 420px; height: 440px; background: var(--orange); color: var(--navy);
+            text-align: center; transform: rotate(-4deg);
+            -webkit-mask: radial-gradient(circle 26px at 0 50%, #0000 98%, #000) left / 51% 100% no-repeat,
+                          radial-gradient(circle 26px at 100% 50%, #0000 98%, #000) right / 51% 100% no-repeat; }
+  .ticket .in { position: absolute; inset: 18px; border: 2px dashed #0e223473; }
+  .ticket .k { margin-top: 52px; font-weight: 600; font-size: 22px; letter-spacing: 6px; }
+  .ticket .v { margin-top: 0; font-weight: 800; font-size: 150px; line-height: 1.02; letter-spacing: -3px; }
+  .ticket .min { display: inline-block; margin-top: 8px; padding: 8px 24px 6px; background: var(--navy); color: #fff;
+                 font-weight: 700; font-size: 32px; letter-spacing: 3px; }
+  .ticket .d { margin: 20px auto 0; width: 300px; padding-top: 14px; border-top: 2px solid #0e22344d; font-weight: 500; font-size: 20px; }
+
+  .p { position: absolute; }
+</style>
+</head>
+<body>
+<div data-out="teaser">
+  <div class="glow"></div>
+  <div class="web" data-web></div>
+
+  <div class="bat" data-bat style="left:812px;top:46px;width:66px;opacity:.24;transform:rotate(-8deg)"></div>
+  <div class="bat" data-bat style="left:900px;top:84px;width:40px;opacity:.16;transform:rotate(10deg) scaleX(-1)"></div>
+  <div class="bat" data-bat style="left:1170px;top:44px;width:56px;opacity:.14"></div>
+  <div class="bat" data-bat style="left:700px;top:600px;width:50px;opacity:.1;transform:rotate(-14deg)"></div>
+
+  <div class="label">WIR SCHENKEN DIR WAS</div>
+  <h1 class="h1"><span class="a">SÜSSES ODER</span><span class="b">SAURES?</span></h1>
+  <div class="rule"></div>
+  <div class="sub">Bei uns gibt’s nur Süßes: <strong>50&nbsp;€ Gutschein</strong> ab 500&nbsp;€ Bestellwert – finde einfach den Clown.</div>
+
+  <div class="ticket">
+    <div class="in"></div>
+    <div class="k">GUTSCHEIN</div>
+    <div class="v">50&nbsp;€</div>
+    <div class="min">AB 500&nbsp;€</div>
+    <div class="d">nur bis 02.11.2026</div>
+  </div>
+
+  <div class="floor"></div>
+  <div class="p" data-pumpkin="plain" style="left:60px;top:634px;width:92px"></div>
+  <div class="p" data-pumpkin="face" style="left:124px;top:600px;width:132px"></div>
+  <div class="p" data-pumpkin="plain" style="left:1196px;top:646px;width:72px"></div>
+  <div class="p" data-pumpkin="face" style="left:1100px;top:618px;width:112px"></div>
+</div>
+<script src="halloween.js"></script>
+</body>
+</html>

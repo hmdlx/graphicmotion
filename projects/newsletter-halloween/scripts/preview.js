@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // Full-page previews of the newsletter and the voucher pop-up (desktop + mobile), with checks:
-// only the hero (header graphic + clown image) and the two "ZUM CLOWN" buttons link to the pop-up URL,
+// only the hero (header graphic, clown GIF, voucher teaser) and the two "ZUM CLOWN" buttons link to the pop-up URL,
 // and the pop-up opens only with ?halloween=clown.
 //
 //   node scripts/preview.js <newsletter.html> <popup.html> <out_dir>
@@ -45,7 +45,7 @@ const CLOWN = /[?&]halloween=clown/;
       lahti: await hit('img[src*="LAHTI-XL-ambiente-01"]'),
     };
     console.log(v.name, JSON.stringify(res, null, 1));
-    if (res.clown_links !== 4 || !CLOWN.test(res.hero) || CLOWN.test(res.lahti)) fail('Klick-Test Newsletter');
+    if (res.clown_links !== 5 || !CLOWN.test(res.hero) || CLOWN.test(res.lahti)) fail('Klick-Test Newsletter');
 
     await page.evaluate(() => window.scrollTo(0, 0));
     const file = path.join(out, `preview_${v.name}.jpg`);
