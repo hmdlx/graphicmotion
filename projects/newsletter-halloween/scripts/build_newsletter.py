@@ -2,19 +2,20 @@
 
     python3 -I scripts/build_newsletter.py <projekt>
 
-Gestaltung nach dem Shop: Navy-Header mit weißem Logo und grauer Navigation, Überschriften mit
-fettem und normalem Teil („**Wellness** für die Geisternacht“), eckige Navy-Buttons
-„Artikel anzeigen“, Orange #ff9800 wie die TOPSELLER-Badges im Shop. Nacht-Abschnitte (Navy)
-und Tag-Abschnitte (Weiß) gehen über Halloween-Grafiken ineinander über (Tropfen, Nebel, Äste,
-Kürbis-Hügel), der Hero blendet aus dem Nachthimmel auf.
+Gestaltung nach dem Shop: Überschriften mit fettem und normalem Teil („**Wellness** für die
+Geisternacht“), eckige Navy-Buttons „Artikel anzeigen“, Orange #ff9800 wie die TOPSELLER-Badges im
+Shop. Nacht-Abschnitte (Navy) und Tag-Abschnitte (Weiß) gehen über Halloween-Grafiken ineinander
+über (Tropfen, Nebel, Äste, Kürbis-Hügel), der Hero blendet aus dem Nachthimmel auf.
 
-Aus dem JUNE-Export (source/newsletter-new-ins-kw43.html) kommen Navigation, Social-Links,
-Footer-Hinweis und Rechtslinks. Ergebnis: output/newsletter-halloween-kw44.html und die
-Textversion output/newsletter-halloween-kw44.txt, beide aus den Texten unten.
+Kopf (Logo, Navigation) und Footer (Social-Leiste, USP-Leiste, Hinweis, Rechtslinks, Trusted Shops)
+kommen unverändert aus dem JUNE-Export (source/newsletter-new-ins-kw43.html) – wie in der
+SPUK10-Version. Ergebnis: output/newsletter-halloween-kw44.html und die Textversion
+output/newsletter-halloween-kw44.txt, beide aus den Texten unten.
 
 Klick auf Hero oder „ZUM CLOWN“ führt in den Shop, wo das Pop-up aus output/popup/ den
-Gutscheincode zeigt. Produktfotos kommen direkt vom Shop-CDN (SHOP_IMG), eigene Grafiken vom
-JUNE-CDN, sobald sie in source/cdn-urls.json eingetragen sind, sonst relativ images/….
+Gutscheincode zeigt. Produktfotos kommen direkt vom Shop-CDN (SHOP_IMG), Logo und Social-Icons
+aus dem Export vom JUNE-CDN, eigene Grafiken vom JUNE-CDN, sobald sie in source/cdn-urls.json
+eingetragen sind, sonst relativ images/….
 """
 import html as htmllib
 import json
@@ -29,8 +30,8 @@ UTM = f"utm_campaign={CAMPAIGN}&utm_source=newsletter&utm_medium=email"
 CLOWN_URL = f"https://www.homedeluxe.de/?halloween=clown&{UTM}&utm_content=clown"
 VALID_UNTIL = "02.11.2026"
 
-NAVY, ORANGE, SALE = "#0e2234", "#ff9800", "#FF4500"     # Werte aus dem CSS von homedeluxe.de
-GREY, LINE, MUTED, NIGHT_TEXT = "#f4f6f8", "#e3e7ec", "#66727d", "#c7d0d9"
+NAVY, ORANGE = "#0e2234", "#ff9800"     # Werte aus dem CSS von homedeluxe.de
+LINE, MUTED, NIGHT_TEXT = "#e3e7ec", "#66727d", "#c7d0d9"
 FONT = "Poppins,Helvetica,Arial,sans-serif"
 
 # Produktfotos direkt vom Shop-CDN (unverändert, 1000 × 1000 px)
@@ -132,6 +133,8 @@ def plain(s):
 
 
 def from_export(src):
+    """Kopf (Logo + Navigation) und Footer (Social-Leiste, USP-Leiste, Footer) unverändert als HTML,
+    dazu die Texte für die Textversion."""
     parts = src.split(SECTION_END)
     if len(parts) != 19 or "BAD" not in parts[1] or "Bleibe in Verbindung" not in parts[15]:
         sys.exit("Aufbau des JUNE-Exports hat sich geändert – Abschnitte prüfen")
@@ -139,15 +142,20 @@ def from_export(src):
     footer = parts[17]
     disclaimer = next(p for p in re.findall(r"<p\b[^>]*>(.*?)</p>", footer, re.S) if "Diese E-Mail wird" in p)
     contact = re.search(A_TAG, disclaimer, re.S)
+    # Logo-Abschnitt beginnt direkt nach dem Preheader des Exports
+    logo = parts[0].split("<!--<![endif]-->", 1)[1]
+    if 'alt="Home Deluxe"' not in logo or f"{SHIPPING}</span>" not in footer:
+        sys.exit("Kopf oder Footer im JUNE-Export nicht gefunden")
+    footer_html = footer.replace(f"{SHIPPING}</span>", f'{SHIPPING}</span><br /><br /><span style="color:#ffffff;">{CONDITIONS}</span>')
     return dict(
+        header=fix(logo + SECTION_END + parts[1] + SECTION_END),
+        footer=fix(parts[15] + SECTION_END + parts[16] + SECTION_END + footer_html + SECTION_END),
         home=fix(re.search(r'<a [^>]*href="([^"]+)"', parts[0]).group(1)),
-        nav=[(plain(t), fix(u)) for u, t in re.findall(A_TAG, parts[1], re.S) if plain(t)],
         social=[(re.search(r'alt="([^"]+)"', t).group(1), fix(u)) for u, t in re.findall(A_TAG, parts[15], re.S)],
         usps=[plain(t).rstrip(" ✓") for t in re.split(r"✓", plain(parts[16])) if plain(t)],
         disclaimer=plain(disclaimer.split("*Kostenloser")[0].replace(contact.group(0), "§LINK§")),
         contact=(plain(contact.group(2)), fix(contact.group(1))),
         legal=[(plain(t), fix(u)) for u, t in re.findall(A_TAG, footer, re.S) if plain(t) and plain(t) != plain(contact.group(2))],
-        trusted=(fix(re.findall(A_TAG, footer, re.S)[-1][0]), re.search(r'src="([^"]+352cb1[^"]+)"', footer).group(1)),
     )
 
 
@@ -274,19 +282,8 @@ def transition(src):
 # --- Abschnitte --------------------------------------------------------------------------
 
 def header(ex):
-    usps = "&nbsp;&nbsp;&nbsp;".join(f"✓&nbsp;{u}" for u in ex["usps"])
-    nav = "".join(
-        f'<td align="center" style="padding:12px 4px;"><a href="{u}" target="_blank" style="font-family:{FONT};font-size:13px;'
-        f'font-weight:500;color:{SALE if t.upper().startswith("SALE") else NAVY};text-decoration:none;">'
-        f'{"Sale%" if t.upper().startswith("SALE") else t.capitalize()}</a></td>' for t, u in ex["nav"])
-    return (
-        row(p(usps, 11, NAVY, "center"), bg=LINE, pad="7px 16px", cls="topbar")
-        + row(f'<a href="{ex["home"]}" target="_blank" style="display:block;width:230px;margin:0 auto;">'
-              f'<img src="{src_url("logo_weiss.png")}" width="230" alt="Home Deluxe" style="display:block;width:230px;height:auto;border:0;margin:0 auto;"></a>',
-              bg=NAVY, pad="22px 20px")
-        + row(f'<table role="presentation" width="100%" border="0" cellpadding="0" cellspacing="0" class="nav"><tr>{nav}</tr></table>',
-              bg=GREY, pad="0 10px")
-    )
+    """Logo und Navigation unverändert aus dem JUNE-Export (wie in den regulären Newslettern)."""
+    return row(ex["header"], cls="june")
 
 
 def hero():
@@ -350,23 +347,9 @@ def closing():
 
 
 def footer(ex):
-    icons = "".join(f'<td style="padding:0 14px;"><a href="{u}" target="_blank"><img src="{src_url(f"social_{n.lower()}.png")}" width="30" alt="{n}" '
-                    'style="display:block;width:30px;height:30px;border:0;"></a></td>' for n, u in ex["social"])
-    usps = "&nbsp;&nbsp;·&nbsp;&nbsp;".join(f"{u}&nbsp;✓" for u in ex["usps"])
-    contact = f'<a href="{ex["contact"][1]}" target="_blank" style="color:#ffffff;text-decoration:underline;">{ex["contact"][0]}</a>'
-    legal = "&nbsp;&nbsp;|&nbsp;&nbsp; ".join(f'<a href="{u}" target="_blank" style="color:#ffffff;text-decoration:underline;">{t}</a>' for t, u in ex["legal"])
-    small = lambda t, extra="": p(t, 11, NIGHT_TEXT, "center", extra)
-    return row(
-        '<table role="presentation" width="100%" border="0" cellpadding="0" cellspacing="0"><tr><td style="border-top:1px solid #1c3a54;font-size:1px;line-height:1px;">&nbsp;</td></tr></table>'
-        + p("Bleibe in Verbindung mit uns", 13, "#ffffff", "center", "padding:22px 0 12px;")
-        + f'<table role="presentation" border="0" cellpadding="0" cellspacing="0" align="center"><tr>{icons}</tr></table>'
-        + p(usps, 12, "#ffffff", "center", "padding:22px 0 18px;clear:both;")
-        + small(ex["disclaimer"].replace("§LINK§", contact))
-        + small(SHIPPING, "padding-top:10px;") + small(CONDITIONS, "padding-top:10px;")
-        + small(legal, "padding-top:18px;line-height:22px;")
-        + f'<a href="{ex["trusted"][0]}" target="_blank" style="display:block;width:40px;margin:20px auto 0;">'
-          f'<img src="{ex["trusted"][1]}" width="40" alt="Trusted Shops" style="display:block;width:40px;height:auto;border:0;"></a>',
-        bg=NAVY, pad="0 36px 34px", cls="px")
+    """Social-Leiste, USP-Leiste und Footer unverändert aus dem JUNE-Export, die Aktionsbedingungen
+    stehen unter dem Versandhinweis."""
+    return row(ex["footer"], cls="june")
 
 
 def build(src):
@@ -395,20 +378,38 @@ def build(src):
   table {{ border-collapse:collapse; mso-table-lspace:0; mso-table-rspace:0; }}
   img {{ border:0; outline:none; text-decoration:none; -ms-interpolation-mode:bicubic; }}
   a[x-apple-data-detectors] {{ color:inherit !important; text-decoration:none !important; }}
+  /* Kopf und Footer aus dem JUNE-Export: dessen Regeln, nur für diese Blöcke (.june) */
+  .june p {{ font-family:Verdana,Geneva,sans-serif !important; }}
+  .june .tc {{ font-family:"Source Sans Pro",Helvetica,Arial,Verdana,sans-serif !important; }}
+  .june .ue, .june .af {{ font-family:Helvetica,Arial,sans-serif !important; }}
+  .june .ef a {{ text-decoration:none !important; }}
+  div > u ~ div .june .fc {{ max-width:100% !important; }}
+  div > u ~ div .june .jc {{ width:100% !important; }}
+  div > u ~ div .june p {{ font-size:12px !important; line-height:18px !important; letter-spacing:0 !important; margin-bottom:0 !important; }}
+  div > u ~ div .june .tc {{ font-size:10px !important; line-height:15px !important; }}
   @media screen and (max-width:640px) {{
     .px {{ padding-left:18px !important; padding-right:18px !important; }}
     .stack {{ display:block !important; width:100% !important; padding-right:0 !important; }}
     .stack p {{ text-align:left !important; }}
     .stack table {{ float:none !important; }}
     .h2 {{ font-size:21px !important; line-height:27px !important; }}
-    .nav a {{ font-size:11px !important; }}
-    .topbar p {{ font-size:9px !important; }}
+    .june .kd {{ text-align:center !important; }}
+    .june .md, .june .md * {{ text-align:left !important; }}
+    .june .nd, .june .nd * {{ text-align:center !important; }}
+    .june .od, .june .od * {{ text-align:right !important; }}
+    .june .rd {{ width:30% !important; }}
+    .june .td {{ width:50% !important; }}
+    .june .wd {{ width:80% !important; }}
+    .june .fc {{ max-width:100% !important; }}
+    .june .jc {{ width:100% !important; }}
+    .june p {{ font-size:12px !important; line-height:18px !important; letter-spacing:0 !important; margin-bottom:0 !important; }}
+    .june .tc {{ font-size:10px !important; line-height:15px !important; }}
   }}
 </style>
 </head>
-<body style="margin:0;padding:0;background:{GREY};">
-<div style="display:none;max-height:0;overflow:hidden;mso-hide:all;font-size:1px;line-height:1px;color:{GREY};opacity:0;">{PREHEADER}{filler}</div>
-<table role="presentation" width="100%" border="0" cellpadding="0" cellspacing="0" bgcolor="{GREY}" style="background:{GREY};">
+<body style="margin:0;padding:0;background:#ffffff;">
+<div style="display:none;max-height:0;overflow:hidden;mso-hide:all;font-size:1px;line-height:1px;color:#ffffff;opacity:0;">{PREHEADER}{filler}</div>
+<table role="presentation" width="100%" border="0" cellpadding="0" cellspacing="0" bgcolor="#ffffff" style="background:#ffffff;">
 <tr><td align="center" style="padding:0;">
 <!--[if mso]><table role="presentation" width="640" border="0" cellpadding="0" cellspacing="0"><tr><td><![endif]-->
 <table role="presentation" width="100%" border="0" cellpadding="0" cellspacing="0" style="max-width:640px;width:100%;">
@@ -465,7 +466,7 @@ def build_text(src):
         rule,
         text_heading(MORE["heading"]), *(text_tile(t) for t in MORE["tiles"]),
         "=" * WIDTH + "\n" + para(text_heading(CLOSING["heading"]), CLOSING["text"]) + "\n" + CLOWN_URL + "\n" + "=" * WIDTH,
-        "Bleibe in Verbindung mit uns\n" + "\n".join(f"{n}: {u}" for n, u in ex["social"]),
+        "Bleibe in Verbindung mit uns", *(text_link(n, u) for n, u in ex["social"]),
         " · ".join(f"{u} ✓" for u in ex["usps"]),
         para(ex["disclaimer"].replace("§LINK§", f"{ex['contact'][0]} ({ex['contact'][1]})")),
         para(SHIPPING), para(CONDITIONS),

@@ -5,8 +5,8 @@
 <projekt>     projects/newsletter-halloween (source/, output/)
 <grafik-dir>  Ausgabe von render_graphics.js
 
-Grafiken:  Logo, Hero-Kopf und Social-Icons auf Navy, Halloween-Übergänge als PNG (verlustfrei,
-           damit die Kanten exakt Navy bzw. Weiß treffen).
+Grafiken:  Hero-Kopf auf Navy, Halloween-Übergänge als PNG (verlustfrei, damit die Kanten exakt
+           Navy bzw. Weiß treffen). Logo und Social-Icons kommen mit dem JUNE-Export.
 Hero:      Standbild aus source/hero/ mit Navy-Verlauf oben und unten, so dass es nahtlos aus
            dem Hero-Kopf kommt und in den Navy-Abschnitt darunter übergeht. Liegt das KI-Video
            source/hero/clown-hervor.mp4 vor (leeres Sofa -> Clown sitzt), entsteht daraus
@@ -148,14 +148,10 @@ def main():
     os.makedirs(out, exist_ok=True)
     g = lambda name: os.path.join(gfx, f"{name}.png")
 
-    # Kopf und Grafiken
-    logo = Image.open(g("logo-weiss")).convert("RGB")
-    save_png(logo.crop((0, 0, logo.width, logo.height - 1)), os.path.join(out, "logo_weiss.png"), 32)
+    # Hero-Kopf und Übergänge (Logo und Social-Icons kommen mit Kopf und Footer aus dem JUNE-Export)
     save(on_navy(g("hero-kopf"), (1280, 400)), os.path.join(out, "hero_kopf.jpg"), 90)
     for name in ("ueb-tropfen", "ueb-nebel", "ueb-aeste", "ueb-kuerbisse"):
         save_png(Image.open(g(name)), os.path.join(out, f"{name.replace('-', '_')}.png"), 48)
-    for name in ("instagram", "facebook", "youtube"):
-        save_png(on_navy(g(f"social-{name}"), (64, 64)), os.path.join(out, f"social_{name}.png"), 16)
 
     # Hero-Standbild (Fallback für das GIF)
     hero = Image.open(os.path.join(src, HERO_SRC)).convert("RGB")

@@ -18,12 +18,16 @@ Die Werte stammen aus dem CSS des Shops (`--primary`, Badge-Farben, Schrift):
 
 | Element | im Newsletter |
 |---|---|
-| Navy `#0e2234` | Header, Nacht-Abschnitte, Buttons |
+| Navy `#0e2234` | Hero, Nacht-Abschnitte, Footer, Buttons |
 | Orange `#ff9800` (TOPSELLER-Badge im Shop) | Badges, „CLOWN“, Buttons „ZUM CLOWN“, Kürbisse |
-| Rot `#FF4500` (Sale im Shop) | „Sale%“ in der Navigation |
 | Poppins, Überschriften fett + normal („**Nach Kategorie** shoppen“) | „**Wellness** für die Geisternacht“ usw. |
 | eckige Ecken, Buttons „Artikel anzeigen“ | Produktkacheln |
-| USP-Leiste, Navy-Header mit weißem Logo, graue Navigation | Kopf des Newsletters |
+
+Kopf (Logo, Navigation BAD · SAUNEN · WOHNEN · GARTEN · SALE) und Footer (Social-Leiste, USP-Leiste,
+Hinweis, Rechtslinks, Trusted Shops) kommen unverändert aus dem JUNE-Export – wie in der
+SPUK10-Version (`projects/newsletter-halloween-spuk10`, Branch `claude/epic-ride-aylhjp`). Die
+Aktionsbedingungen stehen im Footer unter dem Versandhinweis. Die CSS-Regeln des Exports gelten nur
+für diese Blöcke (Klasse `june`), damit sie die Poppins-Inhalte nicht auf Verdana/12 px setzen.
 
 Nacht (Navy) und Tag (Weiß) wechseln sich ab; die Übergänge sind Halloween-Grafiken
 (`graphics/uebergaenge.html`): tropfendes Navy, aufsteigender Nebel, hängende Äste mit Spinne,
@@ -101,12 +105,12 @@ Woher die Bilder kommen:
 | Bilder | Quelle |
 |---|---|
 | Produktfotos | Shop-CDN, direkt verlinkt |
-| Hero-GIF, Trusted-Shops-Siegel | JUNE-CDN (`homedeluxe-bf09.kxcdn.com`) |
-| eigene Grafiken (Hero-Kopf, Logo, Übergänge, Social-Icons) | `output/fuer-june-hochladen.zip` – in JUNE hochladen |
+| Hero-GIF, Logo, Social-Icons, Trusted-Shops-Siegel | JUNE-CDN (`homedeluxe-bf09.kxcdn.com`) |
+| eigene Grafiken (Hero-Kopf, Übergänge) | `output/fuer-june-hochladen.zip` – in JUNE hochladen |
 
 Nach dem Hochladen die CDN-Adressen in `source/cdn-urls.json` eintragen (Dateiname → URL) und
 `npm run halloween:build` ausführen. Das ZIP enthält immer nur die Grafiken, die dort noch fehlen.
-`hero_clown.jpg` ist nur das Standbild zum GIF und muss nicht hochgeladen werden. Das Trusted-Shops-Siegel kommt weiter vom bestehenden CDN. Poppins wird per
+`hero_clown.jpg` ist nur das Standbild zum GIF und muss nicht hochgeladen werden. Poppins wird per
 Google-Fonts-Link geladen (wie schon Montserrat im KW43-Export); Gmail zeigt stattdessen
 Helvetica/Arial.
 
@@ -118,8 +122,8 @@ npm run halloween:build     # alles: Grafiken -> Bilder/GIF -> HTML + Text -> Vo
 
 | Skript | macht |
 |---|---|
-| `halloween:graphics` | `graphics/*.html` per Chromium -> `build/newsletter-halloween/graphics/*.png` (Logo, Hero-Kopf, Übergänge, Social-Icons) |
+| `halloween:graphics` | `graphics/*.html` per Chromium -> `build/newsletter-halloween/graphics/*.png` (Hero-Kopf, Übergänge) |
 | `halloween:images` | Hero-GIF und Standbild, Grafiken, Pop-up-Bild, ZIP der noch hochzuladenden Grafiken -> `output/` |
-| `halloween:html` | Newsletter-HTML + Textversion; Navigation, Social-Links, Footer-Hinweis und Rechtslinks aus `source/newsletter-new-ins-kw43.html` |
+| `halloween:html` | Newsletter-HTML + Textversion; Kopf und Footer unverändert aus `source/newsletter-new-ins-kw43.html` |
 | `halloween:preview` | Ganzseiten-Vorschau Desktop/Mobil, Pop-up-Vorschau; prüft die Clown-Links und das Pop-up mit/ohne `?halloween=clown` |
 | `halloween:vorschau` | eigenständige Vorschau-HTMLs mit eingebetteten Bildern -> `output/vorschau/` (nicht für den Versand) |
