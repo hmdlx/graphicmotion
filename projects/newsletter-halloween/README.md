@@ -112,7 +112,7 @@ Vorschläge, oben in `scripts/build_newsletter.py` (Code, Datum und Ablaufzeit z
 `output/popup/clown-popup.html` und `graphics/kopf.html`):
 
 - **Betreff** (in JUNE eintragen): „🤡 50-€-Gutschein: Finde den Clown und schnapp dir die 50 €! 🎃“ (`TITLE`).
-  Preheader: „Er hat sich in unserem Shop versteckt. Findest du ihn bis Montag? 👀“ (`PREHEADER`;
+  Preheader: „HAPPY HALLOWEEN 🎃 Er hat sich in unserem Shop versteckt. Findest du ihn bis Montag?“ (`PREHEADER`;
   der Wochentag kommt aus `VALID_UNTIL`). Alternativen für einen A/B-Test in JUNE:
   „Nur bis Montag: Er versteckt sich irgendwo in unserem Shop 👀“ und
   „Psst … er sitzt schon in unserem Shop. Wer ihn findet, spart 50 € 👀“.

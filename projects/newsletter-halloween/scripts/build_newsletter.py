@@ -42,7 +42,7 @@ FONT = "Poppins,Helvetica,Arial,sans-serif"
 TITLE = "🤡 50-€-Gutschein: Finde den Clown und schnapp dir die 50 €! 🎃"
 # Preheader auf Öffnungen ausgelegt: Neugier (wo ist er?), Mitmachfrage, Frist als Wochentag;
 # die Bedingungen stehen im Newsletter. Wochentag nur sinnvoll, solange die Aktion kurz läuft.
-PREHEADER = f"Er hat sich in unserem Shop versteckt. Findest du ihn bis {END_DAY}? 👀"
+PREHEADER = f"HAPPY HALLOWEEN 🎃 Er hat sich in unserem Shop versteckt. Findest du ihn bis {END_DAY}?"
 HERO_ALT = "Halloween-Special: Der Clown vom Sofa hat sich versteckt. Finde ihn in unserem Onlineshop – und wir schenken dir 50 €!"
 HERO_IMG_ALT = "Ein Clown klettert hinter dem Sofa hervor und setzt sich – klick ihn an"
 TEASER_ALT = f"Süßes oder Saures? 50-€-Gutschein ab 500 € Bestellwert, nur bis {VALID_UNTIL}"
