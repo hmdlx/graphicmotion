@@ -36,8 +36,8 @@ FONT = "Poppins,Helvetica,Arial,sans-serif"
 # --- Texte (für HTML und Textversion; <b> = fett) ------------------------------------------
 
 TITLE = "🎃 Halloween-Edition: Finde den Clown!"
-PREHEADER = "Psst … hinter dem Sofa bewegt sich was 🤡 Finde den Clown und wir schenken dir 50 € ab 500 € Bestellwert."
-HERO_ALT = "Halloween-Special: Finde den Clown! Klick ihn an und sichere dir 50 € Gutschein"
+PREHEADER = "Der Clown vom Sofa hat sich in unserem Onlineshop versteckt 🤡 Finde ihn und wir schenken dir 50 € ab 500 € Bestellwert."
+HERO_ALT = "Halloween-Special: Der Clown vom Sofa hat sich versteckt. Finde ihn in unserem Onlineshop – und wir schenken dir 50 €!"
 HERO_IMG_ALT = "Ein Clown klettert hinter dem Sofa hervor und setzt sich – klick ihn an"
 TEASER_ALT = f"Süßes oder Saures? 50 € Gutschein ab 500 € Bestellwert, nur bis {VALID_UNTIL}"
 HERO_CTA = dict(text="Klick auf den <b>Clown</b> – er versteckt sich jetzt auf unserer Halloween-Seite in einem Produktbild. Find ihn dort, klick ihn an und dein Gutscheincode gehört dir.**",
@@ -51,10 +51,9 @@ CONDITIONS = ("**Aktionsbedingungen Halloween-Suchspiel: Den Gutscheincode über
               "oder Aktionen kombinierbar, keine Barauszahlung.")
 SHIPPING = "*Kostenloser Versand innerhalb Deutschlands - ausgeschlossen Inseln. Alle Preise in Euro inkl. MwSt."
 # nur Textversion
-TEXT_HERO = "HALLOWEEN-SPECIAL – FINDE DEN CLOWN & SICHERE DIR 50 €"
-TEXT_GAME = ("Psst … hinter dem Sofa bewegt sich was: Ein Clown hat es sich bei uns gemütlich gemacht – jetzt "
-             "versteckt er sich auf unserer Halloween-Seite. Find ihn und klick ihn an: Dann gehört dir dein Gutschein "
-             "über 50 € für deine Bestellung ab 500 €.**")
+TEXT_HERO = "HALLOWEEN-SPECIAL – FINDE DEN CLOWN, WIR SCHENKEN DIR 50 €"
+TEXT_GAME = ("Der Clown vom Sofa hat sich versteckt – auf der Halloween-Seite in unserem Onlineshop. Finde ihn, "
+             "klick ihn an, und wir schenken dir 50 € für deine Bestellung ab 500 €.**")
 
 SECTION_END = '<!--[if (gte mso 9)|(IE)]></td></tr></table><![endif]--></div></td></tr></table>'
 
