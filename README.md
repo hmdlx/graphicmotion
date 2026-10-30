@@ -38,13 +38,18 @@ Preise sind bewusst nicht eingebaut, weil sie sich häufig ändern.
 Die Seite kommt ohne Style-Tag aus: alle Styles stehen inline, damit der Block direkt in einen
 CMS-Block (Plenty, Shopify) passt. Kopiert wird alles zwischen `CMS-BLOCK START` und `CMS-BLOCK ENDE`.
 
-- Der Clown lauert im Bild des Massagesessels DUNES (unten links). Er taucht auf und ab, legt den
-  Kopf schief und hat rot glühende Augen. Definiert ist er einmal als `#hdx-clown` und wird per
-  `<use>` im Bild und im Pop-up gezeigt.
-- Schaurige Motion-Elemente, alle als SVG-Animation (SMIL), also ohne CSS und ohne JavaScript:
-  Mond mit ziehender Wolke, flatternde Fledermäuse, schwebende Geister, Spinnen am Faden,
-  Spinnennetze, ziehender Nebel, aufsteigende Glut, glühende Augen im Dunkeln, flackernder Kürbis
-  und ein „tropfender“ HALLOWEEN-Schriftzug. Dazu ein Zwischenband „Psst … er beobachtet dich.“
+- Look: schwarz mit Nebel, Akzente in Orange (`#ff6a00`), Poppins 700–900 in Versalien, plakativ.
+  Mobile first: Grundgrößen für ~390 px, nach oben per `clamp()` und `auto-fill`-Grids skaliert,
+  keine Media Queries.
+- Aufbau: gestapelter Claim HALLO/WEEN (einzige `h1`) mit orangen Tropfen, rotierender Gutschein-Störer,
+  Laufband, drei Schritte mit großen Konturziffern, zwei Produktblöcke als Poster-Kacheln
+  (Bild abgedunkelt, große Namen, Nummer 01–08), Zwischenband „Psst … er beobachtet dich.“,
+  oranges Tipp-Band, Kategorie-Liste, Laufband unten.
+- Der Clown hängt kopfüber von oben ins Bild des Massagesessels DUNES (Kachel 07), taucht auf und ab
+  und pendelt. Definiert ist er einmal als `#hdx-clown` und wird per `<use>` im Bild und im Pop-up gezeigt.
+- Motion-Elemente, alle als SVG-Animation (SMIL), also ohne CSS und ohne JavaScript: Blutmond mit
+  ziehender Wolke, flatternde Fledermäuse, Geister, Spinnen am Faden, Spinnennetze, Nebel (`#hdx-fog`,
+  mehrfach per `<use>`), aufsteigende Glut, glühende Augen, flackernder Kürbis, Laufbänder.
 - Das Pop-up nutzt die Popover-API (`popover` / `popovertarget`) und funktioniert damit ohne
   JavaScript. Das kleine Script am Ende ist optional: Fallback für alte Browser, „Code kopieren“,
   `dataLayer`-Event `halloween_clown_gefunden` und Pause aller Animationen bei reduzierter Bewegung.
@@ -53,8 +58,8 @@ CMS-Block (Plenty, Shopify) passt. Kopiert wird alles zwischen `CMS-BLOCK START`
   Bedingungen eintragen.
 - Produktbilder kommen direkt aus dem Shop-CDN (`cdn02.plentyone.com`), Preise sind bewusst nicht
   eingebaut.
-- Der Block bricht aus schmalen Inhaltsspalten aus (bis 1340 px, inline per `width:min(…)` und
-  negativem `margin-left`), damit er auch in Shopify-Themes mit „schmaler“ Seitenbreite voll wirkt.
+- Der Block füllt vollbreite Container aus und bricht aus schmalen Inhaltsspalten auf bis zu 1340 px
+  aus (inline per `width:max(…)` und negativem `margin-left`).
 
 ### Shopify
 
