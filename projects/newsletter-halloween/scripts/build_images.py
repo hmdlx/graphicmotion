@@ -20,7 +20,7 @@ import sys
 import tempfile
 
 import numpy as np
-from PIL import Image, ImageChops, ImageDraw
+from PIL import Image, ImageChops, ImageDraw, ImageFilter
 
 NAVY = (14, 34, 52)
 TILE_GREY = (244, 246, 248)          # #f4f6f8, Kachelgrund wie auf homedeluxe.de
@@ -29,9 +29,11 @@ HERO_SRC = os.path.join("hero", "wohnzimmer-clown-hoodie.webp")
 FADE_TOP, FADE_BOTTOM = 0.16, 0.20    # Anteil der Bildhöhe, der in Navy übergeht
 CLOWN_CROP = (700, 200, 1300, 600)    # Clown im Hero-Bild (1774 × 887) für das Pop-up
 HERO_VIDEO = os.path.join("hero", "clown-hervor.mp4")
-GIF_W, GIF_FPS = 640, 12              # GIF in 1x: 2x wäre für E-Mail zu schwer
+GIF_W, GIF_FPS = 640, 10              # GIF in 1x: 2x wäre für E-Mail zu schwer
 GIF_HOLD, GIF_GHOST = 2.5, 0.6        # Sekunden: Clown sitzt / verblasst wie ein Geist
-GIF_COLORS = 160
+GIF_COLORS = 128
+GIF_MOTION_X = (248, 416)             # nur hier klettert der Clown (Pixel im 640er GIF)
+GIF_MOTION_MIN = 18                   # mittlere Änderung je 8-px-Block, ab der er als bewegt gilt
 
 
 def save(img, path, quality=86):
@@ -56,17 +58,65 @@ def navy_fade(img, top=FADE_TOP, bottom=FADE_BOTTOM):
     return Image.fromarray(out.round().astype(np.uint8))
 
 
+def motion_mask(frames, block=8, grow=2, feather=6):
+    """Weiche Maske um den Bereich, in dem sich der Clown bewegt.
+
+    Das KI-Video rauscht leicht im ganzen Bild (Pflanzen, Kompression); ohne Maske müsste das GIF
+    fast jedes Bild komplett speichern. Gesucht wird die größte zusammenhängende Fläche von
+    8-px-Blöcken, die sich gegenüber dem ersten Bild deutlich ändern – nur innerhalb von
+    GIF_MOTION_X, damit Spiegelungen im Fenster nicht mitwandern."""
+    ref = np.asarray(frames[0], float)
+    acc = np.zeros(ref.shape[:2])
+    for f in frames[1:]:
+        acc = np.maximum(acc, np.abs(np.asarray(f, float) - ref).mean(axis=2))
+    h, w = acc.shape
+    bh, bw = h // block, w // block
+    moving = acc[:bh * block, :bw * block].reshape(bh, block, bw, block).mean(axis=(1, 3)) > GIF_MOTION_MIN
+    moving[:, :GIF_MOTION_X[0] // block] = False
+    moving[:, GIF_MOTION_X[1] // block:] = False
+
+    seen, best = np.zeros_like(moving), []
+    for y0, x0 in zip(*np.nonzero(moving)):
+        if seen[y0, x0]:
+            continue
+        comp, stack = [], [(y0, x0)]
+        seen[y0, x0] = True
+        while stack:
+            y, x = stack.pop()
+            comp.append((y, x))
+            for ny in range(max(y - 1, 0), min(y + 2, bh)):
+                for nx in range(max(x - 1, 0), min(x + 2, bw)):
+                    if moving[ny, nx] and not seen[ny, nx]:
+                        seen[ny, nx] = True
+                        stack.append((ny, nx))
+        best = max(best, comp, key=len)
+
+    m = np.zeros((bh, bw), bool)
+    m[tuple(np.array(best).T)] = True
+    for _ in range(grow):
+        g = m.copy()
+        g[1:] |= m[:-1]; g[:-1] |= m[1:]; g[:, 1:] |= m[:, :-1]; g[:, :-1] |= m[:, 1:]
+        m = g
+    full = np.zeros((h, w), np.uint8)
+    full[:bh * block, :bw * block] = np.kron(m, np.ones((block, block))) * 255
+    return np.asarray(Image.fromarray(full).filter(ImageFilter.GaussianBlur(feather)), float)[..., None] / 255
+
+
 def build_hero_gif(src, out):
     """Hero-GIF aus dem KI-Video. Reihenfolge: Clown sitzt (Outlook zeigt nur dieses erste Bild),
     verblasst wie ein Geist, das leere Sofa, er kommt hinter dem Sofa hervor und setzt sich –
-    das Ende passt wieder an den Anfang, die Schleife läuft ohne Sprung."""
+    das Ende passt wieder an den Anfang, die Schleife läuft ohne Sprung. Außerhalb des Clowns bleibt
+    der Hintergrund stehen (motion_mask), damit das GIF klein bleibt."""
     video = os.path.join(src, HERO_VIDEO)
     if not os.path.exists(video):
         return False
     with tempfile.TemporaryDirectory() as tmp:
         subprocess.run(["ffmpeg", "-v", "error", "-i", video, "-vf", f"fps={GIF_FPS},scale={GIF_W}:-2:flags=lanczos",
                         os.path.join(tmp, "v%04d.png")], check=True)
-        frames = [navy_fade(Image.open(f)) for f in sorted(glob.glob(os.path.join(tmp, "v*.png")))]
+        raw = [Image.open(f).convert("RGB") for f in sorted(glob.glob(os.path.join(tmp, "v*.png")))]
+        mask, still = motion_mask(raw), np.asarray(raw[0], float)
+        frames = [navy_fade(Image.fromarray((np.asarray(f, float) * mask + still * (1 - mask)).round().astype(np.uint8)))
+                  for f in raw]
         seated, empty = frames[-1], frames[0]
         n = round(GIF_GHOST * GIF_FPS)
         seq = ([seated] * round(GIF_HOLD * GIF_FPS)

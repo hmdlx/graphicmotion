@@ -37,10 +37,14 @@ und läuft wieder in Navy aus.
    wurde nur der Bereich um den Clown, der Rest ist das Original, damit Start und Ende deckungsgleich sind.
 3. Video vom leeren Sofa bis zum Vorgabebild (FLUX 3 Video über Higgsfield, 5 s, 720p):
    `source/hero/clown-hervor.mp4`.
-4. `build_images.py` macht daraus `hero_clown.gif` (640 px, 12 fps, Navy-Verlauf oben/unten):
-   Clown sitzt → verblasst wie ein Geist → leeres Sofa → er kommt hinter dem Sofa hervor und
-   setzt sich. Das erste Bild zeigt den sitzenden Clown, weil Outlook für Windows nur das erste
-   Bild eines GIFs anzeigt.
+4. `build_images.py` macht daraus `hero_clown.gif` (640 × 320 px, 10 fps, 128 Farben, rund 400 KB,
+   Navy-Verlauf oben/unten): Clown sitzt → verblasst wie ein Geist → leeres Sofa → er kommt
+   hinter dem Sofa hervor und setzt sich. Das erste Bild zeigt den sitzenden Clown, weil Outlook
+   für Windows nur das erste Bild eines GIFs anzeigt.
+5. Komprimierung: Das KI-Video rauscht leicht im ganzen Bild, das GIF müsste sonst fast jedes Bild
+   komplett speichern (1,8 MB). Außerhalb des Bereichs, in dem sich der Clown bewegt, wird deshalb
+   der Hintergrund eingefroren (`motion_mask`, weiche Kante); das GIF speichert pro Bild nur noch
+   den Clown-Ausschnitt. Stellschrauben oben im Skript: `GIF_FPS`, `GIF_COLORS`, `GIF_MOTION_X`.
 
 ## Klick → Pop-up
 
