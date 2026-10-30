@@ -34,10 +34,12 @@ Preise sind bewusst nicht eingebaut, weil sie sich häufig ändern.
 | Seite | Inhalt |
 |---|---|
 | `landingpages/halloween-clown/index.html` | Newsletter-Halloween-Suchspiel: 6 Produkte, ein gruseliger Clown öffnet ein Pop-up mit 50 € Gutschein ab 500 € Einkaufswert |
+| `landingpages/halloween-clown/cms-block.html` | nur der CMS-Block, ohne `<html>`/`<head>`/`<body>` – diese Datei komplett ins CMS-Feld einfügen |
 | `landingpages/halloween-clown/iframe.html` | dieselbe Seite als selbsttragendes iframe zum Einbetten (siehe unten) |
 
 Die Seite kommt ohne Style-Tag aus: alle Styles stehen inline, damit der Block direkt in einen
-CMS-Block (Plenty, Shopify) passt. Kopiert wird alles zwischen `CMS-BLOCK START` und `CMS-BLOCK ENDE`.
+CMS-Block (Plenty, Shopify) passt. Ins CMS kommt `cms-block.html` (komplett); das ist derselbe Inhalt wie
+zwischen `CMS-BLOCK START` und `CMS-BLOCK ENDE` in `index.html`, nur ohne Dokument-Tags wie `</body>`.
 
 - Look: hell und ruhig im Aufbau der Apple-„Why Mac“-Seite (Referenz vom Kunden). Farben vor allem
   Navy `#0f2334` und Weiß `#fefefe`, Orange `#ff6a00` nur als Akzent, Poppins 500–700, alle Ecken und Buttons scharfkantig (CI).
@@ -63,10 +65,15 @@ CMS-Block (Plenty, Shopify) passt. Kopiert wird alles zwischen `CMS-BLOCK START`
   Bedingungen eintragen.
 - Produktbilder kommen direkt aus dem Shop-CDN (`cdn02.plentyone.com`), Preise sind bewusst nicht
   eingebaut.
-- Der Block füllt vollbreite Container aus und bricht aus schmalen Inhaltsspalten auf bis zu 1340 px
-  aus (inline per `width:max(…)` und negativem `margin-left`).
+- Volle Seitenbreite: Der Block bricht per `width:100vw` und `margin-left:calc(50% - 50vw)` aus jeder
+  zentrierten Inhaltsspalte aus. Das Script setzt danach die exakte Breite ohne Scrollbalken und gleicht
+  einen Versatz aus, damit kein horizontaler Scrollbalken entsteht.
+- Überschriften sind `div` mit `role="heading"` und `aria-level` statt `h1`–`h3`, damit Theme-Stile für
+  Überschriften (z. B. Unterstriche in plentyShop) nicht greifen.
+- Das Script initialisiert sich sofort und nochmal bei `DOMContentLoaded`/`load`. So funktioniert es auch,
+  wenn plentyShop (Vue) den Inhalt neu rendert und das `<script>`-Element dabei verwirft.
 
-#### Als iframe einbetten
+### Als iframe einbetten
 
 `landingpages/halloween-clown/iframe.html` enthält die LP als `<iframe srcdoc="…">`: der komplette
 Inhalt steckt im iframe-Code, es wird keine URL geladen. Das ist nötig, weil Shopify das Einbetten
@@ -80,7 +87,8 @@ Gutschein-Pop-up in den sichtbaren Bereich und schreibt das Event `halloween_clo
 (z. B. wenn die Zielseite iframes in einer Sandbox ausführt) hat das iframe eine feste Höhe von 3600 px.
 
 ```bash
-python3 -I landingpages/halloween-clown/build_iframe.py   # -> landingpages/halloween-clown/iframe.html
+python3 -I landingpages/halloween-clown/build_iframe.py      # -> landingpages/halloween-clown/iframe.html
+python3 -I landingpages/halloween-clown/build_cms_block.py   # -> landingpages/halloween-clown/cms-block.html
 ```
 
 ## Shopify
@@ -105,7 +113,7 @@ Die Admin-API darf das Live-Theme nicht beschreiben. Die Dateien liegen deshalb 
 „Home Deluxe Black Friday + Halloween-LP“ (Vorschau: `https://1skjwk-xt.myshopify.com/?preview_theme_id=209970823493`).
 Fürs Live-Theme diese Kopie veröffentlichen. Solange das Live-Theme das
 Template nicht kennt, zeigt Shopify die Seite mit dem Standard-Template (mit Header und Titel); der
-Block bricht dann aus der schmalen Spalte auf bis zu 1340 px aus.
+Block bricht dann aus der schmalen Spalte auf volle Breite aus.
 
 Den Seiteninhalt erzeugt:
 

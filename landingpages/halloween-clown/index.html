@@ -12,10 +12,12 @@
      Alles zwischen START und ENDE in den CMS-Block kopieren.
      Kein Style-Tag: alle Styles stehen inline, alle Animationen sind SVG (SMIL).
      Mobile first: Grundgrößen für ~390 px, nach oben skaliert per clamp() und auto-fit-Grids.
+     Volle Seitenbreite (100vw), auch aus einer schmalen Inhaltsspalte heraus.
+     Überschriften sind div mit role="heading", damit Theme-Stile (Unterstriche) nicht greifen.
      Farben: Navy #0f2334, Weiß #fefefe, Orange #ff6a00 nur als Akzent.
      Gutscheincode ändern: unten "CLOWN50" ersetzen (id="hdx-gs-code"). -->
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&amp;display=swap">
-<div id="hdx-halloween-lp" style="box-sizing:border-box;width:max(100%,min(1340px,calc(100vw - 32px)));max-width:none;margin-left:calc((100% - max(100%,min(1340px,calc(100vw - 32px)))) / 2);margin-right:0;overflow:hidden;font-family:'Poppins',Arial,Helvetica,sans-serif;color:#0f2334;background:#fefefe;line-height:1.5;font-size:17px;">
+<div id="hdx-halloween-lp" style="box-sizing:border-box;width:100vw;max-width:100vw;margin-left:calc(50% - 50vw);margin-right:0;overflow:hidden;font-family:'Poppins',Arial,Helvetica,sans-serif;color:#0f2334;background:#fefefe;line-height:1.5;font-size:17px;">
 
   <!-- Gemeinsame Definitionen (Fledermaus, Ballon, Clown, Augen, Nebel) -->
   <svg data-hdx-anim aria-hidden="true" focusable="false" style="position:absolute;width:0;height:0;overflow:hidden;">
@@ -64,7 +66,7 @@
     <svg data-hdx-anim viewBox="0 0 1200 300" preserveAspectRatio="none" aria-hidden="true" focusable="false" style="position:absolute;left:0;top:0;width:100%;height:260px;pointer-events:none;"><use href="#hdx-fog" transform="matrix(1 0 0 -1 0 300)"/></svg>
     <div style="position:relative;display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:18px 40px;max-width:1400px;margin:0 auto;padding:clamp(28px,4.5vw,56px) clamp(20px,4vw,48px) clamp(20px,3vw,32px);box-sizing:border-box;">
       <div>
-        <h1 style="font-family:'Poppins',Arial,Helvetica,sans-serif;text-transform:none;margin:0;font-size:clamp(52px,10vw,112px);line-height:.92;font-weight:700;letter-spacing:-.045em;color:#fefefe;">Finde den Clown.</h1>
+        <div role="heading" aria-level="1" style="font-family:'Poppins',Arial,Helvetica,sans-serif;text-transform:none;margin:0;font-size:clamp(52px,10vw,112px);line-height:.92;font-weight:700;letter-spacing:-.045em;color:#fefefe;">Finde den Clown.</div>
         <p style="margin:clamp(12px,1.6vw,18px) 0 0;max-width:560px;font-size:clamp(17px,2vw,20px);line-height:1.45;font-weight:500;color:#c9d5e1;text-wrap:balance;">Er ist schon da – versteckt in einem unserer Produktbilder. Klick ihn an.</p>
       </div>
       <div style="position:relative;display:flex;align-items:center;gap:14px;padding:14px 20px 14px 18px;border:2px dashed rgba(254,254,254,.45);box-sizing:border-box;">
@@ -89,16 +91,16 @@
   <!-- ================= 2 · PRODUKTE: hier versteckt sich der Clown ================= -->
   <section id="hdx-halloween-produkte" style="background:#fefefe;">
     <div style="max-width:1240px;margin:0 auto;padding:clamp(48px,7vw,80px) 16px 0;box-sizing:border-box;text-align:center;">
-      <h2 style="font-family:'Poppins',Arial,Helvetica,sans-serif;text-transform:none;margin:0 0 10px;font-size:clamp(50px,13vw,120px);line-height:.95;font-weight:700;letter-spacing:-.045em;color:#0f2334;">Wo steckt er?</h2>
+      <div role="heading" aria-level="2" style="font-family:'Poppins',Arial,Helvetica,sans-serif;text-transform:none;margin:0 0 10px;font-size:clamp(50px,13vw,120px);line-height:.95;font-weight:700;letter-spacing:-.045em;color:#0f2334;">Wo steckt er?</div>
       <p style="margin:0 auto clamp(28px,4vw,44px);max-width:560px;font-size:clamp(17px,1.9vw,20px);line-height:1.5;font-weight:500;color:#51606e;text-wrap:balance;">In einem dieser Bilder lugt er hervor. Klick ihn an.</p>
       <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(42%,300px),1fr));gap:clamp(28px,4vw,44px) clamp(14px,2vw,24px);">
-        <div style="text-align:center;"><div style="position:relative;overflow:hidden;border-radius:0;background:#f1f3f5;"><a href="https://www.homedeluxe.de/outdoor-fasssauna-lahti-deluxe-l_20005_48670/" style="display:block;"><img src="https://cdn02.plentyone.com/emoguafh21bo/item/images/20005/full/48670-Home-Deluxe-Outdoor-Sauna-Lahti-Deluxe-L-Ambiente-01-neu.jpg" alt="Outdoor Fasssauna LAHTI DELUXE L im Garten am Abend" width="1000" height="1000" loading="lazy" style="display:block;width:100%;height:auto;aspect-ratio:1/1;object-fit:cover;border:0;"></a></div><p style="margin:14px 0 2px;font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#6b7785;">Outdoor Fasssauna</p><h3 style="font-family:'Poppins',Arial,Helvetica,sans-serif;text-transform:none;margin:0;font-size:clamp(18px,2.2vw,22px);line-height:1.2;font-weight:700;letter-spacing:-.01em;color:#0f2334;">LAHTI DELUXE L</h3><p style="margin:4px 0 0;font-size:14px;line-height:1.45;color:#51606e;">Fasssauna für 4 Personen</p><a href="https://www.homedeluxe.de/outdoor-fasssauna-lahti-deluxe-l_20005_48670/" style="display:inline-block;margin-top:12px;padding:8px 18px;border-radius:0;background:#0f2334;color:#fefefe;font-size:14px;font-weight:600;text-decoration:none;">Ansehen</a></div>
-        <div style="text-align:center;"><div style="position:relative;overflow:hidden;border-radius:0;background:#f1f3f5;"><a href="https://www.homedeluxe.de/outdoor-whirlpool-beach-mit-treppe-und-thermoabdeckung_7811_5979/" style="display:block;"><img src="https://cdn02.plentyone.com/emoguafh21bo/item/images/7811/full/beach-1.jpg" alt="Outdoor Whirlpool BEACH auf einer Holzterrasse" width="1000" height="1000" loading="lazy" style="display:block;width:100%;height:auto;aspect-ratio:1/1;object-fit:cover;border:0;"></a></div><p style="margin:14px 0 2px;font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#6b7785;">Outdoor Whirlpool</p><h3 style="font-family:'Poppins',Arial,Helvetica,sans-serif;text-transform:none;margin:0;font-size:clamp(18px,2.2vw,22px);line-height:1.2;font-weight:700;letter-spacing:-.01em;color:#0f2334;">BEACH</h3><p style="margin:4px 0 0;font-size:14px;line-height:1.45;color:#51606e;">Mit Treppe und Thermoabdeckung</p><a href="https://www.homedeluxe.de/outdoor-whirlpool-beach-mit-treppe-und-thermoabdeckung_7811_5979/" style="display:inline-block;margin-top:12px;padding:8px 18px;border-radius:0;background:#0f2334;color:#fefefe;font-size:14px;font-weight:600;text-decoration:none;">Ansehen</a></div>
+        <div style="text-align:center;"><div style="position:relative;overflow:hidden;border-radius:0;background:#f1f3f5;"><a href="https://www.homedeluxe.de/outdoor-fasssauna-lahti-deluxe-l_20005_48670/" style="display:block;"><img src="https://cdn02.plentyone.com/emoguafh21bo/item/images/20005/full/48670-Home-Deluxe-Outdoor-Sauna-Lahti-Deluxe-L-Ambiente-01-neu.jpg" alt="Outdoor Fasssauna LAHTI DELUXE L im Garten am Abend" width="1000" height="1000" loading="lazy" style="display:block;width:100%;height:auto;aspect-ratio:1/1;object-fit:cover;border:0;"></a></div><p style="margin:14px 0 2px;font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#6b7785;">Outdoor Fasssauna</p><div role="heading" aria-level="3" style="font-family:'Poppins',Arial,Helvetica,sans-serif;text-transform:none;margin:0;font-size:clamp(18px,2.2vw,22px);line-height:1.2;font-weight:700;letter-spacing:-.01em;color:#0f2334;">LAHTI DELUXE L</div><p style="margin:4px 0 0;font-size:14px;line-height:1.45;color:#51606e;">Fasssauna für 4 Personen</p><a href="https://www.homedeluxe.de/outdoor-fasssauna-lahti-deluxe-l_20005_48670/" style="display:inline-block;margin-top:12px;padding:8px 18px;border-radius:0;background:#0f2334;color:#fefefe;font-size:14px;font-weight:600;text-decoration:none;">Ansehen</a></div>
+        <div style="text-align:center;"><div style="position:relative;overflow:hidden;border-radius:0;background:#f1f3f5;"><a href="https://www.homedeluxe.de/outdoor-whirlpool-beach-mit-treppe-und-thermoabdeckung_7811_5979/" style="display:block;"><img src="https://cdn02.plentyone.com/emoguafh21bo/item/images/7811/full/beach-1.jpg" alt="Outdoor Whirlpool BEACH auf einer Holzterrasse" width="1000" height="1000" loading="lazy" style="display:block;width:100%;height:auto;aspect-ratio:1/1;object-fit:cover;border:0;"></a></div><p style="margin:14px 0 2px;font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#6b7785;">Outdoor Whirlpool</p><div role="heading" aria-level="3" style="font-family:'Poppins',Arial,Helvetica,sans-serif;text-transform:none;margin:0;font-size:clamp(18px,2.2vw,22px);line-height:1.2;font-weight:700;letter-spacing:-.01em;color:#0f2334;">BEACH</div><p style="margin:4px 0 0;font-size:14px;line-height:1.45;color:#51606e;">Mit Treppe und Thermoabdeckung</p><a href="https://www.homedeluxe.de/outdoor-whirlpool-beach-mit-treppe-und-thermoabdeckung_7811_5979/" style="display:inline-block;margin-top:12px;padding:8px 18px;border-radius:0;background:#0f2334;color:#fefefe;font-size:14px;font-weight:600;text-decoration:none;">Ansehen</a></div>
         <div style="text-align:center;"><div style="position:relative;overflow:hidden;border-radius:0;background:#f1f3f5;"><a href="https://www.homedeluxe.de/massagesessel-dunes-schwarz_20321_49238/" style="display:block;"><img src="https://cdn02.plentyone.com/emoguafh21bo/item/images/20321/full/20321-Home-Deluxe-Massagesessel-DUNES-Schwarz-Ambiente01_1.jpg" alt="Massagesessel DUNES in Schwarz im Wohnzimmer" width="1000" height="1000" loading="lazy" style="display:block;width:100%;height:auto;aspect-ratio:1/1;object-fit:cover;border:0;"></a><!-- Der versteckte Clown: lugt mit blauem Ballon von rechts ins Bild. Klick öffnet das Gutschein-Pop-up (Popover-API, ohne JavaScript) -->
-<button type="button" popovertarget="hdx-clown-gutschein" aria-label="Gruseliger Clown mit Ballon – klick mich, wenn du dich traust" title="Buh!" style="position:absolute;top:7%;right:-6px;width:46px;height:72px;margin:0;padding:0;border:0;border-radius:0;background:transparent;cursor:pointer;line-height:0;"><svg data-hdx-anim viewBox="0 0 64 100" width="46" height="72" aria-hidden="true" focusable="false" style="display:block;overflow:visible;"><g><animateTransform attributeName="transform" type="translate" values="30 0;0 0;0 0;30 0;30 0" keyTimes="0;.12;.78;.88;1" dur="8s" repeatCount="indefinite"/><g><animateTransform attributeName="transform" type="rotate" values="0 40 96;-7 40 96;-7 40 96;0 40 96;0 40 96" keyTimes="0;.25;.6;.7;1" dur="8s" repeatCount="indefinite"/><use href="#hdx-clown"/></g></g></svg></button></div><p style="margin:14px 0 2px;font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#6b7785;">Massagesessel</p><h3 style="font-family:'Poppins',Arial,Helvetica,sans-serif;text-transform:none;margin:0;font-size:clamp(18px,2.2vw,22px);line-height:1.2;font-weight:700;letter-spacing:-.01em;color:#0f2334;">DUNES Schwarz</h3><p style="margin:4px 0 0;font-size:14px;line-height:1.45;color:#51606e;">Massage auf Knopfdruck</p><a href="https://www.homedeluxe.de/massagesessel-dunes-schwarz_20321_49238/" style="display:inline-block;margin-top:12px;padding:8px 18px;border-radius:0;background:#0f2334;color:#fefefe;font-size:14px;font-weight:600;text-decoration:none;">Ansehen</a></div>
-        <div style="text-align:center;"><div style="position:relative;overflow:hidden;border-radius:0;background:#f1f3f5;"><a href="https://www.homedeluxe.de/saunen-und-infrarotkabinen/kombisauna-everest_29978_75501/" style="display:block;"><img src="https://cdn02.plentyone.com/emoguafh21bo/item/images/29978/full/75501-home-deluxe-kombisauna-EVEREST-l-ambiente-01.jpg" alt="Kombisauna EVEREST L mit Glasfront" width="1000" height="1000" loading="lazy" style="display:block;width:100%;height:auto;aspect-ratio:1/1;object-fit:cover;border:0;"></a></div><p style="margin:14px 0 2px;font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#6b7785;">Kombisauna</p><h3 style="font-family:'Poppins',Arial,Helvetica,sans-serif;text-transform:none;margin:0;font-size:clamp(18px,2.2vw,22px);line-height:1.2;font-weight:700;letter-spacing:-.01em;color:#0f2334;">EVEREST L</h3><p style="margin:4px 0 0;font-size:14px;line-height:1.45;color:#51606e;">Sauna und Infrarot in einer Kabine</p><a href="https://www.homedeluxe.de/saunen-und-infrarotkabinen/kombisauna-everest_29978_75501/" style="display:inline-block;margin-top:12px;padding:8px 18px;border-radius:0;background:#0f2334;color:#fefefe;font-size:14px;font-weight:600;text-decoration:none;">Ansehen</a></div>
-        <div style="text-align:center;"><div style="position:relative;overflow:hidden;border-radius:0;background:#f1f3f5;"><a href="https://www.homedeluxe.de/infrarotkabine-redsun-deluxe-m_14914_23346/" style="display:block;"><img src="https://cdn02.plentyone.com/emoguafh21bo/item/images/14914/full/23346-Home-Deluxe-Infrarotkabine-Redsun-Deluxe-M-Ambiente-01.jpg" alt="Infrarotkabine REDSUN DELUXE M in einem hellen Raum" width="1000" height="1000" loading="lazy" style="display:block;width:100%;height:auto;aspect-ratio:1/1;object-fit:cover;border:0;"></a></div><p style="margin:14px 0 2px;font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#6b7785;">Infrarotkabine</p><h3 style="font-family:'Poppins',Arial,Helvetica,sans-serif;text-transform:none;margin:0;font-size:clamp(18px,2.2vw,22px);line-height:1.2;font-weight:700;letter-spacing:-.01em;color:#0f2334;">REDSUN DELUXE M</h3><p style="margin:4px 0 0;font-size:14px;line-height:1.45;color:#51606e;">Infrarotkabine für 2 Personen</p><a href="https://www.homedeluxe.de/infrarotkabine-redsun-deluxe-m_14914_23346/" style="display:inline-block;margin-top:12px;padding:8px 18px;border-radius:0;background:#0f2334;color:#fefefe;font-size:14px;font-weight:600;text-decoration:none;">Ansehen</a></div>
-        <div style="text-align:center;"><div style="position:relative;overflow:hidden;border-radius:0;background:#f1f3f5;"><a href="https://www.homedeluxe.de/elektrokamin-calor-mit-flammeneffekt_15586_25159/" style="display:block;"><img src="https://cdn02.plentyone.com/emoguafh21bo/item/images/15586/full/25159-Home-Deluxe-Elektrokamin-Calor-Mit-Flammeneffekt-Ambiente01.jpg" alt="Elektrokamin CALOR mit Flammeneffekt im Wohnzimmer" width="1000" height="1000" loading="lazy" style="display:block;width:100%;height:auto;aspect-ratio:1/1;object-fit:cover;border:0;"></a></div><p style="margin:14px 0 2px;font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#6b7785;">Elektrokamin</p><h3 style="font-family:'Poppins',Arial,Helvetica,sans-serif;text-transform:none;margin:0;font-size:clamp(18px,2.2vw,22px);line-height:1.2;font-weight:700;letter-spacing:-.01em;color:#0f2334;">CALOR</h3><p style="margin:4px 0 0;font-size:14px;line-height:1.45;color:#51606e;">Elektrokamin mit Flammeneffekt</p><a href="https://www.homedeluxe.de/elektrokamin-calor-mit-flammeneffekt_15586_25159/" style="display:inline-block;margin-top:12px;padding:8px 18px;border-radius:0;background:#0f2334;color:#fefefe;font-size:14px;font-weight:600;text-decoration:none;">Ansehen</a></div>
+<button type="button" popovertarget="hdx-clown-gutschein" aria-label="Gruseliger Clown mit Ballon – klick mich, wenn du dich traust" title="Buh!" style="position:absolute;top:7%;right:-6px;width:46px;height:72px;margin:0;padding:0;border:0;border-radius:0;background:transparent;cursor:pointer;line-height:0;"><svg data-hdx-anim viewBox="0 0 64 100" width="46" height="72" aria-hidden="true" focusable="false" style="display:block;overflow:visible;"><g><animateTransform attributeName="transform" type="translate" values="30 0;0 0;0 0;30 0;30 0" keyTimes="0;.12;.78;.88;1" dur="8s" repeatCount="indefinite"/><g><animateTransform attributeName="transform" type="rotate" values="0 40 96;-7 40 96;-7 40 96;0 40 96;0 40 96" keyTimes="0;.25;.6;.7;1" dur="8s" repeatCount="indefinite"/><use href="#hdx-clown"/></g></g></svg></button></div><p style="margin:14px 0 2px;font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#6b7785;">Massagesessel</p><div role="heading" aria-level="3" style="font-family:'Poppins',Arial,Helvetica,sans-serif;text-transform:none;margin:0;font-size:clamp(18px,2.2vw,22px);line-height:1.2;font-weight:700;letter-spacing:-.01em;color:#0f2334;">DUNES Schwarz</div><p style="margin:4px 0 0;font-size:14px;line-height:1.45;color:#51606e;">Massage auf Knopfdruck</p><a href="https://www.homedeluxe.de/massagesessel-dunes-schwarz_20321_49238/" style="display:inline-block;margin-top:12px;padding:8px 18px;border-radius:0;background:#0f2334;color:#fefefe;font-size:14px;font-weight:600;text-decoration:none;">Ansehen</a></div>
+        <div style="text-align:center;"><div style="position:relative;overflow:hidden;border-radius:0;background:#f1f3f5;"><a href="https://www.homedeluxe.de/saunen-und-infrarotkabinen/kombisauna-everest_29978_75501/" style="display:block;"><img src="https://cdn02.plentyone.com/emoguafh21bo/item/images/29978/full/75501-home-deluxe-kombisauna-EVEREST-l-ambiente-01.jpg" alt="Kombisauna EVEREST L mit Glasfront" width="1000" height="1000" loading="lazy" style="display:block;width:100%;height:auto;aspect-ratio:1/1;object-fit:cover;border:0;"></a></div><p style="margin:14px 0 2px;font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#6b7785;">Kombisauna</p><div role="heading" aria-level="3" style="font-family:'Poppins',Arial,Helvetica,sans-serif;text-transform:none;margin:0;font-size:clamp(18px,2.2vw,22px);line-height:1.2;font-weight:700;letter-spacing:-.01em;color:#0f2334;">EVEREST L</div><p style="margin:4px 0 0;font-size:14px;line-height:1.45;color:#51606e;">Sauna und Infrarot in einer Kabine</p><a href="https://www.homedeluxe.de/saunen-und-infrarotkabinen/kombisauna-everest_29978_75501/" style="display:inline-block;margin-top:12px;padding:8px 18px;border-radius:0;background:#0f2334;color:#fefefe;font-size:14px;font-weight:600;text-decoration:none;">Ansehen</a></div>
+        <div style="text-align:center;"><div style="position:relative;overflow:hidden;border-radius:0;background:#f1f3f5;"><a href="https://www.homedeluxe.de/infrarotkabine-redsun-deluxe-m_14914_23346/" style="display:block;"><img src="https://cdn02.plentyone.com/emoguafh21bo/item/images/14914/full/23346-Home-Deluxe-Infrarotkabine-Redsun-Deluxe-M-Ambiente-01.jpg" alt="Infrarotkabine REDSUN DELUXE M in einem hellen Raum" width="1000" height="1000" loading="lazy" style="display:block;width:100%;height:auto;aspect-ratio:1/1;object-fit:cover;border:0;"></a></div><p style="margin:14px 0 2px;font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#6b7785;">Infrarotkabine</p><div role="heading" aria-level="3" style="font-family:'Poppins',Arial,Helvetica,sans-serif;text-transform:none;margin:0;font-size:clamp(18px,2.2vw,22px);line-height:1.2;font-weight:700;letter-spacing:-.01em;color:#0f2334;">REDSUN DELUXE M</div><p style="margin:4px 0 0;font-size:14px;line-height:1.45;color:#51606e;">Infrarotkabine für 2 Personen</p><a href="https://www.homedeluxe.de/infrarotkabine-redsun-deluxe-m_14914_23346/" style="display:inline-block;margin-top:12px;padding:8px 18px;border-radius:0;background:#0f2334;color:#fefefe;font-size:14px;font-weight:600;text-decoration:none;">Ansehen</a></div>
+        <div style="text-align:center;"><div style="position:relative;overflow:hidden;border-radius:0;background:#f1f3f5;"><a href="https://www.homedeluxe.de/elektrokamin-calor-mit-flammeneffekt_15586_25159/" style="display:block;"><img src="https://cdn02.plentyone.com/emoguafh21bo/item/images/15586/full/25159-Home-Deluxe-Elektrokamin-Calor-Mit-Flammeneffekt-Ambiente01.jpg" alt="Elektrokamin CALOR mit Flammeneffekt im Wohnzimmer" width="1000" height="1000" loading="lazy" style="display:block;width:100%;height:auto;aspect-ratio:1/1;object-fit:cover;border:0;"></a></div><p style="margin:14px 0 2px;font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#6b7785;">Elektrokamin</p><div role="heading" aria-level="3" style="font-family:'Poppins',Arial,Helvetica,sans-serif;text-transform:none;margin:0;font-size:clamp(18px,2.2vw,22px);line-height:1.2;font-weight:700;letter-spacing:-.01em;color:#0f2334;">CALOR</div><p style="margin:4px 0 0;font-size:14px;line-height:1.45;color:#51606e;">Elektrokamin mit Flammeneffekt</p><a href="https://www.homedeluxe.de/elektrokamin-calor-mit-flammeneffekt_15586_25159/" style="display:inline-block;margin-top:12px;padding:8px 18px;border-radius:0;background:#0f2334;color:#fefefe;font-size:14px;font-weight:600;text-decoration:none;">Ansehen</a></div>
       </div>
       <p style="margin:clamp(36px,5vw,56px) 0 0;font-size:16px;line-height:1.8;"><a href="https://www.homedeluxe.de/saunen-infrarotkabinen/" style="display:inline-block;margin:0 14px;font-weight:600;color:#0f2334;text-decoration:none;white-space:nowrap;">Saunen &amp; Infrarotkabinen <span aria-hidden="true">&rsaquo;</span></a> <a href="https://www.homedeluxe.de/garten/whirlpool-outdoor/" style="display:inline-block;margin:0 14px;font-weight:600;color:#0f2334;text-decoration:none;white-space:nowrap;">Outdoor Whirlpools <span aria-hidden="true">&rsaquo;</span></a> <a href="https://www.homedeluxe.de/wohnen/massagesessel/" style="display:inline-block;margin:0 14px;font-weight:600;color:#0f2334;text-decoration:none;white-space:nowrap;">Massagesessel <span aria-hidden="true">&rsaquo;</span></a> <a href="https://www.homedeluxe.de/wohnen/klimaanlagen-und-heizung/" style="display:inline-block;margin:0 14px;font-weight:600;color:#0f2334;text-decoration:none;white-space:nowrap;">Klimaanlagen &amp; Heizung <span aria-hidden="true">&rsaquo;</span></a></p>
     </div>
@@ -123,7 +125,7 @@
         <path d="M4 20 Q32 -6 60 20 Q32 46 4 20 Z" fill="none" stroke="#fefefe" stroke-width="3" stroke-linejoin="round"/>
         <circle cx="32" cy="20" r="8" fill="#ff6a00"><animate attributeName="cx" values="32;24;24;40;40;32" keyTimes="0;.2;.4;.6;.8;1" dur="5s" repeatCount="indefinite"/></circle>
       </svg>
-      <h2 style="font-family:'Poppins',Arial,Helvetica,sans-serif;text-transform:none;margin:0 0 14px;font-size:clamp(44px,11vw,104px);line-height:.95;font-weight:700;letter-spacing:-.04em;color:#fefefe;">Noch nicht<br>gefunden?</h2>
+      <div role="heading" aria-level="2" style="font-family:'Poppins',Arial,Helvetica,sans-serif;text-transform:none;margin:0 0 14px;font-size:clamp(44px,11vw,104px);line-height:.95;font-weight:700;letter-spacing:-.04em;color:#fefefe;">Noch nicht<br>gefunden?</div>
       <p style="margin:0 auto;max-width:600px;font-size:clamp(17px,2vw,20px);line-height:1.55;color:#c9d5e1;">Tipp: Blauer Ballon, orange Haare. Er lugt dort hervor, wo man sich entspannt zurücklehnt.</p>
       <a href="#hdx-halloween-produkte" style="display:inline-flex;align-items:center;gap:8px;margin-top:22px;padding:12px 22px;border-radius:0;background:#fefefe;color:#0f2334;font-size:16px;font-weight:600;text-decoration:none;">Nochmal suchen <span aria-hidden="true">&uarr;</span></a>
     </div>
@@ -133,9 +135,9 @@
   <section style="background:#fefefe;">
     <div style="max-width:1100px;margin:0 auto;padding:clamp(48px,7vw,88px) 20px clamp(40px,6vw,64px);box-sizing:border-box;">
       <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:clamp(28px,4vw,40px);border-top:1px solid #e3e7ec;padding-top:clamp(40px,6vw,64px);text-align:center;">
-        <div><div style="display:flex;justify-content:center;"><svg viewBox="0 0 40 40" width="40" height="40" aria-hidden="true" focusable="false" style="display:block;overflow:visible;"><circle cx="20" cy="20" r="16" fill="none" stroke="#0f2334" stroke-width="2.8"/><path d="M13 27 L27 13" stroke="#0f2334" stroke-width="2.8" stroke-linecap="round"/><circle cx="14" cy="14" r="3" fill="#ff6a00"/><circle cx="26" cy="26" r="3" fill="#0f2334"/></svg></div><h3 style="font-family:'Poppins',Arial,Helvetica,sans-serif;text-transform:none;margin:14px 0 4px;font-size:19px;line-height:1.3;font-weight:700;color:#0f2334;">0&nbsp;% Finanzierung</h3><p style="margin:0 auto;max-width:280px;font-size:15px;line-height:1.55;color:#51606e;">Dein Wunschprodukt bequem in Raten zahlen – mit 0&nbsp;% Zinsen.</p><a href="https://www.homedeluxe.de/finanzierung/" style="display:inline-block;margin-top:8px;font-size:15px;font-weight:600;color:#0f2334;text-decoration:none;">Mehr erfahren <span aria-hidden="true">&rsaquo;</span></a></div>
-        <div><div style="display:flex;justify-content:center;"><svg viewBox="0 0 40 40" width="40" height="40" aria-hidden="true" focusable="false" style="display:block;overflow:visible;"><path d="M3 11 L24 11 L24 27 L3 27 Z M24 16 L31 16 L37 22 L37 27 L24 27" fill="none" stroke="#0f2334" stroke-width="2.8" stroke-linejoin="round"/><circle cx="11" cy="29" r="3.6" fill="#fefefe" stroke="#0f2334" stroke-width="2.6"/><circle cx="30" cy="29" r="3.6" fill="#fefefe" stroke="#0f2334" stroke-width="2.6"/><path d="M8 17 L17 17" stroke="#ff6a00" stroke-width="2.6" stroke-linecap="round"/></svg></div><h3 style="font-family:'Poppins',Arial,Helvetica,sans-serif;text-transform:none;margin:14px 0 4px;font-size:19px;line-height:1.3;font-weight:700;color:#0f2334;">Versandfrei bestellen</h3><p style="margin:0 auto;max-width:280px;font-size:15px;line-height:1.55;color:#51606e;">Direkt vom Hersteller zu dir nach Hause.</p><a href="https://www.homedeluxe.de/shop/zahlung-und-versand/" style="display:inline-block;margin-top:8px;font-size:15px;font-weight:600;color:#0f2334;text-decoration:none;">Versand &amp; Zahlung <span aria-hidden="true">&rsaquo;</span></a></div>
-        <div><div style="display:flex;justify-content:center;"><svg viewBox="0 0 40 40" width="40" height="40" aria-hidden="true" focusable="false" style="display:block;overflow:visible;"><path d="M5 15 L8 6 L32 6 L35 15 Z" fill="none" stroke="#0f2334" stroke-width="2.8" stroke-linejoin="round"/><path d="M7 15 L7 34 L33 34 L33 15" fill="none" stroke="#0f2334" stroke-width="2.8" stroke-linejoin="round"/><path d="M16 34 L16 24 L24 24 L24 34" fill="none" stroke="#ff6a00" stroke-width="2.6" stroke-linejoin="round"/></svg></div><h3 style="font-family:'Poppins',Arial,Helvetica,sans-serif;text-transform:none;margin:14px 0 4px;font-size:19px;line-height:1.3;font-weight:700;color:#0f2334;">Stores vor Ort</h3><p style="margin:0 auto;max-width:280px;font-size:15px;line-height:1.55;color:#51606e;">Produkte live erleben und persönlich beraten lassen.</p><a href="https://www.homedeluxe.de/unsere-stores/" style="display:inline-block;margin-top:8px;font-size:15px;font-weight:600;color:#0f2334;text-decoration:none;">Store finden <span aria-hidden="true">&rsaquo;</span></a></div>
+        <div><div style="display:flex;justify-content:center;"><svg viewBox="0 0 40 40" width="40" height="40" aria-hidden="true" focusable="false" style="display:block;overflow:visible;"><circle cx="20" cy="20" r="16" fill="none" stroke="#0f2334" stroke-width="2.8"/><path d="M13 27 L27 13" stroke="#0f2334" stroke-width="2.8" stroke-linecap="round"/><circle cx="14" cy="14" r="3" fill="#ff6a00"/><circle cx="26" cy="26" r="3" fill="#0f2334"/></svg></div><div role="heading" aria-level="3" style="font-family:'Poppins',Arial,Helvetica,sans-serif;text-transform:none;margin:14px 0 4px;font-size:19px;line-height:1.3;font-weight:700;color:#0f2334;">0&nbsp;% Finanzierung</div><p style="margin:0 auto;max-width:280px;font-size:15px;line-height:1.55;color:#51606e;">Dein Wunschprodukt bequem in Raten zahlen – mit 0&nbsp;% Zinsen.</p><a href="https://www.homedeluxe.de/finanzierung/" style="display:inline-block;margin-top:8px;font-size:15px;font-weight:600;color:#0f2334;text-decoration:none;">Mehr erfahren <span aria-hidden="true">&rsaquo;</span></a></div>
+        <div><div style="display:flex;justify-content:center;"><svg viewBox="0 0 40 40" width="40" height="40" aria-hidden="true" focusable="false" style="display:block;overflow:visible;"><path d="M3 11 L24 11 L24 27 L3 27 Z M24 16 L31 16 L37 22 L37 27 L24 27" fill="none" stroke="#0f2334" stroke-width="2.8" stroke-linejoin="round"/><circle cx="11" cy="29" r="3.6" fill="#fefefe" stroke="#0f2334" stroke-width="2.6"/><circle cx="30" cy="29" r="3.6" fill="#fefefe" stroke="#0f2334" stroke-width="2.6"/><path d="M8 17 L17 17" stroke="#ff6a00" stroke-width="2.6" stroke-linecap="round"/></svg></div><div role="heading" aria-level="3" style="font-family:'Poppins',Arial,Helvetica,sans-serif;text-transform:none;margin:14px 0 4px;font-size:19px;line-height:1.3;font-weight:700;color:#0f2334;">Versandfrei bestellen</div><p style="margin:0 auto;max-width:280px;font-size:15px;line-height:1.55;color:#51606e;">Direkt vom Hersteller zu dir nach Hause.</p><a href="https://www.homedeluxe.de/shop/zahlung-und-versand/" style="display:inline-block;margin-top:8px;font-size:15px;font-weight:600;color:#0f2334;text-decoration:none;">Versand &amp; Zahlung <span aria-hidden="true">&rsaquo;</span></a></div>
+        <div><div style="display:flex;justify-content:center;"><svg viewBox="0 0 40 40" width="40" height="40" aria-hidden="true" focusable="false" style="display:block;overflow:visible;"><path d="M5 15 L8 6 L32 6 L35 15 Z" fill="none" stroke="#0f2334" stroke-width="2.8" stroke-linejoin="round"/><path d="M7 15 L7 34 L33 34 L33 15" fill="none" stroke="#0f2334" stroke-width="2.8" stroke-linejoin="round"/><path d="M16 34 L16 24 L24 24 L24 34" fill="none" stroke="#ff6a00" stroke-width="2.6" stroke-linejoin="round"/></svg></div><div role="heading" aria-level="3" style="font-family:'Poppins',Arial,Helvetica,sans-serif;text-transform:none;margin:14px 0 4px;font-size:19px;line-height:1.3;font-weight:700;color:#0f2334;">Stores vor Ort</div><p style="margin:0 auto;max-width:280px;font-size:15px;line-height:1.55;color:#51606e;">Produkte live erleben und persönlich beraten lassen.</p><a href="https://www.homedeluxe.de/unsere-stores/" style="display:inline-block;margin-top:8px;font-size:15px;font-weight:600;color:#0f2334;text-decoration:none;">Store finden <span aria-hidden="true">&rsaquo;</span></a></div>
       </div>
       <p style="margin:clamp(48px,7vw,72px) 0 0;padding-top:20px;border-top:1px solid #e3e7ec;font-size:12px;line-height:1.6;color:#6b7785;">* Gutschein im Wert von 50&nbsp;€, einlösbar ab einem Einkaufswert von 500&nbsp;€ auf homedeluxe.de. Gültig bis 31.12.2026, einmal pro Kunde, nicht mit anderen Gutscheinen oder Aktionen kombinierbar, keine Barauszahlung.</p>
     </div>
@@ -160,7 +162,7 @@
             </g>
           </svg>
           <p style="position:relative;margin:0;font-size:14px;font-weight:600;color:#ff6a00;">Buh! Gefunden.</p>
-          <h2 id="hdx-gs-title" style="position:relative;font-family:'Poppins',Arial,Helvetica,sans-serif;text-transform:none;margin:2px 0 0;font-size:26px;line-height:1.15;font-weight:700;letter-spacing:-.02em;color:#0f2334;">Dein Halloween-Gutschein</h2>
+          <div role="heading" aria-level="2" id="hdx-gs-title" style="position:relative;font-family:'Poppins',Arial,Helvetica,sans-serif;text-transform:none;margin:2px 0 0;font-size:26px;line-height:1.15;font-weight:700;letter-spacing:-.02em;color:#0f2334;">Dein Halloween-Gutschein</div>
         </div>
 
         <div style="padding:22px 24px 26px;">
@@ -181,35 +183,13 @@
     </div>
   </div>
 
-  <!-- Optional: Fallback für ältere Browser ohne Popover-API, "Code kopieren", Tracking-Event, reduzierte Bewegung.
-       Ohne dieses Script funktioniert das Pop-up in allen aktuellen Browsern trotzdem. -->
+  <!-- Script: volle Breite ohne Scrollbalken-Versatz, Fallback für ältere Browser ohne Popover-API, "Code kopieren",
+       Tracking-Event, reduzierte Bewegung. Ohne Script funktioniert das Pop-up in allen aktuellen Browsern trotzdem. -->
   <script>
   (function () {
-    var pop = document.getElementById('hdx-clown-gutschein');
-    if (!pop) return;
-    var supportsPopover = typeof HTMLElement !== 'undefined' && HTMLElement.prototype.hasOwnProperty('popover');
-
-    if (!supportsPopover) {
-      pop.style.display = 'none';
-      pop.style.zIndex = '2147483647';
-      var triggers = document.querySelectorAll('[popovertarget=hdx-clown-gutschein]');
-      for (var i = 0; i < triggers.length; i++) {
-        triggers[i].addEventListener('click', function () {
-          var open = this.getAttribute('popovertargetaction') !== 'hide';
-          pop.style.display = open ? 'block' : 'none';
-          if (open) trackFound();
-        });
-      }
-      document.addEventListener('keydown', function (e) {
-        if (e.key === 'Escape') pop.style.display = 'none';
-      });
-    } else {
-      pop.addEventListener('toggle', function (e) {
-        if (e.newState === 'open') trackFound();
-      });
-    }
-
     var tracked = false;
+    var current = null;
+
     function trackFound() {
       if (tracked) return;
       tracked = true;
@@ -217,26 +197,67 @@
       window.dataLayer.push({ event: 'halloween_clown_gefunden' });
     }
 
-    var copyBtn = document.getElementById('hdx-gs-copy');
-    var code = document.getElementById('hdx-gs-code');
-    if (copyBtn && code && navigator.clipboard && window.isSecureContext) {
-      copyBtn.hidden = false;
-      copyBtn.addEventListener('click', function () {
-        navigator.clipboard.writeText(code.textContent.trim()).then(function () {
-          copyBtn.textContent = 'Kopiert ✓';
-          setTimeout(function () { copyBtn.textContent = 'Code kopieren'; }, 2000);
-        });
-      });
+    function fullWidth() {
+      var lp = document.getElementById('hdx-halloween-lp');
+      if (!lp) return;
+      lp.style.marginLeft = '0px';
+      lp.style.width = document.documentElement.clientWidth + 'px';
+      lp.style.marginLeft = -lp.getBoundingClientRect().left + 'px';
     }
 
-    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      var vids = document.querySelectorAll('#hdx-halloween-lp video');
-      for (var k = 0; k < vids.length; k++) { vids[k].removeAttribute('autoplay'); vids[k].pause(); }
-      var anims = document.querySelectorAll('#hdx-halloween-lp svg[data-hdx-anim]');
-      for (var j = 0; j < anims.length; j++) {
-        if (anims[j].pauseAnimations) { anims[j].pauseAnimations(); anims[j].setCurrentTime && anims[j].setCurrentTime(0); }
+    function init() {
+      fullWidth();
+      var pop = document.getElementById('hdx-clown-gutschein');
+      if (!pop || pop === current) return;
+      current = pop;
+      var supportsPopover = typeof HTMLElement !== 'undefined' && HTMLElement.prototype.hasOwnProperty('popover');
+
+      if (!supportsPopover) {
+        pop.style.display = 'none';
+        pop.style.zIndex = '2147483647';
+        var triggers = document.querySelectorAll('[popovertarget=hdx-clown-gutschein]');
+        for (var i = 0; i < triggers.length; i++) {
+          triggers[i].addEventListener('click', function () {
+            var open = this.getAttribute('popovertargetaction') !== 'hide';
+            pop.style.display = open ? 'block' : 'none';
+            if (open) trackFound();
+          });
+        }
+        document.addEventListener('keydown', function (e) {
+          if (e.key === 'Escape') pop.style.display = 'none';
+        });
+      } else {
+        pop.addEventListener('toggle', function (e) {
+          if (e.newState === 'open') trackFound();
+        });
+      }
+
+      var copyBtn = document.getElementById('hdx-gs-copy');
+      var code = document.getElementById('hdx-gs-code');
+      if (copyBtn && code && navigator.clipboard && window.isSecureContext) {
+        copyBtn.hidden = false;
+        copyBtn.addEventListener('click', function () {
+          navigator.clipboard.writeText(code.textContent.trim()).then(function () {
+            copyBtn.textContent = 'Kopiert ✓';
+            setTimeout(function () { copyBtn.textContent = 'Code kopieren'; }, 2000);
+          });
+        });
+      }
+
+      if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        var vids = document.querySelectorAll('#hdx-halloween-lp video');
+        for (var k = 0; k < vids.length; k++) { vids[k].removeAttribute('autoplay'); vids[k].pause(); }
+        var anims = document.querySelectorAll('#hdx-halloween-lp svg[data-hdx-anim]');
+        for (var j = 0; j < anims.length; j++) {
+          if (anims[j].pauseAnimations) { anims[j].pauseAnimations(); anims[j].setCurrentTime && anims[j].setCurrentTime(0); }
+        }
       }
     }
+
+    init();
+    window.addEventListener('DOMContentLoaded', init);
+    window.addEventListener('load', init);
+    window.addEventListener('resize', fullWidth);
   })();
   </script>
 
