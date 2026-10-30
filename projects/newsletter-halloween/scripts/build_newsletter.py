@@ -36,7 +36,7 @@ FONT = "Poppins,Helvetica,Arial,sans-serif"
 # --- Texte (für HTML und Textversion; <b> = fett) ------------------------------------------
 
 # TITLE ist der Betreff (in JUNE eintragen); der Preheader ergänzt ihn, statt ihn zu wiederholen
-TITLE = "🎃 Finde den Clown – wir schenken dir 50 € Gutschein"
+TITLE = "🤡 50 € Gutschein: Finde den Clown und schnapp dir das Geld! 🎃"
 PREHEADER = f"Der Clown vom Sofa versteckt sich in unserem Onlineshop 🤡 Gutschein ab 500 € Bestellwert, nur bis {VALID_UNTIL[:6]}"
 HERO_ALT = "Halloween-Special: Der Clown vom Sofa hat sich versteckt. Finde ihn in unserem Onlineshop – und wir schenken dir 50 €!"
 HERO_IMG_ALT = "Ein Clown klettert hinter dem Sofa hervor und setzt sich – klick ihn an"
