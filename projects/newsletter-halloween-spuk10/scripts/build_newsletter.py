@@ -106,7 +106,7 @@ GRIDS = [(("elvora", SHOP_IMG["elvora"], "MASSAGESESSEL<br />ELVORA", "Gänsehau
           ("cielo", SHOP_IMG["cielo"], "HÄNGESESSEL<br />CIELO", "Abhängen wie eine<br />Fledermaus – inkl. Kissen")),
          (("nara", SHOP_IMG["nara"], "SCHAUKELSTUHL<br />NARA", "Schaukelt ganz von allein …<br />sobald du drinsitzt"),
           ("bademantel", SHOP_IMG["bademantel"], "BADEMANTEL<br />HOME DELUXE", "Das gemütlichste Gespenster-<br />kostüm: 100 % Baumwolle")),
-         (("nero", SHOP_IMG["nero"], "INFRAROTKABINE<br />NERO", "Schwarz wie die Geisterstunde –<br />mit LED-Farblicht"),
+         (("nero", SHOP_IMG["nero"], "INFRAROTKABINE<br />NERO", "Schwarz wie die<br />Geisterstunde – mit LED-Farblicht"),
           ("blackpearl", SHOP_IMG["blackpearl"], "DAMPFDUSCHE<br />BLACK PEARL", "Nebel auf Knopfdruck:<br />90 × 90 cm, mit Radio")),
          (("cozy", SHOP_IMG["cozy"], "SITZSACK<br />COZY", "Zum Verstecken beim Gruselfilm –<br />Samt-Cord, inkl. Hocker"),
           ("clara", SHOP_IMG["clara"], "LED-SOLARLAMPE<br />CLARA", "Licht an, Geister aus –<br />kabellos per Solar oder USB"))]
@@ -118,6 +118,10 @@ SHIPPING = "*Kostenloser Versand innerhalb Deutschlands - ausgeschlossen Inseln.
 # nur Textversion
 TEXT_HERO = f"HALLOWEEN – 10 % RABATT MIT DEM CODE {CODE}"
 TEXT_BAND = f"Nicht vergessen: Mit dem Code {CODE} sparst du bis {VALID_UNTIL[:6]} 10 % auf deine Bestellung."
+
+# Gmail kürzt Mails mit mehr als ~102 KB HTML („[Nachricht gekürzt]“); JUNE verlängert beim Versand
+# noch jeden Link fürs Klick-Tracking. Deshalb bleibt das HTML deutlich darunter.
+MAX_HTML_KB = 90
 
 SECTION_END = '<!--[if (gte mso 9)|(IE)]></td></tr></table><![endif]--></div></td></tr></table>'
 PS = "font-family:Verdana,Geneva,sans-serif;font-size:13px;font-weight:400;letter-spacing:0;line-height:20px;margin:0;margin-bottom:5px;"
@@ -159,6 +163,12 @@ def spacer(h):
     )
 
 
+def box(inner, pad):
+    """Innenabstand für einen Block innerhalb einer gemeinsamen Section."""
+    return (f'<table role="presentation" width="100%" border="0" cellpadding="0" cellspacing="0">'
+            f'<tr><td style="{pad}">{inner}</td></tr></table>')
+
+
 def image(href, src, alt, width):
     return (
         '<table role="presentation" border="0" cellpadding="0" cellspacing="0" style="border-collapse:collapse;border-spacing:0;width:100%;" width="100%">'
@@ -177,16 +187,15 @@ def deco(src, alt):
 
 
 def button(href, label, td="text-align:center;padding-bottom:40px;padding-top:10px;", bg=NAVY, fg="#ffffff"):
-    w = 10 * len(label) + 30   # wie im Export: 13 Zeichen -> 163 px, 26 Zeichen -> 290 px
-    bold = "font-weight:700;" if bg != NAVY else "font-weight:400;"
+    """45 px hoher Button ohne VML (spart ~0,8 KB je Button): Outlook bekommt den Innenabstand über
+    mso-padding-alt, alle anderen über das Padding des Links."""
+    bold = "font-weight:700;" if bg != NAVY else ""
     return (
-        f'<table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="border-collapse:collapse;"><tr><td style="{td}"><div class="kd" style="text-align:center;">'
-        f'<!--[if mso]><v:rect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="{href}" style="height:45px;v-text-anchor:middle;width:{w}px;" stroke="f" fillcolor="{bg}"><w:anchorlock/>'
-        f'<center style="color:{fg};font-family:Verdana,Geneva,sans-serif;font-size:13px;{bold}letter-spacing:1px;">{label}</center></v:rect><![endif]-->'
-        '<table class="gc hc" role="presentation" border="0" cellpadding="0" cellspacing="0" width="0" style="border-collapse:separate;display:inline-table;mso-hide:all;">'
-        f'<tr><td class="se" width="{w}" bgcolor="{bg}" style="background:{bg};border:2px solid {bg};mso-hide:all;text-align:center;width:{w}px;">'
-        f'<a class="ye" href="{href}" target="_blank" role="button" data-trigger-action-id="#{{button.actionTriggerId}}" style="color:{fg};display:block;font-family:Verdana,Geneva,sans-serif;font-size:13px;{bold}letter-spacing:1px;line-height:41px;padding:0 20px;text-align:center;text-decoration:none;white-space:nowrap;">{label}</a>'
-        '</td></tr></table></div></td></tr></table>'
+        f'<table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%"><tr><td align="center" style="{td}">'
+        f'<table role="presentation" align="center" border="0" cellpadding="0" cellspacing="0" style="margin:0 auto;"><tr><td bgcolor="{bg}" style="background:{bg};mso-padding-alt:12px 22px;">'
+        f'<a href="{href}" target="_blank" role="button" data-trigger-action-id="#{{button.actionTriggerId}}" style="display:inline-block;padding:12px 22px;'
+        f'color:{fg};font-family:Verdana,Geneva,sans-serif;font-size:13px;{bold}letter-spacing:1px;line-height:21px;text-decoration:none;white-space:nowrap;">{label}</a>'
+        '</td></tr></table></td></tr></table>'
     )
 
 
@@ -227,7 +236,7 @@ def intro():
         f'<p style="{PS}"><strong style="font-weight:700;">{INTRO["lead"]}</strong><br />{INTRO["text"]}<br /><br /></p></div>'
         + button(utm(SAUNEN_URL), INTRO["cta"], td="text-align:center;")
     )
-    return section(inner, pad="padding-bottom:40px;padding-left:20px;padding-right:20px;padding-top:20px;")
+    return box(inner, "padding:20px 20px 40px 20px;")
 
 
 def code_block():
@@ -259,12 +268,12 @@ def code_block():
 def feature(key, src, title, text, cta, title_style=""):
     """Großes Bild + Titel, Text, Preis, Button; Argumente wie in LAGOM, CODO, ORLENA."""
     name, url, price = P[key]
-    return section(image(utm(url), src, name, 640) + "  " + spacer(18) + "  "
-                   + copy(title, text, price, title_style) + "  " + button(utm(url), cta))
+    return (image(utm(url), src, name, 640) + spacer(18)
+            + copy(title, text, price, title_style) + button(utm(url), cta))
 
 
 def pumpkin_divider():
-    return section(deco("kuerbis-trenner.jpg", "Halloween-Kürbis"))
+    return deco("kuerbis-trenner.jpg", "Halloween-Kürbis")
 
 
 def wood_header():
@@ -275,12 +284,12 @@ def wood_header():
         f'<p style="{PX}font-size:13px;line-height:20px;color:#343a40;padding-top:6px;">{WOOD["text"]}</p></div>'
         + spacer(18)
     )
-    return section(inner, pad="padding-left:20px;padding-right:20px;")
+    return box(inner, "padding:0 20px;")
 
 
 def wood_image():
     name, url, _ = P["antares3"]
-    return section(image(utm(url), SHOP_IMG["antares3"], f"{name} mit Brennholz auf der Terrasse", 640))
+    return image(utm(url), SHOP_IMG["antares3"], f"{name} mit Brennholz auf der Terrasse", 640)
 
 
 def usps():
@@ -289,8 +298,8 @@ def usps():
                 f'<tr><td style="border-top:3px solid {ORANGE};padding:12px 6px 0 6px;text-align:center;">'
                 f'<p style="{PX}font-size:12px;line-height:18px;font-weight:700;letter-spacing:1px;color:#0c2335;">{head}</p>'
                 f'<p style="{PX}font-size:12px;line-height:17px;color:#343a40;padding-top:4px;">{text}</p></td></tr></table>')
-    return section(columns([usp(*u) for u in USPS], gap_style=("padding-left:6px;padding-right:6px;",) * 3, max_width=600),
-                   pad="padding-left:14px;padding-right:14px;padding-top:24px;padding-bottom:24px;")
+    return box(columns([usp(*u) for u in USPS], gap_style=("padding-left:6px;padding-right:6px;",) * 3, max_width=600),
+               "padding:24px 14px;")
 
 
 def card(key, src, line1, line2):
@@ -309,7 +318,7 @@ def card(key, src, line1, line2):
 
 
 def cards():
-    return section(columns([card(*c) for c in CARDS]))
+    return columns([card(*c) for c in CARDS])
 
 
 def grid(left, right):
@@ -321,7 +330,20 @@ def grid(left, right):
                 f'<p style="{PS}text-align:center;padding-left:10px;padding-right:10px;">{text}</p>'
                 f'<p style="{PS}text-align:center;"><b style="font-weight:700;color:{NAVY};">{price}&nbsp;€</b></p></div>  '
                 + button(utm(url), "JETZT SHOPPEN", td="text-align:center;padding-bottom:20px;padding-top:10px;"))
-    return section(columns([cell(*left), cell(*right)]))
+    return columns([cell(*left), cell(*right)])
+
+
+def navigation(nav):
+    """Navigation des Exports (fünf VML-Buttons, ~11 KB) als schlichte Linkzeile, gleiche Links und Optik."""
+    links = re.findall(r'<a class="af" href="([^"]+)"[^>]*>([^<]+)</a>', nav)
+    if [t for _, t in links] != ["BAD", "SAUNEN", "WOHNEN", "GARTEN", "SALE"]:
+        sys.exit("Navigation im Export hat sich geändert")
+    tds = ''.join(
+        f'<td align="center" width="20%" style="width:20%;"><a href="{u}" target="_blank" data-trigger-action-id="#{{button.actionTriggerId}}" '
+        f'style="display:block;color:#000000;font-family:Helvetica,Arial,sans-serif;font-size:11px;font-weight:700;line-height:45px;text-decoration:none;white-space:nowrap;">{t}</a></td>'
+        for u, t in links)
+    return section(f'<table role="presentation" width="100%" border="0" cellpadding="0" cellspacing="0"><tr>{tds}</tr></table>',
+                   pad="padding-left:10px;padding-right:10px;")
 
 
 # --- Zusammenbau -------------------------------------------------------------------------
@@ -330,8 +352,8 @@ def build(src):
     parts = src.split(SECTION_END)
     if len(parts) != 19 or "BAD" not in parts[1] or "Bleibe in Verbindung" not in parts[15]:
         sys.exit("Aufbau des JUNE-Exports hat sich geändert – Abschnitte prüfen")
-    head, nav, spacer30, band, social, usp_bar, footer, tail = (
-        parts[0], parts[1], parts[10], parts[14], parts[15], parts[16], parts[17], parts[18])
+    head, nav, band, social, usp_bar, footer, tail = (
+        parts[0], parts[1], parts[14], parts[15], parts[16], parts[17], parts[18])
 
     head = replace(head, "<title>✨ New Ins: Sauna &amp; Infrarot in einer Kabine</title>", f"<title>{TITLE}</title>")
     head = replace(head, "Kombisauna EVEREST, Whirlpool SUNSHINE &amp; 7 weitere Neuheiten – kostenlos geliefert*.", PREHEADER)
@@ -346,19 +368,23 @@ def build(src):
 
     footer = replace(footer, f"{SHIPPING}</span>", f'{SHIPPING}</span><br /><br /><span style="color:#ffffff;">{CONDITIONS}</span>')
 
-    # Gutscheinblock direkt unter dem Hero: das GIF endet in Navy und geht nahtlos in ihn über
-    body = [hero(), code_block(), intro(), feature(**LAGOM), feature(**CODO),
-            pumpkin_divider(), wood_header(), wood_image(), usps(), cards()]
-    rest = [feature(**ORLENA), pumpkin_divider()] + [grid(*g) for g in GRIDS]
-    # generierte Blöcke enden bereits mit SECTION_END; die übernommenen Teile bekommen es beim Zusammensetzen
+    # Gutscheinblock direkt unter dem Hero: das GIF endet in Navy und geht nahtlos in ihn über.
+    # Alle weißen Blöcke danach teilen sich eine Section (jede Section-Hülle kostet ~0,9 KB).
+    white = [intro(), feature(**LAGOM), feature(**CODO), pumpkin_divider(), wood_header(), wood_image(),
+             usps(), cards(), spacer(30), feature(**ORLENA), pumpkin_divider()] + [grid(*g) for g in GRIDS]
+    # generierte Sections enden bereits mit SECTION_END; die übernommenen Teile bekommen es beim Zusammensetzen
     kept = lambda *ps: ''.join(p + SECTION_END for p in ps)
-    html = (kept(head, nav) + ''.join(body) + kept(spacer30) + ''.join(rest)
+    html = (kept(head) + navigation(nav) + hero() + code_block() + section(''.join(white))
             + kept(band, social, usp_bar, footer) + tail)
     html = html.replace("utm_campaign=KW43&", f"utm_campaign={CAMPAIGN}&")
     if "KW43" in html:
         sys.exit("KW43 steht noch im Newsletter")
     if "halloween=clown" in html:
         sys.exit("Clown-Link im Fallback")
+    kb = len(html.encode()) / 1024
+    print(f"HTML {kb:.1f} KB (Grenze {MAX_HTML_KB} KB, Gmail kürzt ab ~102 KB)")
+    if kb > MAX_HTML_KB:
+        sys.exit("HTML zu groß – Gmail würde die Mail kürzen")
     return html
 
 

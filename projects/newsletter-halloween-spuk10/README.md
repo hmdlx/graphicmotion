@@ -74,6 +74,25 @@ in `graphics/teaser.html` und `graphics/kopf.html`.
 - Tracking: `utm_campaign=KW44_Halloween_SPUK10`, damit sich der Fallback von der Clown-Edition
   (`KW44_Halloween`) unterscheiden lässt. `utm_content` markiert Hero, Gutscheingrafik und Button.
 
+## Größe: Gmail zeigt die Mail vollständig
+
+Gmail kürzt jede Mail, deren HTML größer als rund 102 KB ist („[Nachricht gekürzt] – Gesamte
+Nachricht anzeigen“); unten fehlen dann Produkte und Footer. Bilder zählen dabei nicht, nur der
+Code. Der Newsletter hat **83 KB** (vorher 114 KB), damit bleibt Puffer für die Tracking-Links,
+die JUNE beim Versand einsetzt. `spuk10:html` bricht ab, wenn das HTML 90 KB überschreitet
+(`MAX_HTML_KB`).
+
+Eingespart ohne sichtbare Änderung:
+- **Buttons ohne VML**: Outlook bekommt den Innenabstand über `mso-padding-alt`, die anderen über
+  das Padding des Links (gleiche Höhe von 45 px). Spart rund 0,8 KB je Button.
+- **Eine Section für alle weißen Blöcke** zwischen Intro und Navy-Band statt einer Hülle je Block
+  (je rund 0,9 KB).
+- **Navigation** des Exports (fünf VML-Buttons, 11 KB) als schlichte Linkzeile mit denselben
+  Links und derselben Optik (Helvetica 11 px fett, 45 px hoch).
+
+Vor dem Versand eine Testmail an ein Gmail-Postfach schicken: Unten darf kein „[Nachricht gekürzt]“
+stehen.
+
 ## Mobil
 
 Der JUNE-Export setzt auf Handys jedes `<p>` auf 12 px (`!important`). Der Code im Kasten und die
