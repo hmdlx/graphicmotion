@@ -4,7 +4,7 @@ Takes the CMS block between START and ENDE, drops HTML comments and line breaks
 and switches attribute quotes to single quotes, so the body can be sent as a
 plain JSON string to Shopify's pageCreate / pageUpdate (body field).
 
-    python3 -I landingpages/winter-clown/build_shopify_body.py
+    python3 -I landingpages/halloween-clown/build_shopify_body.py
 """
 import pathlib
 import re
@@ -16,7 +16,7 @@ OUT = HERE / "shopify-body.html"
 
 html = SRC.read_text(encoding="utf-8")
 start = html.index("-->", html.index("CMS-BLOCK START")) + 3
-end = html.index("<!-- ===== HOME DELUXE · WINTER-SUCHSPIEL · CMS-BLOCK ENDE")
+end = html.index("<!-- ===== HOME DELUXE · HALLOWEEN-SUCHSPIEL · CMS-BLOCK ENDE")
 body = html[start:end]
 
 body = re.sub(r"<!--.*?-->", "", body, flags=re.S)

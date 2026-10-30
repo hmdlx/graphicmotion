@@ -33,16 +33,21 @@ Preise sind bewusst nicht eingebaut, weil sie sich häufig ändern.
 
 | Seite | Inhalt |
 |---|---|
-| `landingpages/winter-clown/index.html` | Newsletter-Winter-Suchspiel: 8 Winterprodukte, versteckter Clown öffnet ein Pop-up mit 50 € Gutschein ab 500 € Einkaufswert |
+| `landingpages/halloween-clown/index.html` | Newsletter-Halloween-Suchspiel: 8 Produkte, ein gruseliger Clown öffnet ein Pop-up mit 50 € Gutschein ab 500 € Einkaufswert |
 
 Die Seite kommt ohne Style-Tag aus: alle Styles stehen inline, damit der Block direkt in einen
-CMS-Block (Plenty) passt. Kopiert wird alles zwischen `CMS-BLOCK START` und `CMS-BLOCK ENDE`.
+CMS-Block (Plenty, Shopify) passt. Kopiert wird alles zwischen `CMS-BLOCK START` und `CMS-BLOCK ENDE`.
 
-- Der Clown sitzt im Bild des Elektrokamins CALOR (unten links, schaut über den Bildrand).
+- Der Clown lauert im Bild des Massagesessels DUNES (unten links). Er taucht auf und ab, legt den
+  Kopf schief und hat rot glühende Augen. Definiert ist er einmal als `#hdx-clown` und wird per
+  `<use>` im Bild und im Pop-up gezeigt.
+- Schaurige Motion-Elemente, alle als SVG-Animation (SMIL), also ohne CSS und ohne JavaScript:
+  Mond mit ziehender Wolke, flatternde Fledermäuse, schwebende Geister, Spinnen am Faden,
+  Spinnennetze, ziehender Nebel, aufsteigende Glut, glühende Augen im Dunkeln, flackernder Kürbis
+  und ein „tropfender“ HALLOWEEN-Schriftzug. Dazu ein Zwischenband „Psst … er beobachtet dich.“
 - Das Pop-up nutzt die Popover-API (`popover` / `popovertarget`) und funktioniert damit ohne
   JavaScript. Das kleine Script am Ende ist optional: Fallback für alte Browser, „Code kopieren“,
-  `dataLayer`-Event `winter_clown_gefunden` und Pause der Animationen bei reduzierter Bewegung.
-- Schnee und Clown-Wackeln sind SVG-Animationen (SMIL), also ebenfalls ohne CSS.
+  `dataLayer`-Event `halloween_clown_gefunden` und Pause aller Animationen bei reduzierter Bewegung.
 - Gutscheincode `CLOWN50` (`id="hdx-gs-code"`) und die Bedingungen (gültig bis 31.12.2026, stehen im
   Pop-up und in der Fußnote) sind Platzhalter: vor dem Versand den echten Code und die echten
   Bedingungen eintragen.
@@ -53,17 +58,18 @@ CMS-Block (Plenty) passt. Kopiert wird alles zwischen `CMS-BLOCK START` und `CMS
 
 ### Shopify
 
-Die LP liegt im Shopify-Shop als Seite `winter-suchspiel` (Standard-Seiten-Template, SEO-ausgeblendet
-über das Metafeld `seo.hidden = 1`). Den Seiteninhalt erzeugt:
+Die LP liegt im Shopify-Shop als Seite `halloween-suchspiel` (Standard-Seiten-Template,
+SEO-ausgeblendet über das Metafeld `seo.hidden = 1`). Den Seiteninhalt erzeugt:
 
 ```bash
-python3 -I landingpages/winter-clown/build_shopify_body.py   # -> landingpages/winter-clown/shopify-body.html
+python3 -I landingpages/halloween-clown/build_shopify_body.py   # -> landingpages/halloween-clown/shopify-body.html
 ```
 
 Das Script nimmt den CMS-Block aus `index.html`, entfernt Kommentare und Zeilenumbrüche und stellt
 Attribute auf einfache Anführungszeichen um, damit der Inhalt als JSON-String an `pageUpdate` (Feld
-`body`) gehen kann. Shopify schreibt SVG-Attribute beim Speichern klein (`viewbox`, `attributename` …);
-der HTML-Parser des Browsers korrigiert das wieder, Schnee und Clown-Animation laufen weiter.
+`body`) gehen kann. Shopify schreibt Tag- und Attributnamen beim Speichern klein (`viewbox`,
+`animatemotion` …); der HTML-Parser des Browsers korrigiert das bei SVG wieder, alle Animationen
+laufen weiter.
 
 ## Rendern
 
