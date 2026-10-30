@@ -16,6 +16,7 @@ dort versteckt sich der Clown in einem Produktbild, ein Klick auf ihn zeigt den 
 und Social-Icons kommen aus dem Export vom JUNE-CDN, eigene Grafiken vom JUNE-CDN, sobald sie in
 source/cdn-urls.json eingetragen sind, sonst relativ images/….
 """
+import datetime
 import html as htmllib
 import json
 import os
@@ -28,6 +29,8 @@ UTM = f"utm_campaign={CAMPAIGN}&utm_source=newsletter&utm_medium=email"
 # Klick auf den Clown: Halloween-Seite im Shop, dort geht die Suche weiter (eigenes Gutschein-Pop-up)
 CLOWN_URL = f"https://www.homedeluxe.de/halloween/?{UTM}&utm_content=clown"
 VALID_UNTIL = "02.11.2026"
+END_DAY = ("Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag", "Sonntag")[
+    datetime.datetime.strptime(VALID_UNTIL, "%d.%m.%Y").weekday()]
 
 NAVY, ORANGE = "#0e2234", "#ff9800"     # Werte aus dem CSS von homedeluxe.de
 NIGHT_TEXT = "#c7d0d9"
@@ -37,7 +40,9 @@ FONT = "Poppins,Helvetica,Arial,sans-serif"
 
 # TITLE ist der Betreff (in JUNE eintragen); der Preheader ergänzt ihn, statt ihn zu wiederholen
 TITLE = "🤡 50-€-Gutschein: Finde den Clown und schnapp dir die 50 €! 🎃"
-PREHEADER = f"Er versteckt sich in unserem Onlineshop. Einlösbar ab 500 € Bestellwert, nur bis {VALID_UNTIL[:6]}"
+# Preheader auf Öffnungen ausgelegt: Neugier (wo ist er?), Mitmachfrage, Frist als Wochentag;
+# die Bedingungen stehen im Newsletter. Wochentag nur sinnvoll, solange die Aktion kurz läuft.
+PREHEADER = f"Er hat sich in unserem Shop versteckt. Findest du ihn bis {END_DAY}? 👀"
 HERO_ALT = "Halloween-Special: Der Clown vom Sofa hat sich versteckt. Finde ihn in unserem Onlineshop – und wir schenken dir 50 €!"
 HERO_IMG_ALT = "Ein Clown klettert hinter dem Sofa hervor und setzt sich – klick ihn an"
 TEASER_ALT = f"Süßes oder Saures? 50-€-Gutschein ab 500 € Bestellwert, nur bis {VALID_UNTIL}"
