@@ -4,8 +4,13 @@ Halloween-Newsletter im Layout des KW43-Newsletters „New Ins“ mit Clown-Akti
 ein Clown mit rotem Ballon auf dem Sofa. Wer aufs Bild klickt, landet im Shop, und dort öffnet
 sich ein Pop-up mit dem Gutscheincode – **50 € ab 500 € Bestellwert**.
 
-Vorschau: `output/preview/preview_desktop.jpg`, `output/preview/preview_mobile.jpg`,
-Pop-up: `output/preview/preview_popup_desktop.jpg`, `output/preview/preview_popup_mobile.jpg`
+Zum Ansehen und Weitergeben: `output/vorschau/newsletter-halloween-kw44_vorschau.html` und
+`output/vorschau/clown-popup_vorschau.html` – alle Bilder eingebettet, das Pop-up ist sofort offen.
+Screenshots: `output/preview/`.
+
+Die eigentlichen Dateien (`output/newsletter-halloween-kw44.html`, `output/popup/clown-popup.html`)
+binden ihre Bilder relativ ein (`images/…`, `clown.jpg`). Einzeln geöffnet oder verschickt zeigen
+sie deshalb keine Bilder – erst mit dem Bilderordner daneben bzw. nach dem Hochladen in JUNE/Shop.
 
 ## Klick → Pop-up
 
@@ -71,3 +76,4 @@ npm run halloween:build     # alles: Grafiken -> Bilder -> HTML -> Vorschau + Pr
 | `halloween:images` | Hero aus Band + Wohnzimmer-Bild, LAHTI mit Fledermäusen, Produktbilder, Pop-up-Bild -> `output/` |
 | `halloween:html` | Kopf, Navigation und Footer aus `source/newsletter-new-ins-kw43.html`, Inhaltsblöcke neu -> `output/newsletter-halloween-kw44.html` |
 | `halloween:preview` | Ganzseiten-Vorschau Desktop/Mobil, Pop-up-Vorschau; prüft, dass nur das Hero-Bild zum Pop-up führt und das Pop-up nur mit `?halloween=clown` aufgeht |
+| `halloween:vorschau` | eigenständige Vorschau-HTMLs mit eingebetteten Bildern und Schrift -> `output/vorschau/` (nicht für den Versand: Gmail zeigt eingebettete Bilder nicht) |
