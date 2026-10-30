@@ -1,0 +1,27 @@
+{
+ "top": "casara_1.jpg",
+ "bottom": "casara_3.jpg",
+ "row": [
+  {
+   "src": "casara_2a.jpg",
+   "width": 496,
+   "clown": false
+  },
+  {
+   "src": "casara_clown.jpg",
+   "width": 112,
+   "clown": true
+  },
+  {
+   "src": "casara_2b.jpg",
+   "width": 32,
+   "clown": false
+  }
+ ],
+ "clown_px": [
+  496,
+  608,
+  224,
+  352
+ ]
+}

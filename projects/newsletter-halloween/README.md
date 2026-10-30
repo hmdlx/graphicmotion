@@ -1,34 +1,44 @@
 # Newsletter Halloween-Edition (KW44)
 
-Halloween-Version des KW43-Newsletters „New Ins“ mit Suchspiel: Im Newsletter versteckt sich
-ein Clown. Wer ihn anklickt, landet auf einer Seite mit dem Gutscheincode – **50 € ab 500 €
-Bestellwert**.
+Halloween-Newsletter im Layout des KW43-Newsletters „New Ins“ mit Suchspiel: Im Newsletter
+versteckt sich ein Clown. Wer ihn anklickt, landet auf einer Seite mit dem Gutscheincode –
+**50 € ab 500 € Bestellwert**.
+
+Alle Produktbilder sind Original-Shopfotos von homedeluxe.de; es werden keine KI-Bilder
+verwendet. Halloween-Elemente (Fledermäuse, Spinne, Clown) sind eigene Grafiken, die auf die
+Fotos gelegt werden, die Produkte selbst bleiben unverändert.
 
 Vorschau: `output/preview/preview_desktop.jpg`, `output/preview/preview_mobile.jpg`
-Auflösung: `output/aufloesung_carport_mit_clown.jpg`
+Auflösung: `output/aufloesung_sofa_mit_clown.jpg`
 
 ## Wo ist der Clown?
 
-Im Foto vom **Carport MONOS**: Er lugt hinter der Hecke rechts neben dem Auto hervor (rote Nase,
-weißer Handschuh). Das Foto ist in 5 Slices geschnitten. Nur der Clown-Slice (Spalte 20 % der
-Breite, Desktop 128 × 96 px, Mobil ca. 78 × 59 px) verlinkt auf die Gutschein-Seite, alle
-anderen Slices weiter auf das Produkt.
+Im Foto vom **Sofa CASARA** (Dunkelgrün): Er lugt rechts hinter der Rückenlehne hervor, neben
+der Vase, die Handschuhe auf der Lehne. Das Foto ist in Slices geschnitten. Nur der Clown-Slice
+(Desktop 112 × 128 px, Mobil ca. 68 × 78 px) verlinkt auf die Gutschein-Seite, alle anderen
+Slices auf das Sofa. Das Raster steht in `output/slices.json`.
 
-## Was gegenüber KW43 geändert ist
+## Inhalt
 
-| Bereich | KW43 | Halloween-Edition |
-|---|---|---|
-| Betreff-`<title>` / Preheader | New Ins … / Kombisauna EVEREST, Whirlpool SUNSHINE … | 🎃 Halloween-Edition: Finde den Clown! / Psst … in dieser Mail versteckt sich ein Clown 🤡 … |
-| Hero | „NEW INS“ auf Weiß + Sauna-Foto | Navy-Band „HALLOWEEN – FINDE DEN CLOWN & sichere dir 50 €“ + Sauna mit Kürbissen, Kerzen, Spinnennetz, Abendstimmung |
-| Intro | ✨ New Ins … / Draußen frisch, drinnen heiß. | 🎃 Halloween bei Home Deluxe 🎃 / Draußen gruselig, drinnen heiß. |
-| **neu** nach dem Intro | – | Suchspiel-Block: Grafik „FINDE DEN CLOWN“ + 50-€-Gutschein, Spielregel als Live-Text |
-| Whirlpool SUNSHINE | … auch bei Frost. | … auch in der Geisternacht. |
-| Carport MONOS | ein Bild | Bild mit verstecktem Clown, in Slices |
-| Navy-Band unten | Neu im Shop … | Happy Halloween! 🎃 Schon den Clown gefunden? Kleiner Tipp: Er versteckt sich irgendwo zwischen Sauna und Mülltonne. |
-| Footer | – | Aktionsbedingungen (**) |
-| UTM | `utm_campaign=KW43` | `utm_campaign=KW44_Halloween`, Clown-Link zusätzlich `utm_content=clown` |
+| Block | Produkt | Bild (Shop) | Preis |
+|---|---|---|---|
+| Hero „HALLOWEEN – Finde den Clown“ | Outdoor Fasssauna LAHTI XL | Dämmerung mit Laternen, + Fledermäuse | – |
+| Intro „Gemütlich durch die Gruselnacht“ | CTA: Alle Saunen | – | – |
+| Suchspiel | Teaser „Finde den Clown“ + 50-€-Gutschein, Spielregel als Live-Text | Grafik | – |
+| Schwitzen statt Schaudern | Outdoor Fasssauna LAHTI XL | Innenansicht | 2.599 € |
+| Dein eigener Hexenkessel | Hot Tub SKANDI M | Nachtaufnahme | 1.999 € |
+| Lagerfeuer für Gruselgeschichten | Gartenfeuer SWING, USPs (Handarbeit, 2 in 1, wetterfest) | Garten | – |
+| Produktkarten | Feuerschale FRANK · Gartenfeuer SWING | Freisteller | 39 € · 79 € |
+| Gruselfilm-Abend? (Clown-Versteck) | Sofa CASARA Dunkelgrün | Wohnzimmer | 1.199 € |
+| Raster | Elektrokamin CALOR · Massagesessel DUNES | Ambiente | 329 € · 1.399 € |
+| Raster | LED-Spiegel DUBI 80 cm · Kratzbaum RUBY Schwarz | Ambiente | 139 € · 69 € |
+| Navy-Band | „Happy Halloween! Schon den Clown gefunden? … irgendwo zwischen Sauna und Kratzbaum.“ | – | – |
 
-Alle Produkte, Preise und Produktlinks sind unverändert.
+Produktnamen, Links, Preise und Merkmale stammen von den Produktseiten auf homedeluxe.de
+(Stand 30.10.2026) und stehen gesammelt oben in `scripts/build_newsletter.py` (`P`). Preise
+vor dem Versand gegenprüfen.
+
+Gestaltung nach CI: nur Navy, Weiß und Grautöne, Poppins in den Grafiken, eckige Ecken.
 
 ## Vor dem Versand festlegen
 
@@ -40,14 +50,14 @@ und `graphics/teaser.html`):
 - **Gültig bis** 02.11.2026, 23:59 Uhr.
 - **Ziel des Clowns** `https://www.homedeluxe.de/halloween-clown/` – Seite im Shop-CMS anlegen,
   Inhalt aus `output/landingpage/clown-gefunden.html` (Block `<section class="hd-clown">`
-  samt `<style>`, Bild `clown.jpg`). Die Seite ist `noindex`, damit der Code nicht über Google
-  auffindbar ist.
+  samt `<style>`, Bild `clown.jpg` mit Markierung des Verstecks). Die Seite ist `noindex`,
+  damit der Code nicht über Google auffindbar ist.
 
 ## In JUNE übernehmen
 
-Der Newsletter bindet die neuen Bilder relativ ein (`images/…`). Die Dateien aus
-`output/images/` in JUNE hochladen und die Pfade durch die CDN-URLs ersetzen; alle übrigen
-Bilder kommen weiter vom bestehenden CDN.
+Der Newsletter bindet alle Inhaltsbilder relativ ein (`images/…`). Die Dateien aus
+`output/images/` in JUNE hochladen und die Pfade durch die CDN-URLs ersetzen. Logo, Social-Icons
+und Trusted-Shops-Siegel kommen weiter vom bestehenden CDN.
 
 ## Bauen
 
@@ -55,20 +65,18 @@ Bilder kommen weiter vom bestehenden CDN.
 npm run halloween:build     # alles: Grafiken -> Bilder -> HTML -> Vorschau + Klick-Test
 ```
 
-Einzelschritte:
-
 | Skript | macht |
 |---|---|
-| `halloween:graphics` | `graphics/*.html` (Poppins, CI) per Chromium -> `build/newsletter-halloween/graphics/*.png` |
-| `halloween:images` | Hero zusammensetzen, Clown ins Carport-Foto, Slices schneiden, Landingpage-Bild -> `output/images/` |
-| `halloween:html` | `source/newsletter-new-ins-kw43.html` -> `output/newsletter-halloween-kw44.html` |
+| `halloween:graphics` | `graphics/*.html` per Chromium -> `build/newsletter-halloween/graphics/*.png` (Hero-Band, Fledermäuse, Teaser, Clown-Kopf, Clown-Handschuhe) |
+| `halloween:images` | Hero zusammensetzen, Clown hinter die Sofalehne setzen, Slices + `slices.json`, Produktbilder, Landingpage-Bild -> `output/` |
+| `halloween:html` | Kopf, Navigation und Footer aus `source/newsletter-new-ins-kw43.html`, Inhaltsblöcke neu -> `output/newsletter-halloween-kw44.html` |
 | `halloween:preview` | Ganzseiten-Vorschau Desktop/Mobil + Test, dass nur der Clown-Slice auf die Gutschein-Seite führt |
 
-## Bildquellen
+## Wie der Clown ins Foto kommt
 
-- `source/hero_new-ins_kw43.jpg`, `source/carport_monos.jpg`: Originale aus dem KW43-Newsletter.
-- `source/ki/hero_sauna_halloween_2048.jpg`: Halloween-Deko per KI (Nano Banana 2.1 via Higgsfield)
-  auf das Original-Foto. Das Glas-Logo mit Claim „WIR MACHEN DEIN ZUHAUSE“ wird beim Bauen aus
-  dem Original zurückgesetzt, weil die KI den kleinen Claim verfälscht hat.
-- `source/ki/carport_monos_clown_2048.jpg`: Clown per KI (Nano Banana 2.1 via Higgsfield). Beim
-  Bauen wird nur der Clown-Bereich ins Originalfoto übernommen, Carport und Auto bleiben original.
+`graphics/clown.html` zeichnet Kopf und Handschuhe als zwei transparente Ebenen. `build_images.py`
+verkleinert sie, gleicht sie leicht an das Foto an (etwas flacher, minimal weich, Korn) und
+sucht je Bildspalte die Oberkante der Sofalehne (erster dunkelgrüner Pixel unter dem hellen
+Vorhang). Unterhalb dieser Kante wird der Kopf ausgeblendet, er sitzt also hinter der Lehne; die
+Handschuhe liegen vorn auf der Kante, mit kleinem Schatten. Position und Größe: `CLOWN_X`,
+`CLOWN_SCALE` oben im Skript.

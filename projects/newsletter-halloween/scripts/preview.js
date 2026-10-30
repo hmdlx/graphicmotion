@@ -28,7 +28,7 @@ const VIEWS = [
 
     // Klick-Test: Mittelpunkt des Clown-Slices und je ein Punkt links/rechts daneben
     // (boundingBox bei scrollY 0 = Seitenkoordinaten, hit() rechnet auf den Viewport um)
-    const box = await page.locator('img[src="images/carport_monos_clown.jpg"]').boundingBox();
+    const box = await page.locator('a[href*="halloween-clown"] img').boundingBox();
     const hit = async (x, y) => page.evaluate(([x, y]) => {
       const el = document.elementFromPoint(x, y - window.scrollY);
       return el && el.closest('a') ? el.closest('a').href : null;

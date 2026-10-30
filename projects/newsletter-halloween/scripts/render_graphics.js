@@ -3,8 +3,9 @@
 //
 //   node scripts/render_graphics.js <out_dir>
 //
-// Every file in graphics/ must contain one #canvas element; it is captured at
-// its own CSS size (the designs are drawn at 2x of the 640 px newsletter width).
+// Every element with a data-out attribute in graphics/*.html is captured at its
+// own CSS size as <data-out>.png, with a transparent background where the design
+// has none (clown layers, bats).
 const path = require('path');
 const fs = require('fs');
 const { chromium } = require('playwright');
@@ -21,9 +22,11 @@ const { chromium } = require('playwright');
   for (const f of fs.readdirSync(dir).filter(f => f.endsWith('.html'))) {
     await page.goto('file://' + path.join(dir, f));
     await page.evaluate(() => document.fonts.ready);
-    const file = path.join(out, f.replace(/\.html$/, '.png'));
-    await page.locator('#canvas').screenshot({ path: file });
-    console.log(file);
+    for (const el of await page.locator('[data-out]').all()) {
+      const file = path.join(out, (await el.getAttribute('data-out')) + '.png');
+      await el.screenshot({ path: file, omitBackground: true });
+      console.log(file);
+    }
   }
   await browser.close();
 })();
