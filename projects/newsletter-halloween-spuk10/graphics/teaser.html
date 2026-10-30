@@ -10,9 +10,11 @@
   @font-face { font-family: Poppins; font-weight: 800; src: url(../../../assets/fonts/poppins/poppins-latin-800-normal.woff2); }
   :root { --navy: #0e2234; --navy-deep: #08141f; --grey: #c7d0d9; --orange: #ff9800; }
   body { margin: 0; background: #fff; }
-  /* 1280 × 720, im Newsletter mit 640 px Breite eingebunden; unten fließt das Navy in den Textblock darunter */
+  /* 1280 × 720, im Newsletter mit 640 px Breite eingebunden; oben schließt er an das Hero-GIF an (endet in Navy),
+     unten fließt das Navy in den Textblock darunter */
   [data-out] { position: relative; width: 1280px; height: 720px; overflow: hidden; font-family: Poppins, sans-serif;
-               background: radial-gradient(130% 120% at 30% 30%, var(--navy) 35%, var(--navy-deep) 100%); }
+               background: linear-gradient(var(--navy), #0e223400 160px),
+                           radial-gradient(130% 120% at 30% 30%, var(--navy) 35%, var(--navy-deep) 100%); }
   /* warmer Kürbisschein von unten */
   .glow { position: absolute; left: -100px; bottom: -260px; width: 900px; height: 520px; border-radius: 50%;
           background: radial-gradient(closest-side, #ff98003d, #ff980014 55%, #ff980000); }

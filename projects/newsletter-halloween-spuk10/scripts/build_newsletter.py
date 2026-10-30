@@ -4,8 +4,9 @@
 
 Fallback zur Clown-Edition (projects/newsletter-halloween), falls Landingpage/Pop-up nicht
 rechtzeitig laufen: kein Suchspiel, kein Pop-up – alle bekommen direkt den Code SPUK10 (10 %).
-Aufbau wie die Clown-Edition: Hero, Intro, Navy-Gutscheinblock, zwei große Produkte, Made-in-
-Germany-Block mit USPs und Produktkarten, drittes großes Produkt, zwei 2er-Raster, Navy-Band.
+Aufbau wie die Clown-Edition: Hero (Kopfband + Clown-GIF) mit direkt anschließendem Navy-
+Gutscheinblock (das GIF läuft unten in Navy aus), Intro, zwei große Produkte, Made-in-Germany-Block
+mit USPs und Produktkarten, drittes großes Produkt, zwei 2er-Raster, Navy-Band.
 Neue, saisonale Produkte; Orange (#FF9800, Shop-Badge) als Halloween-Akzent.
 
 Aus source/newsletter-new-ins-kw43.html (JUNE-Export) bleiben Kopf, Navigation, Social-Leiste,
@@ -15,7 +16,7 @@ output/newsletter-halloween-spuk10.html und die Textversion output/newsletter-ha
 Beide bauen auf denselben Texten unten auf (Abschnitt „Texte“).
 
 Bilder werden relativ eingebunden (images/…). Vor dem Versand in JUNE hochladen, dann
-ersetzt JUNE die Pfade durch CDN-URLs.
+ersetzt JUNE die Pfade durch CDN-URLs. Das Hero-GIF liegt schon auf dem CDN (HERO_GIF).
 """
 import html as htmllib
 import os
@@ -34,7 +35,6 @@ SHOP_URL = "https://www.homedeluxe.de/"
 
 # Produkte: Links, Preise und Merkmale von homedeluxe.de (Stand 30.10.2026)
 P = {
-    "nero": ("Infrarotkabine NERO", "https://www.homedeluxe.de/saunen-infrarotkabinen/infrarotkabinen/infrarotkabine-nero_29878_75373/", "ab 1.199"),
     "lagom": ("Fasssauna LAGOM DELUXE", "https://www.homedeluxe.de/fasssauna-mit-holzofen-lagom-deluxe_27593_71858/", "4.999"),
     "codo": ("Badewanne CODO Schwarz", "https://www.homedeluxe.de/freistehende-badewanne-codo-schwarz_15233_24171/", "799"),
     "antares3": ("Holzlege ANTARES 3er-Set", "https://www.homedeluxe.de/holzlege-antares-made-in-germany-3er-set_21253_50774/", "329"),
@@ -47,13 +47,17 @@ P = {
     "bademantel": ("Home Deluxe Bademantel", "https://www.homedeluxe.de/home-deluxe-bademantel_22013_56031/", "39"),
 }
 SAUNEN_URL = "https://www.homedeluxe.de/saunen-infrarotkabinen/"
+# Clown kommt hinter dem Sofa hervor und setzt sich (640 × 320, 8,1 s, Endlosschleife; oben/unten Navy-Verlauf).
+# Das erste Bild zeigt den sitzenden Clown – Outlook für Windows zeigt nur dieses.
+HERO_GIF = "https://homedeluxe-bf09.kxcdn.com/957aa3edf48bda20938dd5d64a693d81.gif"
 
 # --- Texte (für HTML und Textversion; <br /> = Zeilenumbruch im HTML, <b> = fett) ----------
 
 TITLE = "🎃 Süßes oder Saures? 10 % mit SPUK10"
 PREHEADER = f"Bei uns gibt’s nur Süßes: Mit dem Code {CODE} sparst du bis {VALID_UNTIL[:6]} 10 % auf deine Bestellung. 🎃"
-HERO_ALT = f"Halloween bei Home Deluxe: 10 % Rabatt mit dem Code {CODE} – Infrarotkabine NERO in Schwarz im violetten Licht"
-INTRO = dict(head="🎃 Halloween bei Home Deluxe 🎃", sub="Süßes oder Saures? Bei uns gibt’s Süßes.",
+HERO_ALT = f"Halloween bei Home Deluxe: 10 % Rabatt mit dem Code {CODE}"
+HERO_GIF_ALT = "Ein Clown im Home-Deluxe-Hoodie mit Ballon klettert hinter dem Sofa hervor und setzt sich"
+INTRO = dict(head="🎃 Halloween bei Home Deluxe 🎃", sub="Wohlig warm durch die Gruselnacht",
              lead="Draußen gruselig, drinnen warm.",
              text="Sauna, Wanne &amp; Kuschelplätze für lange Herbstabende –<br />direkt vom Hersteller, kostenlos geliefert*.",
              cta="ALLE SAUNEN ENTDECKEN")
@@ -134,7 +138,7 @@ def image(href, src, alt, width):
     return (
         '<table role="presentation" border="0" cellpadding="0" cellspacing="0" style="border-collapse:collapse;border-spacing:0;width:100%;" width="100%">'
         f'<tr><td class="kd" style="line-height:1;text-align:center;"><a href="{href}" class="yd" target="_blank" data-trigger-action-id="#{{image.actionTriggerId}}" style="display:inline-block;">'
-        f'<img class="yd" border="0" src="images/{src}" alt="{alt}" width="{width}" style="max-width:100%;height:auto;"></a></td></tr></table>'
+        f'<img class="yd" border="0" src="{src if src.startswith("https://") else "images/" + src}" alt="{alt}" width="{width}" style="max-width:100%;height:auto;"></a></td></tr></table>'
     )
 
 
@@ -185,7 +189,9 @@ def columns(cells, gap_style=("padding-right:5px;", "padding-left:5px;"), max_wi
 # --- Blöcke ------------------------------------------------------------------------------
 
 def hero():
-    return section(image(utm(P["nero"][1], "hero"), "hero_halloween-spuk10.jpg", HERO_ALT, 640), bg="#F6F4F2")
+    """Kopfband und Clown-GIF untereinander, beide führen in den Shop (der Code gilt für alles)."""
+    return section(image(utm(SHOP_URL, "hero"), "hero-band_spuk10.jpg", HERO_ALT, 640)
+                   + image(utm(SHOP_URL, "hero"), HERO_GIF, HERO_GIF_ALT, 640), bg=NAVY)
 
 
 def intro():
@@ -315,7 +321,8 @@ def build(src):
 
     footer = replace(footer, f"{SHIPPING}</span>", f'{SHIPPING}</span><br /><br /><span style="color:#ffffff;">{CONDITIONS}</span>')
 
-    body = [hero(), intro(), code_block(), feature(**LAGOM), feature(**CODO),
+    # Gutscheinblock direkt unter dem Hero: das GIF endet in Navy und geht nahtlos in ihn über
+    body = [hero(), code_block(), intro(), feature(**LAGOM), feature(**CODO),
             pumpkin_divider(), wood_header(), wood_image(), usps(), cards()]
     rest = [feature(**ORLENA), pumpkin_divider()] + [grid(*g) for g in GRIDS]
     # generierte Blöcke enden bereits mit SECTION_END; die übernommenen Teile bekommen es beim Zusammensetzen
@@ -377,8 +384,6 @@ def build_text(src):
         rule,
         para(INTRO["head"], INTRO["sub"]) + "\n\n" + para(INTRO["lead"], INTRO["text"]) + "\n\n"
         + text_link(INTRO["cta"], utm(SAUNEN_URL)),
-        rule,
-        text_product("nero", "IM BILD: INFRAROTKABINE NERO", "In Schwarz mit Glasfront und LED-Farblicht.", "NERO ANSEHEN"),
         rule,
         text_product(LAGOM["key"], LAGOM["title"], LAGOM["text"], LAGOM["cta"]),
         rule,

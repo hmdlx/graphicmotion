@@ -10,9 +10,11 @@
   /* CI Navy/Weiß/Grau, Orange (#FF9800, Shop-Badge) als Halloween-Akzent */
   :root { --navy: #0e2234; --grey: #c7d0d9; --orange: #ff9800; }
   body { margin: 0; background: #fff; }
-  /* gleiche Proportion wie das Kopfband der Clown-Edition (1280 × 210) */
-  [data-out] { position: relative; width: 1280px; height: 210px; overflow: hidden; font-family: Poppins, sans-serif;
-               background: radial-gradient(60% 140% at 64% 100%, #3a2412 0%, #1a2230 45%, var(--navy) 75%); }
+  /* gleiche Proportion wie das Kopfband der Clown-Edition (1280 × 210); darunter folgt das Hero-GIF,
+     das oben in Navy beginnt – der Kürbisschein endet deshalb über der Unterkante, damit keine Kante entsteht */
+  [data-out] { position: relative; width: 1280px; height: 210px; overflow: hidden; font-family: Poppins, sans-serif; background: var(--navy); }
+  .glow { position: absolute; left: 610px; top: 44px; width: 460px; height: 158px; border-radius: 50%;
+          background: radial-gradient(closest-side, #ff980030, #ff980000); }
   .title { position: absolute; left: 56px; top: 44px; margin: 0; font-weight: 800; font-size: 112px; line-height: 1; letter-spacing: -1px; color: #fff; }
   .right { position: absolute; right: 52px; top: 50px; text-align: right; line-height: 1.3; }
   .right b { display: block; font-weight: 800; font-size: 40px; color: var(--orange); letter-spacing: .5px; }
@@ -26,6 +28,7 @@
 </head>
 <body>
 <div data-out="hero-band">
+  <div class="glow"></div>
   <h1 class="title">HALLOWEEN</h1>
 
   <div class="bat" data-bat style="left:752px;top:22px;width:44px;opacity:.55;transform:rotate(-10deg)"></div>

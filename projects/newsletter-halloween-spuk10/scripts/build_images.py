@@ -5,8 +5,8 @@
 <projekt>     projects/newsletter-halloween-spuk10 (source/, output/)
 <grafik-dir>  Ausgabe von render_graphics.js (hero-band, teaser, kuerbis-trenner, band-kuerbisse)
 
-Hero:     Kopfband „HALLOWEEN – 10 % Rabatt mit Code SPUK10“ (Kürbisse, Spinne) + Infrarotkabine NERO
-          im violetten Licht (Shopfoto, auf Breite beschnitten).
+Hero:     Kopfband „HALLOWEEN – 10 % Rabatt mit Code SPUK10“ (Kürbisse, Spinne). Darunter steht im
+          Newsletter das Clown-GIF, das direkt vom CDN kommt (HERO_GIF in build_newsletter.py).
 Teaser:   Gutschein „10 % – SPUK10“ mit Kürbissen, Mond und Fledermäusen.
 Deko:     Kürbis-Trenner (weiß) und Kürbisreihe über dem Navy-Band.
 Alle Produktbilder sind unveränderte Shopfotos (source/shop/).
@@ -16,22 +16,10 @@ import sys
 
 from PIL import Image
 
-HERO_W = 1280                    # 2x der 640 px Newsletter-Breite
-NERO_CROP = (0, 150, 1000, 890)  # Kabine mit LED-Leiste bis Sockel, Boden knapp angeschnitten
 
 
 def save(img, path, quality=86):
     img.convert("RGB").save(path, quality=quality, optimize=True, progressive=True)
-
-
-def build_hero(shop, gfx, out):
-    band = Image.open(os.path.join(gfx, "hero-band.png")).convert("RGB")
-    photo = Image.open(os.path.join(shop, "nero_ambiente.jpg")).convert("RGB").crop(NERO_CROP)
-    photo = photo.resize((HERO_W, round(photo.height * HERO_W / photo.width)), Image.LANCZOS)
-    hero = Image.new("RGB", (HERO_W, band.height + photo.height))
-    hero.paste(band, (0, 0))
-    hero.paste(photo, (0, band.height))
-    save(hero, os.path.join(out, "hero_halloween-spuk10.jpg"))
 
 
 def cover(path, size, focus_y=0.5):
@@ -50,7 +38,7 @@ def main():
     out = os.path.join(project, "output", "images")
     os.makedirs(out, exist_ok=True)
 
-    build_hero(shop, gfx, out)
+    save(Image.open(os.path.join(gfx, "hero-band.png")), os.path.join(out, "hero-band_spuk10.jpg"), 88)
     save(Image.open(os.path.join(gfx, "teaser.png")), os.path.join(out, "teaser_spuk10.jpg"), 88)
     save(Image.open(os.path.join(gfx, "kuerbis-trenner.png")), os.path.join(out, "kuerbis-trenner.jpg"), 88)
     save(Image.open(os.path.join(gfx, "band-kuerbisse.png")), os.path.join(out, "band-kuerbisse.jpg"), 88)

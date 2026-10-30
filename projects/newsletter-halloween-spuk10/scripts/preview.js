@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // Full-page previews of the SPUK10 fallback newsletter (desktop + mobile), with checks:
-// no clown/pop-up link, the code is live text (copyable, readable with images off),
-// the hero opens NERO and the voucher block opens the shop, every link carries the campaign.
+// no clown/pop-up link, the code is live text (copyable, readable with images off), the hero GIF
+// loads from the CDN and opens the shop, the voucher block opens the shop, every link carries the campaign.
 //
 //   node scripts/preview.js <newsletter.html> <out_dir>
 const path = require('path');
@@ -30,11 +30,13 @@ const CAMPAIGN = 'utm_campaign=KW44_Halloween_SPUK10';
     await page.waitForLoadState('networkidle');
     await page.evaluate(() => Promise.all([...document.images].map(i => i.complete ? 0 : new Promise(r => { i.onload = i.onerror = r; }))));
 
+    // Link unter der Bildmitte; boundingBox und elementFromPoint arbeiten beide im Viewport
     const hit = async sel => {
-      const b = await page.locator(sel).boundingBox();
-      await page.evaluate(y => window.scrollTo(0, y), b.y - 100);
+      const loc = page.locator(sel).first();
+      await loc.scrollIntoViewIfNeeded();
+      const b = await loc.boundingBox();
       return page.evaluate(([x, y]) => {
-        const el = document.elementFromPoint(x, y - window.scrollY);
+        const el = document.elementFromPoint(x, y);
         return el && el.closest('a') ? el.closest('a').href : null;
       }, [b.x + b.width / 2, b.y + b.height / 2]);
     };
@@ -44,7 +46,9 @@ const CAMPAIGN = 'utm_campaign=KW44_Halloween_SPUK10';
       code_live_text: await page.evaluate(c => document.body.innerText.split(c).length - 1, CODE),
       shop_links_without_campaign: await page.evaluate(c => [...document.links].map(a => a.href)
         .filter(h => h.includes('homedeluxe.de') && !h.includes('/newsletter/unsubscribe') && !h.includes(c)), CAMPAIGN),
-      hero: await hit('img[src="images/hero_halloween-spuk10.jpg"]'),
+      hero_gif: await page.evaluate(() => { const i = document.querySelector('img[src$=".gif"]'); return i ? [i.naturalWidth, i.naturalHeight] : null; }),
+      hero: await hit('img[src$=".gif"]'),
+      hero_band: await hit('img[src="images/hero-band_spuk10.jpg"]'),
       teaser: await hit('img[src="images/teaser_spuk10.jpg"]'),
       horizontal_scroll: await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth),
     };
@@ -53,7 +57,8 @@ const CAMPAIGN = 'utm_campaign=KW44_Halloween_SPUK10';
     if (res.broken_images.length) fail('Bilder fehlen: ' + res.broken_images.join(', '));
     if (res.code_live_text < 3) fail('Code steht nicht als Text im Newsletter');
     if (res.shop_links_without_campaign.length) fail('Links ohne Kampagne: ' + res.shop_links_without_campaign.join(', '));
-    if (!/infrarotkabine-nero/.test(res.hero)) fail('Hero führt nicht zur NERO');
+    if (!res.hero_gif || res.hero_gif[0] !== 640) fail('Hero-GIF lädt nicht');
+    if (!/utm_content=hero/.test(res.hero) || !/utm_content=hero/.test(res.hero_band)) fail('Hero führt nicht in den Shop');
     if (!/utm_content=gutschein/.test(res.teaser)) fail('Gutschein-Grafik führt nicht in den Shop');
     if (res.horizontal_scroll) fail('horizontales Scrollen');
 
