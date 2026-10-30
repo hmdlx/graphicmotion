@@ -43,29 +43,29 @@ ist derselbe Inhalt wie zwischen `CMS-BLOCK START` und `CMS-BLOCK ENDE` in `inde
 Dokument-Tags wie `</body>` und ohne Google-Fonts-Link (Poppins lädt der Shop selbst; Google Fonts extern
 zu laden ist datenschutzrechtlich heikel). Getestet in einer nachgebauten Plenty-Seite mit Vue-Neurendern:
 volle Breite, Überschriften ohne Theme-Stile, Video, Animationen, Pop-up, Kopieren und Tracking laufen.
-Das Video liegt noch auf dem Shopify-CDN; für plenty besser in den Plenty-Webspace laden und die zwei
-URLs (`poster`, `source`) im Block ersetzen.
+Der Block lädt nichts mehr von Shopify; Bilder kommen aus dem plenty-CDN.
 
 - Look: hell und ruhig im Aufbau der Apple-„Why Mac“-Seite (Referenz vom Kunden). Farben vor allem
   Navy `#0f2334` und Weiß `#fefefe`, Orange `#ff6a00` nur als Akzent, Poppins 500–700, alle Ecken und Buttons scharfkantig (CI).
   Mobile first: Grundgrößen für ~390 px, nach oben per `clamp()` und `auto-fit`-Grids skaliert,
   keine Media Queries.
-- Aufbau, kurz und direkt aufs Ziel: 1 Hero (Navy) mit „Finde den anderen Clown.“ (Überschrift
-  Ebene 1), Gutschein „50 € ab 500 € Einkaufswert*“ und dem Video als Einstieg. Ein oranger Button unten mittig
-  auf dem Video sagt „Finde den anderen Clown, klick ihn an und erhalte 50 €“; ein Klick aufs Video scrollt zu den Produkten. 2 „Wo steckt der andere Clown?“ mit den drei Schritten
-  Produktbilder ansehen · Clown entdecken · Anklicken & 50 € sichern und 6 Produkten, 3 dunkle Karte
-  „Noch nicht gefunden?“ mit Tipp, 4 Service-Leiste (0 % Finanzierung, versandfrei, Stores) und Fußnote.
-- Das Video (`media/hdx-halloween-hero.mp4`, 5 s, stumm, mit Standbild) liegt in den Shopify-Dateien
-  und wird vom Shopify-CDN geladen.
+- Aufbau, kurz und direkt aufs Ziel: 1 Hero (Navy, nur Text und Buttons) mit „Finde den Clown.“
+  (Überschrift Ebene 1), „Er versteckt sich unten in einem unserer Produktbilder. Deine 50 € auch.“,
+  Gutschein „50 € ab 500 € Einkaufswert*“ und den Buttons „Jetzt Clown suchen“ (scrollt zu den
+  Produkten) und „Gutscheinbedingungen“ (scrollt zur Fußnote). 2 direkt danach die 6 Produkte,
+  3 dunkle Karte „Noch nicht gefunden?“ mit Tipp, 4 Service-Leiste (0 % Finanzierung, versandfrei,
+  Stores) und Fußnote.
+- Ein Video gibt es nicht mehr. `media/hdx-halloween-hero.mp4` und das Standbild liegen nur noch als
+  Material im Repo (und in den Shopify-Dateien).
 - Der Clown sieht aus wie der im Video: orange Haare, blauer Hoodie, blauer Ballon mit Haus. Er lugt
   in der Produktübersicht (dritte Kachel) von rechts ins Bild des Massagesessels DUNES, taucht auf und ab und hat rot
   glühende Augen. Definiert ist er einmal als `#hdx-clown` und wird per `<use>` im Bild und im Pop-up
   gezeigt.
-- Motion-Elemente, alle als SVG-Animation (SMIL): Fledermäuse im Pop-up, Pfeil im Video-Button,
+- Motion-Elemente, alle als SVG-Animation (SMIL): Fledermäuse im Pop-up, Pfeil im Button,
   Nebel in den Navy-Karten, glühende Augen und ein wanderndes Auge in der dunklen Karte.
 - Das Pop-up nutzt die Popover-API (`popover` / `popovertarget`) und funktioniert damit ohne
   JavaScript. Das Script am Ende ergänzt: „Code kopieren“, „Jetzt einlösen“ kopiert den Code
-  automatisch in die Zwischenablage (danach geht es zum Shop), weiches Scrollen beim Klick aufs Video,
+  automatisch in die Zwischenablage (danach geht es zum Shop), weiches Scrollen für die Buttons,
   Fallback für alte Browser, `dataLayer`-Event `halloween_clown_gefunden` und Pause aller Animationen
   bei reduzierter Bewegung.
 - Gutscheincode `CLOWN50` (`id="hdx-gs-code"`) und die Bedingungen (einlösbar bis 02.11.2026, stehen im
@@ -89,7 +89,7 @@ seiner Seiten verbietet (`X-Frame-Options: DENY`). Eingefügt wird alles zwische
 `IFRAME ENDE`, am besten in einen vollbreiten Bereich der Zielseite.
 
 Ein kleines Script im iframe übernimmt, was ein iframe sonst nicht kann: Es passt die Höhe an den
-Inhalt an (kein innerer Scrollbalken), scrollt beim Klick aufs Video die äußere Seite, setzt das
+Inhalt an (kein innerer Scrollbalken), scrollt bei den Buttons die äußere Seite, setzt das
 Gutschein-Pop-up in den sichtbaren Bereich und schreibt das Event `halloween_clown_gefunden` in den
 `dataLayer` der äußeren Seite. Shop-Links öffnen im ganzen Fenster (`target="_top"`). Ohne Script
 (z. B. wenn die Zielseite iframes in einer Sandbox ausführt) hat das iframe eine feste Höhe von 3600 px.
