@@ -36,10 +36,10 @@ FONT = "Poppins,Helvetica,Arial,sans-serif"
 # Produktfotos direkt vom Shop-CDN (unverändert, 1000 × 1000 px)
 SHOP_IMG = {
     "lahti": "https://cdn02.plentyone.com/emoguafh21bo/item/images/20004/full/48669-Home-Deluxe-Outdoorsauna-LAHTI-XL-ambiente-01.jpg",
-    "skandi": "https://cdn02.plentyone.com/emoguafh21bo/item/images/20042/full/20042-home-deuxe-hot-tub-holzbefeuertes-badefass-skandi-M-Ambiente01-mit-Model.jpg",
-    "swing_amb": "https://cdn02.plentyone.com/emoguafh21bo/item/images/18184/full/35678-Home-Deluxe-Kamin-Swing-Ambiente02-1.jpg",
-    "swing_frei": "https://cdn02.plentyone.com/emoguafh21bo/item/images/18184/full/Kamin-Swing-45grad-rust.jpg",
-    "frank_frei": "https://cdn02.plentyone.com/emoguafh21bo/item/images/18183/full/Feuerschale-Frank-front-rust-holz.jpg",
+    "nero": "https://cdn02.plentyone.com/emoguafh21bo/item/images/29878/full/49212-Home-Deluxe-Infrarotkanine-nero-M-Ambiente-01.jpg",
+    "odena": "https://cdn02.plentyone.com/emoguafh21bo/item/images/29596/full/75130-home-deluxe-wasserdampfkamin-ODENA-ambiente-01.jpg",
+    "melura": "https://cdn02.plentyone.com/emoguafh21bo/item/images/29317/full/74649-74653-home-deluxe-led-bett-melura-140x200-dunkelgrau-ambiente-01.jpg",
+    "lamesa": "https://cdn02.plentyone.com/emoguafh21bo/item/images/36072/full/home-deluxe-couchtisch-LAMESA-dark-Freisteller-01.jpg",
     "casara": "https://cdn02.plentyone.com/emoguafh21bo/item/images/25129/full/60495-home-deluxe-sofa-casara-gruen-ambiente-01.jpg",
     "calor": "https://cdn02.plentyone.com/emoguafh21bo/item/images/15586/full/15586-Elektrokamin-Calor-mit-Flammeneffekt-01-neu.jpg",
     "dunes": "https://cdn02.plentyone.com/emoguafh21bo/item/images/20321/full/20321-Home-Deluxe-Massagesessel-DUNES-Schwarz-Ambiente01_1.jpg",
@@ -53,9 +53,10 @@ SOFAS_URL = "https://www.homedeluxe.de/wohnen/wohnzimmer/sofas/"
 # Produkte: Links, Preise und Merkmale von homedeluxe.de (Stand 30.10.2026)
 P = {
     "lahti": ("Outdoor Fasssauna LAHTI XL", "https://www.homedeluxe.de/outdoor-fasssauna-lahti-xl_20004_48669/", "2.599"),
-    "skandi": ("Hot Tub SKANDI M", "https://www.homedeluxe.de/hot-tub/holzbefeuertes-badefass-180cm-skandi-m_20042_48709/", "1.999"),
-    "frank": ("Feuerschale FRANK", "https://www.homedeluxe.de/feuerschale-frank-made-in-germany_18183_35677/", "39"),
-    "swing": ("Gartenfeuer SWING", "https://www.homedeluxe.de/gartenfeuer-swing-made-in-germany_18184_35678/", "79"),
+    "nero": ("Infrarotkabine NERO M", "https://www.homedeluxe.de/saunen-infrarotkabinen/infrarotkabinen/infrarotkabine-nero_29878_75374/", "1.349"),
+    "odena": ("LED-Wasserdampfkamin ODENA", "https://www.homedeluxe.de/wohnen/wohnzimmer/led-wasserdampfkamin-odena_29596_75130/", "349"),
+    "melura": ("LED-Bett MELURA", "https://www.homedeluxe.de/wohnen/schlafzimmer/betten/doppelbetten/led-bett-schwebend-melura_29317_74656/", "399"),
+    "lamesa": ("Couchtisch-Set LAMESA", "https://www.homedeluxe.de/wohnen/wohnzimmer/couchtische/couchtisch-set-lamesa_36072_76438/", "179"),
     "casara": ("Sofa CASARA", "https://www.homedeluxe.de/sofa-casara_25129_60496/", "1.199"),
     "calor": ("Elektrokamin CALOR", "https://www.homedeluxe.de/elektrokamin-calor-mit-flammeneffekt_15586_25159/", "329"),
     "dunes": ("Massagesessel DUNES", "https://www.homedeluxe.de/massagesessel-dunes-schwarz_20321_49238/", "1.399"),
@@ -78,14 +79,18 @@ INTRO = dict(label="HALLOWEEN BEI HOME DELUXE", heading=[("Gemütlich", True), (
 WELLNESS = dict(heading=[("Wellness", True), (" für die Geisternacht", False)], more=("Alle Saunen", SAUNEN_URL), tiles=[
     dict(key="lahti", src=SHOP_IMG["lahti"], badge="SCHWITZEN STATT SCHAUDERN", name="LAHTI XL",
          sub="Outdoor Fasssauna · inkl. 8 kW Saunaofen · ideal für 4–6 Personen"),
-    dict(key="skandi", src=SHOP_IMG["skandi"], badge="DEIN EIGENER HEXENKESSEL", name="SKANDI M",
-         sub="Hot Tub · holzbefeuert, kein Strom nötig · Ø 180 cm für bis zu 4 Personen"),
+    dict(key="nero", src=SHOP_IMG["nero"], badge="SCHWARZ WIE DIE NACHT", name="NERO M",
+         sub="Infrarotkabine · 120 × 105 × 190 cm für 2 Personen · LED-Farblicht in der Decke"),
 ])
-FIRE = dict(label="MADE IN GERMANY", heading=[("Lagerfeuer", True), (" für Gruselgeschichten", False)],
-            text="Feuerschale und Holzlager in einem – in Handarbeit in Deutschland hergestellt.",
-            usps=[("HANDARBEIT", "Hergestellt in Deutschland"), ("2 IN 1", "Feuerschale und Holzlager"), ("WETTERFEST", "Für draußen gemacht")],
-            cards=[dict(key="frank", src=SHOP_IMG["frank_frei"], badge="MADE IN GERMANY", name="FEUERSCHALE FRANK", sub="mit Holzlager · Edelrost-Patina"),
-                   dict(key="swing", src=SHOP_IMG["swing_frei"], badge="MADE IN GERMANY", name="GARTENFEUER SWING", sub="mit Holzlager · variabel aufstellbar")])
+NEW = dict(label="NEU IM SHOP", heading=[("Gespenstisch", True), (" schöne Neuheiten", False)],
+           text="Flammen aus Nebel, ein Bett, das schwebt, und Tische in Marmoroptik – frisch eingezogen bei Home Deluxe.",
+           tile=dict(key="odena", src=SHOP_IMG["odena"], badge="FLAMMEN AUS NEBEL", name="ODENA",
+                     sub="LED-Wasserdampfkamin zum Einbau · 100 cm breit · mit Fernbedienung"),
+           usps=[("3D-FLAMMEN", "aus feinstem Wasserdampf"), ("OHNE RAUCH", "kein Ruß, kein offenes Feuer"), ("3 LICHTFARBEN", "warmweiß, orange, blau")],
+           cards=[dict(key="melura", src=SHOP_IMG["melura"], badge="SCHWEBT WIE EIN GEIST", name="LED-BETT MELURA",
+                       sub="Dunkelgrau · 200 × 200 cm · LED per Fernbedienung"),
+                  dict(key="lamesa", src=SHOP_IMG["lamesa"], badge="NEU", name="COUCHTISCH-SET LAMESA",
+                       sub="Marmor Braun · 2er-Set, ineinander schiebbar")])
 MOVIE = dict(heading=[("Gruselfilm", True), ("-Abend", False)], more=("Alle Sofas", SOFAS_URL),
              tile=dict(key="casara", src=SHOP_IMG["casara"], badge="FÜR DEN FILMABEND", name="CASARA",
                        sub="Sofa · Webstoff Dunkelgrün · 258 × 128 × 72 cm · weich genug zum Reinkuscheln"))
@@ -221,18 +226,20 @@ def section_head(parts, more=None, color=NAVY, label=None):
             f'<td valign="bottom" align="right" style="padding:0 0 4px 12px;">{right}</td></tr></table>')
 
 
-def wide_tile(t):
-    """Breite Produktkachel: Bild, darunter Badge, Name, Merkmale links – Preis und Button rechts."""
+def wide_tile(t, dark=False):
+    """Breite Produktkachel: Bild, darunter Badge, Name, Merkmale links – Preis und Button rechts.
+    dark: für Navy-Abschnitte (weiße Schrift, oranger Button)."""
     name, url, price = P[t["key"]]
+    fg, sub, btn = ("#ffffff", NIGHT_TEXT, (ORANGE, NAVY)) if dark else (NAVY, MUTED, (NAVY, "#ffffff"))
     return (
         img(t["src"], name, 592, utm(url))
         + '<table role="presentation" width="100%" border="0" cellpadding="0" cellspacing="0"><tr>'
         f'<td class="stack" valign="top" style="padding:14px 12px 0 0;">{badge(t["badge"])}'
-        + p(t["name"], 18, NAVY, extra="font-weight:700;padding-top:8px;")
-        + p(t["sub"], 12, MUTED, extra="padding-top:2px;") + '</td>'
+        + p(t["name"], 18, fg, extra="font-weight:700;padding-top:8px;")
+        + p(t["sub"], 12, sub, extra="padding-top:2px;") + '</td>'
         '<td class="stack" valign="top" width="190" style="width:190px;padding:14px 0 0 0;">'
-        + p(f'{price}&nbsp;€', 22, NAVY, "right", "font-weight:700;padding-bottom:8px;")
-        + button(utm(url), "ARTIKEL ANZEIGEN", align="right")
+        + p(f'{price}&nbsp;€', 22, fg, "right", "font-weight:700;padding-bottom:8px;")
+        + button(utm(url), "ARTIKEL ANZEIGEN", *btn, align="right")
         + '</td></tr></table>'
     )
 
@@ -307,9 +314,7 @@ def wellness():
     return row(section_head(WELLNESS["heading"], WELLNESS["more"]) + gap(16) + tiles, pad="0 24px 10px", cls="px")
 
 
-def fire():
-    name, url, _ = P["swing"]
-
+def new_in():
     def usp(h, t):
         return ('<td width="33%" valign="top" style="width:33%;padding:0 5px;">'
                 '<table role="presentation" width="100%" border="0" cellpadding="0" cellspacing="0"><tr>'
@@ -317,13 +322,13 @@ def fire():
                 + p(h, 11, "#ffffff", "center", "font-weight:700;letter-spacing:1px;")
                 + p(t, 12, NIGHT_TEXT, "center", "padding-top:2px;") + '</td></tr></table></td>')
     return row(
-        section_head(FIRE["heading"], color="#ffffff", label=FIRE["label"])
-        + p(FIRE["text"], 14, NIGHT_TEXT, extra="padding:8px 0 18px;")
-        + img(SHOP_IMG["swing_amb"], f"{name} mit Holzlager im Garten", 592, utm(url))
-        + '<table role="presentation" width="100%" border="0" cellpadding="0" cellspacing="0"><tr><td style="padding:22px 0;">'
+        section_head(NEW["heading"], color="#ffffff", label=NEW["label"])
+        + p(NEW["text"], 14, NIGHT_TEXT, extra="padding:8px 0 18px;")
+        + wide_tile(NEW["tile"], dark=True)
+        + '<table role="presentation" width="100%" border="0" cellpadding="0" cellspacing="0"><tr><td style="padding:26px 0 24px;">'
         + '<table role="presentation" width="100%" border="0" cellpadding="0" cellspacing="0"><tr>'
-        + "".join(usp(*u) for u in FIRE["usps"]) + '</tr></table></td></tr></table>'
-        + two_cols(*(small_tile(c, card=True) for c in FIRE["cards"])),
+        + "".join(usp(*u) for u in NEW["usps"]) + '</tr></table></td></tr></table>'
+        + two_cols(*(small_tile(c, card=True) for c in NEW["cards"])),
         bg=NAVY, pad="0 24px 30px", cls="px")
 
 
@@ -368,7 +373,7 @@ def build(src):
     ex = from_export(src)
     rows = [
         header(ex), hero(), transition("ueb_tropfen.png"), intro(), wellness(),
-        transition("ueb_nebel.png"), fire(), transition("ueb_aeste.png"), movie(), more(),
+        transition("ueb_nebel.png"), new_in(), transition("ueb_aeste.png"), movie(), more(),
         transition("ueb_kuerbisse.png"), closing(), footer(ex),
     ]
     filler = "&#847;&zwnj;&nbsp;" * 60
@@ -452,9 +457,9 @@ def build_text(src):
         rule,
         text_heading(WELLNESS["heading"]), *(text_tile(t) for t in WELLNESS["tiles"]),
         rule,
-        para(FIRE["label"], text_heading(FIRE["heading"]), FIRE["text"]) + "\n\n"
-        + "\n".join(f"✓ {h.capitalize()}: {t}" for h, t in FIRE["usps"]),
-        *(text_tile(c) for c in FIRE["cards"]),
+        para(NEW["label"], text_heading(NEW["heading"]), NEW["text"]),
+        text_tile(NEW["tile"]) + "\n" + "\n".join(f"✓ {h}: {t}" for h, t in NEW["usps"]),
+        *(text_tile(c) for c in NEW["cards"]),
         rule,
         text_heading(MOVIE["heading"]), text_tile(MOVIE["tile"]),
         rule,

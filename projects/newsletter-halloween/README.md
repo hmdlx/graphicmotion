@@ -63,8 +63,8 @@ und läuft wieder in Navy aus.
 |---|---|---|---|
 | Hero „HALLOWEEN-SPECIAL – Finde den Clown“ | Klick öffnet das Gutschein-Pop-up | GIF | – |
 | „**Gemütlich** durch die Gruselnacht“ | CTA: Alle Saunen | – | – |
-| „**Wellness** für die Geisternacht“ | Fasssauna LAHTI XL · Hot Tub SKANDI M | Shopfotos | 2.599 € · 1.999 € |
-| „**Lagerfeuer** für Gruselgeschichten“ | Gartenfeuer SWING, Feuerschale FRANK | Shopfoto, Freisteller | 79 € · 39 € |
+| „**Wellness** für die Geisternacht“ | Fasssauna LAHTI XL · Infrarotkabine NERO M | Shopfotos | 2.599 € · 1.349 € |
+| „NEU IM SHOP – **Gespenstisch** schöne Neuheiten“ | LED-Wasserdampfkamin ODENA · LED-Bett MELURA · Couchtisch-Set LAMESA | Shopfotos, Freisteller (LAMESA) | 349 € · 399 € · 179 € |
 | „**Gruselfilm**-Abend“ | Sofa CASARA Dunkelgrün | Shopfoto | 1.199 € |
 | „Noch mehr **Gänsehaut**-Momente“ | Elektrokamin CALOR · Massagesessel DUNES · LED-Spiegel DUBI · Kratzbaum RUBY | Shopfotos | 329 € · 1.399 € · 139 € · 69 € |
 | „Happy **Halloween!**“ | Erinnerung + „ZUM CLOWN“ | – | – |
